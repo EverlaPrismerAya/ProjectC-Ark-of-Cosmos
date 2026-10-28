@@ -1,0 +1,10 @@
+{
+  "item.arkofcosmos.ark_of_cosmos": "Ark of the Cosmos",
+  "tooltip.arkofcosmos.controls": "<left> to perform a 5-swing combo that ends by throwing the blade\nThe thrown blade will follow your cursor\nReleasing while the blade is out will cause an exploding snap",
+  "tooltip.arkofcosmos.parry": "<right> to snip out the scissor blades in front of you\nHitting an enemy with it will parry them, granting you brief invulnerability\nYou can parry projectiles to make them deal 160 less damage for a short period\nParrying anything will empower the next 16 swings of the sword",
+  "message.arkofcosmos.parry": "§bParry！",
+  "tooltip.arkofcosmos.blast": "With empowered charges, hold [%1$s] and press [%2$s] to provoke a Big Rip in spacetime, consuming all charges\nIf at least 5 charges were consumed, keep holding [%1$s] and [%2$s] until after the snap to dash toward the scissors",
+  "tooltip.arkofcosmos.flavor": "The physical culmination of your journey, capable of rending gods asunder",
+  "key.arkofcosmos.dash": "Charged Blast / Dash",
+  "key.categories.arkofcosmos": "Ark of the Cosmos"
+}

@@ -1,0 +1,68 @@
+{
+  "snap": {
+    "sounds": [
+      "arkofcosmos:snap_0"
+    ]
+  },
+  "phoenix": {
+    "sounds": [
+      "arkofcosmos:phoenix_0",
+      "arkofcosmos:phoenix_1",
+      "arkofcosmos:phoenix_2"
+    ]
+  },
+  "meaty": {
+    "sounds": [
+      "arkofcosmos:meaty_0"
+    ]
+  },
+  "item4": {
+    "sounds": [
+      "arkofcosmos:item4_0"
+    ]
+  },
+  "item35": {
+    "sounds": [
+      "arkofcosmos:item35_0"
+    ]
+  },
+  "item63": {
+    "sounds": [
+      "arkofcosmos:item63_0"
+    ]
+  },
+  "item64": {
+    "sounds": [
+      "arkofcosmos:item64_0"
+    ]
+  },
+  "item65": {
+    "sounds": [
+      "arkofcosmos:item65_0"
+    ]
+  },
+  "item71": {
+    "sounds": [
+      "arkofcosmos:item71_0"
+    ]
+  },
+  "item84": {
+    "sounds": [
+      "arkofcosmos:item84_0"
+    ]
+  },
+  "crystal": {
+    "sounds": [
+      "arkofcosmos:crystal_0",
+      "arkofcosmos:crystal_1",
+      "arkofcosmos:crystal_2"
+    ]
+  },
+  "needle_death": {
+    "sounds": [
+      "arkofcosmos:needle_death_0",
+      "arkofcosmos:needle_death_1",
+      "arkofcosmos:needle_death_2"
+    ]
+  }
+}

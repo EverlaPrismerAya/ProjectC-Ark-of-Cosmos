@@ -1,0 +1,86 @@
+{
+  "attributes": [
+    "Position",
+    "Color",
+    "UV0"
+  ],
+  "vertex": "arkofcosmos:fx_trail",
+  "samplers": [
+    {
+      "name": "Sampler0"
+    }
+  ],
+  "uniforms": [
+    {
+      "values": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1
+      ],
+      "count": 16,
+      "type": "matrix4x4",
+      "name": "ModelViewMat"
+    },
+    {
+      "values": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1
+      ],
+      "count": 16,
+      "type": "matrix4x4",
+      "name": "ProjMat"
+    },
+    {
+      "values": [
+        0
+      ],
+      "count": 1,
+      "type": "float",
+      "name": "uTime"
+    },
+    {
+      "name": "NearFade",
+      "type": "float",
+      "count": 1,
+      "values": [
+        0
+      ]
+    },
+    {
+      "name": "FadePremultiplied",
+      "type": "float",
+      "count": 1,
+      "values": [
+        0
+      ]
+    }
+  ],
+  "fragment": "arkofcosmos:fx_trail"
+}
