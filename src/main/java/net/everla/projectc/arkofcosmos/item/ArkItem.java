@@ -1,6 +1,7 @@
-package net.everla.projectc.arkofcosmos;
+package net.everla.projectc.arkofcosmos.item;
 
-import net.minecraft.util.Mth;
+import net.everla.projectc.arkofcosmos.combat.ArkCombat;
+import net.everla.projectc.arkofcosmos.calamity.combat.ArkWeaponRules;
 import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -36,11 +37,11 @@ public final class ArkItem extends SwordItem {
         return Component.empty().append(Component.translatable(getDescriptionId(stack)).withStyle(style -> style.withColor(0x6C2DC7)));
     }
     public static int charge(ItemStack stack) { return stack.hasTag() ? stack.getTag().getInt("ArkCharge") : 0; }
-    public static void charge(ItemStack stack, int amount) { stack.getOrCreateTag().putInt("ArkCharge", Math.max(0, Math.min(16, amount))); }
+    public static void charge(ItemStack stack, int amount) { stack.getOrCreateTag().putInt("ArkCharge", Math.max(0, Math.min(ArkWeaponRules.MAX_CHARGE, amount))); }
     public static int cooldown(ItemStack stack) { return stack.hasTag() ? stack.getTag().getInt("ArkParryCooldown") : 0; }
     @Override public void inventoryTick(ItemStack stack, Level level, net.minecraft.world.entity.Entity entity, int slot, boolean selected) {
         if (!level.isClientSide && entity instanceof Player player) {
-            int remaining = ArkCombat.controls(player).parryCooldown;
+            int remaining = ArkCombat.parryCooldown(player);
             if (cooldown(stack) != remaining) stack.getOrCreateTag().putInt("ArkParryCooldown", remaining);
         }
     }
@@ -60,12 +61,7 @@ public final class ArkItem extends SwordItem {
     @Override public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> lines, TooltipFlag flag) {
         float wave = (float)Math.sin((System.nanoTime() / 1_000_000_000d) % 3600);
         for (String key : new String[]{"controls", "parry", "blast", "flavor"}) {
-            int color = switch (key) {
-                case "controls" -> tooltipColor(0xFFD700, 0xDAA520, .5f + wave * .5f);
-                case "parry" -> tooltipColor(0x00FFFF, 0x00BFFF, .5f + wave * .75f);
-                case "blast" -> tooltipColor(0xFF69B4, 0xDC143C, .5f + wave * .625f);
-                default -> 0xFFFFFF;
-            };
+            int color = ArkWeaponRules.tooltipColor(key, wave);
             Component text = key.equals("blast")
                     ? Component.translatable("tooltip.arkofcosmos.blast", Component.keybind("key.arkofcosmos.dash"), Component.keybind("key.use"))
                     : Component.translatable("tooltip.arkofcosmos." + key);
@@ -73,11 +69,5 @@ public final class ArkItem extends SwordItem {
                 lines.add(Component.literal(line).withStyle(style -> style.withColor(color)));
         }
     }
-    private static int tooltipColor(int from, int to, float amount) {
-        amount = Mth.clamp(amount, 0, 1);
-        int red = (int)Mth.lerp(amount, from >> 16 & 255, to >> 16 & 255);
-        int green = (int)Mth.lerp(amount, from >> 8 & 255, to >> 8 & 255);
-        int blue = (int)Mth.lerp(amount, from & 255, to & 255);
-        return red << 16 | green << 8 | blue;
-    }
+
 }

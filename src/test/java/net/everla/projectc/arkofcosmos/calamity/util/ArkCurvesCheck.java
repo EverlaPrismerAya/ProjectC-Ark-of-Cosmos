@@ -1,4 +1,5 @@
-package net.everla.projectc.arkofcosmos;
+package net.everla.projectc.arkofcosmos.calamity.util;
+
 
 public final class ArkCurvesCheck {
     public static void main(String[] args) {

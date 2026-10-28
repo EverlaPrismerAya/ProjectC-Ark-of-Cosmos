@@ -1,8 +1,10 @@
-package net.everla.projectc.arkofcosmos;
+package net.everla.projectc.arkofcosmos.calamity.client;
 
+import net.everla.projectc.arkofcosmos.util.AttackFrame;
+import net.everla.projectc.arkofcosmos.client.render.ArkFxDraw;
 import net.minecraft.world.phys.Vec3;
-import static net.everla.projectc.arkofcosmos.ArkFxDraw.Blend.*;
-import static net.everla.projectc.arkofcosmos.ArkEffects.*;
+import static net.everla.projectc.arkofcosmos.client.render.ArkFxDraw.Blend.*;
+import static net.everla.projectc.arkofcosmos.calamity.client.ArkEffects.*;
 
 /** Direct ports of Calamity's particle Update/CustomDraw methods (60 Hz). */
 final class ArkFxParticle {

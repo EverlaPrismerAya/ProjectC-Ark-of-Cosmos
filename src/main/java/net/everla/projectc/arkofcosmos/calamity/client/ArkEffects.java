@@ -1,17 +1,22 @@
-package net.everla.projectc.arkofcosmos;
+package net.everla.projectc.arkofcosmos.calamity.client;
 
+import net.everla.projectc.arkofcosmos.combat.ArkCombat;
+import net.everla.projectc.arkofcosmos.util.AttackFrame;
+import net.everla.projectc.arkofcosmos.entity.ArkAttackEntity;
+import net.everla.projectc.arkofcosmos.calamity.util.ArkCurves;
+import net.everla.projectc.arkofcosmos.client.render.ArkFxDraw;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Camera;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.phys.Vec3;
 import java.util.*;
-import static net.everla.projectc.arkofcosmos.ArkFxParticle.Type.*;
+import static net.everla.projectc.arkofcosmos.calamity.client.ArkFxParticle.Type.*;
 
 /** Calamity particle simulation in original pixels/60 Hz, converted once to world units. */
-final class ArkEffects {
+public final class ArkEffects {
     static final Random rng = new Random();
-    static final float[] WHITE = rgb(255,255,255), CYAN=rgb(0,255,255), ORANGE_RED=rgb(255,69,0),
+    public static final float[] WHITE = rgb(255,255,255), CYAN=rgb(0,255,255), ORANGE_RED=rgb(255,69,0),
             CHOCOLATE=rgb(210,105,30), BLUE=rgb(30,144,255), VIOLET=rgb(199,21,133), CORNFLOWER=rgb(100,149,237);
     static final List<ArkFxParticle> particles = new ArrayList<>();
     private static final Map<Integer, Visual> visuals = new HashMap<>();
@@ -21,21 +26,27 @@ final class ArkEffects {
     private static int emittingOwner = -1;
     private static boolean simulating;
     static double shake;
+    public static void camera(net.minecraft.client.Camera camera) {
+        if(shake<=0||Minecraft.getInstance().isPaused())return;
+        // Calamity camera translation uses a random circular offset; one pixel = 1/16 block.
+        double angle=random()*Math.PI*2, radius=Math.sqrt(random())*shake/16;
+        camera.move(0,Math.sin(angle)*radius,Math.cos(angle)*radius);
+    }
     static double random(){ return rng.nextDouble(); }
-    static double range(double a,double b){ return lerp(a,b,random()); }
+    public static double range(double a,double b){ return lerp(a,b,random()); }
     static float[] rgba(double r,double g,double b,double a){ return new float[]{(float)r,(float)g,(float)b,(float)a}; }
-    static float[] rgb(int r,int g,int b){ return rgba(r/255d,g/255d,b/255d,1); }
+    public static float[] rgb(int r,int g,int b){ return rgba(r/255d,g/255d,b/255d,1); }
     // XNA Color * scalar multiplies all four components, including RGB.
-    static float[] mul(float[] c,double m){ return rgba(c[0]*m,c[1]*m,c[2]*m,c[3]*m); }
-    static float[] mix(float[] a,float[] b,double t){ t=clamp(t); return rgba(lerp(a[0],b[0],t),lerp(a[1],b[1],t),lerp(a[2],b[2],t),lerp(a[3],b[3],t)); }
+    public static float[] mul(float[] c,double m){ return rgba(c[0]*m,c[1]*m,c[2]*m,c[3]*m); }
+    public static float[] mix(float[] a,float[] b,double t){ t=clamp(t); return rgba(lerp(a[0],b[0],t),lerp(a[1],b[1],t),lerp(a[2],b[2],t),lerp(a[3],b[3],t)); }
     static float[] shift(float[] c,double delta){
         double max=Math.max(c[0],Math.max(c[1],c[2])), min=Math.min(c[0],Math.min(c[1],c[2]));
         double l=(max+min)/2, d=max-min, h=0, s=0;
         if(d>0){ s=l>.5?d/(2-max-min):d/(max+min); h=max==c[0]?(c[1]-c[2])/d+(c[1]<c[2]?6:0):max==c[1]?(c[2]-c[0])/d+2:(c[0]-c[1])/d+4; h/=6; }
         return ArkFxDraw.hsl((float)((h+delta)%1+1)%1,(float)s,(float)l,1);
     }
-    static double lerp(double a,double b,double t){ return a+(b-a)*t; }
-    static double clamp(double x){ return Math.max(0,Math.min(1,x)); }
+    public static double lerp(double a,double b,double t){ return a+(b-a)*t; }
+    public static double clamp(double x){ return Math.max(0,Math.min(1,x)); }
     static float[] hsl(double h,double l){ return ArkFxDraw.hsl((float)((h%1+1)%1),1,(float)l,1); }
     static Vec3 disk(AttackFrame f,double radius){ return f.direction(random()*Math.PI*2).scale(Math.sqrt(random())*radius/16); }
     static ArkFxParticle add(ArkFxParticle p){ p.ownerId=emittingOwner; particles.add(p); if(simulating){p.born=phase/3d;frameParticles.add(p);} return p; }
@@ -52,7 +63,7 @@ final class ArkEffects {
     static void squish(Vec3 p,Vec3 v,float[] c,double squish,double hue,AttackFrame f){
         ArkFxParticle a=particle(SQUISH,p,v,c,range(.3,.6),60,f); a.squish=squish; a.hueShift=hue;
     }
-    static void receive(CompoundTag data){
+    public static void receive(CompoundTag data){
         int previousOwner = emittingOwner;
         emittingOwner = data.contains("Owner") ? data.getInt("Owner") : -1;
         try { receiveOwned(data); } finally { emittingOwner = previousOwner; }
@@ -106,7 +117,7 @@ final class ArkEffects {
         int step=-1,stitches; final double[] stitchAngles=new double[8]; final List<CompoundTag> history=new ArrayList<>();
         final List<ArkFxParticle> chain=new ArrayList<>(); Vec3 anchor; ArkFxParticle head;
     }
-    static void tick(){
+    public static void tick(){
         Minecraft mc=Minecraft.getInstance();
         if(world!=mc.level){world=mc.level;particles.clear();frameParticles.clear();visuals.clear();shake=0;}
         if(mc.level==null||mc.isPaused())return;
@@ -231,7 +242,7 @@ final class ArkEffects {
         int start=(int)((1-partial)*6);int count=Math.min(10,v.history.size()-start-1);if(count<=0)return new float[0];float[] out=new float[count];
         for(int i=0;i<count;i++)out[i]=(float)lerp(v.history.get(start+i).getFloat("Rotation"),v.history.get(start+i+1).getFloat("Rotation"),(1-partial)*6-start);return out;
     }
-    static void render(PoseStack pose,Vec3 camera,float partial){
+    public static void render(PoseStack pose,Vec3 camera,float partial){
         Camera c=Minecraft.getInstance().gameRenderer.getMainCamera();var look=c.getLookVector();var u=c.getUpVector();
         Vec3 forward=new Vec3(look.x(),look.y(),look.z()),up=new Vec3(u.x(),u.y(),u.z());
         AttackFrame billboard=new AttackFrame(forward.cross(up).normalize(),up.scale(-1));

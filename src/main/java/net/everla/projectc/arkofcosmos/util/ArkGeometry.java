@@ -1,13 +1,13 @@
-package net.everla.projectc.arkofcosmos;
+package net.everla.projectc.arkofcosmos.util;
 
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
-final class ArkGeometry {
+public final class ArkGeometry {
     private ArkGeometry() {}
 
     /** Full separating-axis test: a rotated attack box against the target's world AABB. */
-    static boolean box(AABB target, Vec3 center, Vec3 x, Vec3 y, Vec3 z, double hx, double hy, double hz) {
+    public static boolean box(AABB target, Vec3 center, Vec3 x, Vec3 y, Vec3 z, double hx, double hy, double hz) {
         Vec3[] axes = {x, y, z, new Vec3(1, 0, 0), new Vec3(0, 1, 0), new Vec3(0, 0, 1)};
         Vec3 delta = target.getCenter().subtract(center);
         double tx = target.getXsize() / 2, ty = target.getYsize() / 2, tz = target.getZsize() / 2;
@@ -25,7 +25,7 @@ final class ArkGeometry {
         return Math.abs(delta.dot(axis)) > radius + 1e-8;
     }
 
-    static boolean line(AABB target, Vec3 start, Vec3 end, double width, AttackFrame frame) {
+    public static boolean line(AABB target, Vec3 start, Vec3 end, double width, AttackFrame frame) {
         Vec3 along = end.subtract(start);
         double length = along.length();
         if (length < 1e-8) return target.inflate(width / 2).contains(start);
@@ -37,12 +37,12 @@ final class ArkGeometry {
         return box(target, start.add(end).scale(.5), along, across, normal, length / 2, width / 2, width / 2);
     }
 
-    static Vec3 towards(Vec3 from, Vec3 to, double distance) {
+    public static Vec3 towards(Vec3 from, Vec3 to, double distance) {
         Vec3 offset = to.subtract(from);
         return offset.length() <= distance ? to : from.add(offset.normalize().scale(distance));
     }
 
-    static Vec3 turn(Vec3 velocity, Vec3 targetDirection, double maxAngle, Vec3 fallbackAxis) {
+    public static Vec3 turn(Vec3 velocity, Vec3 targetDirection, double maxAngle, Vec3 fallbackAxis) {
         double speed = velocity.length();
         if (speed < 1e-8 || targetDirection.lengthSqr() < 1e-16) return velocity;
         Vec3 a = velocity.scale(1 / speed), b = targetDirection.normalize();

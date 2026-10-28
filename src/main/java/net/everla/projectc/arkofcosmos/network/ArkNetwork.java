@@ -1,5 +1,9 @@
-package net.everla.projectc.arkofcosmos;
+package net.everla.projectc.arkofcosmos.network;
 
+import net.everla.projectc.arkofcosmos.ArkOfCosmos;
+import net.everla.projectc.arkofcosmos.combat.ArkCombat;
+import net.everla.projectc.arkofcosmos.util.AttackFrame;
+import net.everla.projectc.arkofcosmos.calamity.client.ArkEffects;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.network.NetworkDirection;
@@ -28,7 +32,7 @@ public final class ArkNetwork {
             context.setPacketHandled(true);
         }
     }
-    static void register() {
+    public static void register() {
         CHANNEL.messageBuilder(Input.class, 0, NetworkDirection.PLAY_TO_SERVER)
                 .encoder(Input::write).decoder(Input::read).consumerNetworkThread(Input::handle).add();
         CHANNEL.messageBuilder(Effect.class, 1, NetworkDirection.PLAY_TO_CLIENT)
@@ -38,10 +42,10 @@ public final class ArkNetwork {
                         () -> () -> ArkEffects.receive(packet.data))).add();
     }
     private record Effect(CompoundTag data) {}
-    static void effect(Entity entity, CompoundTag data) {
+    public static void effect(Entity entity, CompoundTag data) {
         CHANNEL.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> entity), new Effect(data));
     }
-    static void parryEffect(net.minecraft.world.entity.player.Player player,AttackFrame frame){
+    public static void parryEffect(net.minecraft.world.entity.player.Player player,AttackFrame frame){
         CompoundTag data=new CompoundTag();data.putString("Event","parry");data.putInt("Owner",player.getId());
         net.minecraft.world.phys.Vec3 at=player.getBoundingBox().getCenter();
         data.putDouble("AtX",at.x);data.putDouble("AtY",at.y);data.putDouble("AtZ",at.z);

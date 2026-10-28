@@ -212,7 +212,7 @@ tasks.withType(JavaCompile).configureEach {
 tasks.register('arkRegression', JavaExec) {
     dependsOn testClasses
     classpath = sourceSets.test.runtimeClasspath
-    mainClass = 'net.everla.projectc.arkofcosmos.ArkCurvesCheck'
+    mainClass = 'net.everla.projectc.arkofcosmos.calamity.util.ArkCurvesCheck'
 }
 tasks.named('check') { dependsOn 'arkRegression' }
 
@@ -220,6 +220,6 @@ tasks.named('check') { dependsOn 'arkRegression' }
 tasks.register('arkFxRegression', JavaExec) {
     dependsOn testClasses
     classpath = sourceSets.test.runtimeClasspath
-    mainClass = 'net.everla.projectc.arkofcosmos.ArkFxCheck'
+    mainClass = 'net.everla.projectc.arkofcosmos.calamity.client.ArkFxCheck'
 }
 tasks.named('check') { dependsOn 'arkFxRegression' }

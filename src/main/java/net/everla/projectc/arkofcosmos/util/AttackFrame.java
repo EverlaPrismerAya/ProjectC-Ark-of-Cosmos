@@ -1,4 +1,4 @@
-package net.everla.projectc.arkofcosmos;
+package net.everla.projectc.arkofcosmos.util;
 
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;

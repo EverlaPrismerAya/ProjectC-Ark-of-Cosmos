@@ -1,5 +1,13 @@
-package net.everla.projectc.arkofcosmos;
+package net.everla.projectc.arkofcosmos.client;
 
+import net.everla.projectc.arkofcosmos.ArkOfCosmos;
+import net.everla.projectc.arkofcosmos.item.ArkItem;
+import net.everla.projectc.arkofcosmos.combat.ArkCombat;
+import net.everla.projectc.arkofcosmos.network.ArkNetwork;
+import net.everla.projectc.arkofcosmos.entity.ArkAttackEntity;
+import net.everla.projectc.arkofcosmos.calamity.client.ArkEffects;
+import net.everla.projectc.arkofcosmos.calamity.client.ArkAttackRenderer;
+import net.everla.projectc.arkofcosmos.client.render.ArkFxDraw;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.KeyMapping;
 import com.mojang.blaze3d.platform.InputConstants;
@@ -43,10 +51,7 @@ public final class ArkClient {
         ArkEffects.render(event.getPoseStack(),event.getCamera().getPosition(),event.getPartialTick());
     }
     @SubscribeEvent public static void camera(net.minecraftforge.client.event.ViewportEvent.ComputeCameraAngles event) {
-        if(ArkEffects.shake<=0||Minecraft.getInstance().isPaused())return;
-        // Calamity camera translation uses a random circular offset; one pixel = 1/16 block.
-        double angle=ArkEffects.random()*Math.PI*2, radius=Math.sqrt(ArkEffects.random())*ArkEffects.shake/16;
-        event.getCamera().move(0,Math.sin(angle)*radius,Math.cos(angle)*radius);
+        ArkEffects.camera(event.getCamera());
     }
 
     private static void send(boolean left, boolean right, boolean alt, boolean active) {

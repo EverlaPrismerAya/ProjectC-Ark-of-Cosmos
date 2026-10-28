@@ -1,5 +1,11 @@
-package net.everla.projectc.arkofcosmos;
+package net.everla.projectc.arkofcosmos.calamity.client;
 
+import net.everla.projectc.arkofcosmos.ArkOfCosmos;
+import net.everla.projectc.arkofcosmos.combat.ArkCombat;
+import net.everla.projectc.arkofcosmos.util.AttackFrame;
+import net.everla.projectc.arkofcosmos.entity.ArkAttackEntity;
+import net.everla.projectc.arkofcosmos.calamity.util.ArkCurves;
+import net.everla.projectc.arkofcosmos.client.render.ArkFxDraw;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -107,7 +113,7 @@ public final class ArkAttackRenderer extends EntityRenderer<ArkAttackEntity> {
                 Vec3[] worldTrail = ArkEffects.trail(entity,partial), localTrail = new Vec3[worldTrail.length];
                 for (int i = 0; i < worldTrail.length; i++) localTrail[i] = worldTrail[i].subtract(base);
                 Vec3 trailOffset = entity.kind() == ArkAttackEntity.Kind.NEEDLE ? forward.scale(-30.5 * ArkCombat.PIXEL) : Vec3.ZERO;
-                ArkFxDraw.trail(localTrail, frame, pose, scale, entity.kind() == ArkAttackEntity.Kind.NEEDLE, trailOffset);
+                CalamityTrail.trail(localTrail, frame, pose, scale, entity.kind() == ArkAttackEntity.Kind.NEEDLE, trailOffset);
                 if(entity.kind()==ArkAttackEntity.Kind.NEEDLE){
                     Vec3 at=local.add(trailOffset);float time=ArkFxDraw.time();
                     float[] color=ArkEffects.hsl(time*.6,.85);

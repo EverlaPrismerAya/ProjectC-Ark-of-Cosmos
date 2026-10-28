@@ -1,5 +1,11 @@
-package net.everla.projectc.arkofcosmos;
+package net.everla.projectc.arkofcosmos.combat;
 
+import net.everla.projectc.arkofcosmos.ArkOfCosmos;
+import net.everla.projectc.arkofcosmos.item.ArkItem;
+import net.everla.projectc.arkofcosmos.network.ArkNetwork;
+import net.everla.projectc.arkofcosmos.util.AttackFrame;
+import net.everla.projectc.arkofcosmos.entity.ArkAttackEntity;
+import net.everla.projectc.arkofcosmos.calamity.combat.ArkWeaponRules;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Entity;
@@ -27,21 +33,24 @@ import java.util.UUID;
 public final class ArkCombat {
     private ArkCombat() {}
     // Terraria damage remains proportional; this conversion changes no attack sequence or hit timing.
-    public static final float BASE_DAMAGE = 16f;
-    static float scaled(float damage, float multiplier) { return (int)(damage * (1700f / BASE_DAMAGE) * multiplier) / (1700f / BASE_DAMAGE); }
+    public static final float BASE_DAMAGE = ArkWeaponRules.BASE_DAMAGE;
+    public static float scaled(float damage, float multiplier) { return ArkWeaponRules.scaled(damage, multiplier); }
     public static final double PIXEL = 1d / 16, MAX_REACH = 760 * PIXEL;
     private static final Map<UUID, Controls> CONTROLS = new HashMap<>();
-    static final class Controls {
-        boolean left, right, alt, parried;
-        long invulnerableUntil, dashInvulnerableUntil;
+    public static final class Controls {
+        boolean left;
+        public boolean right, alt, parried;
+        long invulnerableUntil;
+        public long dashInvulnerableUntil;
         int parryCooldown, useCooldown, idleTicks;
         ItemStack parryStack = ItemStack.EMPTY;
     }
-    static Controls controls(Player player) { return CONTROLS.computeIfAbsent(player.getUUID(), k -> new Controls()); }
+    public static Controls controls(Player player) { return CONTROLS.computeIfAbsent(player.getUUID(), k -> new Controls()); }
+    public static int parryCooldown(Player player) { return controls(player).parryCooldown; }
     public static boolean holding(Player player) { return player.getMainHandItem().is(ArkOfCosmos.ARK_OF_COSMOS.get()); }
-    static boolean channeling(Player player) { return holding(player) && controls(player).left && player.isAlive() && !player.isSpectator(); }
+    public static boolean channeling(Player player) { return holding(player) && controls(player).left && player.isAlive() && !player.isSpectator(); }
 
-    static void input(ServerPlayer player, ArkNetwork.Input input) {
+    public static void input(ServerPlayer player, ArkNetwork.Input input) {
         Controls c = controls(player);
         boolean leftPress = input.left() && !c.left;
         c.left = holding(player) && input.left();
@@ -101,7 +110,7 @@ public final class ArkCombat {
         if (c.useCooldown > 0 || activeBlade(player)) return;
         ItemStack stack = player.getMainHandItem();
         int combo = Math.floorMod(stack.getOrCreateTag().getInt("ArkCombo"), 5);
-        int mode = combo == 4 ? 2 : combo % 2;
+        int mode = ArkWeaponRules.comboMode(combo);
         int charge = ArkItem.charge(stack);
         float damage = charge > 0 ? scaled(BASE_DAMAGE, 1.35f) : BASE_DAMAGE;
         AttackFrame frame = AttackFrame.capture(player);
@@ -127,7 +136,7 @@ public final class ArkCombat {
         } else if (now < c.dashInvulnerableUntil) event.setCanceled(true);
     }
 
-    static void parrySuccess(Player player) {
+    public static void parrySuccess(Player player) {
         Controls c = controls(player);
         if (c.parried) return;
         c.parried = true;
@@ -143,17 +152,17 @@ public final class ArkCombat {
         ArkOfCosmos.sound(player, "snap", 1.3f);
     }
 
-    static boolean canHit(Player owner, LivingEntity entity) {
+    public static boolean canHit(Player owner, LivingEntity entity) {
         return entity.isAlive() && entity != owner && !(entity instanceof Player) && !entity.isAlliedTo(owner)
                 && !entity.isInvulnerable() && !entity.isSpectator();
     }
-    static boolean enemy(Player owner, LivingEntity entity) {
+    public static boolean enemy(Player owner, LivingEntity entity) {
         if (!canHit(owner, entity)) return false;
         if (entity instanceof NeutralMob) return entity instanceof Mob mob && mob.getTarget() == owner;
         return entity instanceof Enemy || entity instanceof Mob mob && mob.getTarget() == owner;
     }
 
-    static LivingEntity nearest(Player player, Vec3 from, double radius) {
+    public static LivingEntity nearest(Player player, Vec3 from, double radius) {
         LivingEntity best = null;
         double distance = radius * radius;
         for (LivingEntity entity : player.level().getEntitiesOfClass(LivingEntity.class, new AABB(from, from).inflate(radius), e -> enemy(player, e))) {
@@ -163,7 +172,7 @@ public final class ArkCombat {
         return best;
     }
 
-    static Vec3 aim(Player player) {
+    public static Vec3 aim(Player player) {
         Vec3 origin = player.getEyePosition(), look = player.getLookAngle();
         LivingEntity best = null;
         double bestCos = Math.cos(Math.toRadians(12)), bestDistance = Double.MAX_VALUE;

@@ -1,4 +1,4 @@
-package net.everla.projectc.arkofcosmos;
+package net.everla.projectc.arkofcosmos.calamity.util;
 
 /** Attack curves transcribed from Calamity Team's local DLL; see reference/ATTACK-SPEC.md. */
 public final class ArkCurves {

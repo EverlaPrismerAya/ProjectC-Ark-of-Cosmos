@@ -77,20 +77,32 @@ ArkNetwork → ArkCombat → ArkAttackEntity
 
 Java 包：`net.everla.projectc.arkofcosmos`。
 
-| 文件／目录 | 职责 |
-| --- | --- |
-| `ArkOfCosmos.java` | 模组入口、物品／实体／音效注册、创造模式入口 |
-| `ArkItem.java` | 武器属性、充能与冷却数据、工具提示 |
-| `ArkCombat.java` | 玩家输入状态、连段发起、目标筛选、招架和充能 |
-| `ArkAttackEntity.java` | 六类攻击实体状态：刀刃、针弹、追踪弹、星链、招架和爆发；运动、命中和状态同步 |
-| `ArkCurves.java` | 攻击使用的分段缓动曲线 |
-| `AttackFrame.java`、`ArkGeometry.java` | 锁定平面、方向与攻击几何判定 |
-| `ArkNetwork.java` | 输入包和一次性效果包 |
-| `ArkClient.java` | 按键绑定、输入采集、显示事件和着色器注册 |
-| `ArkAttackRenderer.java` | 刀刃厚度、轮廓侧面、双刃开合与附着效果 |
-| `ArkEffects.java`、`ArkFxParticle.java` | 客户端效果调度与粒子生命周期 |
-| `ArkFxDraw.java` | 纹理绘制、混合状态、采样和拖尾几何 |
-| `src/test/java/` | 曲线／粒子数值检查与 Forge 综合 GameTest |
+按职责分类，灾厄派生实现额外放入 `calamity` 来源分区：
+
+```text
+arkofcosmos/
+├─ ArkOfCosmos.java          模组入口与注册
+├─ item/                    武器物品、NBT 与工具提示接入
+├─ entity/                  实体生命周期、同步、插值、附魔和冲刺碰撞
+├─ combat/                  Forge 战斗事件、玩家输入状态与目标选择
+├─ network/                 输入与特效数据包
+├─ client/                  按键、显示事件及客户端注册
+│  └─ render/               Minecraft / OpenGL 纹理与着色器绘制接口
+├─ util/                    三维攻击平面与几何工具
+└─ calamity/                Calamity 派生规则及其适配实现
+   ├─ combat/               武器连段规则、伤害换算、充能上限与提示配色
+   ├─ entity/               攻击阶段、运动、时序与命中规则
+   ├─ util/                 原攻击分段缓动曲线
+   └─ client/               刀刃绘制、粒子、震屏与拖尾算法
+```
+
+`entity.ArkAttackEntity` 继承 `calamity.entity.CalamityAttackEntity`：后者保存攻击模拟状态与派生算法，前者实现实体同步、实际伤害／附魔、特效发包和 Minecraft 冲刺碰撞。攻击仍按原有顺序执行子步、命中、寿命递减与快照采集。
+
+`client.render.ArkFxDraw` 提供纹理、混合状态和着色器绘制接口，灾厄拖尾采样与几何生成由 `calamity.client.CalamityTrail` 调用它完成。`client.ArkClient` 接收输入和 Forge 客户端事件，并调用灾厄效果实现。
+
+包名表示职责和主要来源，不是逐行许可声明。`calamity` 内仍有必要的 Minecraft 适配；`item`、`combat`、`entity` 等适配类仍保留部分派生参数和接入逻辑，不能据此将整个文件认定为纯原创 MIT。具体范围见 [许可范围说明](THIRD_PARTY_NOTICES.md)。注册 ID、NBT 字段、网络协议和资源路径不因 Java 包调整而改变。
+
+现有检查随包结构迁移至 `src/test/java/` 下对应的 `combat`、`calamity/util` 和 `calamity/client` 目录。
 
 ### 资源目录
 

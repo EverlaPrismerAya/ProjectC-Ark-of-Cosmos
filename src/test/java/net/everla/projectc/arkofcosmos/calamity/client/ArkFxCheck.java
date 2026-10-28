@@ -1,5 +1,7 @@
-package net.everla.projectc.arkofcosmos;
+package net.everla.projectc.arkofcosmos.calamity.client;
 
+import net.everla.projectc.arkofcosmos.util.AttackFrame;
+import net.everla.projectc.arkofcosmos.client.render.ArkFxDraw;
 import net.minecraft.world.phys.Vec3;
 
 /** Numerical source checkpoints, runnable without a window or GL context. */

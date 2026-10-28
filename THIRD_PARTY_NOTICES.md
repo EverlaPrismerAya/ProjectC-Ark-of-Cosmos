@@ -8,18 +8,25 @@
 
 本项目新增的 Minecraft／Forge 注册、网络通信、输入处理、NBT 状态管理、三维攻击平面、实体插值和渲染适配等原创部分，以 MIT 授权，版权所有者为 EverlaPrismerAya。
 
-以下文件含有根据 Calamity 原实现移植或改写的逻辑，因此不能将这些混合文件整体理解为无例外的 MIT 代码：
+代码按职责分包，并将可独立识别的灾厄派生实现集中到 `calamity/`。这次整理不改变原有许可，也不表示边界外的混合适配文件已完全脱离原作。
+
+以下路径相对于上述 Java 根目录：
 
 | 文件 | Calamity 来源／派生内容 |
 | --- | --- |
-| `ArkAttackEntity.java` | `ArkoftheCosmosSwungBlade`、`RendingNeedle`、`EonBolt`、`ArkoftheCosmosConstellation`、`ArkoftheCosmosParryHoldout`、`ArkoftheCosmosBlast` 的攻击阶段、运动、时序与判定逻辑 |
-| `ArkCombat.java`、`ArkItem.java` | `ArkoftheCosmos` 等原武器的连段、充能、倍率及描述行为；同时含本项目的 Minecraft 适配与机制修改 |
-| `ArkCurves.java` | 原攻击的分段曲线、参数及相关缓动实现 |
-| `ArkAttackRenderer.java` | 原刀刃的 PreDraw、开合、残影、smear、针弹与爆发绘制逻辑 |
-| `ArkEffects.java` | 原攻击的粒子生成条件、数量、参数与星链生成逻辑 |
-| `ArkFxParticle.java` | `GenericSparkle`、`CritSpark`、`FlareShine`、`HeavySmokeParticle`、`SquishyLightParticle`、`PulseRing`、`StrongBloom`、`GenericBloom`、`LineVFX`、`BloomLineVFX` 的更新与绘制逻辑 |
-| `ArkFxDraw.java` | `PrimitiveRenderer` 的拖尾采样、几何和纹理坐标逻辑；同时含本项目的 OpenGL／Minecraft 适配 |
-| `ArkClient.java` | 包含根据 `CalamityPlayer.ModifyScreenPosition` 适配的震屏行为及原武器的状态配色；其他内容包括本项目的客户端集成 |
+| `calamity/entity/CalamityAttackEntity.java` | `ArkoftheCosmosSwungBlade`、`RendingNeedle`、`EonBolt`、`ArkoftheCosmosConstellation`、`ArkoftheCosmosParryHoldout`、`ArkoftheCosmosBlast` 的攻击阶段、运动、时序与命中规则；包含必要的 Minecraft 单位及实体接口适配 |
+| `calamity/combat/ArkWeaponRules.java` | 原武器的连段模式、伤害换算、充能上限及工具提示配色；保留本项目已有的机制修改 |
+| `calamity/util/ArkCurves.java` | 原攻击的分段曲线、参数及相关缓动实现 |
+| `calamity/client/ArkAttackRenderer.java` | 原刀刃的 PreDraw、开合、残影、smear、针弹与爆发绘制逻辑；仍混有本项目的三维厚度与轮廓适配 |
+| `calamity/client/ArkEffects.java` | 原攻击的粒子生成条件、数量、参数、星链及根据 `CalamityPlayer.ModifyScreenPosition` 适配的震屏行为；仍包含客户端轨迹管理 |
+| `calamity/client/ArkFxParticle.java` | `GenericSparkle`、`CritSpark`、`FlareShine`、`HeavySmokeParticle`、`SquishyLightParticle`、`PulseRing`、`StrongBloom`、`GenericBloom`、`LineVFX`、`BloomLineVFX` 的更新与绘制逻辑及插值适配 |
+| `calamity/client/CalamityTrail.java` | `PrimitiveRenderer` 的拖尾采样、几何和纹理坐标逻辑及三维适配 |
+| `combat/ArkCombat.java`、`item/ArkItem.java` | Forge／物品接入；仍保留原武器的连段发起、充能、倍率、冷却、描述与状态行为，不能将整个混合文件理解为无例外的 MIT 代码 |
+| `entity/ArkAttackEntity.java` | Minecraft 实体生命周期、同步、插值、附魔与冲刺碰撞接入；仍保留攻击寿命初始化、子步调度、派生效果触发与已有附加伤害行为，不能将整个混合文件理解为无例外的 MIT 代码 |
+| `client/ArkClient.java` | 原武器状态条配色及显示参数的客户端接入；震屏算法已移至 `calamity/client/ArkEffects.java` |
+| `client/render/ArkFxDraw.java` | 本项目的 OpenGL／Minecraft 绘制适配，保留 XNA 混合与绘制语义；原拖尾算法已移至 `calamity/client/CalamityTrail.java` |
+
+`util/AttackFrame.java`、`util/ArkGeometry.java` 与 `network/ArkNetwork.java` 分别提供本项目的三维攻击平面、空间几何及 Forge 网络接入。来源分区便于维护与审阅，不应被用来将灾厄派生内容重新授权为 MIT，或把包含原创适配的派生文件整体视为第三方原文件。
 
 Calamity 来源的代码须保留 Calamity Team 署名及原条款。本项目只对新增原创部分作 MIT 授权，不声称取得了将原代码整体转授 MIT 的权利。原许可允许以源码作为开发参考，并要求对直接采用的代码署名；这不等于原项目采用 MIT。
 

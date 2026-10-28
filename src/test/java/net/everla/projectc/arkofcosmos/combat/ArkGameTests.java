@@ -1,5 +1,12 @@
-package net.everla.projectc.arkofcosmos;
+package net.everla.projectc.arkofcosmos.combat;
 
+import net.everla.projectc.arkofcosmos.calamity.util.ArkCurvesCheck;
+import net.everla.projectc.arkofcosmos.ArkOfCosmos;
+import net.everla.projectc.arkofcosmos.item.ArkItem;
+import net.everla.projectc.arkofcosmos.network.ArkNetwork;
+import net.everla.projectc.arkofcosmos.util.AttackFrame;
+import net.everla.projectc.arkofcosmos.util.ArkGeometry;
+import net.everla.projectc.arkofcosmos.entity.ArkAttackEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;

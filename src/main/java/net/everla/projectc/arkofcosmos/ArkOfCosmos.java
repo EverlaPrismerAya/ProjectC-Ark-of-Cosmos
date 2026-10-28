@@ -1,5 +1,8 @@
 package net.everla.projectc.arkofcosmos;
 
+import net.everla.projectc.arkofcosmos.item.ArkItem;
+import net.everla.projectc.arkofcosmos.network.ArkNetwork;
+import net.everla.projectc.arkofcosmos.entity.ArkAttackEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.entity.EntityType;
@@ -31,7 +34,7 @@ public final class ArkOfCosmos {
         for (String name : new String[]{"phoenix", "meaty", "item4", "item35", "item63", "item64", "item65", "item71", "item84", "crystal", "needle_death"})
             AUDIO.put(name, SOUNDS.register(name, () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(MOD_ID, name))));
     }
-    static void sound(net.minecraft.world.entity.Entity entity, String name, float volume) {
+    public static void sound(net.minecraft.world.entity.Entity entity, String name, float volume) {
         entity.level().playSound(null, entity.getX(), entity.getY(), entity.getZ(), AUDIO.get(name).get(), net.minecraft.sounds.SoundSource.PLAYERS, name.equals("item35") ? volume * .75f : volume, 1);
     }
     public static final RegistryObject<Item> ARK_OF_COSMOS = ITEMS.register("ark_of_cosmos",
