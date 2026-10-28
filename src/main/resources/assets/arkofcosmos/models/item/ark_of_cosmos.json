@@ -1,4 +1,8 @@
 {
   "parent": "minecraft:item/generated",
-  "textures": { "layer0": "arkofcosmos:item/ark_of_cosmos" }
+  "textures": { "layer0": "arkofcosmos:item/ark_of_cosmos" },
+  "display": {
+    "thirdperson_righthand": { "scale": [0, 0, 0] },
+    "thirdperson_lefthand": { "scale": [0, 0, 0] }
+  }
 }

@@ -23,7 +23,6 @@ public final class ArkClient {
     private ArkClient() {}
     private static boolean lastLeft, lastRight, lastAlt, wasHolding;
     private static int heartbeat;
-    private static net.minecraft.world.item.ItemStack hiddenThirdPersonStack = net.minecraft.world.item.ItemStack.EMPTY;
     private static final KeyMapping DASH = new KeyMapping("key.arkofcosmos.dash", KeyConflictContext.IN_GAME,
             InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_LEFT_ALT, "key.categories.arkofcosmos");
 
@@ -87,16 +86,7 @@ public final class ArkClient {
         if (mc.player != null && ArkCombat.holding(mc.player)) event.setCanceled(true);
     }
 
-    @SubscribeEvent public static void playerPre(RenderPlayerEvent.Pre event) {
-        if (!ArkCombat.holding(event.getEntity())) return;
-        hiddenThirdPersonStack = event.getEntity().getMainHandItem().copy();
-        event.getEntity().setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, net.minecraft.world.item.ItemStack.EMPTY);
-    }
     @SubscribeEvent public static void playerPost(RenderPlayerEvent.Post event) {
-        if (!hiddenThirdPersonStack.isEmpty()) {
-            event.getEntity().setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, hiddenThirdPersonStack);
-            hiddenThirdPersonStack = net.minecraft.world.item.ItemStack.EMPTY;
-        }
         if (!ArkCombat.holding(event.getEntity())) return;
         if (event.getEntity().level().getEntitiesOfClass(ArkAttackEntity.class, event.getEntity().getBoundingBox().inflate(64),
                 attack -> attack.ownerId() == event.getEntity().getId()).stream().findAny().isPresent()) return;
