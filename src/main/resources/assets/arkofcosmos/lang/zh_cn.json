@@ -3,7 +3,7 @@
   "advancements.arkofcosmos.fly_swatter.description": "使用鸿蒙方舟消灭一只苍蝇",
   "item.arkofcosmos.ark_of_cosmos": "鸿蒙方舟",
   "tooltip.arkofcosmos.controls": "左键进行一次五连斩，斩击以掷出剑刃结束\n掷出的剑刃会跟随你的光标\n在剑刃掷出时松开左键会释放爆炸剪击",
-  "tooltip.arkofcosmos.parry": "右键用剑刃向前方剪出\n剑刃击中敌人时会进行招架，并使你短暂无敌\n你也可以用剑刃格挡弹幕，并短暂使其伤害造成的伤害减少160点\n格挡后会获得16层充能，充能会强化普通攻击",
+  "tooltip.arkofcosmos.parry": "右键用剑刃向前方剪出\n剑刃击中敌人时会进行招架\n格挡能使自身免疫伤害\n格挡后会获得16层充能，充能会强化普通攻击",
   "message.arkofcosmos.parry": "§b格挡！",
   "tooltip.arkofcosmos.blast": "拥有充能时，按住【%1$s】并按下【%2$s】引发时空大撕裂，消耗全部充能\n若本次消耗至少5层充能，持续按住【%1$s】和【%2$s】直到剪合后即可向剪刀冲刺",
   "tooltip.arkofcosmos.flavor": "你的旅程的物理顶点，拥有着能使神明分崩离析的力量",
