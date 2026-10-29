@@ -1,6 +1,7 @@
 package net.everla.projectc.arkofcosmos.calamity.client;
 
 import net.everla.projectc.arkofcosmos.util.AttackFrame;
+import net.everla.projectc.arkofcosmos.client.render.OculusShaderCompat;
 import static net.everla.projectc.arkofcosmos.client.render.ArkFxDraw.*;
 import com.mojang.blaze3d.vertex.*;
 import org.joml.Matrix4f;
@@ -12,6 +13,12 @@ public final class CalamityTrail {
     /** PrimitiveRenderer.AssignPoints/AssignVertices/AssignIndicesRectangleTrail, including its end samples. */
     public static void trail(Vec3[] source, AttackFrame plane, PoseStack pose, float scale, boolean needle, Vec3 offset) {
         if(source.length<=4||trailShader==null)return;
+        Matrix4f trailMatrix = new Matrix4f(pose.last().pose());
+        if (OculusShaderCompat.defer(() -> drawTrail(source, plane, trailMatrix, scale, needle, offset))) return;
+        drawTrail(source, plane, trailMatrix, scale, needle, offset);
+    }
+
+    private static void drawTrail(Vec3[] source, AttackFrame plane, Matrix4f trailMatrix, float scale, boolean needle, Vec3 offset) {
         Vec3[] points=new Vec3[32]; points[0]=source[0].add(offset);points[31]=source[source.length-1].add(offset);
         for(int i=0;i<30;i++){
             double f=i/30d*(source.length-1);int n=(int)f;double t=f-n;
@@ -21,7 +28,7 @@ public final class CalamityTrail {
         }
         begin("scarletdevilstreak",Blend.ALPHA,true);
         BufferBuilder buffer=Tesselator.getInstance().getBuilder();buffer.begin(VertexFormat.Mode.TRIANGLES,FORMAT);
-        Matrix4f old=matrix;Vec3 oldCamera=camera;matrix=pose.last().pose();camera=Vec3.ZERO;
+        Matrix4f old=matrix;Vec3 oldCamera=camera;matrix=trailMatrix;camera=Vec3.ZERO;
         Vec3[][] edges=new Vec3[32][2];float[][] colors=new float[32][];float[] widths=new float[32];
         float now=time();
         for(int i=0;i<32;i++){

@@ -36,7 +36,7 @@ arkofcosmos/
 ├─ mixin/                   原版／Forge 接入与通用 ASM 血量守卫
 ├─ network/                 输入与特效数据包
 ├─ client/                  按键、显示事件及客户端注册
-│  └─ render/               Minecraft / OpenGL 纹理与着色器绘制接口
+│  └─ render/               纹理、着色器绘制与 Oculus 光影合成后特效通道
 ├─ util/                    三维攻击平面与几何工具
 └─ calamity/                Calamity 派生规则及其适配实现
    ├─ combat/               武器连段规则、伤害换算、充能上限与提示配色

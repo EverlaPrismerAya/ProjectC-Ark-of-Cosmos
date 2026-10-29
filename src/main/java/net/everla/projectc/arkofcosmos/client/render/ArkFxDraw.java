@@ -117,6 +117,8 @@ public final class ArkFxDraw {
     public static void sprite(String name, Vec3 position, AttackFrame plane, double angle, double sx, double sy,
                        double ox, double oy, float[] color, Blend blend, int rx, int ry, int rw, int rh) {
         if (color[3] <= 0 || sx == 0 || sy == 0) return;
+        if (OculusShaderCompat.defer(() -> sprite(name, position, plane, angle, sx, sy,
+                ox, oy, color, blend, rx, ry, rw, rh))) return;
         begin(name, blend, false);
         BufferBuilder buffer = Tesselator.getInstance().getBuilder();
         buffer.begin(VertexFormat.Mode.QUADS, FORMAT);

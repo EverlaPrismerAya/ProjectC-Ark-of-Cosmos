@@ -44,11 +44,6 @@ public final class ArkClient {
         send(left, right, alt, active);
     }
 
-    @SubscribeEvent public static void effects(net.minecraftforge.client.event.RenderLevelStageEvent event) {
-        if(event.getStage()!=net.minecraftforge.client.event.RenderLevelStageEvent.Stage.AFTER_PARTICLES)return;
-        if(Minecraft.getInstance().level==null)return;
-        ArkEffects.render(event.getPoseStack(),event.getCamera().getPosition(),event.getPartialTick());
-    }
     @SubscribeEvent public static void camera(net.minecraftforge.client.event.ViewportEvent.ComputeCameraAngles event) {
         ArkEffects.camera(event.getCamera());
     }

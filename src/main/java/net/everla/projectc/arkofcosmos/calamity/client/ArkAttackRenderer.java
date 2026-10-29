@@ -125,7 +125,7 @@ public final class ArkAttackRenderer extends EntityRenderer<ArkAttackEntity> {
                 Sprite sprite = entity.kind() == ArkAttackEntity.Kind.NEEDLE ? NEEDLE : BOLT;
                 sprite(pose, buffers, flight, local, sprite, Math.PI / 2, scale, scale, sprite.width / 2d, sprite.height / 2d, 1, 15728880);
             }
-            case CHAIN -> { /* Original particle list is simulated at 60 Hz and drawn in AFTER_PARTICLES. */ }
+            case CHAIN -> { /* The 60 Hz particle list is drawn in the shared world-effects pass. */ }
             case PARRY -> {
                 float progress = (16 - entity.renderLeft(partial)) / 15f;
                 float close = ArkCurves.parryClose(progress);
