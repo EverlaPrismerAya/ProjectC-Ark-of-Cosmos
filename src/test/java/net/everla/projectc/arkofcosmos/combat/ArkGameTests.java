@@ -28,6 +28,53 @@ import java.util.List;
 @GameTestHolder(ArkOfCosmos.MOD_ID)
 @PrefixGameTestTemplate(false)
 public final class ArkGameTests {
+    @GameTest(template = "empty", timeoutTicks = 20)
+    public static void externalClearing(GameTestHelper helper) {
+        TestPlayer player = new TestPlayer(helper);
+        helper.getLevel().addNewPlayer(player);
+        player.setGameMode(GameType.SURVIVAL);
+        player.setPos(helper.absoluteVec(new Vec3(1, 24, 1)));
+        player.setYRot(0); player.setXRot(0);
+        AttackFrame frame = AttackFrame.capture(player);
+        Vec3 center = player.getBoundingBox().getCenter();
+        for (ArkAttackEntity.Kind kind : ArkAttackEntity.Kind.values()) {
+            ArkAttackEntity attack = ArkAttackEntity.create(player, kind, 0, 0, 0,
+                    center, frame.forward().scale(.5), frame);
+            for (int tick = 0; tick < 100 && !attack.isRemoved(); tick++) {
+                attack.discard();
+                attack.remove(net.minecraft.world.entity.Entity.RemovalReason.DISCARDED);
+                helper.assertFalse(attack.isRemoved(), "External clearing erased " + kind);
+                attack.tick();
+            }
+            helper.assertTrue(attack.isRemoved(), "Clearing resistance prevented expiry: " + kind);
+        }
+        var target = new ArkDamageGameTests.GuardedPig(helper);
+        target.setPos(center.add(frame.forward().scale(2)));
+        helper.getLevel().addFreshEntity(target);
+        ArkAttackEntity bolt = ArkAttackEntity.create(player, ArkAttackEntity.Kind.BOLT, 0, 0, 7,
+                target.getBoundingBox().getCenter(), Vec3.ZERO, frame);
+        bolt.discard();
+        bolt.tick();
+        helper.assertTrue(target.getHealth() <= 93, "Clearing prevented damage to an invulnerable target");
+        helper.assertTrue(bolt.isRemoved(), "Bolt failed to end after hitting");
+        ArkAttackEntity cancelled = ArkAttackEntity.create(player, ArkAttackEntity.Kind.BOLT, 0, 0, 0,
+                center, Vec3.ZERO, frame);
+        cancelled.discardAttack();
+        helper.assertTrue(cancelled.isRemoved(), "Explicit attack cancellation was blocked");
+        ArkAttackEntity unloaded = ArkAttackEntity.create(player, ArkAttackEntity.Kind.BOLT, 0, 0, 0,
+                center, Vec3.ZERO, frame);
+        unloaded.remove(net.minecraft.world.entity.Entity.RemovalReason.UNLOADED_TO_CHUNK);
+        helper.assertTrue(unloaded.isRemoved(), "Chunk unload was blocked");
+        ArkAttackEntity orphan = ArkAttackEntity.create(player, ArkAttackEntity.Kind.BOLT, 0, 0, 0,
+                center, Vec3.ZERO, frame);
+        player.setGameMode(GameType.SPECTATOR);
+        orphan.tick();
+        helper.assertTrue(orphan.isRemoved(), "Invalid owner left an orphan attack");
+        clear(player);
+        player.discard();
+        helper.succeed();
+    }
+
     @GameTest(template = "empty", timeoutTicks = 100)
     public static void attacks(GameTestHelper helper) {
         ArkCurvesCheck.main(new String[0]);
@@ -396,7 +443,7 @@ public final class ArkGameTests {
         ArkAttackEntity blast = ArkAttackEntity.create(player, ArkAttackEntity.Kind.BLAST, 0, 5, 0,
                 player.getBoundingBox().getCenter().add(frame.forward().scale(90 * ArkCombat.PIXEL)), Vec3.ZERO, frame);
         for (int i = 0; i < 9; i++) blast.tick(); // The dash passes its charge/key check at substep 26.
-        if (removeMidDash) blast.discard();
+        if (removeMidDash) blast.discardAttack();
         helper.assertTrue(attacks(player, ArkAttackEntity.Kind.BOLT).size() == 5,
                 "An accepted dash must emit five bolts even when interrupted by ground or removal");
         for (int i = 0; i < 24 && !blast.isRemoved(); i++) blast.tick();
@@ -424,6 +471,6 @@ public final class ArkGameTests {
         return player.level().getEntitiesOfClass(ArkAttackEntity.class, player.getBoundingBox().inflate(128), a -> a.ownerId() == player.getId() && a.kind() == kind);
     }
     private static void clear(ServerPlayer player) {
-        player.level().getEntitiesOfClass(ArkAttackEntity.class, player.getBoundingBox().inflate(128), a -> a.ownerId() == player.getId()).forEach(ArkAttackEntity::discard);
+        player.level().getEntitiesOfClass(ArkAttackEntity.class, player.getBoundingBox().inflate(128), a -> a.ownerId() == player.getId()).forEach(ArkAttackEntity::discardAttack);
     }
 }

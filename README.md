@@ -21,7 +21,6 @@
 /give @s arkofcosmos:ark_of_cosmos
 ```
 
-
 ### 代码目录
 
 Java 包：`net.everla.projectc.arkofcosmos`。
@@ -33,7 +32,8 @@ arkofcosmos/
 ├─ ArkOfCosmos.java          模组入口与注册
 ├─ item/                    武器物品、NBT 与工具提示接入
 ├─ entity/                  实体生命周期、同步、插值、附魔和冲刺碰撞
-├─ combat/                  Forge 战斗事件、玩家输入状态与目标选择
+├─ combat/                  战斗事件、输入状态、目标选择、独立血量与死亡结算
+├─ mixin/                   原版／Forge 接入与通用 ASM 血量守卫
 ├─ network/                 输入与特效数据包
 ├─ client/                  按键、显示事件及客户端注册
 │  └─ render/               Minecraft / OpenGL 纹理与着色器绘制接口
@@ -60,7 +60,8 @@ arkofcosmos/
 | `models/item/` | 物品模型定义 |
 | `lang/` | 简体中文和英文名称、说明、按键名称 |
 | `src/main/resources/data/` | 剑与工具分类标签 |
-| `META-INF/accesstransformer.cfg` | 摄像机平移震屏所需的访问配置 |
+| `META-INF/accesstransformer.cfg` | 摄像机平移与玩家击杀归属字段的访问配置 |
+| `src/main/resources/arkofcosmos.mixins.json` | Mixin 配置与 ASM 启动插件入口 |
 
 素材逐项来源与散列记录见 [资源清单](licenses/RESOURCE-SOURCES.json)。清单只记录来源与文件对应关系，不授予第三方素材的使用或再分发许可。
 

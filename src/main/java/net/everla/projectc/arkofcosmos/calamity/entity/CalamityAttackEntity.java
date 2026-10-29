@@ -51,6 +51,7 @@ public abstract class CalamityAttackEntity extends Entity {
     protected abstract void sweep(Player owner, LivingEntity primary, float amount, int cooldown);
     protected abstract void effect(String event, Vec3 at);
     protected abstract void advanceDash(Player owner);
+    public abstract void discardAttack();
 
     protected void blade(Player owner) {
         Vec3 center = owner.getBoundingBox().getCenter();
@@ -120,7 +121,7 @@ public abstract class CalamityAttackEntity extends Entity {
         velocity = velocity.scale(1 - Math.pow(timer / 30, 3) * .3);
         rotation = (float)frame.angle(velocity);
         setPos(position().add(velocity));
-        if (velocity.length() < ArkCombat.PIXEL) discard();
+        if (velocity.length() < ArkCombat.PIXEL) discardAttack();
     }
 
     protected void bolt(Player owner) {
@@ -234,7 +235,7 @@ public abstract class CalamityAttackEntity extends Entity {
             hits++;
             if (attackKind == Kind.PARRY) ArkCombat.parrySuccess(owner);
             if (attackKind == Kind.BLADE && mode == 3) level().playSound(null, blockPosition(), ArkOfCosmos.SNAP.get(), SoundSource.PLAYERS, 1.3f, 1);
-            if (attackKind == Kind.BOLT || attackKind == Kind.NEEDLE && hits >= 3) { discard(); return; }
+            if (attackKind == Kind.BOLT || attackKind == Kind.NEEDLE && hits >= 3) { discardAttack(); return; }
         }
     }
 
@@ -274,7 +275,7 @@ public abstract class CalamityAttackEntity extends Entity {
 
     protected void finish(Player owner) {
         if (dashing) { owner.setDeltaMovement(owner.getDeltaMovement().scale(.1)); owner.hurtMarked = true; }
-        discard();
+        discardAttack();
     }
 
 }

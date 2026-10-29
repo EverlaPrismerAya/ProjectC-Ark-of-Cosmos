@@ -1,0 +1,9 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "net.everla.projectc.arkofcosmos.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "plugin": "net.everla.projectc.arkofcosmos.mixin.ArkMixinPlugin",
+  "mixins": ["LivingEntityMixin", "ForgeHooksMixin"],
+  "injectors": {"defaultRequire": 1}
+}

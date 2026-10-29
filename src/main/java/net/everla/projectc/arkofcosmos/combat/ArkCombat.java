@@ -153,8 +153,8 @@ public final class ArkCombat {
     }
 
     public static boolean canHit(Player owner, LivingEntity entity) {
-        return entity.isAlive() && entity != owner && !(entity instanceof Player) && !entity.isAlliedTo(owner)
-                && !entity.isInvulnerable() && !entity.isSpectator();
+        return entity.isAlive() && entity != owner && !entity.isAlliedTo(owner)
+                && !ArkDamage.protectedPlayer(entity) && !entity.isSpectator();
     }
     public static boolean enemy(Player owner, LivingEntity entity) {
         if (!canHit(owner, entity)) return false;

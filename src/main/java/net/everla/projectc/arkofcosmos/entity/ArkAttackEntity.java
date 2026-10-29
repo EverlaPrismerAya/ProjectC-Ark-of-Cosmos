@@ -23,6 +23,7 @@ import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.item.enchantment.SweepingEdgeEnchantment;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.damagesource.DamageSource;
+import net.everla.projectc.arkofcosmos.combat.ArkDamage;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.NetworkHooks;
@@ -36,6 +37,7 @@ public final class ArkAttackEntity extends CalamityAttackEntity {
     private int ownerEntityId;
     private Vec3 dashStart, dashPosition, dashTarget;
     private boolean dashNeedsSync;
+    private boolean endingAttack;
     private net.minecraft.nbt.ListTag samples = new net.minecraft.nbt.ListTag();
     private CompoundTag clientSnapshot = new CompoundTag();
 
@@ -150,7 +152,7 @@ public final class ArkAttackEntity extends CalamityAttackEntity {
             return;
         }
         Player owner = ownerUuid == null ? null : level().getPlayerByUUID(ownerUuid);
-        if (owner == null || !owner.isAlive() || owner.isSpectator()) { discard(); return; }
+        if (owner == null || !owner.isAlive() || owner.isSpectator()) { discardAttack(); return; }
         samples = new net.minecraft.nbt.ListTag();
         samples.add(sample());
         for (int i = 0, count = attackKind == Kind.BLADE ? 6 : 3; i < count && !isRemoved(); i++) {
@@ -178,16 +180,14 @@ public final class ArkAttackEntity extends CalamityAttackEntity {
     }
 
     @Override protected boolean hurtTarget(Player owner, LivingEntity target, float amount, double sweepKnockback) {
+        if (ArkDamage.protectedPlayer(target)) return false;
         int fire = weapon.getEnchantmentLevel(Enchantments.FIRE_ASPECT);
         boolean startedFire = fire > 0 && !target.isOnFire();
         // As in Player.attack, ignite before lethal damage so fire-aspect kills cook drops.
         if (startedFire) target.setSecondsOnFire(1);
-        int oldImmunity = target.invulnerableTime;
-        target.invulnerableTime = 0;
         DamageSource source = new DamageSource(damageSources().playerAttack(owner).typeHolder(), this, owner);
-        applyArcOfCosmosDamage(target, source, amount);
-        boolean hurt = target.hurt(source, amount);
-        target.invulnerableTime = Math.max(oldImmunity, target.invulnerableTime);
+        boolean bonusHit = applyArcOfCosmosDamage(target, source, amount);
+        boolean hurt = ArkDamage.hurt(target, source, amount) || bonusHit;
         if (!hurt) {
             if (startedFire) target.clearFire();
             return false;
@@ -209,14 +209,10 @@ public final class ArkAttackEntity extends CalamityAttackEntity {
     }
 
     /** Applies the ArcOfCosmos one-third chance for an additional half-damage hit. */
-    private void applyArcOfCosmosDamage(LivingEntity target, DamageSource source, float amount) {
-        if (target instanceof Player player && player.isCreative()) return;
-        if (target.getRandom().nextInt(3) == 0) {
-            int oldInvulnerability = target.invulnerableTime;
-            target.invulnerableTime = 0;
-            target.hurt(source, amount * .5f);
-            target.invulnerableTime = Math.max(oldInvulnerability, target.invulnerableTime);
-        }
+    private boolean applyArcOfCosmosDamage(LivingEntity target, DamageSource source, float amount) {
+        return !ArkDamage.protectedPlayer(target)
+                && target.getRandom().nextInt(3) == 0
+                && ArkDamage.hurt(target, source, amount * .5f);
     }
 
     private static void postAttack(ItemStack stack, Player owner, LivingEntity target) {
@@ -239,7 +235,19 @@ public final class ArkAttackEntity extends CalamityAttackEntity {
         }
     }
 
+    @Override public void discardAttack() {
+        endingAttack = true;
+        try { discard(); }
+        finally { endingAttack = false; }
+    }
+
     @Override public void remove(RemovalReason reason) {
+        // External entity-clearing auras must not erase an attack before it can hit.
+        // Internal completion and other removal reasons retain their normal lifecycle.
+        if (!level().isClientSide && reason == RemovalReason.DISCARDED && !endingAttack && left > 0) {
+            Player owner = ownerUuid == null ? null : level().getPlayerByUUID(ownerUuid);
+            if (owner != null && owner.isAlive() && !owner.isSpectator()) return;
+        }
         if (!isRemoved() && !level().isClientSide) {
             Player owner = ownerUuid == null ? null : level().getPlayerByUUID(ownerUuid);
             if (owner != null) completeDash(owner);
@@ -323,7 +331,7 @@ public final class ArkAttackEntity extends CalamityAttackEntity {
         entityData.set(VIEW, tag);
     }
 
-    @Override protected void readAdditionalSaveData(CompoundTag tag) { discard(); }
+    @Override protected void readAdditionalSaveData(CompoundTag tag) { discardAttack(); }
     @Override protected void addAdditionalSaveData(CompoundTag tag) {}
     @Override public boolean shouldRenderAtSqrDistance(double distance) { return distance < 256 * 256; }
     @Override public Packet<ClientGamePacketListener> getAddEntityPacket() { return NetworkHooks.getEntitySpawningPacket(this); }
