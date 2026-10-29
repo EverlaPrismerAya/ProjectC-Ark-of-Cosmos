@@ -32,13 +32,13 @@ public final class ArkGameTests {
     public static void attacks(GameTestHelper helper) {
         ArkCurvesCheck.main(new String[0]);
         geometry(helper);
-        ServerPlayer player = new net.minecraftforge.common.util.FakePlayer(helper.getLevel(),
-                new com.mojang.authlib.GameProfile(java.util.UUID.randomUUID(), "ArkRegression")) {
-            @Override public void teleportTo(double x, double y, double z) { setPos(x, y, z); }
-        };
+        TestPlayer player = new TestPlayer(helper);
         helper.getLevel().addNewPlayer(player);
         player.setGameMode(GameType.SURVIVAL);
         Vec3 start = Vec3.atBottomCenterOf(helper.absolutePos(new BlockPos(1, 24, 1)));
+        // Interrupted runs can leave distant targets outside the template's cleanup bounds.
+        helper.getLevel().getEntitiesOfClass(net.minecraft.world.entity.Mob.class, new AABB(start, start).inflate(128))
+                .forEach(net.minecraft.world.entity.Entity::discard);
         player.setPos(start);
         player.setYRot(0); player.setXRot(0); player.setNoGravity(true);
         player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(ArkOfCosmos.ARK_OF_COSMOS.get()));
@@ -237,6 +237,8 @@ public final class ArkGameTests {
         // A clear destination allows crossing a wall; a blocked destination must not.
         dash(helper, player, start, frame, true);
         dash(helper, player, start, frame, false);
+        movingDash(helper, player, start, frame);
+        dashBolts(helper, player, start, frame);
         clear(player);
         player.discard();
         helper.succeed();
@@ -277,6 +279,9 @@ public final class ArkGameTests {
             blast.tick();
         }
         obstruction.discard();
+        helper.assertTrue(attacks(player, ArkAttackEntity.Kind.BOLT).size() == (clearEnd ? 5 : 0),
+                "Dash completion/block collision emitted the wrong number of bolts");
+        clear(player);
         player.setShiftKeyDown(false);
         helper.assertTrue(clearEnd ? player.getZ() > wall.getZ() + 1 : player.getZ() > start.z + 10 && player.getZ() < wall.getZ(),
                 (clearEnd ? "Clear endpoint did not allow dash through intermediate wall" : "Blocked endpoint allowed dash through wall")
@@ -285,6 +290,85 @@ public final class ArkGameTests {
             helper.getLevel().setBlockAndUpdate(wall.above(y), Blocks.AIR.defaultBlockState());
             helper.getLevel().setBlockAndUpdate(end.above(y), Blocks.AIR.defaultBlockState());
         }
+    }
+
+    private static final class TestPlayer extends net.minecraftforge.common.util.FakePlayer {
+        int teleports;
+        TestPlayer(GameTestHelper helper) {
+            super(helper.getLevel(), new com.mojang.authlib.GameProfile(java.util.UUID.randomUUID(), "ArkRegression"));
+        }
+        @Override public void teleportTo(double x, double y, double z) {
+            teleports++;
+            setPos(x, y, z);
+        }
+    }
+
+    private static void movingDash(GameTestHelper helper, TestPlayer player, Vec3 start, AttackFrame frame) {
+        clear(player);
+        player.setPos(start);
+        ArkCombat.controls(player).alt = ArkCombat.controls(player).right = true;
+        ArkAttackEntity blast = ArkAttackEntity.create(player, ArkAttackEntity.Kind.BLAST, 0, 5, 0,
+                player.getBoundingBox().getCenter().add(frame.forward().scale(90 * ArkCombat.PIXEL)), Vec3.ZERO, frame);
+        Vec3 dashStart = null;
+        for (int i = 0; i < 24 && attacks(player, ArkAttackEntity.Kind.BOLT).isEmpty(); i++) {
+            // Model actual position changes from walking packets, not only an unused velocity.
+            player.setPos(player.position().add(.2, 0, -.2));
+            player.setDeltaMovement(new Vec3(.2, 0, -.2));
+            if (i == 8) dashStart = player.getBoundingBox().getCenter();
+            int oldTeleports = player.teleports;
+            blast.tick();
+            helper.assertTrue(player.teleports - oldTeleports <= 1, "Dash sent multiple teleport corrections in one tick");
+            if (i >= 8 && attacks(player, ArkAttackEntity.Kind.BOLT).isEmpty()) {
+                Vec3 path = start.add(0, 0, 45.625).add(0, player.getBbHeight() / 2, 0).subtract(dashStart);
+                Vec3 offset = player.getBoundingBox().getCenter().subtract(dashStart);
+                helper.assertTrue(offset.cross(path).length() < 1e-5, "Walking redirected the authoritative dash path");
+            }
+        }
+        helper.assertTrue(player.position().distanceTo(start.add(0, 0, 45.625)) < 1e-5,
+                "Moving player did not complete dash at the locked endpoint");
+        List<ArkAttackEntity> bolts = attacks(player, ArkAttackEntity.Kind.BOLT);
+        helper.assertTrue(bolts.size() == 5, "Moving dash did not emit five bolts");
+        Vec3 pathStart = dashStart;
+        bolts.sort(java.util.Comparator.comparingDouble(bolt -> bolt.position().distanceToSqr(pathStart)));
+        for (int i = 0; i < bolts.size(); i++) {
+            Vec3 expected = dashStart.lerp(player.getBoundingBox().getCenter(), (i + .5) / 5d);
+            helper.assertTrue(bolts.get(i).position().distanceTo(expected) < 1e-5, "Moving dash bolts were not evenly distributed");
+        }
+        clear(player);
+    }
+
+    private static void dashBolts(GameTestHelper helper, ServerPlayer player, Vec3 start, AttackFrame frame) {
+        clear(player);
+        player.setPos(start);
+        ArkCombat.controls(player).alt = ArkCombat.controls(player).right = true;
+        LivingEntity warden = EntityType.WARDEN.create(helper.getLevel());
+        warden.setPos(start.add(0, 0, 45.625 / 2));
+        warden.setNoGravity(true);
+        ((net.minecraft.world.entity.Mob)warden).setNoAi(true);
+        helper.getLevel().addFreshEntity(warden);
+        ArkAttackEntity blast = ArkAttackEntity.create(player, ArkAttackEntity.Kind.BLAST, 0, 5,
+                ArkCombat.scaled(ArkCombat.BASE_DAMAGE, 5 * 1.35f * .5f),
+                player.getBoundingBox().getCenter().add(frame.forward().scale(90 * ArkCombat.PIXEL)), Vec3.ZERO, frame);
+
+        for (int i = 0; i < 24 && attacks(player, ArkAttackEntity.Kind.BOLT).isEmpty(); i++) blast.tick();
+        helper.assertTrue(warden.getHealth() < warden.getMaxHealth(), "Dash blast did not hit the Warden");
+        List<ArkAttackEntity> bolts = attacks(player, ArkAttackEntity.Kind.BOLT);
+        helper.assertTrue(bolts.size() == 5, "Completed dash must spawn exactly five bolts");
+        bolts.sort(java.util.Comparator.comparingDouble(bolt -> bolt.position().distanceToSqr(start)));
+        for (int i = 0; i < bolts.size(); i++) {
+            Vec3 expected = start.add(0, player.getBbHeight() / 2, 45.625 * (i + .5) / 5d);
+            helper.assertTrue(bolts.get(i).position().distanceTo(expected) < 1e-5, "Dash bolts must be evenly spaced along its path");
+        }
+        bolts.forEach(ArkAttackEntity::tick);
+        helper.assertTrue(attacks(player, ArkAttackEntity.Kind.BOLT).size() == 5,
+                "Dash bolts were consumed inside the Warden during launch: " + attacks(player, ArkAttackEntity.Kind.BOLT).size());
+        for (int i = 0; i < 24 && !blast.isRemoved(); i++) blast.tick();
+        helper.assertTrue(attacks(player, ArkAttackEntity.Kind.BOLT).size() == 5, "Completed dash emitted bolts more than once");
+        float healthAfterBlast = warden.getHealth();
+        for (int i = 0; i < 34; i++) attacks(player, ArkAttackEntity.Kind.BOLT).forEach(ArkAttackEntity::tick);
+        helper.assertTrue(warden.getHealth() < healthAfterBlast, "Dash bolts never regained collision after leaving the Warden");
+        warden.discard();
+        clear(player);
     }
 
     private static void geometry(GameTestHelper helper) {

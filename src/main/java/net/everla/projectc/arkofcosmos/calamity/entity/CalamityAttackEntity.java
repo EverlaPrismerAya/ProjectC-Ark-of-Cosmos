@@ -20,6 +20,8 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.Map;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +43,7 @@ public abstract class CalamityAttackEntity extends Entity {
     protected float snapStartRotation;
     protected boolean missed, chainCreated, dashing, dashStarted, snapChargeGranted;
     protected final Map<Integer, Integer> immunity = new HashMap<>();
+    private final Set<Integer> launchOverlaps = new HashSet<>();
 
     protected CalamityAttackEntity(EntityType<?> type, Level level) { super(type, level); }
 
@@ -134,6 +137,11 @@ public abstract class CalamityAttackEntity extends Entity {
         }
         rotation = (float)frame.angle(velocity);
         setPos(position().add(velocity));
+        // A dash can finish inside a mob. Let its bolts leave that mob before they can hit it.
+        launchOverlaps.removeIf(id -> {
+            Entity target = level().getEntity(id);
+            return target == null || !collides(target.getBoundingBox(), owner);
+        });
     }
 
     protected void chain(Player owner) {
@@ -167,10 +175,20 @@ public abstract class CalamityAttackEntity extends Entity {
         advanceDash(owner);
     }
 
-    protected void spawnBolt(Player owner, Vec3 position, Vec3 velocity, float multiplier, float strength) {
+    protected CalamityAttackEntity spawnBolt(Player owner, Vec3 position, Vec3 velocity, float multiplier, float strength) {
         CalamityAttackEntity bolt = ArkAttackEntity.create(owner, Kind.BOLT, 0, 0, truncateDamage(multiplier), position, velocity, frame);
         bolt.weapon = weapon.copy();
         bolt.homing = strength;
+        return bolt;
+    }
+    protected void spawnDashBolts(Player owner, Vec3 start, Vec3 end) {
+        for (int i = 0; i < 5; i++) {
+            CalamityAttackEntity bolt = spawnBolt(owner, start.lerp(end, (i + .5) / 5d),
+                    frame.direction(random.nextDouble() * Math.PI * 2).scale(28 * ArkCombat.PIXEL), .2f, .21991149f);
+            for (LivingEntity target : level().getEntitiesOfClass(LivingEntity.class, bolt.getBoundingBox().inflate(1)))
+                if (ArkCombat.canHit(owner, target) && bolt.collides(target.getBoundingBox(), owner))
+                    bolt.launchOverlaps.add(target.getId());
+        }
     }
     protected float truncateDamage(float multiplier) { return ArkCombat.scaled(damage, multiplier); }
 
@@ -189,7 +207,7 @@ public abstract class CalamityAttackEntity extends Entity {
                 if (entity instanceof LivingEntity living && ArkCombat.canHit(owner, living)) targets.add(living);
         } else targets = level().getEntitiesOfClass(LivingEntity.class, search, e -> ArkCombat.canHit(owner, e));
         for (LivingEntity target : targets) {
-            if (steps < immunity.getOrDefault(target.getId(), -1) || !collides(target.getBoundingBox(), owner)) continue;
+            if (launchOverlaps.contains(target.getId()) || steps < immunity.getOrDefault(target.getId(), -1) || !collides(target.getBoundingBox(), owner)) continue;
             int cooldown = switch (attackKind) {
                 case BLADE -> mode == 3 ? 35 : mode == 2 ? 10 : mode == 1 ? 8 : 35;
                 case CHAIN -> 15;

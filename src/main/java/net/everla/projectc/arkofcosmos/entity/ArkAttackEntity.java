@@ -34,6 +34,8 @@ public final class ArkAttackEntity extends CalamityAttackEntity {
     private static final EntityDataAccessor<CompoundTag> VIEW = SynchedEntityData.defineId(ArkAttackEntity.class, EntityDataSerializers.COMPOUND_TAG);
     private UUID ownerUuid;
     private int ownerEntityId;
+    private Vec3 dashStart, dashPosition, dashTarget;
+    private boolean dashNeedsSync;
     private net.minecraft.nbt.ListTag samples = new net.minecraft.nbt.ListTag();
     private CompoundTag clientSnapshot = new CompoundTag();
 
@@ -167,6 +169,11 @@ public final class ArkAttackEntity extends CalamityAttackEntity {
             samples.add(sample());
             if (left <= 0) finish(owner);
         }
+        // Synchronize once after all simulation substeps, so moving clients receive one correction per tick.
+        if (dashNeedsSync && owner instanceof ServerPlayer server) {
+            server.teleportTo(owner.getX(), owner.getY(), owner.getZ());
+            dashNeedsSync = false;
+        }
         if (!isRemoved()) publish();
     }
 
@@ -255,20 +262,29 @@ public final class ArkAttackEntity extends CalamityAttackEntity {
         ArkNetwork.effect(this, tag);
     }
     @Override protected void advanceDash(Player owner) {
-        if (!dashing || !(owner instanceof ServerPlayer server)) return;
-        Vec3 feetTarget = aim.subtract(0, owner.getBbHeight() / 2, 0);
-        Vec3 offset = feetTarget.subtract(owner.position());
+        if (!dashing || !(owner instanceof ServerPlayer)) return;
+        if (dashPosition == null) {
+            dashStart = owner.getBoundingBox().getCenter();
+            dashPosition = owner.position();
+            dashTarget = aim.subtract(0, owner.getBbHeight() / 2, 0);
+        }
+        // Walking packets and external movement must not redirect an active dash.
+        Vec3 feetTarget = dashTarget;
+        Vec3 offset = feetTarget.subtract(dashPosition);
         double distance = offset.length();
         Vec3 movement = offset.normalize().scale(Math.min(60 * ArkCombat.PIXEL, distance));
-        AABB destinationBox = owner.getBoundingBox().move(offset).deflate(1e-5);
+        AABB dashBox = owner.getBoundingBox().move(dashPosition.subtract(owner.position()));
+        AABB destinationBox = dashBox.move(offset).deflate(1e-5);
         boolean clearDestination = level().getBlockCollisions(owner, destinationBox).iterator().hasNext() == false;
-        Vec3 before = owner.position();
-        if (clearDestination) server.teleportTo(owner.getX() + movement.x, owner.getY() + movement.y, owner.getZ() + movement.z);
+        Vec3 before = dashPosition;
+        if (clearDestination) dashPosition = before.add(movement);
         else {
             // Dash collision considers blocks only: sneaking and entities must not stop it.
-            Vec3 allowed = Entity.collideBoundingBox(owner, movement, owner.getBoundingBox(), level(), java.util.List.of());
-            server.teleportTo(before.x + allowed.x, before.y + allowed.y, before.z + allowed.z);
+            Vec3 allowed = Entity.collideBoundingBox(owner, movement, dashBox, level(), java.util.List.of());
+            dashPosition = before.add(allowed);
         }
+        owner.setPos(dashPosition);
+        dashNeedsSync = true;
         owner.fallDistance = 0;
         // Position is advanced at the original 60 Hz, not multiplied again by vanilla movement.
         owner.setDeltaMovement(Vec3.ZERO);
@@ -279,9 +295,12 @@ public final class ArkAttackEntity extends CalamityAttackEntity {
             dashing = false;
             if (reached) {
                 ArkOfCosmos.sound(this, "meaty", 1);
-                if (clearDestination) server.teleportTo(feetTarget.x, feetTarget.y, feetTarget.z);
+                if (clearDestination) {
+                    dashPosition = feetTarget;
+                    owner.setPos(dashPosition);
+                }
                 owner.setDeltaMovement(offset.normalize().scale(60 * ArkCombat.PIXEL * 3 * .1));
-                for (int i = 0; i < 5; i++) spawnBolt(owner, owner.getBoundingBox().getCenter(), frame.direction(random.nextDouble() * Math.PI * 2).scale(28 * ArkCombat.PIXEL), .2f, .21991149f);
+                spawnDashBolts(owner, dashStart, owner.getBoundingBox().getCenter());
             }
         }
     }
