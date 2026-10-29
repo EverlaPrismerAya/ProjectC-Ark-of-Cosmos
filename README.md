@@ -59,9 +59,13 @@ arkofcosmos/
 | `sounds/`、`sounds.json` | 音频文件与音效事件映射 |
 | `models/item/` | 物品模型定义 |
 | `lang/` | 简体中文和英文名称、说明、按键名称 |
-| `src/main/resources/data/` | 剑与工具分类标签 |
+| `src/main/resources/data/` | 剑与工具分类标签、实体伤害与死亡兼容标签 |
 | `META-INF/accesstransformer.cfg` | 摄像机平移与玩家击杀归属字段的访问配置 |
 | `src/main/resources/arkofcosmos.mixins.json` | Mixin 配置与 ASM 启动插件入口 |
+
+实体类型标签 `arkofcosmos:ignore_death_remove` 保留实体自身的死亡流程、死亡演出与延迟掉落，不强制移除尸体；默认包含 Bosses of Mass Destruction 的四种 Boss。
+`arkofcosmos:ignore_special_damage` 使用与训练假人相同的普通物理伤害路径（保留 35% 伤害下限），不接管生命值与死亡逻辑，同时禁用方舟的强制尸体移除，无需再加入 `ignore_death_remove`；默认包含 `dummmmmmy:target_dummy` 和 `touhou_little_maid_spell:stellar_witch`。
+可通过数据包中的 `data/arkofcosmos/tags/entity_types/ignore_death_remove.json` 与 `ignore_special_damage.json` 增补或覆盖，未安装的模组实体为可选项。
 
 素材逐项来源与散列记录见 [资源清单](licenses/RESOURCE-SOURCES.json)。清单只记录来源与文件对应关系，不授予第三方素材的使用或再分发许可。
 

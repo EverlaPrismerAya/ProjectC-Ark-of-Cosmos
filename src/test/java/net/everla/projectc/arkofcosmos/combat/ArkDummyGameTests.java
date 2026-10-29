@@ -24,17 +24,27 @@ import net.minecraftforge.registries.RegisterEvent;
 @Mod.EventBusSubscriber(modid = ArkOfCosmos.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class ArkDummyGameTests {
     private static EntityType<RecordingDummy> type;
+    private static EntityType<RecordingDummy> witchType;
+    static EntityType<ArkDamageGameTests.DeferredLootPig> animatedType;
 
     @SubscribeEvent public static void register(RegisterEvent event) {
         event.register(ForgeRegistries.Keys.ENTITY_TYPES, helper -> {
             type = EntityType.Builder.of(RecordingDummy::new, MobCategory.MISC).sized(1, 1)
                     .build("dummmmmmy:target_dummy");
             helper.register(new ResourceLocation("dummmmmmy", "target_dummy"), type);
+            witchType = EntityType.Builder.of(RecordingDummy::new, MobCategory.MISC).sized(1, 1)
+                    .build("touhou_little_maid_spell:stellar_witch");
+            helper.register(new ResourceLocation("touhou_little_maid_spell", "stellar_witch"), witchType);
+            animatedType = EntityType.Builder.<ArkDamageGameTests.DeferredLootPig>of(ArkDamageGameTests.DeferredLootPig::new, MobCategory.MISC)
+                    .sized(1, 1).build("arkofcosmos:animated_test");
+            helper.register(new ResourceLocation(ArkOfCosmos.MOD_ID, "animated_test"), animatedType);
         });
     }
 
     @SubscribeEvent public static void attributes(net.minecraftforge.event.entity.EntityAttributeCreationEvent event) {
         event.put(type, Pig.createAttributes().build());
+        event.put(witchType, Pig.createAttributes().build());
+        event.put(animatedType, Pig.createAttributes().build());
     }
 
     @GameTest(template = "empty", timeoutTicks = 20)
@@ -58,16 +68,35 @@ public final class ArkDummyGameTests {
         helper.succeed();
     }
 
+    @GameTest(template = "empty", timeoutTicks = 20)
+    public static void ordinaryWitchDeath(GameTestHelper helper) {
+        RecordingDummy witch = new RecordingDummy(witchType, helper.getLevel());
+        ArkDamage.restore(witch, 0);
+        helper.assertTrue(witch.isAlive() && ArkDamage.health(witch) < 0, "Witch restored special health");
+        ArkDamage.hurt(witch, witch.damageSources().generic(), 1000);
+        helper.assertTrue(witch.hurtCalls == 1 && witch.deathCalls == 1 && !witch.isRemoved()
+                && ArkDamage.health(witch) < 0 && !witch.forcedDeath,
+                "Witch did not retain its own hurt/death logic");
+        helper.succeed();
+    }
+
     /** Reproduces the dummy's ordinary Mob damage path and infinite-health setter. */
     public static final class RecordingDummy extends Pig {
         int hurtCalls;
+        int deathCalls;
+        boolean forcedDeath;
         public RecordingDummy(EntityType<? extends Pig> type, Level level) { super(type, level); }
         @Override public boolean hurt(DamageSource source, float amount) {
             hurtCalls++;
             return super.hurt(source, amount);
         }
         @Override public void setHealth(float health) {
-            if (health > 0) super.setHealth(health);
+            if (health > 0 || getType() == witchType) super.setHealth(health);
+        }
+        @Override public void die(DamageSource source) {
+            deathCalls++;
+            forcedDeath = ArkDamage.finishing(this);
+            super.die(source);
         }
     }
 }

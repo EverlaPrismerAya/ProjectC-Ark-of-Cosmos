@@ -93,6 +93,7 @@ public final class ArkDamageGameTests {
         int customDrops, looting;
         boolean playerCredit;
         DeferredLootPig(GameTestHelper helper) { super(EntityType.PIG, helper.getLevel()); }
+        DeferredLootPig(EntityType<? extends Pig> type, net.minecraft.world.level.Level level) { super(type, level); }
         @Override public void die(DamageSource source) { deathSource = source; super.die(source); }
         @Override protected void dropAllDeathLoot(DamageSource source) {
             if (deathTime > 0) super.dropAllDeathLoot(source);
@@ -107,6 +108,18 @@ public final class ArkDamageGameTests {
             spawnAtLocation(net.minecraft.world.item.Items.EMERALD);
         }
         @Override protected void dropEquipment() { spawnAtLocation(net.minecraft.world.item.Items.GOLD_INGOT); }
+    }
+
+    @GameTest(template = "empty", timeoutTicks = 20)
+    public static void taggedAnimatedDeath(GameTestHelper helper) {
+        DeferredLootPig boss = new DeferredLootPig(ArkDummyGameTests.animatedType, helper.getLevel());
+        helper.assertTrue(ArkDamage.hurt(boss, boss.damageSources().generic(), 1000), "Boss hit rejected");
+        helper.assertTrue(boss.deathSource != null && boss.isDeadOrDying() && !boss.isRemoved()
+                && boss.customDrops == 0, "Boss death animation or deferred loot was bypassed");
+        helper.assertFalse(ArkDamage.hurt(boss, boss.damageSources().generic(), 1000), "Boss killed twice");
+        boss.finishDeath();
+        helper.assertTrue(boss.isRemoved() && boss.customDrops == 1, "Boss did not finish its own death and loot");
+        helper.succeed();
     }
 
     @GameTest(template = "empty", timeoutTicks = 20)

@@ -23,7 +23,10 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.EntityType;
+import net.everla.projectc.arkofcosmos.ArkOfCosmos;
 
 /** A synchronized health authority shared by every living target hit by the Ark. */
 public final class ArkDamage {
@@ -34,7 +37,10 @@ public final class ArkDamage {
     private static final MethodHandle BASE_LOOT = method(LivingEntity.class, "m_6668_", DamageSource.class, true);
     private static final MethodHandle NORMAL_LOOT = method(LivingEntity.class, "m_6668_", DamageSource.class, false);
     private static final ThreadLocal<LivingEntity> FINISHING = new ThreadLocal<>();
-    private static final ResourceLocation TARGET_DUMMY = new ResourceLocation("dummmmmmy", "target_dummy");
+    private static final TagKey<EntityType<?>> IGNORE_DEATH_REMOVE = TagKey.create(Registries.ENTITY_TYPE,
+            new ResourceLocation(ArkOfCosmos.MOD_ID, "ignore_death_remove"));
+    private static final TagKey<EntityType<?>> IGNORE_SPECIAL_DAMAGE = TagKey.create(Registries.ENTITY_TYPE,
+            new ResourceLocation(ArkOfCosmos.MOD_ID, "ignore_special_damage"));
     private static final ThreadLocal<OrdinaryHit> ORDINARY_HIT = new ThreadLocal<>();
     private record OrdinaryHit(LivingEntity target, DamageSource source, float minimum) {}
 
@@ -92,7 +98,7 @@ public final class ArkDamage {
     }
 
     private static boolean ordinaryTarget(LivingEntity target) {
-        return TARGET_DUMMY.equals(ForgeRegistries.ENTITY_TYPES.getKey(target.getType()));
+        return target.getType().is(IGNORE_SPECIAL_DAMAGE);
     }
 
     /** Run only inside this Ark hit; unrelated hits and nested attacks keep their own amounts. */
@@ -164,6 +170,11 @@ public final class ArkDamage {
         target.level().broadcastDamageEvent(target, source);
         if (after == 0) {
             if (useTotem(target, source)) return true;
+            // Let animated bosses dispatch their own death, delayed loot and eventual removal.
+            if (target.getType().is(IGNORE_DEATH_REMOVE)) {
+                target.die(source);
+                return true;
+            }
             LivingEntity previous = FINISHING.get();
             FINISHING.set(target);
             try {
