@@ -1,0 +1,15 @@
+{
+  "parent": "minecraft:adventure/root",
+  "display": {
+    "icon": { "item": "arkofcosmos:ark_of_cosmos" },
+    "title": { "translate": "advancements.arkofcosmos.fly_swatter.title" },
+    "description": { "translate": "advancements.arkofcosmos.fly_swatter.description" },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "kill_fly": { "trigger": "minecraft:impossible" }
+  }
+}

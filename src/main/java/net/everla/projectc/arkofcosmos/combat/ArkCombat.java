@@ -6,6 +6,10 @@ import net.everla.projectc.arkofcosmos.network.ArkNetwork;
 import net.everla.projectc.arkofcosmos.util.AttackFrame;
 import net.everla.projectc.arkofcosmos.entity.ArkAttackEntity;
 import net.everla.projectc.arkofcosmos.calamity.combat.ArkWeaponRules;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Entity;
@@ -31,6 +35,8 @@ import java.util.UUID;
 
 @Mod.EventBusSubscriber(modid = ArkOfCosmos.MOD_ID)
 public final class ArkCombat {
+    private static final TagKey<EntityType<?>> IGNORE_ENEMY_FILTER = TagKey.create(Registries.ENTITY_TYPE,
+            ResourceLocation.fromNamespaceAndPath(ArkOfCosmos.MOD_ID, "ignore_enemy_filter"));
     private ArkCombat() {}
     // Terraria damage remains proportional; this conversion changes no attack sequence or hit timing.
     public static final float BASE_DAMAGE = ArkWeaponRules.BASE_DAMAGE;
@@ -158,6 +164,7 @@ public final class ArkCombat {
     }
     public static boolean enemy(Player owner, LivingEntity entity) {
         if (!canHit(owner, entity)) return false;
+        if (entity.getType().is(IGNORE_ENEMY_FILTER)) return true;
         if (entity instanceof NeutralMob) return entity instanceof Mob mob && mob.getTarget() == owner;
         return entity instanceof Enemy || entity instanceof Mob mob && mob.getTarget() == owner;
     }

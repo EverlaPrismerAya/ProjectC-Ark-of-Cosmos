@@ -17,6 +17,36 @@ import net.minecraftforge.gametest.PrefixGameTestTemplate;
 @PrefixGameTestTemplate(false)
 public final class ArkDamageGameTests {
     @GameTest(template = "empty", timeoutTicks = 20)
+    public static void deathSoundBeforeRemoval(GameTestHelper helper) {
+        int[] sounds = {0};
+        Pig pig = new Pig(EntityType.PIG, helper.getLevel()) {
+            @Override public net.minecraft.sounds.SoundEvent getDeathSound() {
+                return net.minecraft.sounds.SoundEvents.PIG_DEATH;
+            }
+            @Override public float getSoundVolume() { return .6f; }
+            @Override public float getVoicePitch() { return .8f; }
+            @Override public void playSound(net.minecraft.sounds.SoundEvent sound, float volume, float pitch) {
+                helper.assertTrue(sound == net.minecraft.sounds.SoundEvents.PIG_DEATH
+                        && volume == .6f && pitch == .8f && !isRemoved(),
+                        "Death sound lost entity settings or played after removal");
+                sounds[0]++;
+                super.playSound(sound, volume, pitch);
+            }
+        };
+        ArkDamage.hurt(pig, pig.damageSources().generic(), 1);
+        helper.assertTrue(sounds[0] == 0, "Nonlethal hit played death sound");
+        pig.setItemInHand(net.minecraft.world.InteractionHand.OFF_HAND,
+                new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.TOTEM_OF_UNDYING));
+        ArkDamage.hurt(pig, pig.damageSources().generic(), 1000);
+        helper.assertTrue(sounds[0] == 0 && pig.isAlive(), "Totem survivor played death sound");
+        ArkDamage.hurt(pig, pig.damageSources().generic(), 1000);
+        helper.assertTrue(sounds[0] == 1 && pig.isRemoved(), "Forced death did not play exactly one death sound");
+        ArkDamage.hurt(pig, pig.damageSources().generic(), 1000);
+        helper.assertTrue(sounds[0] == 1, "Removed victim replayed death sound");
+        helper.succeed();
+    }
+
+    @GameTest(template = "empty", timeoutTicks = 20)
     public static void totemAndDelayedRevival(GameTestHelper helper) {
         var player = new net.minecraftforge.common.util.FakePlayer(helper.getLevel(),
                 new com.mojang.authlib.GameProfile(java.util.UUID.randomUUID(), "ArkRevivalRegression"));

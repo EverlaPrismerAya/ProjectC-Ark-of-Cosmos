@@ -1,4 +1,6 @@
 {
+  "advancements.arkofcosmos.fly_swatter.title": "Expert Fly Swatter",
+  "advancements.arkofcosmos.fly_swatter.description": "Kill a fly with the Ark of the Cosmos",
   "item.arkofcosmos.ark_of_cosmos": "Ark of the Cosmos",
   "tooltip.arkofcosmos.controls": "<left> to perform a 5-swing combo that ends by throwing the blade\nThe thrown blade will follow your cursor\nReleasing while the blade is out will cause an exploding snap",
   "tooltip.arkofcosmos.parry": "<right> to snip out the scissor blades in front of you\nHitting an enemy with it will parry them, granting you brief invulnerability\nYou can parry projectiles to make them deal 160 less damage for a short period\nParrying anything will empower the next 16 swings of the sword",

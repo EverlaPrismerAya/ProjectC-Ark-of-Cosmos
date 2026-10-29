@@ -30,6 +30,7 @@ import net.everla.projectc.arkofcosmos.ArkOfCosmos;
 
 /** A synchronized health authority shared by every living target hit by the Ark. */
 public final class ArkDamage {
+    private static final ResourceLocation SEAGULL = ResourceLocation.fromNamespaceAndPath("alexsmobs", "seagull");
     private static final EntityDataAccessor<Float> HEALTH = SynchedEntityData.defineId(LivingEntity.class, EntityDataSerializers.FLOAT);
     private static final MethodHandle DIE = method(LivingEntity.class, "m_6667_", DamageSource.class, true);
     private static final MethodHandle PLAYER_DIE = method(ServerPlayer.class, "m_6667_", DamageSource.class, true);
@@ -98,7 +99,11 @@ public final class ArkDamage {
     }
 
     private static boolean ordinaryTarget(LivingEntity target) {
-        return target.getType().is(IGNORE_SPECIAL_DAMAGE);
+        return !seagull(target) && target.getType().is(IGNORE_SPECIAL_DAMAGE);
+    }
+
+    private static boolean seagull(LivingEntity target) {
+        return SEAGULL.equals(net.minecraftforge.registries.ForgeRegistries.ENTITY_TYPES.getKey(target.getType()));
     }
 
     /** Run only inside this Ark hit; unrelated hits and nested attacks keep their own amounts. */
@@ -152,12 +157,25 @@ public final class ArkDamage {
     }
 
     public static boolean hurt(LivingEntity target, DamageSource source, float amount) {
+        boolean hurt = hurtTarget(target, source, amount);
+        if (hurt && !target.isAlive() && source.getEntity() instanceof ServerPlayer player
+                && ResourceLocation.fromNamespaceAndPath("alexsmobs", "fly").equals(
+                        net.minecraftforge.registries.ForgeRegistries.ENTITY_TYPES.getKey(target.getType()))) {
+            var advancement = player.server.getAdvancements().getAdvancement(
+                    ResourceLocation.fromNamespaceAndPath(ArkOfCosmos.MOD_ID, "adventure/fly_swatter"));
+            if (advancement != null) player.getAdvancements().award(advancement, "kill_fly");
+        }
+        return hurt;
+    }
+
+    private static boolean hurtTarget(LivingEntity target, DamageSource source, float amount) {
         if (target.level().isClientSide || protectedPlayer(target) || target.isRemoved()
                 || !Float.isFinite(amount) || amount <= 0 || !target.isAlive()) return false;
         if (ordinaryTarget(target)) return ordinaryHurt(target, source, amount);
         float before = target.getHealth();
         if (!Float.isFinite(before) || before <= 0) return false;
-        amount = reducedDamage(target, amount);
+        boolean seagull = seagull(target);
+        amount = seagull ? Float.MAX_VALUE : reducedDamage(target, amount);
         float after = Math.max(0, before - amount);
         target.getEntityData().set(HEALTH, after);
         target.getCombatTracker().recordDamage(source, Math.min(before, amount));
@@ -169,7 +187,10 @@ public final class ArkDamage {
         target.hurtTime = target.hurtDuration = 10;
         target.level().broadcastDamageEvent(target, source);
         if (after == 0) {
-            if (useTotem(target, source)) return true;
+            if (!seagull && useTotem(target, source)) return true;
+            // Vanilla plays this in hurt(), which the authoritative damage path bypasses.
+            var deathSound = target.getDeathSound();
+            if (deathSound != null) target.playSound(deathSound, target.getSoundVolume(), target.getVoicePitch());
             // Let animated bosses dispatch their own death, delayed loot and eventual removal.
             if (target.getType().is(IGNORE_DEATH_REMOVE)) {
                 target.die(source);
