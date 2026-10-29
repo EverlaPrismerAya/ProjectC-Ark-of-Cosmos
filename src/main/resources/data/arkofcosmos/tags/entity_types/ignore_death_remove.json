@@ -7,6 +7,15 @@
     { "id": "bosses_of_mass_destruction:gauntlet", "required": false },
     { "id": "iceandfire:icedragon", "required": false },
     { "id": "iceandfire:firedragon", "required": false },
-    { "id": "iceandfire:lightning_dragon", "required": false }
+    { "id": "iceandfire:lightning_dragon", "required": false },
+    { "id": "minecraft:ender_dragon", "required": false },
+    { "id": "twilightforest:naga", "required": false },
+    { "id": "twilightforest:lich", "required": false },
+    { "id": "twilightforest:minoshroom", "required": false },
+    { "id": "twilightforest:hydra", "required": false },
+    { "id": "twilightforest:knight_phantom", "required": false },
+    { "id": "twilightforest:ur_ghast", "required": false },
+    { "id": "twilightforest:alpha_yeti", "required": false },
+    { "id": "twilightforest:snow_queen", "required": false }
   ]
 }
