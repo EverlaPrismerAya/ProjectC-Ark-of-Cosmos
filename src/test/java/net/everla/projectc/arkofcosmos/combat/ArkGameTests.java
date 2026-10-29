@@ -196,12 +196,23 @@ public final class ArkGameTests {
         // Parry has the original line reach and charges immediately on direct contact.
         LivingEntity parryVictim = EntityType.COW.create(helper.getLevel());
         parryVictim.setPos(start.add(0, 0, 10)); helper.getLevel().addFreshEntity(parryVictim);
+        List<LivingEntity> parryGroup = new java.util.ArrayList<>();
+        for (int z : new int[]{6, 8}) {
+            LivingEntity mob = EntityType.COW.create(helper.getLevel());
+            mob.setPos(start.add(0, 0, z)); helper.getLevel().addFreshEntity(mob); parryGroup.add(mob);
+        }
         controls.parried = false; controls.parryStack = player.getMainHandItem(); ArkItem.charge(weapon, 0);
         ArkAttackEntity parry = ArkAttackEntity.create(player, ArkAttackEntity.Kind.PARRY, 0, 0, ArkCombat.BASE_DAMAGE,
                 player.getBoundingBox().getCenter(), Vec3.ZERO, frame);
         parry.tick();
         helper.assertTrue(parryVictim.getHealth() < parryVictim.getMaxHealth() && ArkItem.charge(weapon) == 16,
                 "Parry blade must hit at original reach and fill charge immediately");
+        helper.assertTrue(parryGroup.stream().allMatch(mob -> mob.getHealth() < mob.getMaxHealth()),
+                "Parry must directly damage every target in its blade geometry without sweeping enchantment");
+        ArkItem.charge(weapon, 4);
+        parry.tick();
+        helper.assertTrue(ArkItem.charge(weapon) == 4, "Parry area damage must not award charge more than once");
+        parryGroup.forEach(LivingEntity::discard);
         parryVictim.discard(); clear(player);
         LivingEntity outside = EntityType.COW.create(helper.getLevel());
         outside.setPos(start.add(0, 0, 20)); helper.getLevel().addFreshEntity(outside);
@@ -239,6 +250,8 @@ public final class ArkGameTests {
         dash(helper, player, start, frame, false);
         movingDash(helper, player, start, frame);
         dashBolts(helper, player, start, frame);
+        interruptedDash(helper, player, start, false);
+        interruptedDash(helper, player, start, true);
         clear(player);
         player.discard();
         helper.succeed();
@@ -279,7 +292,7 @@ public final class ArkGameTests {
             blast.tick();
         }
         obstruction.discard();
-        helper.assertTrue(attacks(player, ArkAttackEntity.Kind.BOLT).size() == (clearEnd ? 5 : 0),
+        helper.assertTrue(attacks(player, ArkAttackEntity.Kind.BOLT).size() == 5,
                 "Dash completion/block collision emitted the wrong number of bolts");
         clear(player);
         player.setShiftKeyDown(false);
@@ -369,6 +382,34 @@ public final class ArkGameTests {
         helper.assertTrue(warden.getHealth() < healthAfterBlast, "Dash bolts never regained collision after leaving the Warden");
         warden.discard();
         clear(player);
+    }
+
+    private static void interruptedDash(GameTestHelper helper, ServerPlayer player, Vec3 start, boolean removeMidDash) {
+        clear(player);
+        player.setPos(start); player.setXRot(removeMidDash ? 0 : 5);
+        ArkCombat.controls(player).alt = ArkCombat.controls(player).right = true;
+        AttackFrame frame = AttackFrame.capture(player);
+        // Flat ground makes a slightly downward dash collide with the floor.
+        for (BlockPos pos : BlockPos.betweenClosed(BlockPos.containing(start).offset(-1, -1, -1),
+                BlockPos.containing(start).offset(1, 3, 50)))
+            helper.getLevel().setBlockAndUpdate(pos, pos.getY() < start.y ? Blocks.STONE.defaultBlockState() : Blocks.AIR.defaultBlockState());
+        ArkAttackEntity blast = ArkAttackEntity.create(player, ArkAttackEntity.Kind.BLAST, 0, 5, 0,
+                player.getBoundingBox().getCenter().add(frame.forward().scale(90 * ArkCombat.PIXEL)), Vec3.ZERO, frame);
+        for (int i = 0; i < 9; i++) blast.tick(); // The dash passes its charge/key check at substep 26.
+        if (removeMidDash) blast.discard();
+        helper.assertTrue(attacks(player, ArkAttackEntity.Kind.BOLT).size() == 5,
+                "An accepted dash must emit five bolts even when interrupted by ground or removal");
+        for (int i = 0; i < 24 && !blast.isRemoved(); i++) blast.tick();
+        helper.assertTrue(attacks(player, ArkAttackEntity.Kind.BOLT).size() == 5, "Interrupted dash emitted duplicate bolts");
+        clear(player);
+        // Failure before the dash check must not emit anything.
+        player.setPos(start);
+        blast = ArkAttackEntity.create(player, ArkAttackEntity.Kind.BLAST, 0, 4, 0,
+                player.getBoundingBox().getCenter(), Vec3.ZERO, frame);
+        for (int i = 0; i < 24 && !blast.isRemoved(); i++) blast.tick();
+        helper.assertTrue(attacks(player, ArkAttackEntity.Kind.BOLT).isEmpty(), "Unqualified dash emitted bolts");
+        clear(player);
+        player.setXRot(0);
     }
 
     private static void geometry(GameTestHelper helper) {

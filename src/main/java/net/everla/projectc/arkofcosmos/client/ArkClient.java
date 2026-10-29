@@ -18,7 +18,6 @@ import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.RegisterItemDecorationsEvent;
 import net.minecraftforge.client.event.RegisterShadersEvent;
 import net.minecraftforge.client.event.InputEvent;
-import net.minecraftforge.client.event.RenderHandEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -84,11 +83,6 @@ public final class ArkClient {
         boolean right = use ? pressed : lastRight;
         boolean alt = dash ? pressed : DASH.isDown();
         send(left, right, alt, true);
-    }
-
-    @SubscribeEvent public static void hand(RenderHandEvent event) {
-        Minecraft mc = Minecraft.getInstance();
-        if (mc.player != null && ArkCombat.holding(mc.player)) event.setCanceled(true);
     }
 
     @SubscribeEvent public static void playerPost(RenderPlayerEvent.Post event) {

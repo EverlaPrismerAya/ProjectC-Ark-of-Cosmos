@@ -193,7 +193,7 @@ public abstract class CalamityAttackEntity extends Entity {
     protected float truncateDamage(float multiplier) { return ArkCombat.scaled(damage, multiplier); }
 
     protected void hit(Player owner) {
-        if (damage <= 0 || attackKind == Kind.PARRY && (steps > 15 || hits > 0 || ArkCombat.controls(owner).parried) || attackKind == Kind.BLAST && 70 - left <= 25) return;
+        if (damage <= 0 || attackKind == Kind.PARRY && (steps > 15) || attackKind == Kind.BLAST && 70 - left <= 25) return;
         AABB search = getBoundingBox().inflate(4);
         if (attackKind == Kind.BLADE || attackKind == Kind.CHAIN) search = search.minmax(owner.getBoundingBox()).inflate(34);
         if (attackKind == Kind.PARRY) search = search.inflate(16);
@@ -232,7 +232,7 @@ public abstract class CalamityAttackEntity extends Entity {
             }
             sweep(owner, target, amount, cooldown);
             hits++;
-            if (attackKind == Kind.PARRY) { ArkCombat.parrySuccess(owner); return; }
+            if (attackKind == Kind.PARRY) ArkCombat.parrySuccess(owner);
             if (attackKind == Kind.BLADE && mode == 3) level().playSound(null, blockPosition(), ArkOfCosmos.SNAP.get(), SoundSource.PLAYERS, 1.3f, 1);
             if (attackKind == Kind.BOLT || attackKind == Kind.NEEDLE && hits >= 3) { discard(); return; }
         }

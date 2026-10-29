@@ -241,6 +241,8 @@ public final class ArkAttackEntity extends CalamityAttackEntity {
 
     @Override public void remove(RemovalReason reason) {
         if (!isRemoved() && !level().isClientSide) {
+            Player owner = ownerUuid == null ? null : level().getPlayerByUUID(ownerUuid);
+            if (owner != null) completeDash(owner);
             effect("death", position());
             if (attackKind == Kind.NEEDLE) ArkOfCosmos.sound(this, "needle_death", 1);
             if (attackKind == Kind.BLADE && mode == 3) ArkOfCosmos.sound(this, "item84", 1);
@@ -292,17 +294,22 @@ public final class ArkAttackEntity extends CalamityAttackEntity {
         boolean reached = owner.position().distanceTo(feetTarget) < 60 * ArkCombat.PIXEL;
         boolean blocked = !clearDestination && owner.position().distanceToSqr(before.add(movement)) > 1e-6;
         if (reached || blocked) {
-            dashing = false;
             if (reached) {
-                ArkOfCosmos.sound(this, "meaty", 1);
                 if (clearDestination) {
                     dashPosition = feetTarget;
                     owner.setPos(dashPosition);
                 }
                 owner.setDeltaMovement(offset.normalize().scale(60 * ArkCombat.PIXEL * 3 * .1));
-                spawnDashBolts(owner, dashStart, owner.getBoundingBox().getCenter());
             }
+            completeDash(owner);
         }
+    }
+
+    private void completeDash(Player owner) {
+        if (!dashing || dashStart == null) return;
+        dashing = false;
+        ArkOfCosmos.sound(this, "meaty", 1);
+        spawnDashBolts(owner, dashStart, owner.getBoundingBox().getCenter());
     }
 
     private void publish() {
