@@ -22,6 +22,7 @@
 | `calamity/client/ArkFxParticle.java` | `GenericSparkle`、`CritSpark`、`FlareShine`、`HeavySmokeParticle`、`SquishyLightParticle`、`PulseRing`、`StrongBloom`、`GenericBloom`、`LineVFX`、`BloomLineVFX` 的更新与绘制逻辑及插值适配 |
 | `calamity/client/CalamityTrail.java` | `PrimitiveRenderer` 的拖尾采样、几何和纹理坐标逻辑及三维适配 |
 | `combat/ArkCombat.java`、`item/ArkItem.java` | Forge／物品接入；仍保留原武器的连段发起、充能、倍率、冷却、描述与状态行为，不能将整个混合文件理解为无例外的 MIT 代码 |
+| `combat/ArkDamage.java` | 本项目的独立同步血量、伤害结算与死亡保护；其中原版不死图腾的检查、消耗、统计／进度触发和恢复效果流程参考并适配 Minecraft `LivingEntity.checkTotemDeathProtection`，该部分不纳入本项目 MIT 授权，详见下文 Minecraft 代码说明 |
 | `entity/ArkAttackEntity.java` | Minecraft 实体生命周期、同步、插值、附魔与冲刺碰撞接入；仍保留攻击寿命初始化、子步调度、派生效果触发与已有附加伤害行为，不能将整个混合文件理解为无例外的 MIT 代码 |
 | `client/ArkClient.java` | 原武器状态条配色及显示参数的客户端接入；震屏算法已移至 `calamity/client/ArkEffects.java` |
 | `client/render/ArkFxDraw.java` | 本项目的 OpenGL／Minecraft 绘制适配，保留 XNA 混合与绘制语义；原拖尾算法已移至 `calamity/client/CalamityTrail.java` |
@@ -29,6 +30,10 @@
 `util/AttackFrame.java`、`util/ArkGeometry.java` 与 `network/ArkNetwork.java` 分别提供本项目的三维攻击平面、空间几何及 Forge 网络接入。来源分区便于维护与审阅，不应被用来将灾厄派生内容重新授权为 MIT，或把包含原创适配的派生文件整体视为第三方原文件。
 
 Calamity 来源的代码须保留 Calamity Team 署名及原条款。本项目只对新增原创部分作 MIT 授权，不声称取得了将原代码整体转授 MIT 的权利。原许可允许以源码作为开发参考，并要求对直接采用的代码署名；这不等于原项目采用 MIT。
+
+### Minecraft 代码与兼容性研究
+
+`combat/ArkDamage.java` 中的不死图腾流程参考并适配 Minecraft 1.20.1 的原版实现，保留双手检查、伤害类型限制、Forge 图腾使用事件、物品消耗、统计与进度、恢复效果及实体事件。Minecraft 原始代码及其派生部分的权利归 Mojang／Microsoft 等原权利人，适用 Minecraft 自身的许可与使用条款；本项目不将其重新授权为 MIT，也不声称拥有额外再分发授权。相关条款见 <https://www.minecraft.net/eula>。
 
 ## 纹理 PNG
 
