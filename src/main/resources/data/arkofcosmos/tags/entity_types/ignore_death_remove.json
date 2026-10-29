@@ -16,6 +16,7 @@
     { "id": "twilightforest:knight_phantom", "required": false },
     { "id": "twilightforest:ur_ghast", "required": false },
     { "id": "twilightforest:alpha_yeti", "required": false },
-    { "id": "twilightforest:snow_queen", "required": false }
+    { "id": "twilightforest:snow_queen", "required": false },
+    { "id": "goety:apostle", "required": false }
   ]
 }
