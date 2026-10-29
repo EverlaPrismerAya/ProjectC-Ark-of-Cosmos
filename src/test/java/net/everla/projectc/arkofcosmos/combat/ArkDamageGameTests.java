@@ -17,6 +17,38 @@ import net.minecraftforge.gametest.PrefixGameTestTemplate;
 @PrefixGameTestTemplate(false)
 public final class ArkDamageGameTests {
     @GameTest(template = "empty", timeoutTicks = 20)
+    public static void totemAndDelayedRevival(GameTestHelper helper) {
+        var player = new net.minecraftforge.common.util.FakePlayer(helper.getLevel(),
+                new com.mojang.authlib.GameProfile(java.util.UUID.randomUUID(), "ArkRevivalRegression"));
+        player.setGameMode(GameType.SURVIVAL);
+        var hand = net.minecraft.world.InteractionHand.OFF_HAND;
+        player.setItemInHand(hand, new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.TOTEM_OF_UNDYING));
+        var source = player.damageSources().generic();
+        ArkDamage.hurt(player, source, 1000);
+        helper.assertTrue(player.isAlive() && player.getHealth() == 1 && player.getOffhandItem().isEmpty(),
+                "Vanilla offhand totem must be consumed and prevent death");
+        helper.assertTrue(player.hasEffect(net.minecraft.world.effect.MobEffects.REGENERATION)
+                && player.hasEffect(net.minecraft.world.effect.MobEffects.ABSORPTION)
+                && player.hasEffect(net.minecraft.world.effect.MobEffects.FIRE_RESISTANCE), "Totem effects missing");
+        player.setHealth(20);
+        helper.assertTrue(player.getHealth() == 20, "Totem survivor cannot heal");
+        player.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND,
+                new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.TOTEM_OF_UNDYING));
+        ArkDamage.hurt(player, source, 1000);
+        helper.assertTrue(player.getHealth() == 1 && player.getMainHandItem().isEmpty(), "Main hand totem failed");
+        ArkDamage.hurt(player, source, 1000);
+        helper.runAfterDelay(2, () -> {
+            player.setHealth(player.getMaxHealth());
+            player.heal(10);
+            helper.assertTrue(player.getHealth() == 0 && !player.isAlive() && player.isDeadOrDying(),
+                    "A later tick resurrected a finished Ark victim");
+            var fresh = new net.minecraftforge.common.util.FakePlayer(helper.getLevel(), player.getGameProfile());
+            helper.assertTrue(ArkDamage.health(fresh) < 0 && fresh.isAlive(), "New respawn entity inherited terminal health");
+            helper.succeed();
+        });
+    }
+
+    @GameTest(template = "empty", timeoutTicks = 20)
     public static void deferredDeathLoot(GameTestHelper helper) {
         var player = new net.minecraftforge.common.util.FakePlayer(helper.getLevel(),
                 new com.mojang.authlib.GameProfile(java.util.UUID.randomUUID(), "ArkLootRegression"));

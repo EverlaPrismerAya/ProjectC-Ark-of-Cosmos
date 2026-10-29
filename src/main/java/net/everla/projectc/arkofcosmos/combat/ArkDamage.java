@@ -12,6 +12,12 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.damagesource.CombatRules;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.item.Items;
+import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.stats.Stats;
+import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -65,7 +71,8 @@ public final class ArkDamage {
 
     public static boolean setHealth(Object object, float value) {
         if (health(object) < 0) return false;
-        if (finishing(object)) return true;
+        // Death remains final after die() returns: tick-based revival also uses this setter.
+        if (finishing(object) || health(object) == 0) return true;
         if (Float.isFinite(value)) {
             LivingEntity entity = (LivingEntity)object;
             entity.getEntityData().set(HEALTH, Math.max(0, Math.min(value, entity.getMaxHealth())));
@@ -113,6 +120,31 @@ public final class ArkDamage {
         return Math.max(amount * .35f, reduced);
     }
 
+    /** Vanilla totem semantics, without calling the extensible mod revival dispatcher. */
+    private static boolean useTotem(LivingEntity target, DamageSource source) {
+        if (source.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) return false;
+        for (InteractionHand hand : InteractionHand.values()) {
+            var stack = target.getItemInHand(hand);
+            if (!stack.is(Items.TOTEM_OF_UNDYING)
+                    || !net.minecraftforge.common.ForgeHooks.onLivingUseTotem(target, source, stack, hand)) continue;
+            var used = stack.copy();
+            stack.shrink(1);
+            if (target instanceof ServerPlayer player) {
+                player.awardStat(Stats.ITEM_USED.get(Items.TOTEM_OF_UNDYING), 1);
+                CriteriaTriggers.USED_TOTEM.trigger(player, used);
+            }
+            // Write directly because zero health is terminal for ordinary setters.
+            target.getEntityData().set(HEALTH, 1f);
+            target.removeAllEffects();
+            target.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 900, 1));
+            target.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, 100, 1));
+            target.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, 800, 0));
+            target.level().broadcastEntityEvent(target, (byte)35);
+            return true;
+        }
+        return false;
+    }
+
     public static boolean hurt(LivingEntity target, DamageSource source, float amount) {
         if (target.level().isClientSide || protectedPlayer(target) || target.isRemoved()
                 || !Float.isFinite(amount) || amount <= 0 || !target.isAlive()) return false;
@@ -131,6 +163,7 @@ public final class ArkDamage {
         target.hurtTime = target.hurtDuration = 10;
         target.level().broadcastDamageEvent(target, source);
         if (after == 0) {
+            if (useTotem(target, source)) return true;
             LivingEntity previous = FINISHING.get();
             FINISHING.set(target);
             try {
