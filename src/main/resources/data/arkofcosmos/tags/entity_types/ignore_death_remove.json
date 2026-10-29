@@ -4,6 +4,9 @@
     { "id": "bosses_of_mass_destruction:lich", "required": false },
     { "id": "bosses_of_mass_destruction:obsidilith", "required": false },
     { "id": "bosses_of_mass_destruction:void_blossom", "required": false },
-    { "id": "bosses_of_mass_destruction:gauntlet", "required": false }
+    { "id": "bosses_of_mass_destruction:gauntlet", "required": false },
+    { "id": "iceandfire:icedragon", "required": false },
+    { "id": "iceandfire:firedragon", "required": false },
+    { "id": "iceandfire:lightning_dragon", "required": false }
   ]
 }
