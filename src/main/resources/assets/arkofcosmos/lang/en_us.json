@@ -28,10 +28,13 @@
   "galaxia.selection_controls": "Hold [%1$s] to open the selector\nMove the cursor to an attunement; release to confirm",
   "item.arkofcosmos.ark_of_the_elements": "Ark of the Elements",
   "effect.arkofcosmos.elemental_mix": "Elemental Mix",
-  "elements.combo": "Hold %s for four slashes and a throw; release at 15%%-75%% to snap",
-  "elements.parry": "%s to parry: hit or take an attack within 0.25s to gain 10 charges",
-  "elements.blast": "With charge, press %s + %s to consume all charge in a rending blast",
-  "elements.resonance": "Hits apply Elemental Mix: 1 damage every 5 game ticks",
+  "elements.combo": "Hold %s to perform a 5-swing combo that ends by throwing the blade",
+  "elements.snap": "Release at the right moment while the blade is out to snap shut and deal extra damage",
+  "elements.parry": "%s to snip out the scissor blades in front of you and gain brief invulnerability",
+  "elements.parry_window": "Hit an enemy or take an attack within 0.25 seconds of activation to parry",
+  "elements.empower": "Parrying empowers the next 10 swings of the sword, letting you use both blades at once",
+  "elements.blast": "With empowered charges, hold %s and press %s to provoke a Big Rip in spacetime and use all charges",
+  "elements.resonance": "Inflicts Elemental Mix",
   "elements.charge": "Charge: %s / %s",
   "elements.flavor": "A heavenly pair of blades infused with the essence of Terraria, powerful enough to cut through the fabric of reality"
 }

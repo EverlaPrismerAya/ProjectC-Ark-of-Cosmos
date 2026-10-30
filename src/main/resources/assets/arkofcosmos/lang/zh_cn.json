@@ -28,10 +28,13 @@
   "galaxia.selection_controls": "按住【%1$s】打开选择盘\n移动光标选择调谐，松开确认",
   "item.arkofcosmos.ark_of_the_elements": "元素方舟",
   "effect.arkofcosmos.elemental_mix": "元素谐鸣",
-  "elements.combo": "按住%s连续挥斩，第五段掷出剪刀；投掷进度15%～75%时松开剪合",
-  "elements.parry": "%s招架：0.25秒内命中或受击，充满10层能量",
-  "elements.blast": "有充能时按%s + %s，消耗全部能量释放裂缝剪击",
-  "elements.resonance": "命中施加元素谐鸣，每5游戏刻造成1点伤害",
+  "elements.combo": "按住%s进行五连斩，最后掷出剑刃",
+  "elements.snap": "剑刃掷出后适时松开攻击键，剪合造成额外伤害",
+  "elements.parry": "按%s用剑刃向前剪出，并获得短暂无敌",
+  "elements.parry_window": "发动后0.25秒内，剑刃命中敌人或自身受击即可招架",
+  "elements.empower": "招架后强化接下来的10次挥斩，让你同时使用两把剑刃",
+  "elements.blast": "有充能时，按住%s并按%s引发时空大撕裂，消耗全部充能",
+  "elements.resonance": "命中造成元素谐鸣减益",
   "elements.charge": "充能：%s / %s",
   "elements.flavor": "一对注入了泰拉大陆精华的天赐之刃，其威力足以切割现实的结构"
 }

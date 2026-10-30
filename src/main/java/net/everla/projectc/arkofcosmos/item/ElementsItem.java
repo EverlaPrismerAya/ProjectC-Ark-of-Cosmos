@@ -41,7 +41,10 @@ public final class ElementsItem extends SwordItem {
     @Override public Component getName(ItemStack stack) { return Component.translatable(getDescriptionId()).withStyle(s->s.withColor(0xA335EE)); }
     @Override public void appendHoverText(ItemStack stack, Level level, List<Component> lines, TooltipFlag flag) {
         lines.add(Component.translatable("elements.combo",Component.keybind("key.attack")).withStyle(s->s.withColor(0xDC143C)));
+        lines.add(Component.translatable("elements.snap").withStyle(s->s.withColor(0xDC143C)));
         lines.add(Component.translatable("elements.parry",Component.keybind("key.use")).withStyle(s->s.withColor(0xFFA500)));
+        lines.add(Component.translatable("elements.parry_window").withStyle(s->s.withColor(0xFFA500)));
+        lines.add(Component.translatable("elements.empower").withStyle(s->s.withColor(0xFFA500)));
         lines.add(Component.translatable("elements.blast",Component.keybind("key.arkofcosmos.dash"),Component.keybind("key.use")).withStyle(s->s.withColor(0xFFD700)));
         lines.add(Component.translatable("elements.resonance"));
         lines.add(Component.translatable("elements.charge",charge(stack),10));
