@@ -14,7 +14,7 @@ abstract class ForgeHooksMixin {
     @Inject(method = "onLivingDamage", at = @At("RETURN"), cancellable = true)
     private static void ark$ordinaryMinimum(LivingEntity entity, DamageSource source, float amount,
                                             CallbackInfoReturnable<Float> cir) {
-        cir.setReturnValue(ArkDamage.ordinaryMinimum(entity, source, cir.getReturnValueF()));
+        cir.setReturnValue(net.everla.projectc.arkofcosmos.combat.WeaponDamage.minimum(entity, source, cir.getReturnValueF()));
     }
 
     @Inject(method = "onLivingDeath", at = @At("HEAD"), cancellable = true)

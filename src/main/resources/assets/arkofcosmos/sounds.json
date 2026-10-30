@@ -64,5 +64,112 @@
       "arkofcosmos:needle_death_1",
       "arkofcosmos:needle_death_2"
     ]
+  },
+  "galaxia_item60": {
+    "sounds": [
+      "arkofcosmos:galaxia_item60_0"
+    ]
+  },
+  "galaxia_item71": {
+    "sounds": [
+      "arkofcosmos:item71_0"
+    ]
+  },
+  "galaxia_item76": {
+    "sounds": [
+      "arkofcosmos:galaxia_item76_0"
+    ]
+  },
+  "galaxia_item77": {
+    "sounds": [
+      "arkofcosmos:galaxia_item77_0"
+    ]
+  },
+  "galaxia_item78": {
+    "sounds": [
+      "arkofcosmos:galaxia_item78_0"
+    ]
+  },
+  "galaxia_item79": {
+    "sounds": [
+      "arkofcosmos:galaxia_item79_0"
+    ]
+  },
+  "galaxia_item80": {
+    "sounds": [
+      "arkofcosmos:galaxia_item80_0"
+    ]
+  },
+  "galaxia_item90": {
+    "sounds": [
+      "arkofcosmos:galaxia_item90_0"
+    ]
+  },
+  "galaxia_item101": {
+    "sounds": [
+      "arkofcosmos:galaxia_item101_0"
+    ]
+  },
+  "galaxia_item109": {
+    "sounds": [
+      "arkofcosmos:galaxia_item109_0"
+    ]
+  },
+  "galaxia_item120": {
+    "sounds": [
+      {
+        "name": "arkofcosmos:galaxia_item120_0",
+        "attenuation_distance": 156
+      }
+    ]
+  },
+  "galaxia_hit30": {
+    "sounds": [
+      "arkofcosmos:galaxia_hit30_0"
+    ]
+  },
+  "galaxia_hit43": {
+    "sounds": [
+      "arkofcosmos:galaxia_hit43_0"
+    ]
+  },
+  "galaxia_book": {
+    "sounds": [
+      "arkofcosmos:galaxia_book_0",
+      "arkofcosmos:galaxia_book_1",
+      "arkofcosmos:galaxia_book_2"
+    ]
+  },
+  "galaxia_impact": {
+    "sounds": [
+      "arkofcosmos:galaxia_impact_0",
+      "arkofcosmos:galaxia_impact_1",
+      "arkofcosmos:galaxia_impact_2"
+    ]
+  },
+  "galaxia_eruption": {
+    "sounds": [
+      "arkofcosmos:galaxia_eruption_0"
+    ]
+  },
+  "galaxia_beacon": {
+    "sounds": [
+      "arkofcosmos:galaxia_beacon_0"
+    ]
+  },
+  "galaxia_lightning": {
+    "sounds": [
+      "arkofcosmos:galaxia_lightning_0"
+    ]
+  },
+  "galaxia_meaty": {
+    "sounds": [
+      "arkofcosmos:meaty_0"
+    ]
+  },
+  "elements_item9": {
+    "sounds": [
+      "arkofcosmos:elements_item9_0"
+    ]
   }
 }

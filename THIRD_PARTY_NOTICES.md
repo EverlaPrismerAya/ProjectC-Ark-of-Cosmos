@@ -4,6 +4,8 @@
 
 ## Java 代码
 
+银河中英文物品描述分别参考 Calamity Mod 的 `Localization/en-US/Mods.CalamityMod.Attunement.hjson`、`Mods.CalamityMod.Items.Weapons.Melee.hjson`，以及 CalamityCN 的 `Localization/CalamityMod/zh-Hans/` 对应文件。中文调谐名称和相关用语来自 CalamityCN 汉化作者；操作说明及版本差异按本项目实际行为调整。相关原文和译文的权利归各自作者所有，不纳入本项目 MIT 授权。
+
 目录：`src/main/java/net/everla/projectc/arkofcosmos/`。
 
 本项目新增的 Minecraft／Forge 注册、网络通信、输入处理、NBT 状态管理、三维攻击平面、实体插值和渲染适配等原创部分，以 MIT 授权，版权所有者为 EverlaPrismerAya。
@@ -14,13 +16,17 @@
 
 | 文件 | Calamity 来源／派生内容 |
 | --- | --- |
+| `calamity/combat/GalaxiaRules.java`、`entity/GalaxiaEntity.java`、`calamity/client/GalaxiaRenderer.java` | `FourSeasonsGalaxia`、四种 Attunement、`PhoenixsPride`、`AriesWrath`、`AriesWrathConstellation`、`PolarisGaze`、`PolarisGazeStar`、`PolarisGazeDash`、`AndromedasStride`、`AndromedasStrideBoltSpawner`、`GalaxiaBolt` 和 `GalaxiaTropicRing` 的规则、阶段、曲线、参数与原图绘制；含用户确认的三维攻击平面、地表环形扩散和玩家碰撞适配 |
 | `calamity/entity/CalamityAttackEntity.java` | `ArkoftheCosmosSwungBlade`、`RendingNeedle`、`EonBolt`、`ArkoftheCosmosConstellation`、`ArkoftheCosmosParryHoldout`、`ArkoftheCosmosBlast` 的攻击阶段、运动、时序与命中规则；包含必要的 Minecraft 单位及实体接口适配 |
 | `calamity/combat/ArkWeaponRules.java` | 原武器的连段模式、伤害换算、充能上限及工具提示配色；保留本项目已有的机制修改 |
+| `calamity/combat/ElementsRules.java`、`entity/ElementsEntity.java`、`combat/ElementsCombat.java`、`item/ElementsItem.java` | Calamity Team 的 ArkoftheElements、SwungBlade、ParryHoldout、SnapBlast、SolarNeedle、ElementalGlassStar 的规则、曲线、倍率、时序和形态；含原创 Forge 接入、三维瞄点适配及用户指定数值，Calamity 派生部分不作 MIT 重新授权 |
+| `calamity/client/ElementsRenderer.java`、`calamity/client/ElementsEffects.java`、`calamity/client/ElementsVanillaParticles.java`、`calamity/client/ElementsAudio.java` | 原刀刃／弹幕 PreDraw、BasicTint、残影、粒子及 SoundStyle；Calamity 部分为 Calamity Team ARR，Terraria Dust／Gore／ActiveSound 派生逻辑归 Re-Logic／原权利人，不作 MIT 重新授权；含原创 Minecraft 三维及接口适配 |
 | `calamity/util/ArkCurves.java` | 原攻击的分段曲线、参数及相关缓动实现 |
 | `calamity/client/ArkAttackRenderer.java` | 原刀刃的 PreDraw、开合、残影、smear、针弹与爆发绘制逻辑；仍混有本项目的三维厚度与轮廓适配 |
 | `calamity/client/ArkEffects.java` | 原攻击的粒子生成条件、数量、参数、星链及根据 `CalamityPlayer.ModifyScreenPosition` 适配的震屏行为；仍包含客户端轨迹管理 |
 | `calamity/client/ArkFxParticle.java` | `GenericSparkle`、`CritSpark`、`FlareShine`、`HeavySmokeParticle`、`SquishyLightParticle`、`PulseRing`、`StrongBloom`、`GenericBloom`、`LineVFX`、`BloomLineVFX` 的更新与绘制逻辑及插值适配 |
 | `calamity/client/CalamityTrail.java` | `PrimitiveRenderer` 的拖尾采样、几何和纹理坐标逻辑及三维适配 |
+| `calamity/client/GalaxiaEffects.java`、`calamity/client/GalaxiaRenderer.java` | Galaxia 四模式及派生弹幕的原始 AI 粒子生成、PreDraw、残影、锁链、星座与星环绘制；`ArkFxParticle` 同时包含 `ConstellationRingVFX` 的原始椭圆环及星芒绘制，来源 Calamity Team，ARR；含客户端子步同步、插值、攻击平面与近景淡化适配 |
 | `combat/ArkCombat.java`、`item/ArkItem.java` | Forge／物品接入；仍保留原武器的连段发起、充能、倍率、冷却、描述与状态行为，不能将整个混合文件理解为无例外的 MIT 代码 |
 | `combat/ArkDamage.java` | 本项目的独立同步血量、伤害结算与死亡保护；其中原版不死图腾的检查、消耗、统计／进度触发和恢复效果流程参考并适配 Minecraft `LivingEntity.checkTotemDeathProtection`，该部分不纳入本项目 MIT 授权，详见下文 Minecraft 代码说明 |
 | `entity/ArkAttackEntity.java` | Minecraft 实体生命周期、同步、插值、附魔与冲刺碰撞接入；仍保留攻击寿命初始化、子步调度、派生效果触发与已有附加伤害行为，不能将整个混合文件理解为无例外的 MIT 代码 |
@@ -50,6 +56,8 @@ Calamity 来源的代码须保留 Calamity Team 署名及原条款。本项目�
 | 文件 | 来源与许可范围 |
 | --- | --- |
 | `fx_trail.fsh` | 对 Calamity `Effects/FadedUVMapStreak.fx` 中 `TrailPass` 的 GLSL 转换；保留原公式和常量，属于 Calamity 派生内容，**不作 MIT 重新授权** |
+| `galaxia_tint.fsh` | 对 Calamity `Effects/BasicTint.fx` 中 `Recolor`／`TintPass` 的 GLSL 150 转换，保留 `rbg` 顺序、插值和 Alpha 乘法；Calamity Team，ARR，不作 MIT 重新授权 |
+| `galaxia_tint.json` | 本项目编写的 Minecraft shader、sampler 和 uniform 接口配置；原创适配部分适用 MIT |
 | `fx_trail.vsh` | 本项目编写的 Minecraft 顶点格式／矩阵接口适配；该原创适配部分以 MIT 授权，不扩展到原拖尾算法 |
 | `fx_trail.json` | 本项目编写的 Minecraft 着色器注册、采样器和 uniform 配置，以 MIT 授权 |
 | `fx_sprite.vsh`、`fx_sprite.fsh`、`fx_sprite.json` | 本项目编写的通用纹理／顶点颜色绘制及 Minecraft 接口配置，以 MIT 授权；采样到的第三方纹理仍遵循各自许可 |
@@ -62,9 +70,12 @@ Calamity 来源的代码须保留 Calamity Team 署名及原条款。本项目�
 
 | 文件 | 来源与权利归属 |
 | --- | --- |
-| `snap.ogg`、`snap_0.ogg` | Calamity 的 `ScissorGuillotineSnap`；Calamity Team／原作者，ARR |
+| `snap_0.ogg` | Calamity 的 `ScissorGuillotineSnap`；Calamity Team／原作者，ARR |
 | `phoenix_0.ogg`～`phoenix_2.ogg` | Calamity 的 `LouderPhantomPhoenix`；Calamity Team／原作者，ARR |
 | `meaty_0.ogg` | Calamity 的 `MeatySlash`；Calamity Team／原作者，ARR |
+| `galaxia_beacon_0.ogg`、`galaxia_lightning_0.ogg` | Calamity 的 AstralBeaconUse、LightningStrike 原始OGG；Calamity Team／原作者，ARR |
+| `galaxia_item*.ogg`、`galaxia_hit*.ogg`、`galaxia_book_*.ogg`、`galaxia_impact_*.ogg`、`galaxia_eruption_*.ogg` | Terraria 原生 SoundID 音频转换；Re-Logic／原权利人所有，不适用本项目 MIT |
+| `elements_item9_0.ogg` | Terraria `Content/Sounds/Item_9.xnb` 原音频转码；Re-Logic／原权利人所有，不适用 MIT |
 | `item*.ogg`、`crystal_*.ogg`、`needle_death_*.ogg` | Terraria 原生 SoundID 音频转换；Re-Logic／原权利人所有，不适用本项目 MIT |
 
 原音频转码为 OGG、按 Minecraft 事件重新映射，均不构成新的音频授权。当前未在本项目中提供 Re-Logic 对这些音频的单独再分发授权。
@@ -99,3 +110,5 @@ Calamity 来源的代码须保留 Calamity Team 署名及原条款。本项目�
 - Gradle：<https://gradle.org/>
 
 Java 移植、Minecraft 三维适配及项目维护：EverlaPrismerAya。
+
+元素方舟新增原图资源：`textures/elements/techy_holosquare.png` 直接取自 Calamity `Particles/TechyHolosquare.png`（ARR）；`textures/elements/dust.png`、`gore_16.png`、`gore_17.png` 是 Terraria `Content/Images/Dust.xnb`、`Gore_16.xnb`、`Gore_17.xnb` 的无损 RGBA 解码，归 Re-Logic／原权利人所有，不适用 MIT。强化太阳针复用前述 `galaxia_tint.fsh` 的 BasicTint 移植；逐项来源、转换及散列见资源清单。

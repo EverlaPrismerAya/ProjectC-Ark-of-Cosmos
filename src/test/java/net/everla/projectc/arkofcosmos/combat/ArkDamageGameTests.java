@@ -17,6 +17,35 @@ import net.minecraftforge.gametest.PrefixGameTestTemplate;
 @PrefixGameTestTemplate(false)
 public final class ArkDamageGameTests {
     @GameTest(template = "empty", timeoutTicks = 20)
+    public static void defaultWeaponCooldown(GameTestHelper helper) {
+        Pig pig = EntityType.PIG.create(helper.getLevel());
+        pig.getAttribute(Attributes.MAX_HEALTH).setBaseValue(100);
+        pig.setHealth(100);
+        DamageSource source = pig.damageSources().generic();
+        helper.assertTrue(pig.hurt(source, 7), "Initial ordinary damage failed");
+        helper.assertTrue(!pig.hurt(source, 5), "Fixture lacks vanilla hit cooldown");
+        pig.invulnerableTime = 40;
+        helper.assertTrue(WeaponDamage.hurt(pig, source, 5) && WeaponDamage.hurt(pig, source, 12)
+                && WeaponDamage.hurt(pig, source, 3) && Math.abs(pig.getHealth()-73)<.001,
+                "Shared weapon hits must apply full same-tick damage, including smaller and larger hits");
+        helper.assertTrue(pig.invulnerableTime == 40 && !pig.hurt(source, 2),
+                "Weapon hits cleared cooldown for unrelated damage");
+        helper.assertTrue(ArkDamage.health(pig)<0, "Shared weapon damage acquired Ark health authority");
+        java.util.function.Consumer<net.minecraftforge.event.entity.living.LivingAttackEvent> cancel = event -> {
+            if(event.getEntity()==pig) event.setCanceled(true);
+        };
+        var bus=net.minecraftforge.common.MinecraftForge.EVENT_BUS;
+        bus.addListener(net.minecraftforge.eventbus.api.EventPriority.HIGHEST, false,
+                net.minecraftforge.event.entity.living.LivingAttackEvent.class, cancel);
+        try {
+            helper.assertFalse(WeaponDamage.hurt(pig,source,5), "Shared weapon bypassed attack cancellation");
+            helper.assertTrue(pig.invulnerableTime==40 && Math.abs(pig.getHealth()-73)<.001,
+                    "Cancelled hit changed health or lost original cooldown");
+        } finally { bus.unregister(cancel); }
+        helper.succeed();
+    }
+
+    @GameTest(template = "empty", timeoutTicks = 20)
     public static void deathSoundBeforeRemoval(GameTestHelper helper) {
         int[] sounds = {0};
         Pig pig = new Pig(EntityType.PIG, helper.getLevel()) {
@@ -195,8 +224,12 @@ public final class ArkDamageGameTests {
         try {
             pig.hurt(pig.damageSources().genericKill(), 1000);
             helper.assertTrue(deaths[0] == 1 && pig.isAlive(), "Ordinary death event must remain cancellable");
+            pig.invulnerableTime = 0;
+            WeaponDamage.hurt(pig, pig.damageSources().genericKill(), 1000);
+            helper.assertTrue(deaths[0] == 2 && pig.isAlive() && !pig.isRemoved(), "Default weapon damage bypassed death cancellation");
+            helper.assertTrue(ArkDamage.health(pig) < 0, "Default weapon damage acquired Ark health authority");
             ArkDamage.hurt(pig, pig.damageSources().genericKill(), 1000);
-            helper.assertTrue(deaths[0] == 1 && pig.isRemoved(), "Death event resurrected an Ark victim");
+            helper.assertTrue(deaths[0] == 2 && pig.isRemoved(), "Death event resurrected an Ark victim");
         } finally {
             bus.unregister(cancel);
         }

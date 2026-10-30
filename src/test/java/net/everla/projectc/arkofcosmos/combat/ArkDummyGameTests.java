@@ -129,9 +129,12 @@ public final class ArkDummyGameTests {
         helper.assertTrue(dummy.hurtCalls == 1 && Math.abs(dummy.getHealth() - 93) < .001,
                 "Dummy did not retain ordinary hurt/setHealth and 35% floor");
         helper.assertTrue(ArkDamage.health(dummy) < 0 && !dummy.isRemoved(), "Dummy entered advanced damage");
+        helper.assertTrue(ArkDamage.hurt(dummy, dummy.damageSources().generic(), 20)
+                && dummy.hurtCalls == 2 && Math.abs(dummy.getHealth() - 86) < .001,
+                "Tagged Ark target must bypass vanilla cooldown through ordinary hurt");
         dummy.invulnerableTime = 0;
         dummy.hurt(dummy.damageSources().generic(), 20);
-        helper.assertTrue(Math.abs(dummy.getHealth() - 93) < .001, "Floor leaked into an unrelated hit");
+        helper.assertTrue(Math.abs(dummy.getHealth() - 86) < .001, "Floor leaked into an unrelated hit");
         dummy.invulnerableTime = 0;
         ArkDamage.hurt(dummy, dummy.damageSources().generic(), 1000);
         helper.assertTrue(!dummy.isRemoved() && ArkDamage.health(dummy) < 0, "Dummy used forced removal");

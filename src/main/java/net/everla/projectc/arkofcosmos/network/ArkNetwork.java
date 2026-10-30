@@ -27,12 +27,19 @@ public final class ArkNetwork {
         void handle(Supplier<NetworkEvent.Context> supplier) {
             NetworkEvent.Context context = supplier.get();
             context.enqueueWork(() -> {
-                if (context.getSender() != null) ArkCombat.input(context.getSender(), this);
+                if (context.getSender() != null) {
+                    ArkCombat.input(context.getSender(), this);
+                    net.everla.projectc.arkofcosmos.combat.ElementsCombat.input(context.getSender(), this);
+                }
             });
             context.setPacketHandled(true);
         }
     }
     public static void register() {
+        CHANNEL.messageBuilder(GalaxiaInput.class, 2, NetworkDirection.PLAY_TO_SERVER)
+                .encoder((p,b) -> { b.writeBoolean(p.left()); b.writeInt(p.selection()); })
+                .decoder(b -> new GalaxiaInput(b.readBoolean(),b.readInt()))
+                .consumerMainThread((p,c) -> { if(c.get().getSender()!=null) net.everla.projectc.arkofcosmos.combat.GalaxiaCombat.input(c.get().getSender(),p.left(),p.selection()); }).add();
         CHANNEL.messageBuilder(Input.class, 0, NetworkDirection.PLAY_TO_SERVER)
                 .encoder(Input::write).decoder(Input::read).consumerNetworkThread(Input::handle).add();
         CHANNEL.messageBuilder(Effect.class, 1, NetworkDirection.PLAY_TO_CLIENT)
@@ -42,6 +49,8 @@ public final class ArkNetwork {
                         () -> () -> ArkEffects.receive(packet.data))).add();
     }
     private record Effect(CompoundTag data) {}
+    private record GalaxiaInput(boolean left, int selection) {}
+    public static void galaxia(boolean left,int selection) { CHANNEL.sendToServer(new GalaxiaInput(left,selection)); }
     public static void effect(Entity entity, CompoundTag data) {
         CHANNEL.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> entity), new Effect(data));
     }

@@ -225,3 +225,18 @@ tasks.register('arkFxRegression', JavaExec) {
     mainClass = 'net.everla.projectc.arkofcosmos.calamity.client.ArkFxCheck'
 }
 tasks.named('check') { dependsOn 'arkFxRegression' }
+
+// Explicit GPU check; kept out of check so headless build machines need no display driver.
+tasks.register('galaxiaShaderRegression', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = 'net.everla.projectc.arkofcosmos.calamity.client.GalaxiaShaderCheck'
+}
+
+// Source numerical checkpoints for Ark of the Elements (no game runtime required).
+tasks.register('elementsRegression', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = 'net.everla.projectc.arkofcosmos.calamity.combat.ElementsRulesCheck'
+}
+tasks.named('check') { dependsOn 'elementsRegression' }

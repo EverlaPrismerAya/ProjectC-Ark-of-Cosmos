@@ -172,15 +172,6 @@
       "matches_recorded_output": true
     },
     {
-      "file": "src/main/resources/assets/arkofcosmos/sounds/snap.ogg",
-      "sha256": "9988d206d79ca1a413e5931d9df00c075a5a0269d1a63f8bc24fdeb40350e7c3",
-      "project": "Calamity Mod",
-      "path": "Sounds/Custom/ScissorGuillotineSnap.ogg",
-      "license": "ARR (Calamity original terms)",
-      "recorded_output_sha256": "9988d206d79ca1a413e5931d9df00c075a5a0269d1a63f8bc24fdeb40350e7c3",
-      "matches_recorded_output": true
-    },
-    {
       "file": "src/main/resources/assets/arkofcosmos/sounds/snap_0.ogg",
       "sha256": "9988d206d79ca1a413e5931d9df00c075a5a0269d1a63f8bc24fdeb40350e7c3",
       "project": "Calamity Mod",
@@ -485,6 +476,503 @@
       "path": "Effects/FadedUVMapStreak.fx (TrailPass)",
       "adaptation": "HLSL/FX to GLSL 150",
       "license": "Calamity-derived; not relicensed under MIT"
+    },
+    {
+      "sha256": "2b072a843799d6416f496294537e64feacaeebba1c992096837bda91d7d9ae69",
+      "license": "Calamity Team / All Rights Reserved",
+      "file": "src/main/resources/assets/arkofcosmos/textures/galaxia/galaxiacancer.png",
+      "path": "Projectiles/Melee/GalaxiaCancer.png",
+      "project": "Calamity Mod"
+    },
+    {
+      "sha256": "e054bb80636850adb1425a1f081caad459218cd931fe950e0b7bf1bf1b3a5ca3",
+      "license": "Calamity Team / All Rights Reserved",
+      "file": "src/main/resources/assets/arkofcosmos/textures/galaxia/bloomring.png",
+      "path": "Particles/BloomRing.png",
+      "project": "Calamity Mod"
+    },
+    {
+      "sha256": "95f2cd790cf14fc3518423776ce0e94c0e531b8322c85fe365304bbdc056adcd",
+      "license": "Calamity Team / All Rights Reserved",
+      "file": "src/main/resources/assets/arkofcosmos/textures/galaxia/galaxia.png",
+      "path": "Items/Weapons/Melee/Galaxia.png",
+      "project": "Calamity Mod"
+    },
+    {
+      "sha256": "58a088dd35f881210ca5a5b7a3cefdf0b6e432de0d83c314665e4ac51367be8b",
+      "license": "Calamity Team / All Rights Reserved",
+      "file": "src/main/resources/assets/arkofcosmos/textures/galaxia/bloomline.png",
+      "path": "Particles/BloomLine.png",
+      "project": "Calamity Mod"
+    },
+    {
+      "sha256": "366677361461d0085ee7ab2f4b8745f9379495d010ec1aec80434fb91a7af4ea",
+      "license": "Calamity Team / All Rights Reserved",
+      "file": "src/main/resources/assets/arkofcosmos/textures/galaxia/galaxiaextra2.png",
+      "path": "Items/Weapons/Melee/GalaxiaExtra2.png",
+      "project": "Calamity Mod"
+    },
+    {
+      "sha256": "dd3c647736a742a7d54278ae921f44e3130eb9b05bede40a4cd3d7dd67ab43fd",
+      "license": "Calamity Team / All Rights Reserved",
+      "file": "src/main/resources/assets/arkofcosmos/textures/galaxia/thinendedline.png",
+      "path": "Particles/ThinEndedLine.png",
+      "project": "Calamity Mod"
+    },
+    {
+      "sha256": "06b2fc383da2909945ecf6f0dda9a189239da366c964e33f4057b2c154f722a5",
+      "license": "Calamity Team / All Rights Reserved",
+      "file": "src/main/resources/assets/arkofcosmos/textures/galaxia/galaxiaduskoutline.png",
+      "path": "Items/Weapons/Melee/GalaxiaDuskOutline.png",
+      "project": "Calamity Mod"
+    },
+    {
+      "sha256": "48a5319f6d7e7432af6891c891bc22426392e0192111e189996cdec709572b38",
+      "license": "Calamity Team / All Rights Reserved",
+      "file": "src/main/resources/assets/arkofcosmos/textures/galaxia/bloomcircle.png",
+      "path": "Particles/BloomCircle.png",
+      "project": "Calamity Mod"
+    },
+    {
+      "sha256": "29f68611e4ce80c756c8809dbb59c64a203ac269c7a4b960f5ed20e372f725e1",
+      "license": "Calamity Team / All Rights Reserved",
+      "file": "src/main/resources/assets/arkofcosmos/textures/galaxia/galaxiacapricorn.png",
+      "path": "Projectiles/Melee/GalaxiaCapricorn.png",
+      "project": "Calamity Mod"
+    },
+    {
+      "sha256": "f7246043c5a835301104cf2a97d4d31a3b7ade9b3924ed992c75e3d77b3b374d",
+      "license": "Calamity Team / All Rights Reserved",
+      "file": "src/main/resources/assets/arkofcosmos/textures/galaxia/galaxiadawn.png",
+      "path": "Items/Weapons/Melee/GalaxiaDawn.png",
+      "project": "Calamity Mod"
+    },
+    {
+      "sha256": "c373fe8df0ddd040154a9c288730210efb7ddb715de2d5d6e23c8d140a436d3c",
+      "license": "Calamity Team / All Rights Reserved",
+      "file": "src/main/resources/assets/arkofcosmos/textures/galaxia/sparkle.png",
+      "path": "Particles/Sparkle.png",
+      "project": "Calamity Mod"
+    },
+    {
+      "sha256": "5c5ad7fd99dceeb3f4b540f31811c33b9ee76959350d5d7bcc6eb38aea9315b0",
+      "license": "Calamity Team / All Rights Reserved",
+      "file": "src/main/resources/assets/arkofcosmos/textures/galaxia/galaxiadawnoutline.png",
+      "path": "Items/Weapons/Melee/GalaxiaDawnOutline.png",
+      "project": "Calamity Mod"
+    },
+    {
+      "sha256": "ab18d75fda37b91d1170229dc838dd351a03625e7e8f5852719cb0a9b4bd2a1c",
+      "license": "Calamity Team / All Rights Reserved",
+      "file": "src/main/resources/assets/arkofcosmos/textures/galaxia/galaxiadusk.png",
+      "path": "Items/Weapons/Melee/GalaxiaDusk.png",
+      "project": "Calamity Mod"
+    },
+    {
+      "sha256": "c6bf0f219896cc3dbd3e8f2cd70284b00c65c45b8684eb13c00dac7ec7598745",
+      "license": "Calamity Team / All Rights Reserved",
+      "file": "src/main/resources/assets/arkofcosmos/textures/galaxia/galaxiaextra.png",
+      "path": "Items/Weapons/Melee/GalaxiaExtra.png",
+      "project": "Calamity Mod"
+    },
+    {
+      "sha256": "66a43925625f239b30cedb4d1b01767db57b8684a3354ef036783ff65dd3c3db",
+      "license": "Calamity Team / All Rights Reserved",
+      "file": "src/main/resources/assets/arkofcosmos/textures/galaxia/galaxiabolt.png",
+      "path": "Projectiles/Melee/GalaxiaBolt.png",
+      "project": "Calamity Mod"
+    },
+    {
+      "sha256": "eda3d9485fc2f117931e668a0fbfa117341b04c13ceba418311443492e37a493",
+      "license": "Calamity Team / All Rights Reserved",
+      "file": "src/main/resources/assets/arkofcosmos/textures/galaxia/thinsparkle.png",
+      "path": "Particles/ThinSparkle.png",
+      "project": "Calamity Mod"
+    },
+    {
+      "license": "Calamity Team / All Rights Reserved",
+      "project": "Calamity Mod",
+      "path": "Buffs/StatDebuffs/ArmorCrunch.png",
+      "file": "src/main/resources/assets/arkofcosmos/textures/mob_effect/armor_crunch.png",
+      "sha256": "822ed02a35c56bf2aa0bed2630f67990267fc944fa6916c38c361e037ae362d8"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/galaxia/hollowcirclesoftedge.png",
+      "sha256": "dd18d7475c8621c877a6bb288f88591ad059387d968e6beb5c93cb2486558b8d",
+      "project": "Calamity Mod",
+      "path": "Particles/HollowCircleSoftEdge.png",
+      "license": "Calamity Team / All Rights Reserved"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/galaxia/phoenixchain.png",
+      "sha256": "4407bbb116de7072cc69d08756b116c7b9845a4dc1fe4b048d2238ccb110d83c",
+      "project": "Calamity Mod",
+      "path": "Projectiles/Melee/MendedBiomeBlade_HeavensMightChain.png",
+      "license": "Calamity Team / All Rights Reserved"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/shaders/core/galaxia_tint.fsh",
+      "sha256": "c4cd8a731598c394386bf858786221c12b7148d20c6ea4d831ae756136d49c29",
+      "project": "Calamity Mod",
+      "path": "Effects/BasicTint.fx",
+      "license": "Calamity Team / All Rights Reserved",
+      "source_sha256": "366f10d4ed2e3caa6a05846e7c9a1a4da660a8b5f49ab08cb74d3a8e72916917",
+      "conversion": "HLSL Recolor -> GLSL 150, preserving rbg, unclamped lerp and alpha multiplication; Minecraft near fade appended"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/galaxia_item60_0.ogg",
+      "sha256": "5c843de46c01965f0e23b2e857701591f4bdeb0095f266a1878938280f2a3e17",
+      "project": "Terraria",
+      "path": "Content/Sounds/Item_60.xnb",
+      "license": "Original rights holders; not MIT",
+      "source_sha256": "4a39fef8a27fe152496a8f300e44ee1b14d75b1ab3c2caee58e655b7533e9605",
+      "recorded_output_sha256": "5c843de46c01965f0e23b2e857701591f4bdeb0095f266a1878938280f2a3e17",
+      "matches_recorded_output": true
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/galaxia_item76_0.ogg",
+      "sha256": "d8e9254da4b60b177359c4aebf88738745a4e2bdebb539690ca89113aadbe362",
+      "project": "Terraria",
+      "path": "Content/Sounds/Item_76.xnb",
+      "license": "Original rights holders; not MIT",
+      "source_sha256": "49c7d2d5958d82745ac89e06cad473669b82ac9f913f9306b03ec6917bbe5fc2",
+      "recorded_output_sha256": "d8e9254da4b60b177359c4aebf88738745a4e2bdebb539690ca89113aadbe362",
+      "matches_recorded_output": true
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/galaxia_item77_0.ogg",
+      "sha256": "a96841d90760173f88bd4102bf6acd198d82071014c5bbf5b459709dad489672",
+      "project": "Terraria",
+      "path": "Content/Sounds/Item_77.xnb",
+      "license": "Original rights holders; not MIT",
+      "source_sha256": "99abeac2be353165e11fc47f08ddd8aadbaf97ebd4fd91349ede5c31cfb1acb2",
+      "recorded_output_sha256": "a96841d90760173f88bd4102bf6acd198d82071014c5bbf5b459709dad489672",
+      "matches_recorded_output": true
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/galaxia_item78_0.ogg",
+      "sha256": "7ae80b346f63ec6567057bd1765b6bd83d3449a03a4221f64a232d8079c8a8a9",
+      "project": "Terraria",
+      "path": "Content/Sounds/Item_78.xnb",
+      "license": "Original rights holders; not MIT",
+      "source_sha256": "d8a56daba6f486d1ec0b88459b68dd29298a09f3c0a2d6eecf19885e5db75a91",
+      "recorded_output_sha256": "7ae80b346f63ec6567057bd1765b6bd83d3449a03a4221f64a232d8079c8a8a9",
+      "matches_recorded_output": true
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/galaxia_item79_0.ogg",
+      "sha256": "37cd688d5cb8ee41cc2c0caa72f070b5b8a8370e8f79e9ad566a2280a6f6c638",
+      "project": "Terraria",
+      "path": "Content/Sounds/Item_79.xnb",
+      "license": "Original rights holders; not MIT",
+      "source_sha256": "cd5deef403a2d76ff96e843ace94b827b636fe4f9ab1c16729c811246804281f",
+      "recorded_output_sha256": "37cd688d5cb8ee41cc2c0caa72f070b5b8a8370e8f79e9ad566a2280a6f6c638",
+      "matches_recorded_output": true
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/galaxia_item80_0.ogg",
+      "sha256": "b11d56e6817a15ae50e4ab0d58bdabc4362f1d276c51e6936f614d273050bf31",
+      "project": "Terraria",
+      "path": "Content/Sounds/Item_80.xnb",
+      "license": "Original rights holders; not MIT",
+      "source_sha256": "947b5ec7fd14c3fceaf06ae1ac6aab900390592db34b106efb2d7240c1af6622",
+      "recorded_output_sha256": "b11d56e6817a15ae50e4ab0d58bdabc4362f1d276c51e6936f614d273050bf31",
+      "matches_recorded_output": true
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/galaxia_item90_0.ogg",
+      "sha256": "05631f089002f150139a2b7456460c8f6243475087941a4e4eda82ed8daaaaa3",
+      "project": "Terraria",
+      "path": "Content/Sounds/Item_90.xnb",
+      "license": "Original rights holders; not MIT",
+      "source_sha256": "9f2c3dbe7790004ded7d1c2e973f8b9999a0ee2f017eaf5a085742f71f7531fd",
+      "recorded_output_sha256": "05631f089002f150139a2b7456460c8f6243475087941a4e4eda82ed8daaaaa3",
+      "matches_recorded_output": true
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/galaxia_item101_0.ogg",
+      "sha256": "f19f6fa6e0ad2c9cc0d9c5ba16b4580990093fddbd189d7e5bf93c68c636261e",
+      "project": "Terraria",
+      "path": "Content/Sounds/Item_101.xnb",
+      "license": "Original rights holders; not MIT",
+      "source_sha256": "04abe71979efb254b59172e2bac3bfa289d3706e0a634777c620f43fba3d4449",
+      "recorded_output_sha256": "f19f6fa6e0ad2c9cc0d9c5ba16b4580990093fddbd189d7e5bf93c68c636261e",
+      "matches_recorded_output": true
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/galaxia_item109_0.ogg",
+      "sha256": "a2151b710300dd2a554762f938c8ba6b2b96da2c67b3ada36776780d7e7296e0",
+      "project": "Terraria",
+      "path": "Content/Sounds/Item_109.xnb",
+      "license": "Original rights holders; not MIT",
+      "source_sha256": "0a0685e5a8a14de684bfe6808ef6ed78493ebcda4669ff3c1c9a4dccc52b8d0f",
+      "recorded_output_sha256": "a2151b710300dd2a554762f938c8ba6b2b96da2c67b3ada36776780d7e7296e0",
+      "matches_recorded_output": true
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/galaxia_item120_0.ogg",
+      "sha256": "4b89d8a8d1b0e7c0774eb362d4bc834fecf7e83ea9aad362022a8bd7a8272be1",
+      "project": "Terraria",
+      "path": "Content/Sounds/Item_120.xnb",
+      "license": "Original rights holders; not MIT",
+      "source_sha256": "8078fd6d6428001e9952dcb8ace1804ce7313c194bd1e6683f2025c37cf7f34d",
+      "recorded_output_sha256": "4b89d8a8d1b0e7c0774eb362d4bc834fecf7e83ea9aad362022a8bd7a8272be1",
+      "matches_recorded_output": true
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/galaxia_hit30_0.ogg",
+      "sha256": "53d354c42990c8e0483abd787e6e68f46511d799445418c9fbee6b1560db7fb0",
+      "project": "Terraria",
+      "path": "Content/Sounds/NPC_Hit_30.xnb",
+      "license": "Original rights holders; not MIT",
+      "source_sha256": "474daefcfc0d69f18f07c9338c143414b451e79bbb7f6d47693f94bba282f27f",
+      "recorded_output_sha256": "53d354c42990c8e0483abd787e6e68f46511d799445418c9fbee6b1560db7fb0",
+      "matches_recorded_output": true
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/galaxia_hit43_0.ogg",
+      "sha256": "78da9a3f011ec55199660a62b0cdb3e71a3006c5c512952ed06b52e26161c0c6",
+      "project": "Terraria",
+      "path": "Content/Sounds/NPC_Hit_43.xnb",
+      "license": "Original rights holders; not MIT",
+      "source_sha256": "f7d43046ef0790b38f6be00a60a8b0f431b5a12ade0283720f2d1b441fce2be3",
+      "recorded_output_sha256": "78da9a3f011ec55199660a62b0cdb3e71a3006c5c512952ed06b52e26161c0c6",
+      "matches_recorded_output": true
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/galaxia_book_0.ogg",
+      "sha256": "9ff02352774459a5c159c03990acfae0a909c640514ba5426704c64bcae2eab9",
+      "project": "Terraria",
+      "path": "Content/Sounds/Custom/dd2_book_staff_cast_0.xnb",
+      "license": "Original rights holders; not MIT",
+      "source_sha256": "e9d2798175245e5f3185701f23b72c5ac547afa0172f20f0a1d9f8384897f05f",
+      "recorded_output_sha256": "9ff02352774459a5c159c03990acfae0a909c640514ba5426704c64bcae2eab9",
+      "matches_recorded_output": true
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/galaxia_book_1.ogg",
+      "sha256": "355e785c4207f9c8bbef339fd1d36ccd06ab7a04b5a3b26a3f176958d36ff9ef",
+      "project": "Terraria",
+      "path": "Content/Sounds/Custom/dd2_book_staff_cast_1.xnb",
+      "license": "Original rights holders; not MIT",
+      "source_sha256": "f2b907dc5a638cc81f55e98b5879fc1817a8cae60e4ad950c98cf0720f2b356b",
+      "recorded_output_sha256": "355e785c4207f9c8bbef339fd1d36ccd06ab7a04b5a3b26a3f176958d36ff9ef",
+      "matches_recorded_output": true
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/galaxia_book_2.ogg",
+      "sha256": "7796faa159082ff202cf8579c2597897817cfa9958896bdb8410a4bb9b4f9e0e",
+      "project": "Terraria",
+      "path": "Content/Sounds/Custom/dd2_book_staff_cast_2.xnb",
+      "license": "Original rights holders; not MIT",
+      "source_sha256": "281d779be5084f4ff90121802bd0cdb027adab852f9899c1b4d8d2d7691f9896",
+      "recorded_output_sha256": "7796faa159082ff202cf8579c2597897817cfa9958896bdb8410a4bb9b4f9e0e",
+      "matches_recorded_output": true
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/galaxia_impact_0.ogg",
+      "sha256": "aaade1b41f33460c9d2086c4625faad84e8a92ce391432915d0d822406c9dde4",
+      "project": "Terraria",
+      "path": "Content/Sounds/Custom/dd2_monk_staff_ground_impact_0.xnb",
+      "license": "Original rights holders; not MIT",
+      "source_sha256": "e0648afede8ae70ad61cbb47293e8653b7818e5f090c90ec22e5867b60590a31",
+      "recorded_output_sha256": "aaade1b41f33460c9d2086c4625faad84e8a92ce391432915d0d822406c9dde4",
+      "matches_recorded_output": true
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/galaxia_impact_1.ogg",
+      "sha256": "b517a32571d0f8a769e2b21fa1c37bf99904ee8a682aa34495a18f8ff1cfb5c0",
+      "project": "Terraria",
+      "path": "Content/Sounds/Custom/dd2_monk_staff_ground_impact_1.xnb",
+      "license": "Original rights holders; not MIT",
+      "source_sha256": "1c6cb82197743ce096c91df6f0c9589a12866b0e63eafef798593fef3a0bf832",
+      "recorded_output_sha256": "b517a32571d0f8a769e2b21fa1c37bf99904ee8a682aa34495a18f8ff1cfb5c0",
+      "matches_recorded_output": true
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/galaxia_impact_2.ogg",
+      "sha256": "a7596ed17050b00d14f444cc9635236d69bd0acd602ff7aab8e769af546c4287",
+      "project": "Terraria",
+      "path": "Content/Sounds/Custom/dd2_monk_staff_ground_impact_2.xnb",
+      "license": "Original rights holders; not MIT",
+      "source_sha256": "d86ea64681e57ab9a883b999f8171894bca5c562d7205f94aa3794f086221bff",
+      "recorded_output_sha256": "a7596ed17050b00d14f444cc9635236d69bd0acd602ff7aab8e769af546c4287",
+      "matches_recorded_output": true
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/galaxia_eruption_0.ogg",
+      "sha256": "1baa6646b2b7fd6d6267cfeb0eca56741ec52ab975ca4a56510913699d2ac2a2",
+      "project": "Terraria",
+      "path": "Content/Sounds/Custom/dd2_etherian_portal_dryad_touch.xnb",
+      "license": "Original rights holders; not MIT",
+      "source_sha256": "f916088babe6e3f5aa7ca19d2fbc81159acc00ad03ea926fd52a6aab4de9850b",
+      "recorded_output_sha256": "1baa6646b2b7fd6d6267cfeb0eca56741ec52ab975ca4a56510913699d2ac2a2",
+      "matches_recorded_output": true
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/galaxia_beacon_0.ogg",
+      "sha256": "ae4797a1197aa1f3c5ed493a7c3cc29f8e655929138478397f2ccbfe1320148d",
+      "project": "Calamity Mod",
+      "path": "Sounds/Custom/AstralBeaconUse.ogg",
+      "license": "Original rights holders; not MIT",
+      "source_sha256": "ae4797a1197aa1f3c5ed493a7c3cc29f8e655929138478397f2ccbfe1320148d",
+      "recorded_output_sha256": "ae4797a1197aa1f3c5ed493a7c3cc29f8e655929138478397f2ccbfe1320148d",
+      "matches_recorded_output": true
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/galaxia_lightning_0.ogg",
+      "sha256": "854e1e371df1a01d1db0f023f00415a0db0055987677c6c8798662853b7a4611",
+      "project": "Calamity Mod",
+      "path": "Sounds/Custom/LightningStrike.ogg",
+      "license": "Original rights holders; not MIT",
+      "source_sha256": "854e1e371df1a01d1db0f023f00415a0db0055987677c6c8798662853b7a4611",
+      "recorded_output_sha256": "854e1e371df1a01d1db0f023f00415a0db0055987677c6c8798662853b7a4611",
+      "matches_recorded_output": true
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/item/galaxia_dawn.png",
+      "sha256": "a1e0a4d2be588b4dce2eaec0a1509f095712ea604eae42bc6d00c3196a7182f2",
+      "project": "Calamity Mod",
+      "path": "Items/Weapons/Melee/GalaxiaDawn.png",
+      "license": "Calamity Team / All Rights Reserved",
+      "modification": "Seven original 126x126 frames copied pixel-for-pixel, removing the two padding rows after each frame."
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/item/galaxia_dawn_outline.png",
+      "sha256": "63d54f3bafe03f2661c4235cc25046e7da2bfd628f8ec50491b1968e4883de80",
+      "project": "Calamity Mod",
+      "path": "Items/Weapons/Melee/GalaxiaDawnOutline.png",
+      "license": "Calamity Team / All Rights Reserved",
+      "modification": "Seven original 126x126 frames copied pixel-for-pixel, removing the two padding rows after each frame."
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/item/galaxia_dusk.png",
+      "sha256": "d317682ecbca7175c04df788c457e189a6fa24f3285bcf566b46fed113e35b97",
+      "project": "Calamity Mod",
+      "path": "Items/Weapons/Melee/GalaxiaDusk.png",
+      "license": "Calamity Team / All Rights Reserved",
+      "modification": "Seven original 126x126 frames copied pixel-for-pixel, removing the two padding rows after each frame."
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/item/galaxia_dusk_outline.png",
+      "sha256": "d9bf52f3baba459ede7c3411fcd53795e6d8f57baa355dbb6a8cb77b21d49f7f",
+      "project": "Calamity Mod",
+      "path": "Items/Weapons/Melee/GalaxiaDuskOutline.png",
+      "license": "Calamity Team / All Rights Reserved",
+      "modification": "Seven original 126x126 frames copied pixel-for-pixel, removing the two padding rows after each frame."
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/item/ark_of_the_elements.png",
+      "sha256": "e8c7e80c910c14f95cb365488d2ff53bb367b5206a774b91dd5c2f38a64d9884",
+      "project": "Calamity Mod",
+      "path": "Items/Weapons/Melee/ArkoftheElements.png",
+      "license": "Calamity Team / original rights holders; All Rights Reserved; not MIT"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/item/ark_of_the_elements_back.png",
+      "sha256": "8c53e9472d186aa242adcd90c8d835874802251e985d198cbee4914aa5deb38a",
+      "project": "Calamity Mod",
+      "path": "Items/Weapons/Melee/ArkoftheElementsBack.png",
+      "license": "Calamity Team / original rights holders; All Rights Reserved; not MIT"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/elements/rending_scissors_right.png",
+      "sha256": "c2c4ea2f3f324dbe8c69e20a0658e52afc46354a90acfa3b884718f3c5802595",
+      "project": "Calamity Mod",
+      "path": "Projectiles/Melee/RendingScissorsRight.png",
+      "license": "Calamity Team / original rights holders; All Rights Reserved; not MIT"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/elements/rending_scissors_left.png",
+      "sha256": "692351965e874b207a549926e6b8ad3c29849c2543aa895777fadc702ab28b5d",
+      "project": "Calamity Mod",
+      "path": "Projectiles/Melee/RendingScissorsLeft.png",
+      "license": "Calamity Team / original rights holders; All Rights Reserved; not MIT"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/elements/rending_scissors_right_glow.png",
+      "sha256": "0bff717253523722cf0ad253b3eb92828b828e63476904b7b867bf939bae7942",
+      "project": "Calamity Mod",
+      "path": "Projectiles/Melee/RendingScissorsRightGlow.png",
+      "license": "Calamity Team / original rights holders; All Rights Reserved; not MIT"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/elements/rending_scissors_left_glow.png",
+      "sha256": "7b78d9998566ec4a87afe8bd87e15bfede55bd4dc6403b0877bfe54e52b60ac4",
+      "project": "Calamity Mod",
+      "path": "Projectiles/Melee/RendingScissorsLeftGlow.png",
+      "license": "Calamity Team / original rights holders; All Rights Reserved; not MIT"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/elements/solar_needle.png",
+      "sha256": "1acc792cc6962f41e32c2421f64eef6e858686c85be1b25706e14509ec0e567f",
+      "project": "Calamity Mod",
+      "path": "Projectiles/Melee/SolarNeedle.png",
+      "license": "Calamity Team / original rights holders; All Rights Reserved; not MIT"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/elements/elemental_glass_star.png",
+      "sha256": "9add935da5a44ca44e2c2b4f5afc7ff225fc0130779131676e08fe1c54c4b54d",
+      "project": "Calamity Mod",
+      "path": "Projectiles/Melee/ElementalGlassStar.png",
+      "license": "Calamity Team / original rights holders; All Rights Reserved; not MIT"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/mob_effect/elemental_mix.png",
+      "sha256": "32551cef5891730c0a680648be2f86dbbb00e5542117b4f8904260cdbf42789f",
+      "project": "Calamity Mod",
+      "path": "Buffs/DamageOverTime/ElementalMix.png",
+      "license": "Calamity Team / original rights holders; All Rights Reserved; not MIT"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/elements_item9_0.ogg",
+      "sha256": "8c67386b7dae82831dfeed42b12a9868c19060d64a2a68cc23ed537a5c35e3b2",
+      "project": "Terraria",
+      "path": "Content/Sounds/Item_9.xnb",
+      "source_sha256": "6df74552651c5548fe0fcc61f81b3835a3cd2a6db1c47fd4dad15abb43a9f76d",
+      "license": "Re-Logic / original rights holders; not MIT"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/elements/dust.png",
+      "sha256": "5838c275a4df868f5c6d7aa926705c168ca92189946339ad6ecadde1248714b6",
+      "source": "G:\\SteamLibrary\\steamapps\\common\\Terraria\\Content\\Images\\Dust.xnb",
+      "source_sha256": "0c84497a27ff8d9c706fbe9f0890b67bd27914b61e9bad799e65bc783f77b329",
+      "project": "Terraria",
+      "path": "Content/Images/Dust.xnb",
+      "license": "Re-Logic / original rights holders; not MIT",
+      "conversion": "XNB LZX Texture2D RGBA decoded losslessly to PNG; premultiplied channel bytes unchanged",
+      "rgba_sha256": "d66069c16123c59b96e4bda53369fc963931478e5ac36a741a6e17abf9d0c5fe"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/elements/gore_16.png",
+      "sha256": "156c3acf34dea8b72eaae9d5629234386cef457ef7a53d00ef67c60f28583bc7",
+      "source": "G:\\SteamLibrary\\steamapps\\common\\Terraria\\Content\\Images\\Gore_16.xnb",
+      "source_sha256": "ac26d5eb877709d3e93035f085293bc9f5f07d7ba083926e7cea88a38f855ae0",
+      "project": "Terraria",
+      "path": "Content/Images/Gore_16.xnb",
+      "license": "Re-Logic / original rights holders; not MIT",
+      "conversion": "XNB LZX Texture2D RGBA decoded losslessly to PNG; premultiplied channel bytes unchanged",
+      "rgba_sha256": "625caf302714eeb43a36f4cce5be9dbd2008f0b91a61bc46cf21599d2e176fe5"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/elements/gore_17.png",
+      "sha256": "50b2f62837c2524634f229b27a5fa07fdb1c6e885714486bd4829cbb91eb3139",
+      "source": "G:\\SteamLibrary\\steamapps\\common\\Terraria\\Content\\Images\\Gore_17.xnb",
+      "source_sha256": "1e1d295af8edba3901f86dbfa59e7d26e58cb215c9591f3ab4a65a4566560eef",
+      "project": "Terraria",
+      "path": "Content/Images/Gore_17.xnb",
+      "license": "Re-Logic / original rights holders; not MIT",
+      "conversion": "XNB LZX Texture2D RGBA decoded losslessly to PNG; premultiplied channel bytes unchanged",
+      "rgba_sha256": "d65af3f1225535181b9f8a3b98a1e78e8cdd4776d4102c68ab5db772ac140d65"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/elements/techy_holosquare.png",
+      "sha256": "e22c322da6e785917b586cb6f4871f832bb412b2ef86e537d2f0a432930e5de9",
+      "source": "E:\\工具\\tModUnpacker\\CalamityMod\\Particles\\TechyHolosquare.png",
+      "source_sha256": "e22c322da6e785917b586cb6f4871f832bb412b2ef86e537d2f0a432930e5de9",
+      "project": "Calamity Mod",
+      "path": "Particles/TechyHolosquare.png",
+      "license": "Calamity Team / original rights holders; All Rights Reserved; not MIT"
     }
   ]
 }

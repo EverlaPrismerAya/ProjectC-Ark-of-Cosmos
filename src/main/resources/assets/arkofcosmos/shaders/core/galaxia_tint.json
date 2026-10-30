@@ -1,0 +1,107 @@
+{
+  "uniforms": [
+    {"name": "AlphaCutoff", "type": "float", "count": 1, "values": [0]} ,
+    {
+      "values": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1
+      ],
+      "count": 16,
+      "type": "matrix4x4",
+      "name": "ModelViewMat"
+    },
+    {
+      "values": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1
+      ],
+      "count": 16,
+      "type": "matrix4x4",
+      "name": "ProjMat"
+    },
+    {
+      "name": "NearFade",
+      "type": "float",
+      "count": 1,
+      "values": [
+        0
+      ]
+    },
+    {
+      "name": "FadePremultiplied",
+      "type": "float",
+      "count": 1,
+      "values": [
+        0
+      ]
+    },
+    {
+      "name": "uColor",
+      "type": "float",
+      "count": 3,
+      "values": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "name": "uOpacity",
+      "type": "float",
+      "count": 1,
+      "values": [
+        0
+      ]
+    },
+    {
+      "name": "FadeEye",
+      "type": "float",
+      "count": 3,
+      "values": [
+        0,
+        0,
+        0
+      ]
+    }
+  ],
+  "samplers": [
+    {
+      "name": "Sampler0"
+    }
+  ],
+  "fragment": "arkofcosmos:galaxia_tint",
+  "vertex": "arkofcosmos:fx_sprite",
+  "attributes": [
+    "Position",
+    "Color",
+    "UV0"
+  ]
+}

@@ -1,6 +1,8 @@
 {
   "replace": false,
   "values": [
-    "arkofcosmos:ark_of_cosmos"
+    "arkofcosmos:ark_of_cosmos",
+    "arkofcosmos:galaxia",
+    "arkofcosmos:ark_of_the_elements"
   ]
 }

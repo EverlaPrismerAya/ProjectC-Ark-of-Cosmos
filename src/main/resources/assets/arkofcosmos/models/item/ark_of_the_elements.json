@@ -1,0 +1,45 @@
+{
+  "parent": "minecraft:item/handheld",
+  "textures": {
+    "layer0": "arkofcosmos:item/ark_of_the_elements_back",
+    "layer1": "arkofcosmos:item/ark_of_the_elements"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "arkofcosmos:active": 1
+      },
+      "model": "arkofcosmos:item/ark_of_the_elements_active"
+    }
+  ],
+  "display": {
+    "firstperson_righthand": {
+      "scale": [
+        0,
+        0,
+        0
+      ]
+    },
+    "firstperson_lefthand": {
+      "scale": [
+        0,
+        0,
+        0
+      ]
+    },
+    "thirdperson_righthand": {
+      "scale": [
+        0,
+        0,
+        0
+      ]
+    },
+    "thirdperson_lefthand": {
+      "scale": [
+        0,
+        0,
+        0
+      ]
+    }
+  }
+}

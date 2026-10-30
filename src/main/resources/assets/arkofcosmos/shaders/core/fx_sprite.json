@@ -1,5 +1,6 @@
 {
   "uniforms": [
+    {"name": "AlphaCutoff", "type": "float", "count": 1, "values": [0]} ,
     {
       "values": [
         1,
@@ -59,6 +60,16 @@
       "type": "float",
       "count": 1,
       "values": [
+        0
+      ]
+    },
+    {
+      "name": "FadeEye",
+      "type": "float",
+      "count": 3,
+      "values": [
+        0,
+        0,
         0
       ]
     }

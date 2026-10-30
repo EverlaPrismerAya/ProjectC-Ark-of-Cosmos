@@ -80,6 +80,16 @@
       "values": [
         0
       ]
+    },
+    {
+      "name": "FadeEye",
+      "type": "float",
+      "count": 3,
+      "values": [
+        0,
+        0,
+        0
+      ]
     }
   ],
   "fragment": "arkofcosmos:fx_trail"

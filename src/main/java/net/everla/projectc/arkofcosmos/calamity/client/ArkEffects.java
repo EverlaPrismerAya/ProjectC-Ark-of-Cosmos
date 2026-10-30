@@ -64,6 +64,8 @@ public final class ArkEffects {
         ArkFxParticle a=particle(SQUISH,p,v,c,range(.3,.6),60,f); a.squish=squish; a.hueShift=hue;
     }
     public static void receive(CompoundTag data){
+        if(data.getString("Event").startsWith("elements_")){ElementsEffects.receive(data);return;}
+        if(data.getString("Event").startsWith("galaxia_")){GalaxiaEffects.receive(data);return;}
         int previousOwner = emittingOwner;
         emittingOwner = data.contains("Owner") ? data.getInt("Owner") : -1;
         try { receiveOwned(data); } finally { emittingOwner = previousOwner; }
@@ -119,12 +121,13 @@ public final class ArkEffects {
     }
     public static void tick(){
         Minecraft mc=Minecraft.getInstance();
-        if(world!=mc.level){world=mc.level;particles.clear();frameParticles.clear();visuals.clear();shake=0;}
+        if(world!=mc.level){world=mc.level;particles.clear();frameParticles.clear();visuals.clear();GalaxiaEffects.clear();shake=0;}
         if(mc.level==null||mc.isPaused())return;
         Set<Integer> live=new HashSet<>();
         frameParticles.clear();frameParticles.addAll(particles);for(ArkFxParticle p:particles)p.beginFrame();
         simulating=true;
         for(phase=0;phase<3;phase++){
+            GalaxiaEffects.tick(phase);
             for(var e:mc.level.entitiesForRendering())if(e instanceof ArkAttackEntity a){live.add(a.getId()); consume(a,phase);}
             particles.removeIf(p->{p.prepareFrame();p.update();p.capture(phase+1);if(p.time>=p.lifetime){p.died=(phase+1)/3d;return true;}return false;});
         }
@@ -133,6 +136,10 @@ public final class ArkEffects {
         // Particle handler runs at 60 Hz. Blades emit at 120 Hz, never once per rendered frame.
         
         shake=Math.max(0,shake-.185*3);
+    }
+    static void galaxiaOwner(int owner,Runnable emit){
+        int previous=emittingOwner;emittingOwner=owner;
+        try{emit.run();}finally{emittingOwner=previous;}
     }
     static void consume(ArkAttackEntity entity,int phase){
         CompoundTag state=entity.effectSnapshot(); if(state.isEmpty())return;

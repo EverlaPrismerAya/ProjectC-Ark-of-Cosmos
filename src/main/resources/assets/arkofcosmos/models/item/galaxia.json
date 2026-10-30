@@ -1,0 +1,28 @@
+{
+  "parent": "minecraft:item/handheld",
+  "textures": {
+    "layer0": "arkofcosmos:item/galaxia_dawn_outline",
+    "layer1": "arkofcosmos:item/galaxia_dawn"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "arkofcosmos:dusk": 1
+      },
+      "model": "arkofcosmos:item/galaxia_dusk"
+    },
+    {
+      "predicate": {
+        "arkofcosmos:active": 1
+      },
+      "model": "arkofcosmos:item/galaxia_active"
+    },
+    {
+      "predicate": {
+        "arkofcosmos:dusk": 1,
+        "arkofcosmos:active": 1
+      },
+      "model": "arkofcosmos:item/galaxia_dusk_active"
+    }
+  ]
+}

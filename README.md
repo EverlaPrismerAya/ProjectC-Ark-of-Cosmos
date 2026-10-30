@@ -2,6 +2,10 @@
 
 将 Terraria 灾厄模组（Calamity Mod）的鸿蒙方舟带入 Minecraft 的 Forge 模组。包含五段连击、投掷剪合、星链、针弹、追踪弹、招架充能与时空撕裂，并将对应的二维特效适配到 Minecraft 三维场景。
 
+另提供独立武器 Galaxia（银河），包含凤凰、白羊、北极星和仙女座四种攻击模式、星座选择盘及派生弹幕；战斗视觉使用原作纹理及由原 BasicTint.fx 转换的 GLSL，包含残影、smear、锁链、星座和星环。原版同阶段视觉一致性仍待验收，光影包兼容性由用户自行校验。
+
+新增独立武器 Ark of the Elements（元素方舟），包含五段连击、投掷剪合、太阳针与元素玻璃星、招架充能、裂缝剪击及元素谐鸣状态。使用原作纹理与音频，本轮绘制使用 Minecraft 内置通道。
+
 本项目由 EverlaPrismerAya 维护，与 Calamity Team、Re-Logic、Mojang 和 Minecraft Forge 项目没有官方隶属关系。原作品的代码、纹理和音效归各自权利人所有。
 
 ## 环境与安装
@@ -19,11 +23,15 @@
 
 ```mcfunction
 /give @s arkofcosmos:ark_of_cosmos
+/give @s arkofcosmos:galaxia
+/give @s arkofcosmos:ark_of_the_elements
 ```
 
 ### 代码目录
 
 Java 包：`net.everla.projectc.arkofcosmos`。
+
+武器默认通过 `WeaponDamage` 走原生伤害与死亡流程，并无视原版受击冷却；银河、后续新增武器以及方舟对 `ignore_special_damage` 标签实体的伤害沿用此入口。各攻击自身的命中间隔仍按武器规则计算。方舟的独立血量与特殊致死机制由专用的 `ArkDamage` 提供。
 
 按职责分类，灾厄派生实现额外放入 `calamity` 来源分区：
 

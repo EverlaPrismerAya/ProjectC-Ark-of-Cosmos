@@ -8,7 +8,7 @@ import static net.everla.projectc.arkofcosmos.calamity.client.ArkEffects.*;
 
 /** Direct ports of Calamity's particle Update/CustomDraw methods (60 Hz). */
 final class ArkFxParticle {
-    enum Type { SPARKLE, CRIT, FLARE, SMOKE, SQUISH, RING, BLOOM, LIGHT, LINE, BLOOM_LINE, SMEAR }
+    enum Type { SPARKLE, CRIT, FLARE, SMOKE, SQUISH, RING, BLOOM, LIGHT, LINE, BLOOM_LINE, SMEAR, CONSTELLATION }
     Type type;
     Vec3 position, previous, velocity, line = Vec3.ZERO;
     AttackFrame plane;
@@ -19,11 +19,11 @@ final class ArkFxParticle {
     int time, lifetime, delay, variant;
     boolean glowing, capped, concave, planeSprite;
     String texture;
-    private record Frame(Vec3 position,double scale,double rotation,double opacity,double age,float[] color,float[] bloom,Vec3 velocity) {}
+    private record Frame(Vec3 position,double scale,double rotation,double opacity,double age,float[] color,float[] bloom,Vec3 velocity,AttackFrame plane) {}
     private final Frame[] frames=new Frame[4];
     double born, died=1.01;
     void prepareFrame(){if(frames[0]==null){double birth=born;beginFrame();born=birth;}}
-    void capture(int phase){frames[phase]=new Frame(position,scale,rotation,opacity,time,color.clone(),bloom.clone(),velocity);}
+    void capture(int phase){frames[phase]=new Frame(position,scale,rotation,opacity,time,color.clone(),bloom.clone(),velocity,plane);}
     void beginFrame(){born=0;died=1.01;for(int i=0;i<4;i++)capture(i);}
 
 
@@ -74,6 +74,8 @@ final class ArkFxParticle {
         int n=Math.min(2,(int)(clamp(partial)*3));double fraction=clamp(partial)*3-n;
         Frame a=frames[n],b=frames[n+1];
         if(a==null||b==null){beginFrame();a=frames[n];b=frames[n+1];}
+        AttackFrame plane=type==Type.SMEAR || type==Type.CONSTELLATION
+                ? AttackFrame.interpolateView(a.plane,b.plane,fraction):this.plane;
         Vec3 p=a.position.lerp(b.position,fraction);
         double s=lerp(a.scale,b.scale,fraction),r=lerp(a.rotation,b.rotation,fraction);
         double opacity=lerp(a.opacity,b.opacity,fraction),completion=lerp(a.age,b.age,fraction)/lifetime;
@@ -113,6 +115,21 @@ final class ArkFxParticle {
             case RING -> centered("hollowcirclehardedge", p, face, r, s, s, mul(color, opacity), ADDITIVE);
             case BLOOM, LIGHT -> centered(type == Type.BLOOM ? "bloomcircle" : "light", p, face, r, s, s, color, ADDITIVE);
             case SMEAR -> centered(texture, p, plane, r, s, s, color, ADDITIVE);
+            case CONSTELLATION -> {
+                String circle="galaxia/hollowcirclesoftedge";
+                // The source's horizontal squeeze is 2D perspective artwork, not a 3D ellipse.
+                AttackFrame ringPlane=new AttackFrame(plane.right(),plane.normal());
+                int[] dimensions=ArkFxDraw.size(circle);
+                centered(circle,p,ringPlane,0,s*dimensions[1]/dimensions[0],s,mul(color,opacity),ADDITIVE);
+                double ratio=(double)ArkFxDraw.size("sparkle")[1]/ArkFxDraw.size("bloomcircle")[1];
+                for(int i=0;i<variant;i++){
+                    double angle=expansion+ArkFxDraw.time()*7+i*Math.PI*2/variant;
+                    Vec3 at=p.add(ringPlane.direction(angle).scale(s*dimensions[1]*.45/16));
+                    centered("bloomcircle",at,billboard,0,s*ratio,s*ratio,mul(color,opacity*.5),ADDITIVE);
+                    centered("sparkle",at,billboard,r+Math.PI/4+Math.PI/4*i,s*.75,s*.75,mul(color,opacity*.5),ADDITIVE);
+                    centered("sparkle",at,billboard,r+Math.PI/4*i,s,s,mul(WHITE,opacity),ADDITIVE);
+                }
+            }
             case LINE, BLOOM_LINE -> {
                 Vec3 v = line;
                 if (type == Type.LINE) {
@@ -121,7 +138,7 @@ final class ArkFxParticle {
                 }
                 String name = type == Type.BLOOM_LINE ? "bloomline" : concave ? "thickendedline" : "thinendedline";
                 int[] size = ArkFxDraw.size(name);
-                Vec3 along=v.normalize(); Vec3 side=billboard.normal().cross(along).normalize();
+                Vec3 along=v.normalize(); Vec3 side=(planeSprite?plane:billboard).normal().cross(along).normalize();
                 if(side.lengthSqr()<1e-8)side=billboard.right();
                 AttackFrame ribbon=new AttackFrame(along,side);
                 double angle = Math.PI / 2;
@@ -132,6 +149,43 @@ final class ArkFxParticle {
                     ArkFxDraw.sprite("bloomlinecap", p.add(v), ribbon, angle, s, s, cap[0] / 2d, cap[1], color, ADDITIVE);
                 }
             }
+        }
+    }
+    /** Same source particle simulation, rendered without the optional custom shader pipeline. */
+    void drawNative(double partial, net.everla.projectc.arkofcosmos.client.render.NativeSprites.Draw draw, AttackFrame billboard) {
+        if(partial<born||partial>=died)return;
+        int n=Math.min(2,(int)(clamp(partial)*3));double fraction=clamp(partial)*3-n;
+        Frame a=frames[n],b=frames[n+1];if(a==null||b==null){beginFrame();a=frames[n];b=frames[n+1];}
+        Vec3 p=a.position.lerp(b.position,fraction),v=a.velocity.lerp(b.velocity,fraction);
+        double s=lerp(a.scale,b.scale,fraction),r=lerp(a.rotation,b.rotation,fraction),alpha=lerp(a.opacity,b.opacity,fraction),t=lerp(a.age,b.age,fraction)/lifetime;
+        float[] c=mix(a.color,b.color,fraction),glow=mix(a.bloom,b.bloom,fraction);AttackFrame face=planeSprite?plane:billboard;
+        switch(type){
+            case SPARKLE,CRIT,FLARE -> {
+                if(type==Type.FLARE&&delay>0)return;
+                String texture=type==Type.SPARKLE?"sparkle":"thinsparkle";
+                double x=s,y=s;
+                if(type==Type.FLARE){double ease=1-Math.pow(1-t,4);x=lerp(originalX,finalX,ease);y=lerp(originalY,finalY,ease);}
+                double ratio=(double)net.everla.projectc.arkofcosmos.client.render.NativeSprites.height("fx/"+texture)/net.everla.projectc.arkofcosmos.client.render.NativeSprites.height("fx/bloomcircle");
+                draw.centered("fx/bloomcircle",p,face,0,x*bloomScale*ratio,y*bloomScale*ratio,mul(glow,alpha*.5),true);
+                if(type==Type.SPARKLE)draw.centered("fx/"+texture,p,face,r+Math.PI/4,x*.75,y*.75,mul(c,alpha*.5),true);
+                draw.centered("fx/"+texture,p,face,r,x,y,mul(c,alpha),true);
+            }
+            case SQUISH -> {
+                double stretch=Math.max(1,Math.min(maxSquish,v.length()*16/10*squish)),angle=face.angle(v)+Math.PI/2,x=s-s*stretch*.3,y=s*stretch;
+                double ratio=(double)net.everla.projectc.arkofcosmos.client.render.NativeSprites.height("fx/light")/net.everla.projectc.arkofcosmos.client.render.NativeSprites.height("fx/bloomcircle");
+                draw.centered("fx/bloomcircle",p,face,angle,x*2*ratio,y*2*ratio,mul(c,alpha*.8),true);
+                draw.centered("fx/light",p,face,angle,x*1.1,y*1.1,mul(c,alpha*.8),true);
+                draw.centered("fx/light",p,face,angle,x,y,mul(WHITE,alpha*.9),true);
+            }
+            case RING -> draw.centered("fx/hollowcirclehardedge",p,face,r,s,s,mul(c,alpha),true);
+            case BLOOM,LIGHT -> draw.centered("fx/"+(type==Type.BLOOM?"bloomcircle":"light"),p,face,r,s,s,c,true);
+            case LINE -> {
+                double extend=Math.sqrt(1-Math.pow(t-1,2))*expansion/16;Vec3 start=p.subtract(line.normalize().scale(extend/2)),vLine=line.add(line.normalize().scale(extend));
+                Vec3 side=face.normal().cross(vLine.normalize()).normalize();if(side.lengthSqr()<1e-8)side=face.right();AttackFrame ribbon=new AttackFrame(vLine.normalize(),side);
+                String name="fx/"+(concave?"thickendedline":"thinendedline");
+                draw.sprite(name,start,ribbon,Math.PI/2,s,vLine.length()*16/net.everla.projectc.arkofcosmos.client.render.NativeSprites.height(name),net.everla.projectc.arkofcosmos.client.render.NativeSprites.width(name)/2d,net.everla.projectc.arkofcosmos.client.render.NativeSprites.height(name),c,true,false,15728880);
+            }
+            default -> { }
         }
     }
     private static void centered(String texture, Vec3 p, AttackFrame face, double angle, double x, double y, float[] color, ArkFxDraw.Blend blend) {

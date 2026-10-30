@@ -42,8 +42,6 @@ public final class ArkDamage {
             new ResourceLocation(ArkOfCosmos.MOD_ID, "ignore_death_remove"));
     private static final TagKey<EntityType<?>> IGNORE_SPECIAL_DAMAGE = TagKey.create(Registries.ENTITY_TYPE,
             new ResourceLocation(ArkOfCosmos.MOD_ID, "ignore_special_damage"));
-    private static final ThreadLocal<OrdinaryHit> ORDINARY_HIT = new ThreadLocal<>();
-    private record OrdinaryHit(LivingEntity target, DamageSource source, float minimum) {}
 
     private ArkDamage() {}
     public static void bootstrap() {}
@@ -106,22 +104,6 @@ public final class ArkDamage {
         return SEAGULL.equals(net.minecraftforge.registries.ForgeRegistries.ENTITY_TYPES.getKey(target.getType()));
     }
 
-    /** Run only inside this Ark hit; unrelated hits and nested attacks keep their own amounts. */
-    public static float ordinaryMinimum(LivingEntity target, DamageSource source, float amount) {
-        OrdinaryHit hit = ORDINARY_HIT.get();
-        return hit != null && hit.target == target && hit.source == source ? Math.max(amount, hit.minimum) : amount;
-    }
-
-    private static boolean ordinaryHurt(LivingEntity target, DamageSource source, float amount) {
-        OrdinaryHit previous = ORDINARY_HIT.get();
-        ORDINARY_HIT.set(new OrdinaryHit(target, source, amount * .35f));
-        try {
-            return target.hurt(source, amount);
-        } finally {
-            if (previous == null) ORDINARY_HIT.remove();
-            else ORDINARY_HIT.set(previous);
-        }
-    }
 
     private static float reducedDamage(LivingEntity target, float amount) {
         float reduced = CombatRules.getDamageAfterAbsorb(amount, target.getArmorValue(),
@@ -171,7 +153,7 @@ public final class ArkDamage {
     private static boolean hurtTarget(LivingEntity target, DamageSource source, float amount) {
         if (target.level().isClientSide || protectedPlayer(target) || target.isRemoved()
                 || !Float.isFinite(amount) || amount <= 0 || !target.isAlive()) return false;
-        if (ordinaryTarget(target)) return ordinaryHurt(target, source, amount);
+        if (ordinaryTarget(target)) return WeaponDamage.hurt(target, source, amount);
         float before = target.getHealth();
         if (!Float.isFinite(before) || before <= 0) return false;
         boolean seagull = seagull(target);
