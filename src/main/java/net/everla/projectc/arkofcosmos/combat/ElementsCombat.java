@@ -24,6 +24,7 @@ import java.util.*;
 @Mod.EventBusSubscriber(modid=ArkOfCosmos.MOD_ID)
 public final class ElementsCombat {
     private ElementsCombat() {}
+    private static final ThreadLocal<LivingEntity> RESONANCE_HIT=new ThreadLocal<>();
     private static final Map<UUID,Controls> CONTROLS=new HashMap<>();
     private static final class Controls {
         boolean left,right,parried; int cooldown,use,idle; long invulnerableUntil;
@@ -47,7 +48,7 @@ public final class ElementsCombat {
             }else if(c.cooldown==0){
                 c.parried=false;c.parryStack=stack;c.invulnerableUntil=p.level().getGameTime()+5;
                 c.cooldown=340;c.use=20;stack.getOrCreateTag().putInt("ElementsCooldown",340);
-                ElementsEntity.create(p,ElementsEntity.PARRY,0,0,7,p.getBoundingBox().getCenter(),Vec3.ZERO,AttackFrame.capture(p));
+                ElementsEntity.create(p,ElementsEntity.PARRY,0,0,ElementsRules.BASE_DAMAGE,p.getBoundingBox().getCenter(),Vec3.ZERO,AttackFrame.capture(p));
             }
         }
         if(left)attack(p,c);
@@ -55,7 +56,7 @@ public final class ElementsCombat {
     private static void attack(ServerPlayer p,Controls c){
         if(c.use>0||active(p))return;
         ItemStack stack=p.getMainHandItem();int combo=Math.floorMod(stack.getOrCreateTag().getInt("ElementsCombo"),5),mode=ElementsRules.mode(combo),charge=ElementsItem.charge(stack);
-        float damage=ElementsRules.charged(7,charge);AttackFrame f=AttackFrame.capture(p);Vec3 at=p.getBoundingBox().getCenter();
+        float damage=ElementsRules.charged(ElementsRules.BASE_DAMAGE,charge);AttackFrame f=AttackFrame.capture(p);Vec3 at=p.getBoundingBox().getCenter();
         ElementsEntity.create(p,ElementsEntity.BLADE,mode,charge,damage,at,f.forward(),f);
         if(mode==1){
             ElementsEntity.create(p,ElementsEntity.NEEDLE,0,charge,damage*.8f,at.add(f.forward().scale(20/16d)),f.forward().scale(16*2.8/16d),f);
@@ -99,8 +100,17 @@ public final class ElementsCombat {
             var source=t.damageSources().magic();
             if(data.hasUUID("ElementsDotOwner")&&t.level() instanceof net.minecraft.server.level.ServerLevel level){var owner=level.getPlayerByUUID(data.getUUID("ElementsDotOwner"));if(owner!=null)source=t.damageSources().indirectMagic(owner,owner);}
             int cooldown=t.invulnerableTime;t.invulnerableTime=0;
-            try{t.hurt(source,1);}finally{t.invulnerableTime=Math.max(cooldown,t.invulnerableTime);}
+            LivingEntity previous=RESONANCE_HIT.get();RESONANCE_HIT.set(t);
+            try{t.hurt(source,1);}finally{
+                t.invulnerableTime=Math.max(cooldown,t.invulnerableTime);
+                if(previous==null)RESONANCE_HIT.remove();else RESONANCE_HIT.set(previous);
+            }
         }
+    }
+    // Suppress only knockback inside this target's DOT pulse, not other hits while debuffed.
+    @SubscribeEvent(priority=EventPriority.LOWEST)
+    public static void resonanceKnockback(net.minecraftforge.event.entity.living.LivingKnockBackEvent e){
+        if(RESONANCE_HIT.get()==e.getEntity())e.setCanceled(true);
     }
     public static void applyResonance(LivingEntity t,Player owner,int ticks){
         t.addEffect(new net.minecraft.world.effect.MobEffectInstance(ArkOfCosmos.ELEMENTAL_MIX.get(),ticks,0,false,false,true),owner);

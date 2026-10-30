@@ -72,6 +72,15 @@ public final class ElementsGameTests {
             target.tick();
             h.assertTrue(Math.abs(target.getHealth()-(100-i/5))<.001,"Resonance tick "+i+" health="+target.getHealth()+" elapsed="+target.getPersistentData().getInt("ElementsDotElapsed"));
         }
+        // Call only the DOT handler so normal movement/drag cannot hide an added impulse.
+        Vec3 motion=new Vec3(.12,.07,-.09);target.setDeltaMovement(motion);
+        target.getPersistentData().putInt("ElementsDotElapsed",4);
+        float pulseHealth=target.getHealth();
+        ElementsCombat.resonance(new net.minecraftforge.event.entity.living.LivingEvent.LivingTickEvent(target));
+        h.assertTrue(target.getHealth()<pulseHealth,"Resonance pulse did not damage target");
+        h.assertTrue(target.getDeltaMovement().distanceToSqr(motion)<1e-12,"Resonance added knockback or erased existing motion");
+        target.knockback(.4,1,0);
+        h.assertTrue(target.getDeltaMovement().distanceToSqr(motion)>1e-6,"Resonance suppressed unrelated knockback");
         target.removeEffect(ArkOfCosmos.ELEMENTAL_MIX.get());ElementsCombat.resonance(new net.minecraftforge.event.entity.living.LivingEvent.LivingTickEvent(target));
         h.assertTrue(!target.getPersistentData().contains("ElementsDotElapsed"),"Expired resonance did not clear its counter");
         ElementsCombat.applyResonance(target,p,30);float before=target.getHealth();

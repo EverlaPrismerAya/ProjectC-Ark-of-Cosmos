@@ -5,7 +5,7 @@ import net.everla.projectc.arkofcosmos.calamity.util.ArkCurves;
 /** ArkoftheElements source rules, with the explicitly selected Minecraft balance. */
 public final class ElementsRules {
     private ElementsRules() {}
-    public static final float BASE_DAMAGE = 7;
+    public static final float BASE_DAMAGE = 5;
     public static final int MAX_CHARGE = 10, PARRY_WINDOW = 15, PARRY_COOLDOWN = 340;
     public static final double MAX_REACH = 500 / 16d;
     public static int mode(int combo) { return combo == 4 ? 2 : combo % 2; }
