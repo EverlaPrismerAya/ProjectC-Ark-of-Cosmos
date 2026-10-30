@@ -23,6 +23,7 @@ import static net.everla.projectc.arkofcosmos.calamity.combat.GalaxiaRules.*;
 public final class GalaxiaEntity extends Entity {
     public static final int BLADE=0,BOLT=1,STAR=2,CHAIN=3,RING=4,SLASH=5,SPROUT=6,SURFACE_WAVE=7;
     private static final EntityDataAccessor<CompoundTag> VIEW=SynchedEntityData.defineId(GalaxiaEntity.class,EntityDataSerializers.COMPOUND_TAG);
+    private final AttackRenderSnapshot clientSnapshot = new AttackRenderSnapshot();
     private UUID ownerUuid;
     private int ownerId,kind,mode,state,age,left=2,charge,overCharge,indicator,hitCooldown,blastCooldown;
     private float damage,scale=1,rotation,hue,homing;
@@ -80,7 +81,7 @@ public final class GalaxiaEntity extends Entity {
     @Override public Packet<ClientGamePacketListener> getAddEntityPacket() { return NetworkHooks.getEntitySpawningPacket(this); }
     @Override public boolean shouldRenderAtSqrDistance(double distance) { return distance<256*256; }
     @Override public void tick() {
-        super.tick(); if(level().isClientSide) return;
+        super.tick(); if(level().isClientSide) {clientSnapshot.tick(view(),"Age");return;}
         Player p=owner(); if(p==null || !p.isAlive() || p.isSpectator()) {discard();return;}
         samples=new net.minecraft.nbt.ListTag();samples.add(snapshot());
         int steps=kind==STAR?12:kind==BLADE && mode!=ARIES?6:3;
@@ -451,10 +452,19 @@ public final class GalaxiaEntity extends Entity {
         if(across.lengthSqr()<1e-8)across=new Vec3(1,0,0);
         return new AttackFrame(forward,across);
     }
+    @Override public void onSyncedDataUpdated(EntityDataAccessor<?> key) {
+        if (level().isClientSide && key.equals(VIEW) && !view().isEmpty())
+            clientSnapshot.initialize(view());
+        super.onSyncedDataUpdated(key);
+    }
+    public CompoundTag effectSnapshot() {
+        return level().isClientSide ? clientSnapshot.state() : view();
+    }
     public CompoundTag renderState(float partial) {
-        CompoundTag state=view().copy();var path=state.getList("Samples",10);if(path.size()<2)return state;
+        CompoundTag state=effectSnapshot().copy();var path=state.getList("Samples",10);if(path.size()<2)return state;
         double time=Math.max(0,Math.min(1,partial))*(path.size()-1);int index=Math.min(path.size()-2,(int)time);
         double ratio=time-index;CompoundTag a=path.getCompound(index),b=path.getCompound(index+1);
+        state.putDouble("RenderAge",a.getInt("Age")+(b.getInt("Age")-a.getInt("Age"))*ratio);
         for(String key:java.util.List.of("Age","Left","Charge","State","OverCharge","ChainTimer","ChainAge"))
             if(a.contains(key))state.putInt(key,a.getInt(key));
         if(a.contains("Points"))state.put("Points",a.get("Points").copy());

@@ -47,10 +47,10 @@ public final class GalaxiaRenderer extends EntityRenderer<GalaxiaEntity> {
             }else if(kind==BOLT){
                 // DrawAfterimagesCentered(mode=0), cache length 2; source does not add another current sprite.
                 var visual=GalaxiaEffects.visual(e.getId());int i=0;
-                if(visual!=null)for(CompoundTag old:visual.history){
-                    if(old.getInt("Age")>=s.getInt("Age"))continue;
-                    if(i>=2)break;
-                    ArkFxDraw.centered("galaxia/galaxiabolt",vector(old,"Position"),f,r+Math.PI/2,scale,scale,mul(WHITE,(2-i)/2d),ALPHA);i++;
+                double age=s.contains("RenderAge")?s.getDouble("RenderAge"):s.getInt("Age");
+                if(visual!=null && !visual.history.isEmpty())for(;i<2;i++){
+                    Vec3 at=historyPosition(visual.history,age-1-i);
+                    ArkFxDraw.centered("galaxia/galaxiabolt",at,f,r+Math.PI/2,scale,scale,mul(WHITE,(2-i)/2d),ALPHA);
                 }
                 if(i==0)ArkFxDraw.centered("galaxia/galaxiabolt",p,f,r+Math.PI/2,scale,scale,WHITE,ALPHA);
             }else if(kind==STAR){
@@ -61,6 +61,19 @@ public final class GalaxiaRenderer extends EntityRenderer<GalaxiaEntity> {
             else if(kind==RING)tropicRing(s,f,p,time);
             else if(kind==SLASH)dash(s,f,time);
         }finally{ArkFxDraw.fadeEye=null;}
+    }
+    static Vec3 historyPosition(java.util.List<CompoundTag> history,double age){
+        CompoundTag newer=history.get(0);
+        if(age>=newer.getInt("Age"))return GalaxiaEffects.vector(newer,"Position");
+        for(int i=1;i<history.size();i++){
+            CompoundTag older=history.get(i);
+            if(age>=older.getInt("Age")){
+                double span=newer.getInt("Age")-older.getInt("Age");
+                return GalaxiaEffects.vector(older,"Position").lerp(GalaxiaEffects.vector(newer,"Position"),span<=0?0:(age-older.getInt("Age"))/span);
+            }
+            newer=older;
+        }
+        return GalaxiaEffects.vector(newer,"Position");
     }
     private static void blade(String name,Vec3 p,AttackFrame f,double r,double scale,double ox,double oy,float[] color,ArkFxDraw.Tint tint){
         int[] size=ArkFxDraw.size(name);

@@ -47,7 +47,6 @@ public final class ElementsItem extends SwordItem {
         lines.add(Component.translatable("elements.empower").withStyle(s->s.withColor(0xFFA500)));
         lines.add(Component.translatable("elements.blast",Component.keybind("key.arkofcosmos.dash"),Component.keybind("key.use")).withStyle(s->s.withColor(0xFFD700)));
         lines.add(Component.translatable("elements.resonance"));
-        lines.add(Component.translatable("elements.charge",charge(stack),10));
         lines.add(Component.translatable("elements.flavor").withStyle(s->s.withColor(0xA335EE)));
     }
 }

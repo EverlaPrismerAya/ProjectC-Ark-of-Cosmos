@@ -86,7 +86,7 @@ public final class ElementsEffects {
         Set<Integer> live=new HashSet<>();List<ElementsEntity> entities=new ArrayList<>();for(var e:mc.level.entitiesForRendering())if(e instanceof ElementsEntity a){entities.add(a);live.add(a.getId());}
         for(int phase=1;phase<=3;phase++){
             ElementsVanillaParticles.status(phase);
-            for(ElementsEntity e:entities){Visual visual=VISUALS.computeIfAbsent(e.getId(),k->new Visual());var list=e.view().getList("Samples",10);int updates=e.kind()==BLADE?6:3;
+            for(ElementsEntity e:entities){Visual visual=VISUALS.computeIfAbsent(e.getId(),k->new Visual());var list=e.effectSnapshot().getList("Samples",10);int updates=e.kind()==BLADE?6:3;
                 for(int i=0;i<list.size();i++){CompoundTag s=list.getCompound(i);int age=s.getInt("Age");if(age<=visual.seen||i*3/Math.max(1,updates)!=phase-1)continue;
                     int before=PARTICLES.size();emit(s,visual);ElementsVanillaParticles.emit(s,phase);visual.history.addFirst(s.copy());while(visual.history.size()>16)visual.history.removeLast();visual.seen=age;
                     for(int j=before;j<PARTICLES.size();j++){ArkFxParticle p=PARTICLES.get(j);p.born=(phase-1)/3d;p.prepareFrame();FRAME.add(p);}

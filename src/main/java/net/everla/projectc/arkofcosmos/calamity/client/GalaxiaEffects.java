@@ -30,7 +30,7 @@ public final class GalaxiaEffects {
         var level=Minecraft.getInstance().level;if(level==null)return;
         Set<Integer> live=new HashSet<>();
         for(var entity:level.entitiesForRendering())if(entity instanceof GalaxiaEntity e){
-            live.add(e.getId());consume(e.getId(),e.view(),phase);
+            live.add(e.getId());consume(e.getId(),e.effectSnapshot(),phase);
         }
         if(phase==2)visuals.keySet().removeIf(id->!live.contains(id));
     }

@@ -7,6 +7,7 @@ import net.minecraft.world.phys.Vec3;
 /** Numerical source checkpoints, runnable without a window or GL context. */
 public final class ArkFxCheck {
     public static void main(String[] args) {
+        checkAttackSnapshots();
         checkElementsFx();
         checkClientSubscriberNames();
         // Camera turns must not project a 3D chain segment onto its old attack plane.
@@ -76,6 +77,74 @@ public final class ArkFxCheck {
         near(GalaxiaAudio.pitch("hit43",1),Math.pow(2,.1));
         near(GalaxiaAudio.pitch("book",0),1);
         System.out.println("Ark FX source checkpoints passed");
+    }
+    private static void checkAttackSnapshots() {
+        var history = new java.util.ArrayList<net.minecraft.nbt.CompoundTag>();
+        for(int age=6;age>=0;age--){
+            var point=new net.minecraft.nbt.CompoundTag();point.putInt("Age",age);point.putDouble("PositionX",age*2);history.add(point);
+        }
+        near(GalaxiaRenderer.historyPosition(history,3).x,6);
+        near(GalaxiaRenderer.historyPosition(history,3.5).x,7);
+        near(GalaxiaRenderer.historyPosition(history,4).x,8);
+        near(GalaxiaRenderer.historyPosition(history,-1).x,0);
+        near(GalaxiaRenderer.historyPosition(history,7).x,12);
+        for (String clock : new String[]{"Age", "Steps"}) {
+            var latch = new net.everla.projectc.arkofcosmos.entity.AttackRenderSnapshot();
+            var incoming = trajectory(clock, 3, 0, 3);
+            latch.initialize(incoming);
+            incoming.putDouble("PositionX", 999);
+            near(latch.state().getDouble("PositionX"), 3);
+            // First client tick must not replay the path already initialized at spawn.
+            latch.tick(trajectory(clock, 3, 0, 3), clock);
+            for (float partial : new float[]{0, .5f, 1}) {
+                near(net.everla.projectc.arkofcosmos.entity.AttackRenderSnapshot.partial(latch.state(), partial), 1);
+                near(latch.state().getDouble("PositionX"), 3);
+            }
+            incoming = trajectory(clock, 6, 3, 6);
+            latch.tick(incoming, clock);
+            for (float partial : new float[]{0, .5f, 1})
+                near(net.everla.projectc.arkofcosmos.entity.AttackRenderSnapshot.partial(latch.state(), partial), partial);
+            var late = trajectory(clock, 9, 6, 9);
+            latch.initialize(late); // A mid-tick packet cannot replace the active trajectory.
+            near(latch.state().getInt(clock), 6);
+            incoming.getList("Samples", 10).getCompound(0).putDouble("PositionX", 999);
+            near(latch.state().getList("Samples", 10).getCompound(0).getDouble("PositionX"), 3);
+            for (int tick = 0; tick < 4; tick++) {
+                latch.tick(trajectory(clock, 6, 3, 6), clock);
+                if (!latch.state().getList("Samples", 10).isEmpty())
+                    throw new AssertionError("Unchanged snapshots must not replay or emit particles");
+                near(latch.state().getDouble("PositionX"), 6);
+            }
+            if(clock.equals("Age")) {
+                var effects=trajectory(clock,6,3,6);
+                var path=effects.getList("Samples",10);
+                for(int i=0;i<path.size();i++){
+                    var point=path.getCompound(i);point.putInt("Age",5+i);point.putInt("Kind",-1);
+                    point.putDouble("FZ",1);point.putDouble("RX",1);
+                }
+                int id=-1001;
+                GalaxiaEffects.consume(id,effects,-1);
+                int count=GalaxiaEffects.visual(id).history.size();
+                GalaxiaEffects.consume(id,effects,-1);
+                if(count!=1 || GalaxiaEffects.visual(id).history.size()!=count)
+                    throw new AssertionError("Duplicate logical steps must not emit again");
+                GalaxiaEffects.clear();
+            }
+            latch.tick(late, clock);
+            near(latch.state().getInt(clock), 9);
+            near(latch.state().getList("Samples", 10).getCompound(0).getDouble("PositionX"), 6);
+            near(latch.state().getList("Samples", 10).getCompound(1).getDouble("PositionX"), 9);
+        }
+    }
+    private static net.minecraft.nbt.CompoundTag trajectory(String clock, int age, double start, double end) {
+        var state = new net.minecraft.nbt.CompoundTag();
+        state.putInt(clock, age); state.putDouble("PositionX", end);
+        var samples = new net.minecraft.nbt.ListTag();
+        for (double position : new double[]{start, end}) {
+            var sample = new net.minecraft.nbt.CompoundTag();
+            sample.putDouble("PositionX", position); samples.add(sample);
+        }
+        state.put("Samples", samples); return state;
     }
     private static void checkElementsFx(){
         near(ElementsRenderer.needleOutlineRadius(0),0);near(ElementsRenderer.needleOutlineRadius(15),2);near(ElementsRenderer.needleOutlineRadius(30),3);

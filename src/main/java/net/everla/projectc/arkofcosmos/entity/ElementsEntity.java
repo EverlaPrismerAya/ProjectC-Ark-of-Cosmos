@@ -23,6 +23,7 @@ import java.util.*;
 public final class ElementsEntity extends Entity {
     public static final int BLADE=0,NEEDLE=1,STAR=2,PARRY=3,BLAST=4;
     private static final EntityDataAccessor<CompoundTag> VIEW=SynchedEntityData.defineId(ElementsEntity.class,EntityDataSerializers.COMPOUND_TAG);
+    private final AttackRenderSnapshot clientSnapshot = new AttackRenderSnapshot();
     private UUID ownerUuid;
     private int ownerId,kind,mode,charge,age,left,life,hits,stitches,soundDelay;
     private boolean missed,ended;
@@ -53,7 +54,7 @@ public final class ElementsEntity extends Entity {
     @Override public Packet<ClientGamePacketListener> getAddEntityPacket(){return NetworkHooks.getEntitySpawningPacket(this);}
     @Override public boolean shouldRenderAtSqrDistance(double distance){return distance<256*256;}
     @Override public void tick(){
-        super.tick();if(level().isClientSide)return;
+        super.tick();if(level().isClientSide){clientSnapshot.tick(view(),"Age");return;}
         Player p=owner();if(p==null||!p.isAlive()||p.isSpectator()){finish(false);return;}
         if((kind==BLADE||kind==PARRY)&&!ElementsCombat.holding(p)){finish(false);return;}
         samples=new ListTag();samples.add(snapshot());
@@ -193,8 +194,16 @@ public final class ElementsEntity extends Entity {
     }
     private void publish(){CompoundTag s=snapshot();s.put("Samples",samples.copy());entityData.set(VIEW,s);}
     public CompoundTag view(){return entityData.get(VIEW);}
+    @Override public void onSyncedDataUpdated(EntityDataAccessor<?> key) {
+        if (level().isClientSide && key.equals(VIEW) && !view().isEmpty())
+            clientSnapshot.initialize(view());
+        super.onSyncedDataUpdated(key);
+    }
+    public CompoundTag effectSnapshot() {
+        return level().isClientSide ? clientSnapshot.state() : view();
+    }
     public CompoundTag renderState(float partial){
-        ListTag list=view().getList("Samples",10);if(list.isEmpty())return view();
+        ListTag list=effectSnapshot().getList("Samples",10);if(list.isEmpty())return effectSnapshot();
         double index=ElementsRules.clamp(partial)*(list.size()-1);int i=(int)index;CompoundTag a=list.getCompound(i),b=list.getCompound(Math.min(i+1,list.size()-1)),s=a.copy();double t=index-i;
         for(String k:new String[]{"Position","Velocity","Direction","Center"})vector(s,k,vector(a,k).lerp(vector(b,k),t));
         for(String k:new String[]{"Age","Left","Rotation","Scale"})s.putDouble(k,a.getDouble(k)+(b.getDouble(k)-a.getDouble(k))*t);

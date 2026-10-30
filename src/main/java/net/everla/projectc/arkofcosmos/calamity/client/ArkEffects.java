@@ -233,6 +233,7 @@ public final class ArkEffects {
     static void chainStar(Visual v,Vec3 p,float[] bloom,AttackFrame f){ArkFxParticle a=particle(SPARKLE,p,Vec3.ZERO,WHITE,range(1,1.5),20,f);a.bloom=bloom;a.bloomScale=3;v.chain.add(a);}
     static void chainLine(Visual v,Vec3 from,Vec3 to,float[] c,AttackFrame f){ArkFxParticle a=particle(BLOOM_LINE,from,Vec3.ZERO,c,.8,20,f);a.line=to.subtract(from);a.capped=true;v.chain.add(a);}
     static Vec3[] trail(ArkAttackEntity e,float partial){
+        partial=net.everla.projectc.arkofcosmos.entity.AttackRenderSnapshot.partial(e.effectSnapshot(),partial);
         Visual v=visuals.get(e.getId()); if(v==null||v.history.isEmpty())return new Vec3[0];
         int cap=e.kind()==ArkAttackEntity.Kind.BOLT?20:10;List<Vec3> result=new ArrayList<>();
         int substeps=e.kind()==ArkAttackEntity.Kind.BLADE?6:3;
@@ -245,6 +246,7 @@ public final class ArkEffects {
     }
     static double stitchAngle(ArkAttackEntity entity,int i){Visual v=visuals.get(entity.getId());return v==null?0:v.stitchAngles[i];}
     static float[] rotations(ArkAttackEntity e,float partial){
+        partial=net.everla.projectc.arkofcosmos.entity.AttackRenderSnapshot.partial(e.effectSnapshot(),partial);
         Visual v=visuals.get(e.getId());if(v==null)return new float[0];
         int start=(int)((1-partial)*6);int count=Math.min(10,v.history.size()-start-1);if(count<=0)return new float[0];float[] out=new float[count];
         for(int i=0;i<count;i++)out[i]=(float)lerp(v.history.get(start+i).getFloat("Rotation"),v.history.get(start+i+1).getFloat("Rotation"),(1-partial)*6-start);return out;

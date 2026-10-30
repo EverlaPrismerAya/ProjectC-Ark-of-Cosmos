@@ -39,7 +39,7 @@ public final class ArkAttackEntity extends CalamityAttackEntity {
     private boolean dashNeedsSync;
     private boolean endingAttack;
     private net.minecraft.nbt.ListTag samples = new net.minecraft.nbt.ListTag();
-    private CompoundTag clientSnapshot = new CompoundTag();
+    private final AttackRenderSnapshot clientSnapshot = new AttackRenderSnapshot();
 
     public ArkAttackEntity(EntityType<? extends ArkAttackEntity> type, Level level) {
         super(type, level);
@@ -96,7 +96,7 @@ public final class ArkAttackEntity extends CalamityAttackEntity {
         }
         return tag;
     }
-    private CompoundTag renderView() { return level().isClientSide && !clientSnapshot.isEmpty() ? clientSnapshot : view(); }
+    private CompoundTag renderView() { return level().isClientSide && !clientSnapshot.state().isEmpty() ? clientSnapshot.state() : view(); }
     private CompoundTag sample(float partial, boolean next) {
         net.minecraft.nbt.ListTag path = renderView().getList("Samples", 10);
         if (path.isEmpty()) return renderView();
@@ -132,7 +132,7 @@ public final class ArkAttackEntity extends CalamityAttackEntity {
     @Override public void onSyncedDataUpdated(EntityDataAccessor<?> key) {
         if (level().isClientSide && key.equals(VIEW) && !view().isEmpty()) {
             setPos(vector(view(), "Position"));
-            if (clientSnapshot.isEmpty()) clientSnapshot = view().copy();
+            clientSnapshot.initialize(view());
         }
         super.onSyncedDataUpdated(key);
     }
@@ -144,11 +144,7 @@ public final class ArkAttackEntity extends CalamityAttackEntity {
     @Override public void tick() {
         super.tick();
         if (level().isClientSide) {
-            boolean fresh = clientSnapshot.isEmpty() || view().getInt("Steps") != clientSnapshot.getInt("Steps");
-            clientSnapshot = view().copy();
-            // Commit snapshots on client tick boundaries. Late packets must not change the path mid-frame,
-            // and an unchanged snapshot must hold its endpoint rather than replay its last trajectory.
-            if (!fresh) clientSnapshot.remove("Samples");
+            clientSnapshot.tick(view(), "Steps");
             return;
         }
         Player owner = ownerUuid == null ? null : level().getPlayerByUUID(ownerUuid);
