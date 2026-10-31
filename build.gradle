@@ -61,6 +61,8 @@ minecraft {
         // applies to all the run configs below
         configureEach {
             args '--mixin', 'arkofcosmos.mixins.json'
+            // Gradle development runs use Mojang names; the packaged refmap targets SRG names.
+            property 'mixin.env.disableRefMap', 'true'
             workingDirectory project.file('run')
 
             // Recommended logging data for a userdev environment

@@ -143,10 +143,10 @@ public final class MahouAttackEntity extends Entity {
                     if(delta.length()<15||delta.length()>18||position().distanceTo(boss.getBoundingBox().getCenter())<12)
                         setPos(target.getBoundingBox().getCenter().add(outward.scale(16.5)));
                     velocity=Vec3.ZERO;
-                }else{velocity=velocity.scale(.96).add(delta.normalize().scale(.004));if(velocity.length()>.05)velocity=velocity.normalize().scale(.05);setPos(position().add(velocity));}
+                }else{velocity=velocity.scale(.96).add(delta.normalize().scale(.004));if(velocity.length()>.1)velocity=velocity.normalize().scale(.1);setPos(position().add(velocity));}
             }
             if(age%10==0)for(LivingEntity victim:level().getEntitiesOfClass(LivingEntity.class,getBoundingBox().inflate(4),v->MahouPhaseOneAI.valid(boss,v)))
-                victim.hurt(damageSources().indirectMagic(this,boss),18);
+                net.everla.projectc.arkofcosmos.combat.WeaponDamage.hurt(victim,damageSources().indirectMagic(this,boss),18);
         } else if(kind==FUSION){
             if(age==delay+1){
                 ArkOfCosmos.sound(this,"galaxia_eruption",2);
@@ -208,7 +208,7 @@ public final class MahouAttackEntity extends Entity {
         return level().clip(new ClipContext(origin,end,ClipContext.Block.COLLIDER,ClipContext.Fluid.NONE,boss)).getType()!=HitResult.Type.MISS;
     }
     private void hit(MahouTsukaiEntity boss,LivingEntity victim) {
-        if(hits.add(victim.getId()))victim.hurt(kind==PILLAR?damageSources().mobAttack(boss):damageSources().indirectMagic(this,boss),damage);
+        if(hits.add(victim.getId()))net.everla.projectc.arkofcosmos.combat.WeaponDamage.hurt(victim,kind==PILLAR?damageSources().mobAttack(boss):damageSources().indirectMagic(this,boss),damage);
     }
     /** The shield is a live radius around the boss, so moving into it before the
      * fusion impact resolves must protect the entity as well. */

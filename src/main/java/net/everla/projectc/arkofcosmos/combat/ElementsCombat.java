@@ -108,7 +108,10 @@ public final class ElementsCombat {
             if(data.hasUUID("ElementsDotOwner")&&t.level() instanceof net.minecraft.server.level.ServerLevel level){var owner=WeaponUser.resolve(level,data.getUUID("ElementsDotOwner"));if(owner!=null)source=t.damageSources().indirectMagic(owner,owner);}
             int cooldown=t.invulnerableTime;t.invulnerableTime=0;
             LivingEntity previous=RESONANCE_HIT.get();RESONANCE_HIT.set(t);
-            try{t.hurt(source,1);}finally{
+            try{
+                if(source.getEntity() instanceof net.everla.projectc.arkofcosmos.entity.MahouTsukaiEntity)WeaponDamage.hurt(t,source,1);
+                else t.hurt(source,1);
+            }finally{
                 t.invulnerableTime=Math.max(cooldown,t.invulnerableTime);
                 if(previous==null)RESONANCE_HIT.remove();else RESONANCE_HIT.set(previous);
             }

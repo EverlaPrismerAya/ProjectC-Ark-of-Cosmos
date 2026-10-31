@@ -208,8 +208,16 @@ public final class MahouTsukaiEntity extends PathfinderMob implements net.minecr
             net.minecraft.world.entity.player.Player killer = source.getEntity() instanceof net.minecraft.world.entity.player.Player p ? p : (getLastHurtByMob() instanceof net.minecraft.world.entity.player.Player p ? p : null);
             int count = 3 + random.nextInt(5);
             var stack = new net.minecraft.world.item.ItemStack(net.everla.projectc.arkofcosmos.ArkOfCosmos.AURIC_BAR.get(), count);
-            if (killer != null && killer.level() == level() && !killer.isRemoved()) killer.getInventory().placeItemBackInInventory(stack);
-            else spawnAtLocation(stack);
+            if (killer != null && killer.level() == level() && !killer.isRemoved()) {
+                // Drop the reward at the killer's feet so it remains a visible world drop.
+                var reward = new net.minecraft.world.entity.item.ItemEntity(level(), killer.getX(), killer.getY(), killer.getZ(), stack);
+                reward.setPickUpDelay(10);
+                reward.setGlowingTag(true);
+                level().addFreshEntity(reward);
+            } else {
+                var reward = spawnAtLocation(stack);
+                if (reward != null) reward.setGlowingTag(true);
+            }
         }
     }
 
@@ -235,6 +243,9 @@ public final class MahouTsukaiEntity extends PathfinderMob implements net.minecr
     }
 
     @Override public void aiStep() {
+        // Defeat is synchronized; both sides must stop using the combat-only noclip movement.
+        noPhysics = !defeating();
+        if (defeating()) setNoGravity(false);
         if(!level().isClientSide)syncVitality();
         super.aiStep();
         if (defeating()) {
@@ -242,18 +253,8 @@ public final class MahouTsukaiEntity extends PathfinderMob implements net.minecr
                 dialogue.defeatTick(this);
                 setHealth(1);
                 setNoGravity(false);
-                if(!onGround() && getDeltaMovement().y<=0){
-                    var floor=level().clip(new net.minecraft.world.level.ClipContext(
-                            position(),new Vec3(getX(),level().getMinBuildHeight(),getZ()),
-                            net.minecraft.world.level.ClipContext.Block.COLLIDER,
-                            net.minecraft.world.level.ClipContext.Fluid.NONE,this));
-                    if(floor.getType()!=net.minecraft.world.phys.HitResult.Type.MISS){
-                        setPos(getX(),floor.getLocation().y,getZ());
-                        setDeltaMovement(Vec3.ZERO);
-                    }
-                }
                 if(onGround()) setDeltaMovement(Vec3.ZERO);
-                else setDeltaMovement(getDeltaMovement().multiply(.92,1,.92).add(0,-.08,0));
+                else setDeltaMovement(getDeltaMovement().multiply(.92,1,.92));
                 int remaining = defeatTicks() - 1;
                 entityData.set(DEFEAT_TICKS, remaining);
                 if (remaining <= 0) { dialogue.disappeared(this); remove(RemovalReason.DISCARDED); }
