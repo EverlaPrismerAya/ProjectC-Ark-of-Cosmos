@@ -92,7 +92,6 @@ Linux／macOS 可使用 `bash ./gradlew build`。构建产物位于 `build/libs/
 .\gradlew.bat runClient
 
 # 服务端攻击行为回归
-.\gradlew.bat runGameTestServer
 
 # 曲线和粒子数值检查，也会随 build 执行
 .\gradlew.bat arkRegression arkFxRegression

@@ -77,6 +77,10 @@ public final class MahouAttackEntity extends Entity {
         super.tick(); if(level().isClientSide)return;
         Entity entity=owner==null?null:((ServerLevel)level()).getEntity(owner);
         if (!(entity instanceof MahouTsukaiEntity boss) || !boss.isAlive() || boss.phase()!=ownerPhase || boss.phaseRecovering() || boss.isNoAi()) { discard();return; }
+        if(kind==VOID_VORTEX&&position().distanceTo(boss.position())>48){
+            setPos(boss.position().add(0,6,0));
+            velocity=Vec3.ZERO;
+        }
         if (++age>life) { discard();return; }
         if(kind==PILLAR&&age<=delay&&MahouPhaseOneAI.valid(boss,boss.getTarget()))
             velocity=boss.getTarget().position().subtract(position()).normalize().scale(1.4);
@@ -147,8 +151,9 @@ public final class MahouAttackEntity extends Entity {
             if(age==delay+1){
                 ArkOfCosmos.sound(this,"galaxia_eruption",2);
                 net.minecraft.nbt.CompoundTag effect=new net.minecraft.nbt.CompoundTag();effect.putString("Event","mahou_fusion");effect.putInt("Owner",boss.getId());effect.putDouble("AtX",boss.getX());effect.putDouble("AtY",boss.getY());effect.putDouble("AtZ",boss.getZ());net.everla.projectc.arkofcosmos.network.ArkNetwork.effect(boss,effect);
-                for(LivingEntity victim:level().getEntitiesOfClass(LivingEntity.class,boss.getBoundingBox().inflate(64),v->MahouPhaseOneAI.valid(boss,v)))
-                    if(victim.getBoundingBox().getCenter().distanceTo(boss.getBoundingBox().getCenter())>MahouTsukaiEntity.FUSION_SHIELD_RADIUS)hit(boss,victim);
+                for(LivingEntity victim:level().getEntitiesOfClass(LivingEntity.class,boss.getBoundingBox().inflate(64),v->MahouPhaseOneAI.valid(boss,v))){
+                    if(!insideFusionShield(boss,victim))hit(boss,victim);
+                }
             }
         } else if(kind==BLUE_DASH){
             pull(boss,4,true,.025);
@@ -168,7 +173,11 @@ public final class MahouAttackEntity extends Entity {
                     double radius=kind==DOMAIN_TEXT?1.3:kind==PURPLE?1:1.6;
                     for(LivingEntity victim:level().getEntitiesOfClass(LivingEntity.class,new AABB(from,position()).inflate(radius),v->MahouPhaseOneAI.valid(boss,v))){
                         hit(boss,victim);
-                        if(kind==RED||kind==PURPLE){discard();return;}
+                        if(kind==RED){
+                            for(LivingEntity impactVictim:level().getEntitiesOfClass(LivingEntity.class,getBoundingBox().inflate(2.5),v->MahouPhaseOneAI.valid(boss,v)))hit(boss,impactVictim);
+                            ArkOfCosmos.sound(this,"galaxia_impact",1);discard();return;
+                        }
+                        if(kind==PURPLE){discard();return;}
                     }
                 }
             }
@@ -200,6 +209,14 @@ public final class MahouAttackEntity extends Entity {
     }
     private void hit(MahouTsukaiEntity boss,LivingEntity victim) {
         if(hits.add(victim.getId()))victim.hurt(kind==PILLAR?damageSources().mobAttack(boss):damageSources().indirectMagic(this,boss),damage);
+    }
+    /** The shield is a live radius around the boss, so moving into it before the
+     * fusion impact resolves must protect the entity as well. */
+    private boolean insideFusionShield(MahouTsukaiEntity boss, LivingEntity victim) {
+        if (!boss.fusionShield()) return false;
+        Vec3 center=victim.getBoundingBox().getCenter();
+        double dx=center.x-boss.getX(), dz=center.z-boss.getZ();
+        return dx*dx+dz*dz<=MahouTsukaiEntity.FUSION_SHIELD_RADIUS*MahouTsukaiEntity.FUSION_SHIELD_RADIUS;
     }
     private void publish() {
         CompoundTag t=new CompoundTag();t.putInt("Kind",kind);t.putInt("SwingMode",swingMode);t.putInt("Age",age);t.putInt("Life",life);t.putInt("Delay",delay);t.putBoolean("Landed",landed);

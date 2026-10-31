@@ -17,7 +17,7 @@ import net.minecraftforge.network.NetworkHooks;
 
 public final class MahouTsukaiEntity extends PathfinderMob implements net.minecraft.world.entity.monster.Enemy {
     public static final int MAX_PHASE = 3;
-    public static final double FUSION_SHIELD_RADIUS = 2.15;
+    public static final double FUSION_SHIELD_RADIUS = 3.0;
     private static final double RAIN_RADIUS = 24;
     private static final EntityDataAccessor<Byte> PHASE = SynchedEntityData.defineId(MahouTsukaiEntity.class, EntityDataSerializers.BYTE);
     private static final EntityDataAccessor<Integer> TRANSITION=SynchedEntityData.defineId(MahouTsukaiEntity.class,EntityDataSerializers.INT);
@@ -240,9 +240,22 @@ public final class MahouTsukaiEntity extends PathfinderMob implements net.minecr
             if (!level().isClientSide) {
                 dialogue.defeatTick(this);
                 setHealth(1);
+                setNoGravity(false);
+                if(!onGround() && getDeltaMovement().y<=0){
+                    var floor=level().clip(new net.minecraft.world.level.ClipContext(
+                            position(),new Vec3(getX(),level().getMinBuildHeight(),getZ()),
+                            net.minecraft.world.level.ClipContext.Block.COLLIDER,
+                            net.minecraft.world.level.ClipContext.Fluid.NONE,this));
+                    if(floor.getType()!=net.minecraft.world.phys.HitResult.Type.MISS){
+                        setPos(getX(),floor.getLocation().y,getZ());
+                        setDeltaMovement(Vec3.ZERO);
+                    }
+                }
+                if(onGround()) setDeltaMovement(Vec3.ZERO);
+                else setDeltaMovement(getDeltaMovement().multiply(.92,1,.92).add(0,-.08,0));
                 int remaining = defeatTicks() - 1;
                 entityData.set(DEFEAT_TICKS, remaining);
-                if (remaining <= 0) remove(RemovalReason.DISCARDED);
+                if (remaining <= 0) { dialogue.disappeared(this); remove(RemovalReason.DISCARDED); }
             }
             return;
         }
@@ -253,10 +266,10 @@ public final class MahouTsukaiEntity extends PathfinderMob implements net.minecr
             }
             if(phaseTransitionTicks()>0){
                 if(!isNoAi())transitionRain();
-                entityData.set(TRANSITION,phaseTransitionTicks()-1);
             }
             // transitionRain acquires the locked player before dialogue checks run.
             dialogue.tick(this);
+            if (phaseTransitionTicks() > 0) entityData.set(TRANSITION,phaseTransitionTicks()-1);
             beginPhaseRecovery();
             summonShikigami();
             if (phaseRecovering) {
@@ -325,7 +338,6 @@ public final class MahouTsukaiEntity extends PathfinderMob implements net.minecr
         if(reason.shouldDestroy()&&shikigami!=null&&level() instanceof net.minecraft.server.level.ServerLevel server){
             var summon=server.getEntity(shikigami);if(summon!=null)summon.discard();
         }
-        if (reason == RemovalReason.DISCARDED && defeating()) dialogue.disappeared(this);
         for (ServerPlayer player : bossEvent.getPlayers()) syncBossBar(player, 0);
         bossEvent.removeAllPlayers();
         super.remove(reason);

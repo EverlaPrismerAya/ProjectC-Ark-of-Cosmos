@@ -35,7 +35,8 @@ final class MahouDialogue {
             if (boss.phase()==1 && !firstEnd) { firstEnd=true; if (defeatedBefore || player.getStats().getValue(Stats.CUSTOM, Stats.DEATHS)>0) say(boss,player, defeatedBefore?"dialogue.arkofcosmos.mahou.first_end_repeat":"dialogue.arkofcosmos.mahou.first_end"); }
         }
         if (boss.phase()==2 && boss.getHealth()<boss.getMaxHealth()*.5f && !phaseTwoHalf) { phaseTwoHalf=true; if(!defeatedBefore)say(boss,player,"dialogue.arkofcosmos.mahou.phase_two_half"); }
-        if (boss.phase()==3 && boss.getHealth()<boss.getMaxHealth()*.25f && !defeatedBefore && lowQuarterLine<4 && --lowQuarterDelay<=0) {
+        if (boss.phase()==3 && boss.getHealth()<boss.getMaxHealth()*.25f && lowQuarterLine < (defeatedBefore ? 1 : 4) && --lowQuarterDelay<=0) {
+            if (defeatedBefore) { say(boss,player,"dialogue.arkofcosmos.mahou.low_quarter_repeat"); lowQuarterLine=1; lowQuarterDelay=999999; return; }
             String[] lines={"dialogue.arkofcosmos.mahou.low_quarter_1","dialogue.arkofcosmos.mahou.low_quarter_2","dialogue.arkofcosmos.mahou.low_quarter_3","dialogue.arkofcosmos.mahou.low_quarter_4"};
             say(boss,player,lines[lowQuarterLine++]);
             lowQuarterDelay=20;

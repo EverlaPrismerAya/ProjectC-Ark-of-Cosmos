@@ -2,5 +2,14 @@
   "parent": "minecraft:item/generated",
   "textures": {
     "layer0": "arkofcosmos:item/auric_bar"
+  },
+  "display": {
+    "thirdperson_righthand": {"scale": [1.0, 0.71, 1.0]},
+    "thirdperson_lefthand": {"scale": [1.0, 0.71, 1.0]},
+    "firstperson_righthand": {"scale": [1.0, 0.71, 1.0]},
+    "firstperson_lefthand": {"scale": [1.0, 0.71, 1.0]},
+    "gui": {"scale": [1.0, 0.71, 1.0]},
+    "ground": {"scale": [1.0, 0.71, 1.0]},
+    "fixed": {"scale": [1.0, 0.71, 1.0]}
   }
 }
