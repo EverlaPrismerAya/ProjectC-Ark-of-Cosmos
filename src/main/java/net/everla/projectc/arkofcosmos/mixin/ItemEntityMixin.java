@@ -51,7 +51,8 @@ abstract class ItemEntityMixin {
         var item=self.getItem().getItem();
         return item==ArkOfCosmos.AURIC_BAR.get()||item==ArkOfCosmos.ARK_OF_COSMOS.get();
     }
-    @Inject(method="tick", at=@At("HEAD")) private void ark$keep(CallbackInfo ci) { if(ark$protected()) ark$resetAge(); }
+    @Inject(method={"tick", "m_6478_"}, at=@At("HEAD"), require=0)
+    private void ark$keep(CallbackInfo ci) { if(ark$protected()) ark$resetAge(); }
     @Inject(method={"hurt","m_6475_"}, at=@At("HEAD"), cancellable=true, require=0)
     private void ark$blastImmune(DamageSource source,float amount,CallbackInfoReturnable<Boolean> cir) { if(ark$protected()) cir.setReturnValue(false); }
 }
