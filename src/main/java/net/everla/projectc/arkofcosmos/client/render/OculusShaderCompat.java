@@ -103,6 +103,9 @@ public final class OculusShaderCompat {
         if (!active || !viewReady || event.getStage() != RenderLevelStageEvent.Stage.AFTER_LEVEL) return;
         mc.getMainRenderTarget().bindWrite(true);
         var shader = RenderSystem.getShader();
+        boolean depth = org.lwjgl.opengl.GL11.glIsEnabled(org.lwjgl.opengl.GL11.GL_DEPTH_TEST);
+        boolean blend = org.lwjgl.opengl.GL11.glIsEnabled(org.lwjgl.opengl.GL11.GL_BLEND);
+        boolean depthWrite = org.lwjgl.opengl.GL11.glGetBoolean(org.lwjgl.opengl.GL11.GL_DEPTH_WRITEMASK);
         RenderSystem.backupProjectionMatrix();
         RenderSystem.setProjectionMatrix(PROJECTION, VertexSorting.DISTANCE_TO_ORIGIN);
         PoseStack modelView = RenderSystem.getModelViewStack();
@@ -113,6 +116,7 @@ public final class OculusShaderCompat {
         try {
             for (Runnable draw : DEFERRED) draw.run();
             ArkEffects.render(WORLD_POSE, event.getCamera().getPosition(), event.getPartialTick());
+            net.everla.projectc.arkofcosmos.client.OdamaneHaloEffects.compositeFromOculus(event.getPartialTick());
         } finally {
             drawing = false;
             viewReady = false;
@@ -121,6 +125,9 @@ public final class OculusShaderCompat {
             RenderSystem.applyModelViewMatrix();
             RenderSystem.restoreProjectionMatrix();
             RenderSystem.setShader(() -> shader);
+            RenderSystem.depthMask(depthWrite);
+            if (depth) RenderSystem.enableDepthTest(); else RenderSystem.disableDepthTest();
+            if (blend) RenderSystem.enableBlend(); else RenderSystem.disableBlend();
             ArkFxDraw.end();
         }
     }

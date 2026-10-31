@@ -23,7 +23,7 @@ public final class MahouTsukaiEntity extends PathfinderMob implements net.minecr
     private static final EntityDataAccessor<Integer> TRANSITION=SynchedEntityData.defineId(MahouTsukaiEntity.class,EntityDataSerializers.INT);
     private static final EntityDataAccessor<Float> TOTAL_HEALTH=SynchedEntityData.defineId(MahouTsukaiEntity.class,EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Integer> DEFEAT_TICKS=SynchedEntityData.defineId(MahouTsukaiEntity.class,EntityDataSerializers.INT);
-    private final ServerBossEvent bossEvent = new ServerBossEvent(getDisplayName(), BossEvent.BossBarColor.WHITE, BossEvent.BossBarOverlay.PROGRESS);
+    private final ServerBossEvent bossEvent = new ServerBossEvent(getName(), BossEvent.BossBarColor.WHITE, BossEvent.BossBarOverlay.PROGRESS);
 
     private boolean phaseRecovering;
     private boolean defeatLooted;
@@ -278,7 +278,7 @@ public final class MahouTsukaiEntity extends PathfinderMob implements net.minecr
             }
             entityData.set(TOTAL_HEALTH,totalHealthProgress());
             bossEvent.setProgress(bossBarProgress());
-            bossEvent.setName(getDisplayName());
+            bossEvent.setName(getName());
             if (!isNoAi()) phaseOne.tick();
         }
     }
@@ -360,7 +360,7 @@ public final class MahouTsukaiEntity extends PathfinderMob implements net.minecr
         entityData.set(DEFEAT_TICKS,net.minecraft.util.Mth.clamp(tag.getInt("DefeatTicks"),0,200));
         nonPlayerInvulnerableUntil=level().getGameTime()+net.minecraft.util.Mth.clamp(tag.getInt("NonPlayerInvulnerabilityTicks"),0,10);
         entityData.set(TOTAL_HEALTH,totalHealthProgress());
-        bossEvent.setName(getDisplayName());
+        bossEvent.setName(getName());
         bossEvent.setProgress(bossBarProgress());
     }
     @Override public void addAdditionalSaveData(CompoundTag tag) {

@@ -93,8 +93,12 @@ public final class MahouBossBar {
                     shader.setSampler("Cosmic" + i, mc.getTextureManager().getTexture(STARS[i]).getId());
                     long tick = mc.level == null ? 0 : mc.level.getGameTime();
                     int[] frames = STAR_FRAMES[i];
-                    shader.safeGetUniform("Frame" + i).set((float) frames[Math.floorMod(tick, frames.length)]);
+                    if (frames.length > 0)
+                        shader.safeGetUniform("Frame" + i).set((float) frames[Math.floorMod(tick, frames.length)]);
                 }
+            } else {
+                RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
+                RenderSystem.setShaderTexture(0, BAR);
             }
             quad(graphics, x, y, progress <= 0 ? 0 : 3 + Math.round(195 * progress), 48, 1f);
             // Frame and phase ornament retain the texture's original colors.

@@ -85,7 +85,14 @@ public final class OdamaneHaloEffects extends RenderType {
     }
 
     @SubscribeEvent public static void compositeHalo(RenderLevelStageEvent event) {
-        if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_LEVEL) composite(event.getPartialTick());
+        if (!net.everla.projectc.arkofcosmos.client.render.OculusShaderCompat.shaderPackActive()
+                && event.getStage() == RenderLevelStageEvent.Stage.AFTER_LEVEL) composite(event.getPartialTick());
+    }
+
+    /** Called by the Oculus coordinator after deferred world effects are complete. */
+    public static void compositeFromOculus(float partialTick) {
+        if (net.everla.projectc.arkofcosmos.client.render.OculusShaderCompat.shaderPackActive())
+            composite(partialTick);
     }
 
     static void composite(float partialTick) {
