@@ -15,6 +15,7 @@
     }
   ],
   "uniforms": [
+    { "name": "uFixedBoundary", "type": "float", "count": 1, "values": [0] },
     { "name": "uPostMusicHit", "type": "float", "count": 1, "values": [0] },
     { "name": "uRandom", "type": "float", "count": 1, "values": [0] },
     {

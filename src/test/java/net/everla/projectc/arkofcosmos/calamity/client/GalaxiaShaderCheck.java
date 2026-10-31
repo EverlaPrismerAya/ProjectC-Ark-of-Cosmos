@@ -18,9 +18,10 @@ public final class GalaxiaShaderCheck {
         try{
             GLFW.glfwMakeContextCurrent(window);GL.createCapabilities();
             System.out.println("Shader driver: "+glGetString(GL_RENDERER)+" / "+glGetString(GL_VERSION));
-            for(String name:new String[]{"fx_sprite","fx_trail","galaxia_tint","boss_bar","mahou_moon","mahou_forcefield"}){
-                int program=program(name.equals("galaxia_tint")||name.equals("mahou_moon")||name.equals("mahou_forcefield")?"fx_sprite":name,name);
+            for(String name:new String[]{"fx_sprite","fx_trail","galaxia_tint","boss_bar","mahou_moon","mahou_forcefield","mahou_jujutsu"}){
+                int program=program(name.equals("galaxia_tint")||name.equals("mahou_moon")||name.equals("mahou_forcefield")||name.equals("mahou_jujutsu")?"fx_sprite":name,name);
                 if(name.equals("mahou_moon"))moonPixels(program);
+                if(name.equals("mahou_jujutsu"))jujutsuPixels(program);
                 if(name.equals("mahou_forcefield"))forcefieldPixels(program);
                 if(name.equals("boss_bar"))bossBarPixels(program);
                 if(name.equals("galaxia_tint"))pixels(program);if(name.equals("fx_sprite"))zeroAlphaGlow(program);glDeleteProgram(program);
@@ -41,6 +42,35 @@ public final class GalaxiaShaderCheck {
     private static int compile(int type,String source){
         int shader=glCreateShader(type);glShaderSource(shader,source);glCompileShader(shader);
         if(glGetShaderi(shader,GL_COMPILE_STATUS)==GL_FALSE)throw new AssertionError(glGetShaderInfoLog(shader));return shader;
+    }
+    private static void jujutsuPixels(int program)throws Exception{
+        glUseProgram(program);float[] identity={1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1};
+        glUniformMatrix4fv(glGetUniformLocation(program,"ModelViewMat"),false,identity);glUniformMatrix4fv(glGetUniformLocation(program,"ProjMat"),false,identity);
+        int vao=glGenVertexArrays();glBindVertexArray(vao);int vbo=glGenBuffers();glBindBuffer(GL_ARRAY_BUFFER,vbo);
+        glBufferData(GL_ARRAY_BUFFER,new float[]{-1,-1,0,0,0,3,-1,0,2,0,-1,3,0,0,2},GL_STATIC_DRAW);
+        int position=glGetAttribLocation(program,"Position"),uv=glGetAttribLocation(program,"UV0");
+        glEnableVertexAttribArray(position);glVertexAttribPointer(position,3,GL_FLOAT,false,20,0);
+        glEnableVertexAttribArray(uv);glVertexAttribPointer(uv,2,GL_FLOAT,false,20,12);glVertexAttrib4f(glGetAttribLocation(program,"Color"),1,1,1,1);
+        int output=texture(null),fbo=glGenFramebuffers();glBindFramebuffer(GL_FRAMEBUFFER,fbo);glFramebufferTexture2D(GL_FRAMEBUFFER,GL_COLOR_ATTACHMENT0,GL_TEXTURE_2D,output,0);
+        glBindTexture(GL_TEXTURE_2D,output);glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA32F,128,128,0,GL_RGBA,GL_FLOAT,(java.nio.ByteBuffer)null);
+        glViewport(0,0,128,128);glDisable(GL_BLEND);glDisable(GL_DEPTH_TEST);glDisable(GL_CULL_FACE);
+        var preview=new java.awt.image.BufferedImage(640,128,java.awt.image.BufferedImage.TYPE_INT_RGB);
+        for(int mode=0;mode<5;mode++){
+            glUniform1f(glGetUniformLocation(program,"uMode"),mode);glUniform1f(glGetUniformLocation(program,"uTime"),1.5f);glDrawArrays(GL_TRIANGLES,0,3);
+            float[] pixels=new float[128*128*4];glReadPixels(0,0,128,128,GL_RGBA,GL_FLOAT,pixels);
+            int visible=0;
+            for(int y=0;y<128;y++)for(int x=0;x<128;x++){
+                int i=(y*128+x)*4,rgb=0;for(int c=0;c<4;c++)if(!Float.isFinite(pixels[i+c]))throw new AssertionError("Nonfinite jujutsu shader output");
+                if(pixels[i+3]>.1)visible++;
+                if((x==0||x==127)&&(y==0||y==127)&&pixels[i+3]>.001)throw new AssertionError("Opaque jujutsu corners");
+                for(int c=0;c<3;c++)rgb=(rgb<<8)|Math.round(Math.min(1,Math.max(0,pixels[i+c]*pixels[i+3]))*255);
+                preview.setRGB(mode*128+x,127-y,rgb);
+            }
+            if(visible<100)throw new AssertionError("Missing jujutsu mode "+mode);
+        }
+        var target=Path.of("build/reports/mahou-jujutsu.png");Files.createDirectories(target.getParent());javax.imageio.ImageIO.write(preview,"png",target.toFile());
+        glDeleteFramebuffers(fbo);glDeleteTextures(output);glDeleteBuffers(vbo);glDeleteVertexArrays(vao);
+        System.out.println("Jujutsu five modes: finite output, visible coverage and transparent corners passed");
     }
     private static void moonPixels(int program){
         glUseProgram(program);
@@ -109,6 +139,18 @@ public final class GalaxiaShaderCheck {
             glVertexAttrib3f(uv,0,0,1);glDrawArrays(GL_TRIANGLES,0,3);glReadPixels(0,0,1,1,GL_RGBA,GL_FLOAT,pixel);
             if(pixel[3]>.001)throw new AssertionError("Forcefield has opaque corners");
         }
+        // Fusion's quad half-width is its gameplay radius: the shader boundary
+        // must stay at UV radius .5 at every animation time.
+        glUniform1f(glGetUniformLocation(program,"uFixedBoundary"),1);
+        for(float time:new float[]{0,.5f,1,2}){
+            glUniform1f(glGetUniformLocation(program,"uTime"),time);
+            for(float offset:new float[]{.49f,.501f}){
+                glVertexAttrib3f(uv,.5f+offset,.5f,1);glDrawArrays(GL_TRIANGLES,0,3);
+                float[] pixel=new float[4];glReadPixels(0,0,1,1,GL_RGBA,GL_FLOAT,pixel);
+                if(offset<.5f?pixel[3]<=0:pixel[3]>.001f)throw new AssertionError("Fusion shield visual boundary differs from damage radius");
+            }
+        }
+        glUniform1f(glGetUniformLocation(program,"uFixedBoundary"),0);
         // Full-frame preview uses the shipped textures, not the white test texels.
         try {
             int[] images=new int[2];

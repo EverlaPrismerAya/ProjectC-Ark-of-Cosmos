@@ -195,5 +195,13 @@
         "stream": true
       }
     ]
+  },
+  "mahou_defeat": {
+    "sounds": [
+      {
+        "name": "arkofcosmos:music/calamitas_defeat_long_fade",
+        "stream": true
+      }
+    ]
   }
 }

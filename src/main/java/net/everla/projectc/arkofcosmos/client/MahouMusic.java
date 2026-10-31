@@ -17,6 +17,7 @@ import net.minecraftforge.fml.common.Mod;
 @Mod.EventBusSubscriber(modid = ArkOfCosmos.MOD_ID, value = Dist.CLIENT)
 public final class MahouMusic {
     private static Track current;
+    private static DefeatTrack defeat;
 
     private MahouMusic() {}
 
@@ -31,6 +32,14 @@ public final class MahouMusic {
             stop(mc);
             return;
         }
+        MahouTsukaiEntity defeated = mc.level.getEntitiesOfClass(MahouTsukaiEntity.class, mc.player.getBoundingBox().inflate(96), MahouTsukaiEntity::defeating)
+                .stream().min(java.util.Comparator.comparingDouble(e -> e.distanceToSqr(mc.player))).orElse(null);
+        if (defeated != null) {
+            if (current != null) stop(mc);
+            if (defeat == null || defeat.boss != defeated) { if (defeat != null) mc.getSoundManager().stop(defeat); defeat = new DefeatTrack(defeated); mc.getSoundManager().play(defeat); }
+            return;
+        }
+        if (defeat != null) { mc.getSoundManager().stop(defeat); defeat = null; }
         if (mc.isPaused()) return;
         // Keep the current boss until it leaves range, so nearby bosses cannot alternate tracks.
         MahouTsukaiEntity boss = current != null && eligible(mc, current.boss) ? current.boss :
@@ -81,5 +90,14 @@ public final class MahouMusic {
             if (mc.player == null || !eligible(mc, boss) || boss.phase() != phase) stop();
             else if (!mc.isPaused()) elapsedTicks++;
         }
+    }
+
+    private static final class DefeatTrack extends AbstractTickableSoundInstance {
+        private final MahouTsukaiEntity boss;
+        DefeatTrack(MahouTsukaiEntity boss) {
+            super(SoundEvent.createVariableRangeEvent(new ResourceLocation(ArkOfCosmos.MOD_ID, "mahou_defeat")), SoundSource.MUSIC, RandomSource.create());
+            this.boss=boss; looping=false; relative=true; attenuation=Attenuation.NONE; volume=.35f;
+        }
+        @Override public void tick() { if (!boss.defeating()) stop(); }
     }
 }

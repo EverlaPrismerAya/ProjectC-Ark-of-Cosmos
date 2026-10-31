@@ -47,12 +47,15 @@ public final class ArkOfCosmos {
     public static final RegistryObject<EntityType<net.everla.projectc.arkofcosmos.entity.MahouAttackEntity>> MAHOU_ATTACK = ENTITIES.register("mahou_attack",
             () -> EntityType.Builder.<net.everla.projectc.arkofcosmos.entity.MahouAttackEntity>of(net.everla.projectc.arkofcosmos.entity.MahouAttackEntity::new, MobCategory.MISC)
                     .sized(.2f,.2f).noSave().noSummon().clientTrackingRange(128).updateInterval(1).build("arkofcosmos:mahou_attack"));
+    public static final RegistryObject<EntityType<net.everla.projectc.arkofcosmos.entity.MahoragaWardenEntity>> MAHORAGA=ENTITIES.register("mahoraga_warden",
+            ()->EntityType.Builder.<net.everla.projectc.arkofcosmos.entity.MahoragaWardenEntity>of(net.everla.projectc.arkofcosmos.entity.MahoragaWardenEntity::new,MobCategory.MONSTER)
+                    .sized(.9f,2.9f).clientTrackingRange(128).build("arkofcosmos:mahoraga_warden"));
     public static final RegistryObject<SoundEvent> SNAP = SOUNDS.register("snap",
             () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(MOD_ID, "snap")));
     private static final java.util.Map<String, RegistryObject<SoundEvent>> AUDIO = new java.util.HashMap<>();
     static {
         AUDIO.put("snap", SNAP);
-        for (String name : new String[]{"elements_item9", "phoenix", "meaty", "item4", "item35", "item63", "item64", "item65", "item71", "item84", "crystal", "needle_death",
+        for (String name : new String[]{"elements_item9", "phoenix", "meaty", "item4", "item35", "item63", "item64", "item65", "item71", "item84", "crystal", "needle_death", "mahou_defeat",
                 "galaxia_item60","galaxia_item71","galaxia_item76","galaxia_item77","galaxia_item78","galaxia_item79","galaxia_item80","galaxia_item90",
                 "galaxia_item101","galaxia_item109","galaxia_item120","galaxia_hit30","galaxia_hit43","galaxia_book","galaxia_impact","galaxia_eruption",
                 "galaxia_beacon","galaxia_lightning","galaxia_meaty"})
@@ -63,6 +66,8 @@ public final class ArkOfCosmos {
     }
     public static final RegistryObject<Item> ARK_OF_COSMOS = ITEMS.register("ark_of_cosmos",
             ArkItem::new);
+    public static final RegistryObject<Item> AURIC_BAR = ITEMS.register("auric_bar",
+            net.everla.projectc.arkofcosmos.item.AuricBarItem::new);
 
     public ArkOfCosmos(FMLJavaModLoadingContext context) {
         IEventBus bus = context.getModEventBus();
@@ -76,6 +81,7 @@ public final class ArkOfCosmos {
     }
 
     private void attributes(EntityAttributeCreationEvent event) {
+        event.put(MAHORAGA.get(),net.minecraft.world.entity.monster.warden.Warden.createAttributes().build());
         event.put(MAHOU_TSUKAI.get(), net.everla.projectc.arkofcosmos.entity.MahouTsukaiEntity.createAttributes().build());
     }
 
@@ -85,5 +91,6 @@ public final class ArkOfCosmos {
             event.accept(GALAXIA);
             event.accept(ARK_OF_THE_ELEMENTS);
         }
+        if (event.getTabKey() == CreativeModeTabs.INGREDIENTS) event.accept(AURIC_BAR);
     }
 }

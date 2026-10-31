@@ -75,15 +75,44 @@ public final class MahouAttackRenderer extends EntityRenderer<MahouAttackEntity>
                 }
             }
         }else if(kind==VOID_VORTEX){
-            AttackFrame plane=NativeSprites.billboard();
-            float pulse=(float)(.8+.2*Math.sin(time*1.7));
-            ArkFxDraw.moon(p,plane,8.5,pulse*.55f,time,false);
-            ArkFxDraw.moon(p,plane,6.2,pulse*.75f,-time*1.6f,true);
-            ArkFxDraw.moon(p,plane,3.8,pulse,time*2.2f,false);
+            ArkFxDraw.jujutsu(p,NativeSprites.billboard(),7.5,fade,time,2);
+        }else if(kind==RED||kind==BLUE||kind==BLUE_CHARGE||kind==BLUE_DASH||kind==PURPLE||kind==PURPLE_CORE){
+            int mode=kind==RED?0:kind==BLUE||kind==BLUE_CHARGE||kind==BLUE_DASH?1:2;
+            double radius=kind==PURPLE_CORE?5*Math.min(1,age/25):kind==BLUE&&data.getBoolean("Landed")?2.4:kind==PURPLE?1.3:2.2;
+            ArkFxDraw.jujutsu(p,NativeSprites.billboard(),radius,fade,time,mode);
+            if(velocity.lengthSqr()>.001&&(kind==RED||kind==BLUE||kind==PURPLE)){
+                float[] color=mode==0?new float[]{1,.08f,.12f,fade*.8f}:mode==1?new float[]{.08f,.35f,1,fade*.8f}:new float[]{.8f,.12f,1,fade*.8f};
+                line(p.subtract(velocity.normalize().scale(3)),p,.6,color);
+            }
+            if(kind==BLUE&&data.getBoolean("Landed"))ArkFxDraw.jujutsu(p,GROUND,10,fade*.18f,time,1);
+        }else if(kind==FUSION){
+            double progress=Math.min(1,age/Math.max(1,delay));
+            if(age<=delay){
+                double offset=8*(1-progress);
+                ArkFxDraw.jujutsu(p.add(-offset,0,0),NativeSprites.billboard(),4,fade,time,1);
+                ArkFxDraw.jujutsu(p.add(offset,0,0),NativeSprites.billboard(),4,fade,-time,0);
+            }else{
+                double burst=age-delay;
+                ArkFxDraw.jujutsu(p,NativeSprites.billboard(),8+burst*3.5,fade,time,2);
+                ArkFxDraw.jujutsu(p,GROUND,5+burst*4,fade*.8f,-time,2);
+                ArkFxDraw.moon(p,NativeSprites.billboard(),12+burst*3,fade,time,false);
+                for(int i=0;i<12;i++){
+                    double angle=i*Math.PI/6+time*.2;
+                    Vec3 ray=NativeSprites.billboard().direction(angle).scale(10+burst*2.5);
+                    line(p,p.add(ray),.55,new float[]{.85f,.5f,1,fade});
+                }
+            }
+        }else if(kind==RED_WARNING){
+            line(p,p.add(velocity),.22,new float[]{1,.03f,.1f,.85f});
+            line(p,p.add(velocity),.06,new float[]{1,.8f,.8f,1});
         }else if(kind==DOMAIN_TEXT){
-            AttackFrame plane=NativeSprites.billboard();
-            ArkFxDraw.moon(p,plane,1.2,fade,time,false);
-            line(p,p.add(velocity.normalize().scale(3)),.06,new float[]{.45f,.8f,1,fade});
+            pose.pushPose();pose.mulPose(this.entityRenderDispatcher.cameraOrientation());pose.scale(-.035f,-.035f,.035f);
+            var font=Minecraft.getInstance().font;
+            String letters="abcdefghijklmnopqrstuvwxyz";
+            String text="";for(int i=0;i<5;i++)text+=letters.charAt(Math.floorMod(e.getId()*7+i*11,26));
+            var component=net.minecraft.network.chat.Component.literal(text).withStyle(style->style.withFont(ResourceLocation.fromNamespaceAndPath("minecraft","alt")));
+            font.drawInBatch(component,-font.width(component)/2f,0,0xFFBBDFFF,false,pose.last().pose(),buffers,net.minecraft.client.gui.Font.DisplayMode.NORMAL,0,15728880);
+            pose.popPose();
         }else if(kind==DOMAIN){
             Vec3 right=new Vec3(-velocity.z,0,velocity.x).normalize();
             if(right.lengthSqr()<.1)right=new Vec3(1,0,0);

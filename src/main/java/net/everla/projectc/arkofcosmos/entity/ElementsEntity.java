@@ -227,7 +227,7 @@ public final class ElementsEntity extends Entity {
             if(bossBurstStar&&owner() instanceof MahouTsukaiEntity boss&&MahouPhaseOneAI.valid(boss,starTarget(boss))){
                 Vec3 aim=starTarget(boss).getBoundingBox().getCenter().subtract(position());
                 AttackFrame burst=GalaxiaEntity.aimFrame(aim.lengthSqr()<1e-8?frame.forward():aim.normalize(),frame.right());
-                int count=rainStarTarget==null?8:3;
+                int count=rainStarTarget==null?8:boss.phase()==3?5:3;
                 for(int i=0;i<count;i++)GalaxiaEntity.bossBolt(boss,position(),burst.direction(i*Math.PI*2/count),.3,1);
                 ArkOfCosmos.sound(this,"galaxia_lightning",1);
             }

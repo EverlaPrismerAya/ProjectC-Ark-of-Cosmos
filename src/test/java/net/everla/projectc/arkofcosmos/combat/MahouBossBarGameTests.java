@@ -55,7 +55,7 @@ public final class MahouBossBarGameTests {
         boss.setCustomName(Component.literal("Custom Aya"));boss.aiStep();
         helper.assertTrue(bar(boss).getName().equals(boss.getDisplayName()), "Explicit custom name lost");
         boss.saveWithoutId(saved);restored.load(saved);restored.aiStep();state(helper,restored,3,100);
-        helper.assertTrue(Component.literal("Custom Aya").equals(restored.getName()), "Custom name lost across save/load");
+        helper.assertTrue("Custom Aya".equals(restored.getName().getString()), "Custom name lost across save/load");
         helper.assertTrue(other.phase()==1 && other.getHealth()==1000, "Other boss changed");
         boss.discard();other.discard();restored.discard();helper.succeed();
     }
@@ -63,6 +63,7 @@ public final class MahouBossBarGameTests {
     @GameTest(template = "empty", timeoutTicks = 20, batch = "mahou_bossbar")
     public static void lethalHitsDoNotSkipPhases(GameTestHelper helper) throws Exception {
         var boss = ArkOfCosmos.MAHOU_TSUKAI.get().create(helper.getLevel());boss.readAdditionalSaveData(new net.minecraft.nbt.CompoundTag() {{ putInt("PhaseTransitionTicks",0); }});
+        boss.setPos(helper.absoluteVec(new net.minecraft.world.phys.Vec3(0,40,0)));helper.getLevel().addFreshEntity(boss);
         boss.hurt(boss.damageSources().playerAttack(new net.minecraftforge.common.util.FakePlayer(helper.getLevel(),new com.mojang.authlib.GameProfile(java.util.UUID.randomUUID(),"PhaseTest"))),10000);
         helper.assertTrue(boss.isAlive() && boss.phase()==1 && boss.getHealth()==1, "Lethal hit skipped recovery");
         for(int i=0;i<20;i++)boss.aiStep();
@@ -71,6 +72,10 @@ public final class MahouBossBarGameTests {
         boss.invulnerableTime=0;boss.hurt(boss.damageSources().playerAttack(new net.minecraftforge.common.util.FakePlayer(helper.getLevel(),new com.mojang.authlib.GameProfile(java.util.UUID.randomUUID(),"PhaseTest"))),10000);
         for(int i=0;i<20;i++)boss.aiStep();
         state(helper,boss,3,1000);
+        for(int i=0;i<300;i++)boss.aiStep();
+        boss.invulnerableTime=0;boss.hurt(boss.damageSources().playerAttack(new net.minecraftforge.common.util.FakePlayer(helper.getLevel(),new com.mojang.authlib.GameProfile(java.util.UUID.randomUUID(),"PhaseTest"))),10000);
+        helper.assertTrue(boss.isAlive()&&boss.shikigamiAlive(),"Final phase lethal hit must summon shikigami first");
+        for(var w:helper.getLevel().getEntitiesOfClass(net.everla.projectc.arkofcosmos.entity.MahoragaWardenEntity.class,boss.getBoundingBox().inflate(10))){w.setHealth(0);w.die(w.damageSources().generic());w.discard();}
         boss.invulnerableTime=0;boss.hurt(boss.damageSources().playerAttack(new net.minecraftforge.common.util.FakePlayer(helper.getLevel(),new com.mojang.authlib.GameProfile(java.util.UUID.randomUUID(),"PhaseTest"))),10000);
         helper.assertTrue(boss.isDeadOrDying(), "Phase three cannot die normally");
         boss.discard();helper.succeed();
@@ -121,6 +126,7 @@ public final class MahouBossBarGameTests {
     @GameTest(template = "empty", timeoutTicks = 20, batch = "mahou_bossbar")
     public static void arkCannotSkipPhaseRecovery(GameTestHelper helper) throws Exception {
         var boss=phaseBoss(helper,1);
+        boss.setPos(helper.absoluteVec(new net.minecraft.world.phys.Vec3(0,40,0)));helper.getLevel().addFreshEntity(boss);
         ArkDamage.hurt(boss,boss.damageSources().playerAttack(new net.minecraftforge.common.util.FakePlayer(helper.getLevel(),new com.mojang.authlib.GameProfile(java.util.UUID.randomUUID(),"PhaseTest"))),10000);
         helper.assertTrue(boss.isAlive() && boss.getHealth()==1 && boss.phase()==1,"Ark skipped first phase recovery");
         for(int i=0;i<20;i++)boss.aiStep();state(helper,boss,2,1000);
@@ -128,6 +134,10 @@ public final class MahouBossBarGameTests {
         ArkDamage.hurt(boss,boss.damageSources().playerAttack(new net.minecraftforge.common.util.FakePlayer(helper.getLevel(),new com.mojang.authlib.GameProfile(java.util.UUID.randomUUID(),"PhaseTest"))),10000);
         helper.assertTrue(boss.isAlive() && boss.getHealth()==1 && boss.phase()==2,"Ark skipped second phase recovery");
         for(int i=0;i<20;i++)boss.aiStep();state(helper,boss,3,1000);
+        for(int i=0;i<300;i++)boss.aiStep();
+        ArkDamage.hurt(boss,boss.damageSources().playerAttack(new net.minecraftforge.common.util.FakePlayer(helper.getLevel(),new com.mojang.authlib.GameProfile(java.util.UUID.randomUUID(),"PhaseTest"))),10000);
+        helper.assertTrue(boss.isAlive()&&boss.shikigamiAlive(),"Ark must respect half-health shikigami gate");
+        for(var w:helper.getLevel().getEntitiesOfClass(net.everla.projectc.arkofcosmos.entity.MahoragaWardenEntity.class,boss.getBoundingBox().inflate(10))){w.setHealth(0);w.die(w.damageSources().generic());w.discard();}
         ArkDamage.hurt(boss,boss.damageSources().playerAttack(new net.minecraftforge.common.util.FakePlayer(helper.getLevel(),new com.mojang.authlib.GameProfile(java.util.UUID.randomUUID(),"PhaseTest"))),10000);
         helper.assertTrue(boss.isDeadOrDying(),"Ark cannot kill final phase");
         boss.discard();helper.succeed();

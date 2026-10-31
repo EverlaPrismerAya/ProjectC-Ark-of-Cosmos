@@ -75,6 +75,7 @@ public final class ArkEffects {
         Vec3 at=ArkAttackEntity.vector(data,"At"), velocity=ArkAttackEntity.vector(data,"Velocity");
         AttackFrame f=new AttackFrame(ArkAttackEntity.vector(data,"F"),ArkAttackEntity.vector(data,"R"));
         int kind=data.getInt("Kind"), mode=data.getInt("Mode"); String event=data.getString("Event");
+        if(event.equals("mahou_fusion")){shake=Math.max(shake,10);return;}
         if(event.equals("parry")){
             for(int i=0;i<5;i++){
                 Vec3 d=disk(f,1); d=f.forward().scale(d.dot(f.forward())*data.getDouble("Height")*1.2*16).add(f.right().scale(d.dot(f.right())*data.getDouble("Width")*2*16));

@@ -1087,6 +1087,26 @@
       "path": "Sounds/Music/CalamitasPhase3.ogg",
       "license": "Original music rights holders; not MIT",
       "matches_recorded_output": true
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/item/auric_bar.png",
+      "sha256": "e3919afb22e1ab3be5840a5b8a4d75a15c1c39f44f0276f84dac6326a40e881f",
+      "source_sha256": "ab24adc5c8bf28fda6c7c186ed8411b3a38af769b89f13113053f47b5106577f",
+      "project": "Calamity Mod",
+      "path": "Items/Materials/AuricBar.png",
+      "license": "Original rights holders; not MIT",
+      "matches_recorded_output": true,
+      "recorded_output_sha256": "e3919afb22e1ab3be5840a5b8a4d75a15c1c39f44f0276f84dac6326a40e881f",
+      "adaptation": "Original 62x528 vertical animated sheet converted to twelve 62x62 Minecraft animation frames; transparent padding preserves each original frame."
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/music/calamitas_defeat_long_fade.ogg",
+      "sha256": "8015038b8714623b807ed20c1118b3b9465349a02901a6e3a9325ed4d7a3a819",
+      "source_sha256": "8015038b8714623b807ed20c1118b3b9465349a02901a6e3a9325ed4d7a3a819",
+      "project": "Calamity Mod Music / DM DOKURO",
+      "path": "Sounds/Music/CalamitasDefeat_LongFade.ogg",
+      "license": "Original rights holders; not MIT",
+      "matches_recorded_output": true
     }
   ]
 }

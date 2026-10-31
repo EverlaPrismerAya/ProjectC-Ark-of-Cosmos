@@ -25,6 +25,7 @@ import java.util.*;
 public final class ElementsCombat {
     private ElementsCombat() {}
     private static final ThreadLocal<LivingEntity> RESONANCE_HIT=new ThreadLocal<>();
+    public static boolean isResonanceDamage(LivingEntity target) { return RESONANCE_HIT.get() == target; }
     private static final Map<UUID,Controls> CONTROLS=new HashMap<>();
     private static final class Controls {
         boolean left,right,parried; int cooldown,use,idle; long invulnerableUntil;

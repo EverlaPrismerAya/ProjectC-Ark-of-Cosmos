@@ -9,18 +9,50 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraftforge.network.NetworkHooks;
 
 public final class MahouTsukaiEntity extends PathfinderMob implements net.minecraft.world.entity.monster.Enemy {
     public static final int MAX_PHASE = 3;
+    public static final double FUSION_SHIELD_RADIUS = 2.15;
+    private static final double RAIN_RADIUS = 24;
     private static final EntityDataAccessor<Byte> PHASE = SynchedEntityData.defineId(MahouTsukaiEntity.class, EntityDataSerializers.BYTE);
     private static final EntityDataAccessor<Integer> TRANSITION=SynchedEntityData.defineId(MahouTsukaiEntity.class,EntityDataSerializers.INT);
     private static final EntityDataAccessor<Float> TOTAL_HEALTH=SynchedEntityData.defineId(MahouTsukaiEntity.class,EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Integer> DEFEAT_TICKS=SynchedEntityData.defineId(MahouTsukaiEntity.class,EntityDataSerializers.INT);
     private final ServerBossEvent bossEvent = new ServerBossEvent(getDisplayName(), BossEvent.BossBarColor.WHITE, BossEvent.BossBarOverlay.PROGRESS);
 
     private boolean phaseRecovering;
+    private boolean defeatLooted;
+    private java.util.UUID shikigami;
+    private boolean shikigamiSummoned;
+    private final MahouDialogue dialogue = new MahouDialogue();
+    private static final EntityDataAccessor<Integer> SPELL=SynchedEntityData.defineId(MahouTsukaiEntity.class,EntityDataSerializers.INT);
+    public int spell(){return entityData.get(SPELL);}
+    void spell(int value){entityData.set(SPELL,value);}
+    public boolean fusionShield(){return spell()==3;}
+    public boolean raisedHands(){return !defeating() && (phase()==3&&phaseTransitionTicks()>0||spell()==4);}
+    public boolean shikigamiAlive(){
+        if(shikigami==null||!(level() instanceof net.minecraft.server.level.ServerLevel server))return false;
+        if(ShikigamiDeaths.get(server).consume(shikigami)){shikigami=null;return false;}
+        var entity=server.getEntity(shikigami);
+        // Unloaded summons remain authoritative until loaded or their death is observed.
+        return entity==null||entity.isAlive();
+    }
+    private void summonShikigami(){
+        if(phase()!=3||shikigamiSummoned||getHealth()>=getMaxHealth()*.5f)return;
+        var summon=net.everla.projectc.arkofcosmos.ArkOfCosmos.MAHORAGA.get().create(level());
+        if(summon==null)return;
+        summon.bind(this);summon.setPos(position().add(4,0,0));
+        if(level().addFreshEntity(summon)){shikigami=summon.getUUID();shikigamiSummoned=true;dialogue.summoned(this);if(getHealth()<=0)setHealth(1);}
+    }
+    void shikigamiDefeated(java.util.UUID id){if(id.equals(shikigami)){shikigami=null;dialogue.defeatedSummon(this);}}
+    @Override public boolean isAlliedTo(Entity other){
+        return other instanceof MahoragaWardenEntity w&&getUUID().equals(w.bossId())||super.isAlliedTo(other);
+    }
     private long weaponInvulnerableUntil, nonPlayerInvulnerableUntil;
     private int healthWriteDepth, healthSyncDepth;
     private float vitality;
@@ -38,21 +70,32 @@ public final class MahouTsukaiEntity extends PathfinderMob implements net.minecr
     }
 
     public static net.minecraft.world.entity.ai.attributes.AttributeSupplier.Builder createAttributes() {
-        return Mob.createMobAttributes().add(Attributes.MAX_HEALTH, 1000.0D).add(Attributes.MOVEMENT_SPEED, .2D).add(Attributes.FOLLOW_RANGE, 48).add(Attributes.KNOCKBACK_RESISTANCE, 1.0D);
+        return Mob.createMobAttributes().add(Attributes.MAX_HEALTH, 1000.0D).add(Attributes.MOVEMENT_SPEED, .2D).add(Attributes.FOLLOW_RANGE, 48).add(Attributes.KNOCKBACK_RESISTANCE, 1.0D).add(Attributes.ARMOR,20.0D).add(Attributes.ARMOR_TOUGHNESS,8.0D);
     }
 
     @Override protected void registerGoals() {}
     public boolean phaseRecovering() { return phaseRecovering; }
+    public boolean defeating() { return entityData.get(DEFEAT_TICKS) > 0; }
+    public int defeatTicks() { return entityData.get(DEFEAT_TICKS); }
     void weaponInvulnerable(int updates) { weaponInvulnerableUntil=Math.max(weaponInvulnerableUntil,level().getGameTime()+(updates+2)/3); }
     @Override public boolean hurt(DamageSource source,float amount) {
-        if(amount>0&&phaseTransitionTicks()>0)return false;
+        if (immuneDamage(source)) return false;
+        if (defeating()) { setHealth(1); return false; }
+        if(amount>0&&(phaseTransitionTicks()>0||shikigamiAlive()))return false;
         if(amount>0 && phase()==1 && !phaseRecovering && level().getGameTime()<weaponInvulnerableUntil)return false;
         if(amount>0&&blocksNonPlayerDamage(source))return false;
         return super.hurt(source,amount);
     }
+
+    private boolean immuneDamage(DamageSource source) {
+        if (source.is(DamageTypeTags.IS_LIGHTNING) || source.is(DamageTypeTags.IS_DROWNING)) return true;
+        String id = source.getMsgId();
+        return "poison".equals(id) || "wither".equals(id) || "witherSkull".equals(id)
+                || "magic".equals(id) && hasEffect(net.minecraft.world.effect.MobEffects.POISON);
+    }
     @Override public boolean isInWall() { return false; }
     @Override public boolean causeFallDamage(float distance, float multiplier, DamageSource source) { return false; }
-    @Override protected void defineSynchedData() { super.defineSynchedData(); entityData.define(PHASE, (byte) 1);entityData.define(TRANSITION,300);entityData.define(TOTAL_HEALTH,1f); }
+    @Override protected void defineSynchedData() { super.defineSynchedData(); entityData.define(SPELL,0); entityData.define(PHASE, (byte) 1);entityData.define(TRANSITION,300);entityData.define(TOTAL_HEALTH,1f);entityData.define(DEFEAT_TICKS,0); }
     public int phase() { return entityData.get(PHASE); }
 
     public int phaseTransitionTicks(){return entityData.get(TRANSITION);}
@@ -79,7 +122,9 @@ public final class MahouTsukaiEntity extends PathfinderMob implements net.minecr
     }
 
     @Override protected float getDamageAfterMagicAbsorb(DamageSource source, float amount) {
-        return super.getDamageAfterMagicAbsorb(source, amount) * damageMultiplier();
+        float multiplier = .75f;
+        if (source.is(DamageTypeTags.IS_FIRE) || net.everla.projectc.arkofcosmos.combat.ElementsCombat.isResonanceDamage(this)) multiplier *= 1.15f;
+        return super.getDamageAfterMagicAbsorb(source, amount) * damageMultiplier() * multiplier;
     }
 
     public boolean blocksNonPlayerDamage(DamageSource source) {
@@ -89,7 +134,7 @@ public final class MahouTsukaiEntity extends PathfinderMob implements net.minecr
     // Also used by the health-setter launch hook, including invokespecial callers.
     public boolean blocksHealthWrite(float health) {
         return vitalityReady && !level().isClientSide && healthWriteDepth==0 && health<getHealth()
-                && (phaseTransitionTicks()>0 || level().getGameTime()<nonPlayerInvulnerableUntil);
+                && (phaseTransitionTicks()>0 || shikigamiAlive() || level().getGameTime()<nonPlayerInvulnerableUntil);
     }
     @Override public float getHealth() {
         return vitalityReady&&!level().isClientSide?vitality:super.getHealth();
@@ -103,6 +148,7 @@ public final class MahouTsukaiEntity extends PathfinderMob implements net.minecr
             nonPlayerInvulnerableUntil=level().getGameTime()+10;
             beginPhaseRecovery();
             if(phaseRecovering&&vitality<=0)vitality=1;
+            summonShikigami();
         }
         syncVitality();
     }
@@ -120,7 +166,8 @@ public final class MahouTsukaiEntity extends PathfinderMob implements net.minecr
         super.onSyncedDataUpdated(key);
     }
     @Override protected void actuallyHurt(DamageSource source, float amount) {
-        if(amount>0&&(phaseTransitionTicks()>0||blocksNonPlayerDamage(source)))return;
+        if (defeating()) return;
+        if(amount>0&&(phaseTransitionTicks()>0||shikigamiAlive()||blocksNonPlayerDamage(source)))return;
         float before=getHealth();
         healthWriteDepth++;
         try { super.actuallyHurt(source, amount); }
@@ -129,8 +176,47 @@ public final class MahouTsukaiEntity extends PathfinderMob implements net.minecr
             nonPlayerInvulnerableUntil=level().getGameTime()+10;
         // Evaluate actual health after armor, absorption and Forge damage events.
         beginPhaseRecovery();
+        summonShikigami();
         if (phaseRecovering && getHealth() <= 0) setHealth(1);
         entityData.set(TOTAL_HEALTH,totalHealthProgress());
+    }
+
+    @Override public void die(DamageSource source) {
+        if (phase() == MAX_PHASE && !defeating() && !level().isClientSide) {
+            beginDefeat(source);
+            return;
+        }
+        super.die(source);
+    }
+
+    private void beginDefeat(DamageSource source) {
+        dialogue.beginDefeat(this);
+        setHealth(1);
+        entityData.set(DEFEAT_TICKS, 200);
+        phaseRecovering = false;
+        spell(0);
+        noPhysics = false;
+        setNoGravity(false);
+        setNoAi(true);
+        setHealth(1);
+        setDeltaMovement(getDeltaMovement().add(0, -.08, 0));
+        clearCombatEntities();
+        bossEvent.removeAllPlayers();
+        if (!defeatLooted) {
+            defeatLooted = true;
+            net.minecraft.world.entity.player.Player killer = source.getEntity() instanceof net.minecraft.world.entity.player.Player p ? p : (getLastHurtByMob() instanceof net.minecraft.world.entity.player.Player p ? p : null);
+            int count = 3 + random.nextInt(5);
+            var stack = new net.minecraft.world.item.ItemStack(net.everla.projectc.arkofcosmos.ArkOfCosmos.AURIC_BAR.get(), count);
+            if (killer != null && killer.level() == level() && !killer.isRemoved()) killer.getInventory().placeItemBackInInventory(stack);
+            else spawnAtLocation(stack);
+        }
+    }
+
+    private void clearCombatEntities() {
+        if (level().isClientSide) return;
+        level().getEntitiesOfClass(MahouAttackEntity.class, getBoundingBox().inflate(192), e -> e.ownedBy(this)).forEach(Entity::discard);
+        level().getEntitiesOfClass(net.everla.projectc.arkofcosmos.entity.GalaxiaEntity.class, getBoundingBox().inflate(192), e -> e.ownerId() == getId()).forEach(Entity::discard);
+        level().getEntitiesOfClass(net.everla.projectc.arkofcosmos.entity.ElementsEntity.class, getBoundingBox().inflate(192), e -> e.ownerId() == getId()).forEach(Entity::discard);
     }
 
     private void beginPhaseRecovery() {
@@ -142,7 +228,7 @@ public final class MahouTsukaiEntity extends PathfinderMob implements net.minecr
     private void advancePhase(int next) {
         entityData.set(PHASE, (byte) next);
         phaseRecovering = false;
-        if(next<=MAX_PHASE-1)entityData.set(TRANSITION,300);
+        if(next<=MAX_PHASE)entityData.set(TRANSITION,300);
         bossEvent.setProgress(1f);
         for (ServerPlayer player : bossEvent.getPlayers()) syncBossBar(player, next);
     }
@@ -150,12 +236,29 @@ public final class MahouTsukaiEntity extends PathfinderMob implements net.minecr
     @Override public void aiStep() {
         if(!level().isClientSide)syncVitality();
         super.aiStep();
+        if (defeating()) {
+            if (!level().isClientSide) {
+                dialogue.defeatTick(this);
+                setHealth(1);
+                int remaining = defeatTicks() - 1;
+                entityData.set(DEFEAT_TICKS, remaining);
+                if (remaining <= 0) remove(RemovalReason.DISCARDED);
+            }
+            return;
+        }
         if (!level().isClientSide && isAlive()) {
+            if(phase()==3&&!isNoAi()){
+                var vortices=level().getEntitiesOfClass(MahouAttackEntity.class,getBoundingBox().inflate(160),e->e.kind()==MahouAttackEntity.VOID_VORTEX&&e.ownedBy(this));
+                if(vortices.isEmpty()){dialogue.vortex(this);MahouAttackEntity.voidVortex(this,position().add(0,6,16));}
+            }
             if(phaseTransitionTicks()>0){
                 if(!isNoAi())transitionRain();
                 entityData.set(TRANSITION,phaseTransitionTicks()-1);
             }
+            // transitionRain acquires the locked player before dialogue checks run.
+            dialogue.tick(this);
             beginPhaseRecovery();
+            summonShikigami();
             if (phaseRecovering) {
                 setHealth(Math.min(getMaxHealth(), getHealth() + getMaxHealth() * .05f));
                 if (getHealth() >= getMaxHealth()) advancePhase(phase() + 1);
@@ -169,21 +272,41 @@ public final class MahouTsukaiEntity extends PathfinderMob implements net.minecr
 
     private void transitionRain(){
         int remaining=phaseTransitionTicks();
+        LivingEntity locked=getTarget();
+        boolean validLock=locked!=null&&locked!=this&&locked.isAlive()&&!locked.isRemoved()&&locked.level()==level()
+                &&!isAlliedTo(locked)&&EntitySelector.NO_CREATIVE_OR_SPECTATOR.test(locked);
+        if (!validLock) {
+            LivingEntity player=level().getNearestPlayer(getX(),getY(),getZ(),64,
+                    e->e instanceof net.minecraft.world.entity.player.Player p&&MahouPhaseOneAI.valid(this,p));
+            if (player != null) { setTarget(player); locked=player; validLock=true; }
+        }
+        // The rain covers a horizontal circle; a locked target can leave even
+        // beyond normal acquisition range. Check every tick, including the tail.
+        if(validLock){
+            double dx=locked.getX()-getX(),dz=locked.getZ()-getZ();
+            if(dx*dx+dz*dz>RAIN_RADIUS*RAIN_RADIUS){
+                dialogue.teleport(this);
+                teleportTo(locked.getX(),locked.getBoundingBox().maxY+6,locked.getZ());
+                getNavigation().stop();setDeltaMovement(net.minecraft.world.phys.Vec3.ZERO);
+            }
+        }
         if(remaining<40||remaining%10!=0)return;
         if((phase()==2||phase()==3)&&remaining%20==0){
-            LivingEntity player=level().getNearestPlayer(getX(),getY(),getZ(),48,
+            LivingEntity player=validLock?locked:level().getNearestPlayer(getX(),getY(),getZ(),48,
                     e->e instanceof net.minecraft.world.entity.player.Player p&&MahouPhaseOneAI.valid(this,p));
             if(player==null&&MahouPhaseOneAI.valid(this,getTarget()))player=getTarget();
             if(player==null&&MahouPhaseOneAI.valid(this,getLastHurtByMob()))player=getLastHurtByMob();
             if(player!=null){
+                setTarget(player);
                 double angle=random.nextDouble()*Math.PI*2;
                 var at=position().add(Math.cos(angle)*12,12,Math.sin(angle)*12);
-                for(int i=0;i<(phase()==3?5:1);i++) ElementsEntity.rainStar(this,player,at.add((random.nextDouble()-.5)*6,0,(random.nextDouble()-.5)*6));
+                ElementsEntity.rainStar(this,player,at);
             }
         }
+        Vec3 rainCenter=validLock?locked.position():position();
         for(int i=0;i<(phase()==3?8:4);i++){
-            double angle=random.nextDouble()*Math.PI*2,radius=Math.sqrt(random.nextDouble())*24;
-            var top=position().add(Math.cos(angle)*radius,22,Math.sin(angle)*radius);
+            double angle=random.nextDouble()*Math.PI*2,radius=Math.sqrt(random.nextDouble())*RAIN_RADIUS;
+            var top=rainCenter.add(Math.cos(angle)*radius,22,Math.sin(angle)*radius);
             var hit=level().clip(new net.minecraft.world.level.ClipContext(top,top.add(0,-54,0),
                     net.minecraft.world.level.ClipContext.Block.COLLIDER,net.minecraft.world.level.ClipContext.Fluid.ANY,this));
             var at=hit.getType()==net.minecraft.world.phys.HitResult.Type.MISS?new net.minecraft.world.phys.Vec3(top.x,getY(),top.z):hit.getLocation();
@@ -196,6 +319,13 @@ public final class MahouTsukaiEntity extends PathfinderMob implements net.minecr
     }
 
     @Override public void remove(RemovalReason reason) {
+        // The universal Ark damage path may request KILLED after die() returns.
+        // Keep the Boss alive until its own defeat timer reaches zero.
+        if (defeating() && reason != RemovalReason.DISCARDED) return;
+        if(reason.shouldDestroy()&&shikigami!=null&&level() instanceof net.minecraft.server.level.ServerLevel server){
+            var summon=server.getEntity(shikigami);if(summon!=null)summon.discard();
+        }
+        if (reason == RemovalReason.DISCARDED && defeating()) dialogue.disappeared(this);
         for (ServerPlayer player : bossEvent.getPlayers()) syncBossBar(player, 0);
         bossEvent.removeAllPlayers();
         super.remove(reason);
@@ -208,11 +338,14 @@ public final class MahouTsukaiEntity extends PathfinderMob implements net.minecr
         try { super.readAdditionalSaveData(tag); }
         finally { healthWriteDepth--; }
         entityData.set(PHASE, (byte) net.minecraft.util.Mth.clamp(tag.contains("Phase") ? tag.getByte("Phase") : 1, 1, MAX_PHASE));
+        shikigami=tag.hasUUID("Shikigami")?tag.getUUID("Shikigami"):null;
+        shikigamiSummoned=tag.getBoolean("ShikigamiSummoned");
         phaseRecovering = phase() < MAX_PHASE && tag.getBoolean("PhaseRecovering");
         // Minimal summon NBT is not a saved boss; do not erase its constructor's entrance.
         int transition=tag.contains("PhaseTransitionTicks")?tag.getInt("PhaseTransitionTicks"):
                 !tag.hasUUID("UUID")&&!tag.contains("Phase")?300:0;
         entityData.set(TRANSITION,net.minecraft.util.Mth.clamp(transition,0,300));
+        entityData.set(DEFEAT_TICKS,net.minecraft.util.Mth.clamp(tag.getInt("DefeatTicks"),0,200));
         nonPlayerInvulnerableUntil=level().getGameTime()+net.minecraft.util.Mth.clamp(tag.getInt("NonPlayerInvulnerabilityTicks"),0,10);
         entityData.set(TOTAL_HEALTH,totalHealthProgress());
         bossEvent.setName(getDisplayName());
@@ -220,10 +353,13 @@ public final class MahouTsukaiEntity extends PathfinderMob implements net.minecr
     }
     @Override public void addAdditionalSaveData(CompoundTag tag) {
         super.addAdditionalSaveData(tag);
+        if(shikigami!=null)tag.putUUID("Shikigami",shikigami);else tag.remove("Shikigami");
+        tag.putBoolean("ShikigamiSummoned",shikigamiSummoned);
         tag.putByte("Phase", (byte) phase());
         tag.putBoolean("PhaseRecovering", phaseRecovering);
         tag.putInt("PhaseTransitionTicks",phaseTransitionTicks());
         tag.putInt("NonPlayerInvulnerabilityTicks",(int)Math.max(0,nonPlayerInvulnerableUntil-level().getGameTime()));
+        tag.putInt("DefeatTicks", defeatTicks());
     }
     @Override public Packet<ClientGamePacketListener> getAddEntityPacket() { return NetworkHooks.getEntitySpawningPacket(this); }
 }

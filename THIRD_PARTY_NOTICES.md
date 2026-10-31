@@ -106,7 +106,7 @@ Calamity 来源的代码须保留 Calamity Team 署名及原条款。本项目�
 
 二阶段 Boss 的 Odamane Halo 几何、UV、动画与渲染行为参照Goety Revelation的 OdamaneHaloModel／OdamaneHaloLayer，在本模组命名空间内独立重建，不调用或依赖 Goety Revelation、RevelationFix、Ending Library 或 Curios 的 Java 类。贴图同样原样取自此模组。odamane／rewind GLSL 原样保留，相关后处理 JSON 仅替换资源命名空间。
 
-参考 JAR 的 mods.toml 声明 `ARR`；这些来源素材、着色器及派生模型不属于本项目原创 MIT 内容，权利归原作者／原权利人。逐项来源和 SHA-256 见 `reference/mahou/odamane-halo.json` 与 `licenses/RESOURCE-SOURCES.json`。
+此模组的 mods.toml 声明 `ARR`；这些来源素材、着色器及派生模型不属于本项目原创 MIT 内容，权利归原作者／原权利人。逐项来源和 SHA-256 见 `reference/mahou/odamane-halo.json` 与 `licenses/RESOURCE-SOURCES.json`。
 
 ## 上游与署名
 
@@ -118,3 +118,7 @@ Calamity 来源的代码须保留 Calamity Team 署名及原条款。本项目�
 Java 移植、Minecraft 三维适配及项目维护：EverlaPrismerAya。
 
 
+
+## 圣金源锭与击败尾曲
+
+圣金源锭贴图取自 Calamity Mod `Items/Materials/AuricBar.png`；击败尾曲取自 Calamity Mod Music `Sounds/Music/CalamitasDefeat_LongFade.ogg`。二者均为第三方素材，不适用本项目 MIT 许可，来源与 SHA-256 见 `licenses/RESOURCE-SOURCES.json`。

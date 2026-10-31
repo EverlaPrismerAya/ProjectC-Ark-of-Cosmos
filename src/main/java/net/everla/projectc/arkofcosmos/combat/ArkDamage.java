@@ -76,6 +76,7 @@ public final class ArkDamage {
 
     public static boolean setHealth(Object object, float value) {
         if(object instanceof net.everla.projectc.arkofcosmos.entity.MahouTsukaiEntity boss && boss.blocksHealthWrite(value))return true;
+        if(object instanceof net.everla.projectc.arkofcosmos.entity.MahoragaWardenEntity warden && warden.blocksHealthWrite(value))return true;
         if (health(object) < 0) return false;
         // Death remains final after die() returns: tick-based revival also uses this setter.
         if (finishing(object) || health(object) == 0) return true;
@@ -100,6 +101,7 @@ public final class ArkDamage {
     private static boolean ordinaryTarget(LivingEntity target) {
         // Our boss owns staged health/recovery; keep its native callbacks instead of a second health authority.
         return target instanceof net.everla.projectc.arkofcosmos.entity.MahouTsukaiEntity
+                || target instanceof net.everla.projectc.arkofcosmos.entity.MahoragaWardenEntity
                 || !seagull(target) && target.getType().is(IGNORE_SPECIAL_DAMAGE);
     }
 

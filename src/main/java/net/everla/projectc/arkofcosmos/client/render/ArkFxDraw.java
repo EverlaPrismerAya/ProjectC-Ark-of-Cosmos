@@ -22,7 +22,7 @@ public final class ArkFxDraw {
     public static final VertexFormatElement UV3 = new VertexFormatElement(0, VertexFormatElement.Type.FLOAT, VertexFormatElement.Usage.UV, 3);
     public static final VertexFormat FORMAT = new VertexFormat(ImmutableMap.of("Position", DefaultVertexFormat.ELEMENT_POSITION,
             "Color", DefaultVertexFormat.ELEMENT_COLOR, "UV0", UV3));
-    public static ShaderInstance spriteShader, trailShader, tintShader, moonShader, forcefieldShader;
+    public static ShaderInstance spriteShader, trailShader, tintShader, moonShader, forcefieldShader, jujutsuShader;
     /** Immutable per-draw BasicTint parameters, also captured by deferred Oculus draws. */
     public record Tint(float red, float green, float blue, float opacity) {}
     public static final Map<String, int[]> sizes = new HashMap<>();
@@ -52,6 +52,7 @@ public final class ArkFxDraw {
         event.registerShader(shader(event,"fx_sprite"), shader -> spriteShader = shader);
         event.registerShader(shader(event,"fx_trail"), shader -> trailShader = shader);
         event.registerShader(shader(event,"galaxia_tint"), shader -> tintShader = shader);
+        event.registerShader(shader(event,"mahou_jujutsu"), shader -> jujutsuShader = shader);
         event.registerShader(shader(event,"mahou_moon"), shader -> moonShader = shader);
         event.registerShader(shader(event,"mahou_forcefield"), shader -> forcefieldShader = shader);
         sizes.clear();
@@ -138,9 +139,24 @@ public final class ArkFxDraw {
             BufferUploader.drawWithShader(buffer.end());
         } finally {end();}
     }
+    /** Original procedural red/blue/purple, spiral and eight-handled wheel shader. */
+    public static void jujutsu(Vec3 at,AttackFrame frame,double radius,float opacity,float time,int mode){
+        if(radius<=0||opacity<=0)return;
+        if(OculusShaderCompat.defer(()->jujutsu(at,frame,radius,opacity,time,mode)))return;
+        begin("galaxia/hollowcirclesoftedge",Blend.ADDITIVE,false);
+        try{
+            jujutsuShader.safeGetUniform("uTime").set(time);jujutsuShader.safeGetUniform("uMode").set((float)mode);
+            RenderSystem.setShader(()->jujutsuShader);
+            BufferBuilder buffer=Tesselator.getInstance().getBuilder();buffer.begin(VertexFormat.Mode.QUADS,FORMAT);
+            Vec3 x=frame.forward().scale(radius),y=frame.right().scale(radius);float[] color={1,1,1,opacity};
+            vertex(buffer,at.subtract(x).subtract(y),color,0,0,0);vertex(buffer,at.subtract(x).add(y),color,0,1,0);
+            vertex(buffer,at.add(x).add(y),color,1,1,0);vertex(buffer,at.add(x).subtract(y),color,1,0,0);
+            BufferUploader.drawWithShader(buffer.end());
+        }finally{end();}
+    }
     /** Supreme Calamitas forcefield, through the same depth/deferred path as the weapons. */
-    public static void forcefield(Vec3 at,AttackFrame frame,int phase,float healthRatio,float opacity,float time,boolean postMusicHit){
-        if(OculusShaderCompat.defer(()->forcefield(at,frame,phase,healthRatio,opacity,time,postMusicHit)))return;
+    public static void forcefield(Vec3 at,AttackFrame frame,int phase,float healthRatio,float opacity,float time,boolean postMusicHit,double fixedRadius){
+        if(OculusShaderCompat.defer(()->forcefield(at,frame,phase,healthRatio,opacity,time,postMusicHit,fixedRadius)))return;
         begin("supreme_forcefield",Blend.ALPHA,false);
         try{
             RenderSystem.setShaderTexture(1,texture("supreme_noise"));
@@ -152,10 +168,12 @@ public final class ArkFxDraw {
             forcefieldShader.safeGetUniform("uPostMusicHit").set(postMusicHit?1f:0f);
             forcefieldShader.safeGetUniform("uRandom").set(java.util.concurrent.ThreadLocalRandom.current().nextFloat());
             forcefieldShader.safeGetUniform("uTime").set(time);
+            forcefieldShader.safeGetUniform("uFixedBoundary").set(fixedRadius>0?1f:0f);
             forcefieldShader.safeGetUniform("uTintStrength").set(phase==2?.9f:.5f);
             RenderSystem.setShader(()->forcefieldShader);
             BufferBuilder buffer=Tesselator.getInstance().getBuilder();buffer.begin(VertexFormat.Mode.QUADS,FORMAT);
-            Vec3 x=frame.forward().scale(2.6),y=frame.right().scale(2.6);float[] rgba={1,1,1,opacity};
+            double radius=fixedRadius>0?fixedRadius:2.6;
+            Vec3 x=frame.forward().scale(radius),y=frame.right().scale(radius);float[] rgba={1,1,1,opacity};
             vertex(buffer,at.subtract(x).subtract(y),rgba,0,0,1);vertex(buffer,at.subtract(x).add(y),rgba,0,1,1);
             vertex(buffer,at.add(x).add(y),rgba,1,1,1);vertex(buffer,at.add(x).subtract(y),rgba,1,0,1);
             BufferUploader.drawWithShader(buffer.end());

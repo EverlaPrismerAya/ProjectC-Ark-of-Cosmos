@@ -12,7 +12,7 @@ import java.util.*;
 
 /** Ephemeral boss attacks; never places or destroys world blocks. */
 public final class MahouAttackEntity extends Entity {
-    public static final int PILLAR=0,COVER=1,WAVE=2,WARNING=5,BLOOM=6,GRAVITY=7,DOMAIN=8,SWING_WARNING=9,NEEDLE_GATE=10,RAIN=11,CASTING=12,VOID_VORTEX=13,DOMAIN_TEXT=14;
+    public static final int PILLAR=0,COVER=1,WAVE=2,WARNING=5,BLOOM=6,GRAVITY=7,DOMAIN=8,SWING_WARNING=9,NEEDLE_GATE=10,RAIN=11,CASTING=12,VOID_VORTEX=13,DOMAIN_TEXT=14,RED=15,BLUE=16,BLUE_CHARGE=17,FUSION=18,PURPLE_CORE=19,PURPLE=20,BLUE_DASH=21,RED_WARNING=22;
     private static final EntityDataAccessor<CompoundTag> DATA=SynchedEntityData.defineId(MahouAttackEntity.class,EntityDataSerializers.COMPOUND_TAG);
     private UUID owner;
     private int age,life,delay,kind,swingMode,ownerPhase;
@@ -41,6 +41,8 @@ public final class MahouAttackEntity extends Entity {
         Vec3 axis=direction.normalize();
         return new org.joml.Quaternionf().rotationTo(0,1,0,(float)axis.x,(float)axis.y,(float)axis.z);
     }
+    public boolean ownedBy(MahouTsukaiEntity boss){return boss.getUUID().equals(owner);}
+    void anchor(Vec3 at){setPos(at);publish();}
     public CompoundTag view() { return entityData.get(DATA); }
     void pointSwingWarning(Vec3 at,Vec3 direction){setPos(at);velocity=direction;publish();}
     void pointWarning(Vec3 at,Vec3 direction){setPos(at);velocity=direction.normalize().scale(52);publish();}
@@ -129,13 +131,47 @@ public final class MahouAttackEntity extends Entity {
             }
         } else if (kind==VOID_VORTEX) {
             LivingEntity target=boss.getTarget();
-            if(target!=null&&MahouPhaseOneAI.valid(boss,target)){
-                Vec3 desired=target.position().subtract(position()).normalize().scale(.08);
-                velocity=velocity.scale(.94).add(desired);
-                if(position().distanceTo(target.position())<15) velocity=velocity.add(target.position().subtract(position()).normalize().scale(-.12));
-                if(position().distanceTo(target.position())>18) velocity=velocity.add(target.position().subtract(position()).normalize().scale(.12));
+            if(MahouPhaseOneAI.valid(boss,target)){
+                Vec3 delta=target.getBoundingBox().getCenter().subtract(position());
+                if(boss.fusionShield()){
+                    Vec3 outward=target.getBoundingBox().getCenter().subtract(boss.getBoundingBox().getCenter()).normalize();
+                    if(outward.lengthSqr()<.1)outward=new Vec3(1,0,0);
+                    if(delta.length()<15||delta.length()>18||position().distanceTo(boss.getBoundingBox().getCenter())<12)
+                        setPos(target.getBoundingBox().getCenter().add(outward.scale(16.5)));
+                    velocity=Vec3.ZERO;
+                }else{velocity=velocity.scale(.96).add(delta.normalize().scale(.004));if(velocity.length()>.05)velocity=velocity.normalize().scale(.05);setPos(position().add(velocity));}
             }
-            move(MoverType.SELF,velocity); publish();
+            if(age%10==0)for(LivingEntity victim:level().getEntitiesOfClass(LivingEntity.class,getBoundingBox().inflate(4),v->MahouPhaseOneAI.valid(boss,v)))
+                victim.hurt(damageSources().indirectMagic(this,boss),18);
+        } else if(kind==FUSION){
+            if(age==delay+1){
+                ArkOfCosmos.sound(this,"galaxia_eruption",2);
+                net.minecraft.nbt.CompoundTag effect=new net.minecraft.nbt.CompoundTag();effect.putString("Event","mahou_fusion");effect.putInt("Owner",boss.getId());effect.putDouble("AtX",boss.getX());effect.putDouble("AtY",boss.getY());effect.putDouble("AtZ",boss.getZ());net.everla.projectc.arkofcosmos.network.ArkNetwork.effect(boss,effect);
+                for(LivingEntity victim:level().getEntitiesOfClass(LivingEntity.class,boss.getBoundingBox().inflate(64),v->MahouPhaseOneAI.valid(boss,v)))
+                    if(victim.getBoundingBox().getCenter().distanceTo(boss.getBoundingBox().getCenter())>MahouTsukaiEntity.FUSION_SHIELD_RADIUS)hit(boss,victim);
+            }
+        } else if(kind==BLUE_DASH){
+            pull(boss,4,true,.025);
+            if(age>delay)for(LivingEntity victim:level().getEntitiesOfClass(LivingEntity.class,getBoundingBox().inflate(2),v->MahouPhaseOneAI.valid(boss,v)))hit(boss,victim);
+        } else if(kind==RED||kind==BLUE||kind==PURPLE||kind==DOMAIN_TEXT){
+            if(kind==PURPLE&&age<=delay){velocity=velocity.scale(.94);setPos(position().add(velocity));}
+            else if(age>delay){
+                if(kind==PURPLE&&age==delay+1&&MahouPhaseOneAI.valid(boss,boss.getTarget()))velocity=boss.getTarget().getBoundingBox().getCenter().subtract(position()).normalize().scale(1.2);
+                if(kind==BLUE&&landed){pull(boss,10,false,.025);if(age%20==0)hits.clear();}
+                else{
+                    Vec3 from=position(),end=from.add(velocity);
+                    var collision=level().clip(new ClipContext(from,end,ClipContext.Block.COLLIDER,ClipContext.Fluid.ANY,this));
+                    if(collision.getType()!=HitResult.Type.MISS){
+                        setPos(collision.getLocation());
+                        if(kind==BLUE){landed=true;velocity=Vec3.ZERO;life=age+100;}else{discard();return;}
+                    }else setPos(end);
+                    double radius=kind==DOMAIN_TEXT?1.3:kind==PURPLE?1:1.6;
+                    for(LivingEntity victim:level().getEntitiesOfClass(LivingEntity.class,new AABB(from,position()).inflate(radius),v->MahouPhaseOneAI.valid(boss,v))){
+                        hit(boss,victim);
+                        if(kind==RED||kind==PURPLE){discard();return;}
+                    }
+                }
+            }
         } else if (kind==WAVE) {
             if(age>delay) {
                 double radius=radius(age,delay,life),previous=radius(age-1,delay,life);
@@ -146,6 +182,13 @@ public final class MahouAttackEntity extends Entity {
             }
         }
         publish();
+    }
+    private void pull(MahouTsukaiEntity boss,double radius,boolean playersOnly){pull(boss,radius,playersOnly,.035);}
+    private void pull(MahouTsukaiEntity boss,double radius,boolean playersOnly,double strength){
+        for(LivingEntity victim:level().getEntitiesOfClass(LivingEntity.class,getBoundingBox().inflate(radius),v->MahouPhaseOneAI.valid(boss,v)&&(!playersOnly||v instanceof net.minecraft.world.entity.player.Player))){
+            Vec3 delta=position().subtract(victim.getBoundingBox().getCenter());
+            if(delta.length()<=radius){victim.push(delta.normalize().x*strength,delta.normalize().y*strength*.72,delta.normalize().z*strength);victim.hurtMarked=true;}
+        }
     }
     public static double radius(double age,int delay,int life) { return Math.max(0,Math.min(1,(age-delay)/Math.max(1,life-delay)))*(delay==0?3:26); }
     private boolean sheltered(Vec3 origin,LivingEntity target,MahouTsukaiEntity boss) {

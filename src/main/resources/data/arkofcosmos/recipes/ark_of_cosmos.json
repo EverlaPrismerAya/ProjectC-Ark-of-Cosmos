@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:smithing_transform",
+  "template": {
+    "item": "arkofcosmos:galaxia"
+  },
+  "base": {
+    "item": "arkofcosmos:ark_of_the_elements"
+  },
+  "addition": {
+    "item": "arkofcosmos:auric_bar"
+  },
+  "result": {
+    "item": "arkofcosmos:ark_of_cosmos"
+  }
+}

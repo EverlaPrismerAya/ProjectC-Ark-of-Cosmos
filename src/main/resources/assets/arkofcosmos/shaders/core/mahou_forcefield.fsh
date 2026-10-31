@@ -11,13 +11,14 @@ uniform float uHealthRatio;
 uniform float uTintStrength;
 uniform float uPostMusicHit;
 uniform float uRandom;
+uniform float uFixedBoundary;
 out vec4 fragColor;
 float inverseLerp(float x,float a,float b){return clamp((x-a)/(b-a),0.0,1.0);}
 void main(){
     vec4 baseColor=texture(Sampler0,texCoord.xy);
     float noise=texture(Sampler1,vec2(texCoord.x,fract(texCoord.y+uTime*.7))).r;
-    float start=.45+sin(uTime*3.0)*.04;
-    float r=length(texCoord.xy-vec2(.5))*1.414;
+    float start=uFixedBoundary>.5?.9:.45+sin(uTime*3.0)*.04;
+    float r=length(texCoord.xy-vec2(.5))*(uFixedBoundary>.5?2.0:1.414);
     vec3 color=mix(uColor,uSecondaryColor,pow(r,.6));
     float alpha=pow(inverseLerp(r,0.0,start),2.6);
     float ring=sin(3.141*inverseLerp(r,start,start+.1))*1.96;

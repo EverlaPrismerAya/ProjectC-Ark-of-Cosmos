@@ -320,18 +320,18 @@ final class MahouPhaseOneAI {
         boss.setXRot((float)-Math.toDegrees(Math.atan2(direction.y,Math.sqrt(direction.x*direction.x+direction.z*direction.z))));
         boss.yBodyRot=boss.yHeadRot=boss.getYRot();
     }
-    private double ground(Vec3 at) {
+    double ground(Vec3 at) {
         Vec3 top = new Vec3(at.x,Math.max(boss.getY()+2,boss.getTarget()==null?boss.getY()+2:boss.getTarget().getBoundingBox().maxY+2),at.z), bottom=top.add(0,-48,0);
         BlockHitResult hit=boss.level().clip(new ClipContext(top,bottom,ClipContext.Block.COLLIDER,ClipContext.Fluid.NONE,boss));
         // No landing surface: hold altitude instead of chasing a floor two blocks below every tick.
         return hit.getType()==HitResult.Type.MISS ? boss.getY() : hit.getLocation().y;
     }
     void steer(Vec3 at,double speed) {
-        if(attack!=2&&boss.getTarget()!=null)at=new Vec3(at.x,Math.max(at.y,combatHeight(at,boss.getTarget())),at.z);
+        if(attack!=2&&!boss.fusionShield()&&boss.getTarget()!=null)at=new Vec3(at.x,Math.max(at.y,combatHeight(at,boss.getTarget())),at.z);
         Vec3 delta=at.subtract(boss.position());
         boss.setDeltaMovement(avoidSolid(delta.length()<speed?delta:delta.normalize().scale(speed)));
         // Respect explicitly higher waypoints; only correct motion that would cross the combat-height floor.
-        if(attack!=2&&boss.getTarget()!=null){
+        if(attack!=2&&!boss.fusionShield()&&boss.getTarget()!=null){
             Vec3 velocity=boss.getDeltaMovement();
             double floor=combatHeight(boss.position().add(velocity.multiply(1,0,1)),boss.getTarget());
             if(boss.getY()+velocity.y<floor)boss.setDeltaMovement(velocity.x,Math.min(.3,floor-boss.getY()),velocity.z);

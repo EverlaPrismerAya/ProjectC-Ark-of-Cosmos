@@ -4,7 +4,7 @@
   "package": "net.everla.projectc.arkofcosmos.mixin",
   "compatibilityLevel": "JAVA_17",
   "plugin": "net.everla.projectc.arkofcosmos.mixin.ArkMixinPlugin",
-  "mixins": ["LivingEntityMixin", "ForgeHooksMixin"],
+  "mixins": ["LivingEntityMixin", "ForgeHooksMixin", "ItemEntityMixin"],
   "client": ["client.MahouNameFontMixin"],
   "injectors": {"defaultRequire": 1}
 }
