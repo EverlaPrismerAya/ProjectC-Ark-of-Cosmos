@@ -4,6 +4,7 @@
     { "id": "alexsmobs:seagull", "required": false },
     { "id": "iceandfire:if_pixie", "required": false },
     { "id": "alexsmobs:fly", "required": false },
-    { "id": "alexsmobs:cockroach", "required": false }
+    { "id": "alexsmobs:cockroach", "required": false },
+    { "id": "dummmmmmy:target_dummy", "required": false }
   ]
 }

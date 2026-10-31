@@ -171,5 +171,29 @@
     "sounds": [
       "arkofcosmos:elements_item9_0"
     ]
+  },
+  "mahou_music_phase_1": {
+    "sounds": [
+      {
+        "name": "arkofcosmos:music/calamitas_phase_1",
+        "stream": true
+      }
+    ]
+  },
+  "mahou_music_phase_2": {
+    "sounds": [
+      {
+        "name": "arkofcosmos:music/calamitas_phase_2",
+        "stream": true
+      }
+    ]
+  },
+  "mahou_music_phase_3": {
+    "sounds": [
+      {
+        "name": "arkofcosmos:music/calamitas_phase_3",
+        "stream": true
+      }
+    ]
   }
 }

@@ -973,6 +973,120 @@
       "project": "Calamity Mod",
       "path": "Particles/TechyHolosquare.png",
       "license": "Calamity Team / original rights holders; All Rights Reserved; not MIT"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/entity/odamane_halo.png",
+      "sha256": "816296d2496a078d6c8a17bd2615d6e392c6bfddf926e8c4abc0dc13ca7b59f5",
+      "project": "RevelationFix / Goety Revelation",
+      "path": "assets/revelationfix/textures/entity/player/halo_the_end.png",
+      "license": "ARR / original rights holders; not MIT",
+      "source_jar": "sample\\[Forge]RevelationFix-1.20.1-4.6.jar",
+      "source_sha256": "816296d2496a078d6c8a17bd2615d6e392c6bfddf926e8c4abc0dc13ca7b59f5",
+      "transformation": "Byte-identical"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/shaders/post/odamane.json",
+      "sha256": "adf04b5560baf20894013cd567e204fead2a2e486d86bcd1ed8c20f09e1042d7",
+      "project": "RevelationFix / Goety Revelation",
+      "path": "assets/revelationfix/shaders/post/odamane.json",
+      "license": "ARR / original rights holders; not MIT",
+      "source_jar": "sample\\[Forge]RevelationFix-1.20.1-4.6.jar",
+      "source_sha256": "6716578cf8b3e980314568f9e924f598127061737dc11e2a1958749699037c76",
+      "transformation": "Resource namespace only"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/shaders/program/odamane.json",
+      "sha256": "5b006a309a0fa97c68a4890780a7a9bd168052c58645b7acb939cfa842255b10",
+      "project": "RevelationFix / Goety Revelation",
+      "path": "assets/revelationfix/shaders/program/odamane.json",
+      "license": "ARR / original rights holders; not MIT",
+      "source_jar": "sample\\[Forge]RevelationFix-1.20.1-4.6.jar",
+      "source_sha256": "1d6232ce2d63b3e24648aec6d3698e600d0a0a40f46d8cc1f22b11993594d9aa",
+      "transformation": "Resource namespace only"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/shaders/program/odamane.fsh",
+      "sha256": "824fbac0d58aa7b8ff3811f69b32cc826ad74c478a821c90771ca84ea4109752",
+      "project": "RevelationFix / Goety Revelation",
+      "path": "assets/revelationfix/shaders/program/odamane.fsh",
+      "license": "ARR / original rights holders; not MIT",
+      "source_jar": "sample\\[Forge]RevelationFix-1.20.1-4.6.jar",
+      "source_sha256": "824fbac0d58aa7b8ff3811f69b32cc826ad74c478a821c90771ca84ea4109752",
+      "transformation": "Byte-identical"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/shaders/program/rewind.json",
+      "sha256": "eeef6f5a23d6e807dd9fe419e12bb76abc5e83996b165c9ed4bc097d86d95b16",
+      "project": "RevelationFix / Goety Revelation",
+      "path": "assets/revelationfix/shaders/program/rewind.json",
+      "license": "ARR / original rights holders; not MIT",
+      "source_jar": "sample\\[Forge]RevelationFix-1.20.1-4.6.jar",
+      "source_sha256": "379a497b382a0f2f1f6c5867cd51c0089ab1d2b8be9dfbcf9ffd9f35f5150e97",
+      "transformation": "Resource namespace only"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/shaders/program/rewind.fsh",
+      "sha256": "dc7fac6f6f7411da228af77a6d6a2ad9a14688a85481d3fe80b3a25d3dd05799",
+      "project": "RevelationFix / Goety Revelation",
+      "path": "assets/revelationfix/shaders/program/rewind.fsh",
+      "license": "ARR / original rights holders; not MIT",
+      "source_jar": "sample\\[Forge]RevelationFix-1.20.1-4.6.jar",
+      "source_sha256": "dc7fac6f6f7411da228af77a6d6a2ad9a14688a85481d3fe80b3a25d3dd05799",
+      "transformation": "Byte-identical"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/supreme_forcefield.png",
+      "sha256": "a1d0dce648fa1ccf7d662fb038ee9a5eb89cb37fed6c97652cd8fec02b7564a6",
+      "project": "Calamity Mod",
+      "path": "NPCs/SupremeCalamitas/ForcefieldTexture.png",
+      "license": "Calamity Team / original rights holders; not MIT",
+      "source_sha256": "a1d0dce648fa1ccf7d662fb038ee9a5eb89cb37fed6c97652cd8fec02b7564a6",
+      "transformation": "Byte-identical"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/supreme_noise.png",
+      "sha256": "978e1c9a7572f690e10be99a53213eec6f05ae8fad83722eb43d700539bc1b44",
+      "project": "Calamity Mod",
+      "path": "ExtraTextures/GreyscaleGradients/Perlin.png",
+      "license": "Calamity Team / original rights holders; not MIT",
+      "source_sha256": "978e1c9a7572f690e10be99a53213eec6f05ae8fad83722eb43d700539bc1b44",
+      "transformation": "Byte-identical"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/shaders/core/mahou_forcefield.fsh",
+      "sha256": "b4358f36717c5814e7c8a474b4bf251b440138947b170aaa4599cacbee320320",
+      "project": "Calamity Mod",
+      "path": "Effects/SupremeShieldShader.fx",
+      "license": "Calamity Team / original rights holders; not MIT",
+      "source_sha256": "20852fdc08bf4770798e888749ecd266866b549fc0b05109927f14b2f86a4742",
+      "transformation": "HLSL-to-GLSL port with phase palette and native total-health flicker"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/music/calamitas_phase_1.ogg",
+      "sha256": "e53aa171822c25920de84e9674fff514976870bf746d52597bdaf4a2e694c39d",
+      "source_sha256": "e53aa171822c25920de84e9674fff514976870bf746d52597bdaf4a2e694c39d",
+      "project": "Calamity Mod Music / DM DOKURO",
+      "path": "Sounds/Music/CalamitasPhase1.ogg",
+      "license": "Original music rights holders; not MIT",
+      "matches_recorded_output": true
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/music/calamitas_phase_2.ogg",
+      "sha256": "bc2dca9894eadace2e4b30198868dedc23bbeeadb21caf9a0e3a7edf21746dee",
+      "source_sha256": "bc2dca9894eadace2e4b30198868dedc23bbeeadb21caf9a0e3a7edf21746dee",
+      "project": "Calamity Mod Music / DM DOKURO",
+      "path": "Sounds/Music/CalamitasPhase2.ogg",
+      "license": "Original music rights holders; not MIT",
+      "matches_recorded_output": true
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/music/calamitas_phase_3.ogg",
+      "sha256": "9ad33ccf0b8697a7420088dde4b68bc76b346298ac98c05dce189c2188aee946",
+      "source_sha256": "9ad33ccf0b8697a7420088dde4b68bc76b346298ac98c05dce189c2188aee946",
+      "project": "Calamity Mod Music / DM DOKURO",
+      "path": "Sounds/Music/CalamitasPhase3.ogg",
+      "license": "Original music rights holders; not MIT",
+      "matches_recorded_output": true
     }
   ]
 }

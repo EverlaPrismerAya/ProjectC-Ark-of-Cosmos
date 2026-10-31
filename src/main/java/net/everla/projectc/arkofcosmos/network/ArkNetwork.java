@@ -36,6 +36,11 @@ public final class ArkNetwork {
         }
     }
     public static void register() {
+        CHANNEL.messageBuilder(BossBar.class, 3, NetworkDirection.PLAY_TO_CLIENT)
+                .encoder((p, b) -> { b.writeUUID(p.id()); b.writeByte(p.phase()); })
+                .decoder(b -> new BossBar(b.readUUID(), b.readByte()))
+                .consumerMainThread((p, c) -> DistExecutor.unsafeRunWhenOn(Dist.CLIENT,
+                        () -> () -> net.everla.projectc.arkofcosmos.client.MahouBossBar.update(p.id(), p.phase()))).add();
         CHANNEL.messageBuilder(GalaxiaInput.class, 2, NetworkDirection.PLAY_TO_SERVER)
                 .encoder((p,b) -> { b.writeBoolean(p.left()); b.writeInt(p.selection()); })
                 .decoder(b -> new GalaxiaInput(b.readBoolean(),b.readInt()))
@@ -47,6 +52,10 @@ public final class ArkNetwork {
                 .decoder(buffer -> new Effect(buffer.readNbt()))
                 .consumerMainThread((packet, context) -> DistExecutor.unsafeRunWhenOn(Dist.CLIENT,
                         () -> () -> ArkEffects.receive(packet.data))).add();
+    }
+    private record BossBar(java.util.UUID id, int phase) {}
+    public static void bossBar(net.minecraft.server.level.ServerPlayer player, java.util.UUID id, int phase) {
+        CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), new BossBar(id, phase));
     }
     private record Effect(CompoundTag data) {}
     private record GalaxiaInput(boolean left, int selection) {}

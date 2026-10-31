@@ -32,7 +32,6 @@ public final class ArkClient {
     private static int heartbeat;
     private static final KeyMapping DASH = new KeyMapping("key.arkofcosmos.dash", KeyConflictContext.IN_GAME,
             InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_LEFT_ALT, "key.categories.arkofcosmos");
-
     @SubscribeEvent public static void tick(TickEvent.ClientTickEvent event) {
         if (event.phase != TickEvent.Phase.END) return;
         Minecraft mc = Minecraft.getInstance();
@@ -94,7 +93,9 @@ public final class ArkClient {
     @Mod.EventBusSubscriber(modid = ArkOfCosmos.MOD_ID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
     public static final class Registration {
         @SubscribeEvent public static void shaders(RegisterShadersEvent event) throws java.io.IOException {
+            OdamaneHaloEffects.reset();
             ArkFxDraw.register(event);
+            MahouBossBar.registerShader(event);
         }
         @SubscribeEvent public static void keys(RegisterKeyMappingsEvent event) {
             event.register(DASH);
@@ -121,6 +122,8 @@ public final class ArkClient {
         }
         @SubscribeEvent public static void renderers(EntityRenderersEvent.RegisterRenderers event) {
             event.registerEntityRenderer(ArkOfCosmos.ATTACK.get(), ArkAttackRenderer::new);
+            event.registerEntityRenderer(ArkOfCosmos.MAHOU_TSUKAI.get(), MahouTsukaiRenderer::new);
+            event.registerEntityRenderer(ArkOfCosmos.MAHOU_ATTACK.get(), MahouAttackRenderer::new);
         }
     }
 }

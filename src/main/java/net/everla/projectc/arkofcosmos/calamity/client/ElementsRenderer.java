@@ -87,10 +87,11 @@ public final class ElementsRenderer extends EntityRenderer<ElementsEntity> {
                 d.centered("elements/"+name,at,kind==NEEDLE?flight:f,angle,scale,scale,mul(WHITE,(cache-index)/(double)cache*(kind==NEEDLE?.6:1)),false);index++;
             }
             d.sprite("elements/"+name,p,kind==NEEDLE?flight:f,kind==NEEDLE?Math.PI/2:r,scale,scale,NativeSprites.width("elements/"+name)/2d,NativeSprites.height("elements/"+name)/2d,WHITE,false,true,15728880);
-            Vec3 at=kind==NEEDLE?p.subtract(v.scale(30.5/16d)):p;AttackFrame face=NativeSprites.billboard();
+            double glowScale=kind==NEEDLE?scale/2.4:1;
+            Vec3 at=kind==NEEDLE?p.subtract(v.scale(30.5/16d*glowScale)):p;AttackFrame face=NativeSprites.billboard();
             float[] color=kind==NEEDLE?hsl(time*.6,.85):hsl(Math.sin(time*15)*.05+.08,.55);double ratio=NativeSprites.height("fx/sparkle")/(double)NativeSprites.height("fx/bloomcircle");
-            d.centered("fx/bloomcircle",at,face,0,4*ratio,4*ratio,mul(color,kind==NEEDLE?.5:.6),true);
-            d.centered("fx/sparkle",at,face,time*8+Math.PI/4,1.5,1.5,mul(color,kind==NEEDLE?.5:1),true);d.centered("fx/sparkle",at,face,time*8,2,2,WHITE,true);
+            d.centered("fx/bloomcircle",at,face,0,4*ratio*glowScale,4*ratio*glowScale,mul(color,kind==NEEDLE?.5:.6),true);
+            d.centered("fx/sparkle",at,face,time*8+Math.PI/4,1.5*glowScale,1.5*glowScale,mul(color,kind==NEEDLE?.5:1),true);d.centered("fx/sparkle",at,face,time*8,2*glowScale,2*glowScale,WHITE,true);
         }
         } finally {ArkFxDraw.fadeEye=null;}
     }

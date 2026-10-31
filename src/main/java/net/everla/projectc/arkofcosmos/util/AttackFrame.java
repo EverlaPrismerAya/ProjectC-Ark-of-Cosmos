@@ -1,11 +1,10 @@
 package net.everla.projectc.arkofcosmos.util;
 
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 
 /** Attack plane: forward follows pitch; right follows yaw even when looking vertically. */
 public record AttackFrame(Vec3 forward, Vec3 right) {
-    public static AttackFrame capture(Player player) {
+    public static AttackFrame capture(net.minecraft.world.entity.LivingEntity player) {
         double yaw = Math.toRadians(player.getYRot());
         return new AttackFrame(player.getLookAngle().normalize(), new Vec3(-Math.cos(yaw), 0, -Math.sin(yaw)));
     }

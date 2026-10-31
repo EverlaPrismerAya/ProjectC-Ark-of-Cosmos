@@ -56,14 +56,20 @@ public final class ElementsCombat {
     private static void attack(ServerPlayer p,Controls c){
         if(c.use>0||active(p))return;
         ItemStack stack=p.getMainHandItem();int combo=Math.floorMod(stack.getOrCreateTag().getInt("ElementsCombo"),5),mode=ElementsRules.mode(combo),charge=ElementsItem.charge(stack);
-        float damage=ElementsRules.charged(ElementsRules.BASE_DAMAGE,charge);AttackFrame f=AttackFrame.capture(p);Vec3 at=p.getBoundingBox().getCenter();
-        ElementsEntity.create(p,ElementsEntity.BLADE,mode,charge,damage,at,f.forward(),f);
+        float damage=ElementsRules.charged(ElementsRules.BASE_DAMAGE,charge);AttackFrame f=AttackFrame.capture(p);
+        swing(p,mode,charge,damage,f);
+        stack.getOrCreateTag().putInt("ElementsCombo",(combo+1)%5);ElementsItem.charge(stack,ElementsRules.afterAttack(charge));c.use=20;
+    }
+    /** Identical item/Boss swing and mode-one needle/four-star pattern. */
+    public static ElementsEntity swing(LivingEntity p,int mode,int charge,float damage,AttackFrame f){
+        Vec3 at=p.getBoundingBox().getCenter();
+        ElementsEntity blade=ElementsEntity.create(p,ElementsEntity.BLADE,mode,charge,damage,at,f.forward(),f);
         if(mode==1){
             ElementsEntity.create(p,ElementsEntity.NEEDLE,0,charge,damage*.8f,at.add(f.forward().scale(20/16d)),f.forward().scale(16*2.8/16d),f);
             for(int side:new int[]{-1,1})for(int i=0;i<2;i++)
                 ElementsEntity.create(p,ElementsEntity.STAR,0,0,damage*.2f,at.add(f.right().scale(side*20/16d*(i==0?1:1.2))),f.direction(side*(i==0?.2356194704771042:.3141592741012573)).scale(i==0?1:.8),f);
         }
-        stack.getOrCreateTag().putInt("ElementsCombo",(combo+1)%5);ElementsItem.charge(stack,ElementsRules.afterAttack(charge));c.use=20;
+        return blade;
     }
     @SubscribeEvent public static void tick(TickEvent.PlayerTickEvent e){
         if(e.phase!=TickEvent.Phase.END||!(e.player instanceof ServerPlayer p))return;
@@ -98,7 +104,7 @@ public final class ElementsCombat {
         if(ElementsRules.dotDue(elapsed)){
             if(t instanceof Player p&&(p.isCreative()||p.isSpectator()))return;
             var source=t.damageSources().magic();
-            if(data.hasUUID("ElementsDotOwner")&&t.level() instanceof net.minecraft.server.level.ServerLevel level){var owner=level.getPlayerByUUID(data.getUUID("ElementsDotOwner"));if(owner!=null)source=t.damageSources().indirectMagic(owner,owner);}
+            if(data.hasUUID("ElementsDotOwner")&&t.level() instanceof net.minecraft.server.level.ServerLevel level){var owner=WeaponUser.resolve(level,data.getUUID("ElementsDotOwner"));if(owner!=null)source=t.damageSources().indirectMagic(owner,owner);}
             int cooldown=t.invulnerableTime;t.invulnerableTime=0;
             LivingEntity previous=RESONANCE_HIT.get();RESONANCE_HIT.set(t);
             try{t.hurt(source,1);}finally{
@@ -112,7 +118,7 @@ public final class ElementsCombat {
     public static void resonanceKnockback(net.minecraftforge.event.entity.living.LivingKnockBackEvent e){
         if(RESONANCE_HIT.get()==e.getEntity())e.setCanceled(true);
     }
-    public static void applyResonance(LivingEntity t,Player owner,int ticks){
+    public static void applyResonance(LivingEntity t,LivingEntity owner,int ticks){
         t.addEffect(new net.minecraft.world.effect.MobEffectInstance(ArkOfCosmos.ELEMENTAL_MIX.get(),ticks,0,false,false,true),owner);
         t.getPersistentData().putUUID("ElementsDotOwner",owner.getUUID());
     }

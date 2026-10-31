@@ -22,7 +22,7 @@ public final class ArkFxDraw {
     public static final VertexFormatElement UV3 = new VertexFormatElement(0, VertexFormatElement.Type.FLOAT, VertexFormatElement.Usage.UV, 3);
     public static final VertexFormat FORMAT = new VertexFormat(ImmutableMap.of("Position", DefaultVertexFormat.ELEMENT_POSITION,
             "Color", DefaultVertexFormat.ELEMENT_COLOR, "UV0", UV3));
-    public static ShaderInstance spriteShader, trailShader, tintShader;
+    public static ShaderInstance spriteShader, trailShader, tintShader, moonShader, forcefieldShader;
     /** Immutable per-draw BasicTint parameters, also captured by deferred Oculus draws. */
     public record Tint(float red, float green, float blue, float opacity) {}
     public static final Map<String, int[]> sizes = new HashMap<>();
@@ -52,6 +52,8 @@ public final class ArkFxDraw {
         event.registerShader(shader(event,"fx_sprite"), shader -> spriteShader = shader);
         event.registerShader(shader(event,"fx_trail"), shader -> trailShader = shader);
         event.registerShader(shader(event,"galaxia_tint"), shader -> tintShader = shader);
+        event.registerShader(shader(event,"mahou_moon"), shader -> moonShader = shader);
+        event.registerShader(shader(event,"mahou_forcefield"), shader -> forcefieldShader = shader);
         sizes.clear();
         contours.clear();
     }
@@ -117,6 +119,47 @@ public final class ArkFxDraw {
         RenderSystem.enableCull();
         RenderSystem.defaultBlendFunc();
         RenderSystem.disableBlend();
+    }
+
+    /** Procedural lunar corona/gravity front. Uses the same deferred world/depth path as weapon FX. */
+    public static void moon(Vec3 at, AttackFrame frame, double radius, float opacity, float time, boolean crescent) {
+        if(radius<=0||opacity<=0)return;
+        if(OculusShaderCompat.defer(()->moon(at,frame,radius,opacity,time,crescent)))return;
+        begin("galaxia/hollowcirclesoftedge",Blend.ADDITIVE,false);
+        try {
+            moonShader.safeGetUniform("uTime").set(time);
+            RenderSystem.setShader(()->moonShader);
+            BufferBuilder buffer=Tesselator.getInstance().getBuilder();buffer.begin(VertexFormat.Mode.QUADS,FORMAT);
+            Vec3 x=frame.forward().scale(radius),y=frame.right().scale(radius);float[] color={1,1,1,opacity};float mode=crescent?1:0;
+            vertex(buffer,at.subtract(x).subtract(y),color,0,0,mode);
+            vertex(buffer,at.subtract(x).add(y),color,0,1,mode);
+            vertex(buffer,at.add(x).add(y),color,1,1,mode);
+            vertex(buffer,at.add(x).subtract(y),color,1,0,mode);
+            BufferUploader.drawWithShader(buffer.end());
+        } finally {end();}
+    }
+    /** Supreme Calamitas forcefield, through the same depth/deferred path as the weapons. */
+    public static void forcefield(Vec3 at,AttackFrame frame,int phase,float healthRatio,float opacity,float time,boolean postMusicHit){
+        if(OculusShaderCompat.defer(()->forcefield(at,frame,phase,healthRatio,opacity,time,postMusicHit)))return;
+        begin("supreme_forcefield",Blend.ALPHA,false);
+        try{
+            RenderSystem.setShaderTexture(1,texture("supreme_noise"));
+            float[] color=phase==1?new float[]{.35f,.65f,1}:phase==2?new float[]{.06f,.07f,.09f}:new float[]{.05f,.85f,.8f};
+            float[] edge=phase==1?new float[]{.45f,.75f,1}:phase==2?new float[]{.24f,.26f,.3f}:new float[]{.4f,1,1};
+            forcefieldShader.safeGetUniform("uColor").set(color[0],color[1],color[2]);
+            forcefieldShader.safeGetUniform("uSecondaryColor").set(edge[0],edge[1],edge[2]);
+            forcefieldShader.safeGetUniform("uHealthRatio").set(healthRatio);
+            forcefieldShader.safeGetUniform("uPostMusicHit").set(postMusicHit?1f:0f);
+            forcefieldShader.safeGetUniform("uRandom").set(java.util.concurrent.ThreadLocalRandom.current().nextFloat());
+            forcefieldShader.safeGetUniform("uTime").set(time);
+            forcefieldShader.safeGetUniform("uTintStrength").set(phase==2?.9f:.5f);
+            RenderSystem.setShader(()->forcefieldShader);
+            BufferBuilder buffer=Tesselator.getInstance().getBuilder();buffer.begin(VertexFormat.Mode.QUADS,FORMAT);
+            Vec3 x=frame.forward().scale(2.6),y=frame.right().scale(2.6);float[] rgba={1,1,1,opacity};
+            vertex(buffer,at.subtract(x).subtract(y),rgba,0,0,1);vertex(buffer,at.subtract(x).add(y),rgba,0,1,1);
+            vertex(buffer,at.add(x).add(y),rgba,1,1,1);vertex(buffer,at.add(x).subtract(y),rgba,1,0,1);
+            BufferUploader.drawWithShader(buffer.end());
+        }finally{end();}
     }
     public static void vertex(BufferBuilder buffer, Vec3 point, float[] color, float u, float v, float width) {
         Vec3 local = point.subtract(camera);

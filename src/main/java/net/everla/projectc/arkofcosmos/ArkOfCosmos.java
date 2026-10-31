@@ -16,6 +16,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
+import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 
 @Mod(ArkOfCosmos.MOD_ID)
 public final class ArkOfCosmos {
@@ -40,6 +41,12 @@ public final class ArkOfCosmos {
     public static final RegistryObject<EntityType<ArkAttackEntity>> ATTACK = ENTITIES.register("attack",
             () -> EntityType.Builder.<ArkAttackEntity>of(ArkAttackEntity::new, MobCategory.MISC)
                     .sized(.5f, .5f).noSave().noSummon().clientTrackingRange(128).updateInterval(1).build("arkofcosmos:attack"));
+    public static final RegistryObject<EntityType<net.everla.projectc.arkofcosmos.entity.MahouTsukaiEntity>> MAHOU_TSUKAI = ENTITIES.register("mahou_tsukai",
+            () -> EntityType.Builder.<net.everla.projectc.arkofcosmos.entity.MahouTsukaiEntity>of(net.everla.projectc.arkofcosmos.entity.MahouTsukaiEntity::new, MobCategory.MONSTER)
+                    .sized(.6f, 1.95f).clientTrackingRange(128).updateInterval(1).build("arkofcosmos:mahou_tsukai"));
+    public static final RegistryObject<EntityType<net.everla.projectc.arkofcosmos.entity.MahouAttackEntity>> MAHOU_ATTACK = ENTITIES.register("mahou_attack",
+            () -> EntityType.Builder.<net.everla.projectc.arkofcosmos.entity.MahouAttackEntity>of(net.everla.projectc.arkofcosmos.entity.MahouAttackEntity::new, MobCategory.MISC)
+                    .sized(.2f,.2f).noSave().noSummon().clientTrackingRange(128).updateInterval(1).build("arkofcosmos:mahou_attack"));
     public static final RegistryObject<SoundEvent> SNAP = SOUNDS.register("snap",
             () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(MOD_ID, "snap")));
     private static final java.util.Map<String, RegistryObject<SoundEvent>> AUDIO = new java.util.HashMap<>();
@@ -65,6 +72,11 @@ public final class ArkOfCosmos {
         EFFECTS.register(bus);
         ArkNetwork.register();
         bus.addListener(this::addCreativeContents);
+        bus.addListener(this::attributes);
+    }
+
+    private void attributes(EntityAttributeCreationEvent event) {
+        event.put(MAHOU_TSUKAI.get(), net.everla.projectc.arkofcosmos.entity.MahouTsukaiEntity.createAttributes().build());
     }
 
     private void addCreativeContents(BuildCreativeModeTabContentsEvent event) {

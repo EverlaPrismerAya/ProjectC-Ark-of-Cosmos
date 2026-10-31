@@ -7,6 +7,16 @@ import net.minecraft.world.phys.Vec3;
 /** Numerical source checkpoints, runnable without a window or GL context. */
 public final class ArkFxCheck {
     public static void main(String[] args) {
+        int[] nameColors = {0x00FFFF, 0x8800FF, 0xFF00FF, 0x8800FF, 0x00FFFF};
+        for (int i = 0; i < nameColors.length; i++) {
+            if (net.everla.projectc.arkofcosmos.util.MahouNameStyle.colorAt(i * 1500L) != nameColors[i])
+                throw new AssertionError("Boss name gradient stop " + i);
+        }
+        if (net.everla.projectc.arkofcosmos.util.MahouNameStyle.colorAt(750) != 0x4480FF
+                || net.everla.projectc.arkofcosmos.util.MahouNameStyle.colorAt(-750)
+                != net.everla.projectc.arkofcosmos.util.MahouNameStyle.colorAt(5250))
+            throw new AssertionError("Boss name gradient interpolation / wrap");
+        checkOdamaneHalo();
         checkAttackSnapshots();
         checkElementsFx();
         checkClientSubscriberNames();
@@ -169,6 +179,24 @@ public final class ArkFxCheck {
         near(holo.at.x,1);near(holo.opacity,Math.sqrt(.1));near(holo.scale,1.92);near(holo.velocity.x,.875);
         var gore=new ElementsVanillaParticles.Particle(16,Vec3.ZERO,new Vec3(1,0,0),.7,ArkEffects.WHITE,f,-1);gore.alpha=100;gore.update();near(gore.scale,.69);near(gore.at.x,.98);
         int steps=1;while(gore.update()&&steps<100)steps++;if(steps<58||steps>61)throw new AssertionError("Source Gore shrink lifetime");
+    }
+    private static void checkOdamaneHalo() {
+        var halo = new net.everla.projectc.arkofcosmos.client.OdamaneHaloModel(
+                net.everla.projectc.arkofcosmos.client.OdamaneHaloModel.createLayer().bakeRoot());
+        long parts = halo.halo.getAllParts().count();
+        int[] cubes = {0};
+        halo.halo.visit(new com.mojang.blaze3d.vertex.PoseStack(), (pose,path,index,cube) -> cubes[0]++);
+        if(parts!=16 || cubes[0]!=21)throw new AssertionError("Complete halo hierarchy: "+parts+" parts / "+cubes[0]+" cubes");
+        near(halo.halo.y,-5);near(halo.halo.z,10);
+        near(halo.halo.getChild("bone2").getChild("cube_r1").x,21.0237f);
+        near(halo.halo.getChild("bone5").getChild("cube_r10").zRot,-.2182f);
+        for(float angle:new float[]{0,.75f,3.14159f}) {
+            halo.animate(angle);
+            near(halo.halo.getChild("bone2").zRot,angle);near(halo.halo.getChild("bone3").zRot,angle);
+            near(halo.halo.getChild("bone4").zRot,-angle);near(halo.halo.getChild("bone5").zRot,-angle);
+            near(halo.halo.getChild("bone").y,net.minecraft.util.Mth.cos(angle)+1);
+        }
+        near(net.everla.projectc.arkofcosmos.client.OdamaneHaloModel.rotation(0,0),3201123f*net.minecraft.util.Mth.DEG_TO_RAD);
     }
     private static void checkClientSubscriberNames() {
         var factory = new net.minecraftforge.eventbus.ClassLoaderFactory();

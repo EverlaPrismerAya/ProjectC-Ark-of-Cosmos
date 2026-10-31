@@ -35,5 +35,9 @@
   "elements.empower": "招架后强化接下来的10次挥斩，让你同时使用两把剑刃",
   "elements.blast": "有充能时，按住%s并按%s引发时空大撕裂，消耗全部充能",
   "elements.resonance": "命中造成元素谐鸣减益",
-  "elements.flavor": "一对注入了§k泰拉§r大陆精华的天赐之刃，其威力足以切割现实的结构"
+  "elements.flavor": "一对注入了§k泰拉§r大陆精华的天赐之刃，其威力足以切割现实的结构",
+  "entity.arkofcosmos.mahou_tsukai": "魔法使",
+  "entity.arkofcosmos.mahou_tsukai.phase_1": "喰月天狗  七叶镜 绫",
+  "entity.arkofcosmos.mahou_tsukai.phase_2": "终末神明  七叶镜 绫",
+  "entity.arkofcosmos.mahou_tsukai.phase_3": "无下限术士  七叶镜 绫"
 }

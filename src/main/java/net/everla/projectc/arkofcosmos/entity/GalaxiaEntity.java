@@ -25,6 +25,8 @@ public final class GalaxiaEntity extends Entity {
     private static final EntityDataAccessor<CompoundTag> VIEW=SynchedEntityData.defineId(GalaxiaEntity.class,EntityDataSerializers.COMPOUND_TAG);
     private final AttackRenderSnapshot clientSnapshot = new AttackRenderSnapshot();
     private UUID ownerUuid;
+    private int ownerPhase;
+    private double bossAcceleration=1;
     private int ownerId,kind,mode,state,age,left=2,charge,overCharge,indicator,hitCooldown,blastCooldown;
     private float damage,scale=1,rotation,hue,homing;
     private Vec3 velocity=Vec3.ZERO,direction=new Vec3(0,0,1),start=Vec3.ZERO,end=Vec3.ZERO,displacement=Vec3.ZERO;
@@ -44,37 +46,69 @@ public final class GalaxiaEntity extends Entity {
     private Vec3 previousEnd=Vec3.ZERO;
     private int chainTimer;
     private int chainGenerationAge;
+    private boolean bossRain;
+    private boolean bossHeld=true, bossDash, bossStraight, bossPreDash, bossDamageStarted;
+    private Vec3 bossAim;
+    private MahouAttackEntity bossWarning;
     private net.minecraft.nbt.ListTag samples=new net.minecraft.nbt.ListTag();
 
     public GalaxiaEntity(EntityType<? extends GalaxiaEntity> type, Level level) {
         super(type,level); noPhysics=true; setNoGravity(true);
     }
-    private static GalaxiaEntity create(Player p,int kind,int mode,Vec3 at,AttackFrame f,float damage,int life) {
+    private static GalaxiaEntity create(LivingEntity p,int kind,int mode,Vec3 at,AttackFrame f,float damage,int life) {
         GalaxiaEntity e=new GalaxiaEntity(ArkOfCosmos.GALAXIA_ATTACK.get(),p.level());
-        e.ownerUuid=p.getUUID();e.ownerId=p.getId();e.kind=kind;e.mode=mode;e.frame=f;
+        e.ownerPhase=p instanceof MahouTsukaiEntity boss?boss.phase():0;e.ownerUuid=p.getUUID();e.ownerId=p.getId();e.kind=kind;e.mode=mode;e.frame=f;
         e.direction=f.forward();e.damage=damage;e.left=life;e.weapon=p.getMainHandItem().copy();e.setPos(at);
         p.level().addFreshEntity(e);return e;
     }
-    public static void blade(Player p,int mode) {
+    public static GalaxiaEntity blade(LivingEntity p,int mode) {
         GalaxiaEntity e=create(p,BLADE,mode,p.getBoundingBox().getCenter(),AttackFrame.capture(p),base(mode),2);
         if(mode==POLARIS) for(GalaxiaEntity star:p.level().getEntitiesOfClass(GalaxiaEntity.class,p.getBoundingBox().inflate(128),
                 s->s.ownerId==p.getId() && s.kind==STAR)) {
             Vec3 towards=star.position().subtract(p.getBoundingBox().getCenter()).normalize();
-            if(towards.dot(ArkCombat.aim(p).subtract(p.getBoundingBox().getCenter()).normalize())<Math.cos(Math.PI/4)) star.discard();
+            if(towards.dot(WeaponUser.aim(p).subtract(p.getBoundingBox().getCenter()).normalize())<Math.cos(Math.PI/4)) star.discard();
             else {e.wheel=star;e.dashing=true;e.start=p.getBoundingBox().getCenter();star.left=60;e.invulnerable(p,20);}
             break;
         }
         e.publish();
+        return e;
     }
-    public static void ring(Player p,boolean capricorn) {
-        GalaxiaEntity e=create(p,RING,capricorn?1:0,capricorn?ArkCombat.aim(p):p.getBoundingBox().getCenter(),
+    public static GalaxiaEntity bossCharge(MahouTsukaiEntity boss,Vec3 aim){
+        GalaxiaEntity e=blade(boss,POLARIS);e.bossAim=aim;e.bossPreDash=true;e.publish();return e;
+    }
+    public void releaseBossCharge(){bossHeld=false;}
+    public static GalaxiaEntity bossDash(MahouTsukaiEntity boss,MahouAttackEntity warning){
+        GalaxiaEntity e=create(boss,BLADE,POLARIS,boss.getBoundingBox().getCenter(),AttackFrame.capture(boss),base(POLARIS),2);
+        e.bossDash=true;e.charge=325;e.start=e.center(boss);
+        e.bossWarning=warning;
+        for(GalaxiaEntity star:boss.level().getEntitiesOfClass(GalaxiaEntity.class,boss.getBoundingBox().inflate(128),s->s.ownerId==boss.getId()&&s.kind==STAR)){
+            e.wheel=star;e.dashing=true;star.left=60;break;
+        }
+        if(e.wheel==null){e.discard();return e;}
+        e.invulnerable(boss,20);
+        e.direction=e.wheel.position().subtract(e.center(boss)).normalize();
+        if(warning!=null)warning.pointWarning(e.center(boss),e.direction);
+        e.frame=aimFrame(e.direction,AttackFrame.capture(boss).right());e.publish();return e;
+    }
+    public static GalaxiaEntity bossBolt(MahouTsukaiEntity boss,Vec3 at,Vec3 direction){
+        return bossBolt(boss,at,direction,10/16d,1);
+    }
+    static GalaxiaEntity bossBolt(MahouTsukaiEntity boss,Vec3 at,Vec3 direction,double speed,double acceleration){
+        GalaxiaEntity e=create(boss,BOLT,0,at,aimFrame(direction,AttackFrame.capture(boss).right()),base(POLARIS),80);
+        e.bossAcceleration=acceleration;e.velocity=direction.normalize().scale(speed);e.scale=1;e.hue=.55f;e.homing=0;e.bossStraight=true;e.publish();return e;
+    }
+    static GalaxiaEntity rainBolt(MahouTsukaiEntity boss,Vec3 at){
+        GalaxiaEntity e=bossBolt(boss,at,new Vec3(0,-1,0),.45,1);e.bossRain=true;return e;
+    }
+    public static void ring(LivingEntity p,boolean capricorn) {
+        GalaxiaEntity e=create(p,RING,capricorn?1:0,capricorn?WeaponUser.aim(p):p.getBoundingBox().getCenter(),
                 AttackFrame.capture(p),capricorn?0:GalaxiaRules.damage(3000),300);e.publish();
     }
     public int ownerId() { return level().isClientSide?view().getInt("Owner"):ownerId; }
     public int kind() { return level().isClientSide?view().getInt("Kind"):kind; }
     public CompoundTag view() { return entityData.get(VIEW); }
     public ItemStack weapon() { return weapon; }
-    private Player owner() { return ownerUuid==null?null:((ServerLevel)level()).getPlayerByUUID(ownerUuid); }
+    private LivingEntity owner() { return WeaponUser.resolve(level(),ownerUuid); }
     @Override protected void defineSynchedData() { entityData.define(VIEW,new CompoundTag()); }
     @Override protected void readAdditionalSaveData(CompoundTag tag) {}
     @Override protected void addAdditionalSaveData(CompoundTag tag) {}
@@ -82,7 +116,7 @@ public final class GalaxiaEntity extends Entity {
     @Override public boolean shouldRenderAtSqrDistance(double distance) { return distance<256*256; }
     @Override public void tick() {
         super.tick(); if(level().isClientSide) {clientSnapshot.tick(view(),"Age");return;}
-        Player p=owner(); if(p==null || !p.isAlive() || p.isSpectator()) {discard();return;}
+        LivingEntity p=owner(); if(!WeaponUser.active(p)||p instanceof MahouTsukaiEntity boss&&(boss.phase()!=ownerPhase||bossRain&&boss.phaseTransitionTicks()==0)) {discard();return;}
         samples=new net.minecraft.nbt.ListTag();samples.add(snapshot());
         int steps=kind==STAR?12:kind==BLADE && mode!=ARIES?6:3;
         for(int step=0;step<steps && !isRemoved();step++) {
@@ -105,23 +139,32 @@ public final class GalaxiaEntity extends Entity {
         if(movedPlayer && p instanceof ServerPlayer sp) {
             sp.connection.teleport(p.getX(),p.getY(),p.getZ(),p.getYRot(),p.getXRot());movedPlayer=false;
         }
-        if(!isRemoved()) publish();
+        if(!isRemoved()) {
+            if(bossDash&&bossWarning!=null&&wheel!=null&&!wheel.isRemoved())bossWarning.pointWarning(center(p),wheel.position().subtract(center(p)));
+            publish();
+        }
     }
-    private Vec3 aim(Player p) { return ArkCombat.aim(p); }
-    private Vec3 center(Player p) { return p.getBoundingBox().getCenter(); }
+    private Vec3 aim(LivingEntity p) {
+        if(bossDash)return wheel!=null&&!wheel.isRemoved()?wheel.position():center(p).add(direction.scale(20));
+        return bossAim==null?WeaponUser.aim(p):bossAim;
+    }
+    private boolean channeling(LivingEntity p) { return p instanceof Player player?GalaxiaCombat.channeling(player):bossHeld; }
+    private Vec3 center(LivingEntity p) { return p.getBoundingBox().getCenter(); }
     private void sound(String name,float volume,boolean ownerOnly,boolean relative) {
+        if(owner() instanceof MahouTsukaiEntity)ownerOnly=false;
         GalaxiaCombat.sound(this,ownerId,name,volume,ownerOnly,relative);
     }
     private void sound(String name) {sound(name,1,false,false);}
-    private void invulnerable(Player p,int updates) {
-        ArkCombat.controls(p).dashInvulnerableUntil=Math.max(ArkCombat.controls(p).dashInvulnerableUntil,level().getGameTime()+(updates+2)/3);
+    private void invulnerable(LivingEntity p,int updates) {
+        if(p instanceof Player player)ArkCombat.controls(player).dashInvulnerableUntil=Math.max(ArkCombat.controls(player).dashInvulnerableUntil,level().getGameTime()+(updates+2)/3);
+        else if(p instanceof MahouTsukaiEntity boss)boss.weaponInvulnerable(updates);
     }
     private Vec3 rotate(Vec3 v,double angle) {
         Vec3 n=frame.normal();return v.scale(Math.cos(angle)).add(n.cross(v).scale(Math.sin(angle)))
                 .add(n.scale(n.dot(v)*(1-Math.cos(angle))));
     }
-    private void bladeStep(Player p) {
-        boolean held=GalaxiaCombat.channeling(p);Vec3 c=center(p);
+    private void bladeStep(LivingEntity p) {
+        boolean held=channeling(p);Vec3 c=center(p);
         if(age==0) {
             if(mode==PHOENIX || mode==POLARIS)sound("item90");
             else if(mode==ANDROMEDA)sound("item101");
@@ -198,16 +241,17 @@ public final class GalaxiaEntity extends Entity {
                 if(wheel==null || wheel.isRemoved()) endDash(p);
                 else {
                     Vec3 offset=wheel.position().subtract(c);
-                    if(offset.length()<60/16d) {wheel.discard();endDash(p);}
+                    if((bossDash?offset.multiply(1,0,1).length():offset.length())<60/16d) {wheel.discard();endDash(p);}
                     else if(!movePlayer(p,offset.normalize().scale(60/16d))) {wheel.discard();endDash(p);}
                 }
             }
+            if(bossDash&&!dashing){discard();return;}
             if(charge>=30) {int cooldown=30-(int)(14*ratio);
                 hitLine(p,c,c.add(direction.scale(145/16d*scale)),86/16d*scale,cooldown,(float)(damage*(1+ratio)*cooldown/30));}
             if(ratio>.85) {
                 if(chargeSoundCooldown<=0){sound("book",2.5f,true,true);chargeSoundCooldown=20;}
             } else chargeSoundCooldown--;
-            charge=Math.min(650,charge+1);
+            charge=Math.min(650,charge+(p instanceof MahouTsukaiEntity&&!bossDash?4:1));
         } else {
             if(!held && state==0) {
                 if(charge<90) {sound("item109");discard();return;}
@@ -238,16 +282,24 @@ public final class GalaxiaEntity extends Entity {
             scale=1+charge/360f*.3f;rotation=(float)frame.angle(direction);
         }
     }
-    private void bolt(Player p,Vec3 at,Vec3 dir,double speed,float damage,float size,float hue,float homing,int life) {
+    private void bolt(LivingEntity p,Vec3 at,Vec3 dir,double speed,float damage,float size,float hue,float homing,int life) {
+        if(p instanceof MahouTsukaiEntity boss && boss.phase()==1){
+            speed=Math.min(speed,8);homing*=.25f;
+        }
         GalaxiaEntity b=create(p,BOLT,0,at,frame,damage,life);b.velocity=dir.scale(speed/16);b.scale=size;b.hue=hue;b.homing=homing;b.publish();
     }
-    private void boltStep(Player p) {
-        if(target==null) target=ArkCombat.nearest(p,position(),812/16d);
+    private void boltStep(LivingEntity p) {
+        if(bossStraight&&bossAcceleration>1&&velocity.length()<1.25)velocity=velocity.normalize().scale(Math.min(1.25,velocity.length()*bossAcceleration));
+        if(bossStraight)target=null;
+        else if(target==null) target=WeaponUser.nearest(p,position(),812/16d);
         else if(!target.isAlive()) target=null;
         else if(velocity.dot(target.getBoundingBox().getCenter().subtract(position()))>0)
             velocity=ArkGeometry.turn(velocity,target.getBoundingBox().getCenter().subtract(position()),homing,frame.normal());
-        Vec3 old=position();setPos(old.add(velocity));rotation=(float)frame.angle(velocity);
+        Vec3 old=position(),next=old.add(velocity);
+        var terrain=bossRain?level().clip(new ClipContext(old,next,ClipContext.Block.COLLIDER,ClipContext.Fluid.ANY,this)):null;
+        setPos(terrain!=null&&terrain.getType()!=HitResult.Type.MISS?terrain.getLocation():next);rotation=(float)frame.angle(velocity);
         hitLine(p,old,position(),30/16d*scale,80,damage);
+        if(terrain!=null&&terrain.getType()!=HitResult.Type.MISS)discard();
     }
     private void starStep() {
         if(age==0)sound("item90");
@@ -255,16 +307,16 @@ public final class GalaxiaEntity extends Entity {
         // Original AI advances once explicitly; Terraria then advances again through tile collision.
         setPos(position().add(velocity));
         AABB box=new AABB(position().subtract(45/32d,45/32d,45/32d),position().add(45/32d,45/32d,45/32d));
-        Vec3 allowed=Entity.collideBoundingBox(this,velocity,box,level(),List.of());
+        Vec3 allowed=owner() instanceof MahouTsukaiEntity?velocity:Entity.collideBoundingBox(this,velocity,box,level(),List.of());
         setPos(position().add(allowed));
         if(allowed.distanceToSqr(velocity)>1e-12) velocity=new Vec3(
                 Math.abs(allowed.x-velocity.x)>1e-8?0:velocity.x,
                 Math.abs(allowed.y-velocity.y)>1e-8?0:velocity.y,
                 Math.abs(allowed.z-velocity.z)>1e-8?0:velocity.z).scale(.95);
-        Player p=owner();hitLine(p,position().subtract(direction.scale(42/16d*scale)),position().add(direction.scale(42/16d*scale)),76/16d*scale,60,damage);
+        LivingEntity p=owner();hitLine(p,position().subtract(direction.scale(42/16d*scale)),position().add(direction.scale(42/16d*scale)),76/16d*scale,60,damage);
     }
-    private void chainStep(Player p) {
-        setPos(center(p));if(GalaxiaCombat.channeling(p)) left=20;
+    private void chainStep(LivingEntity p) {
+        setPos(center(p));if(channeling(p)) left=20;
         Vec3 off=aim(p).subtract(position());end=position().add(off.length()>650/16d?off.normalize().scale(650/16d):off);
         if(chainTimer%15==0 && left>=20) {
             chainPoints.clear();previousEnd=off;chainTimer=1;chainGenerationAge=age;
@@ -289,29 +341,30 @@ public final class GalaxiaEntity extends Entity {
         // Separate visual RNG: adding sparkle rotation must not advance gameplay randomness.
         tag.putDouble("Rotation",new java.util.Random(getUUID().getLeastSignificantBits()^age^chainPoints.size()).nextDouble()*Math.PI*2);chainPoints.add(tag);
     }
-    private void ringStep(Player p) {
+    private void ringStep(LivingEntity p) {
         velocity=velocity.scale(.95);
         double ratio=clamp((left-150)/150d);
         if(mode==0) setPos(position().lerp(center(p),.4*ratio));
         else {Vec3 off=position().subtract(center(p));velocity=off.normalize().scale(ratio*3/16*(5-Math.min(4,off.length()*16/150)));}
         setPos(position().add(velocity));hitBox(p,position(),95/16d,10,damage);
     }
-    private void hitBox(Player p,Vec3 at,double radius,int cooldown,float amount) {
+    private void hitBox(LivingEntity p,Vec3 at,double radius,int cooldown,float amount) {
         AABB box=new AABB(at,at).inflate(radius);
-        for(LivingEntity t:level().getEntitiesOfClass(LivingEntity.class,box,e->ArkCombat.canHit(p,e))) hit(p,t,cooldown,amount);
+        for(LivingEntity t:level().getEntitiesOfClass(LivingEntity.class,box,e->WeaponUser.canHit(p,e))) hit(p,t,cooldown,amount);
     }
-    private void hitLine(Player p,Vec3 a,Vec3 b,double width,int cooldown,float amount) {
-        for(LivingEntity t:level().getEntitiesOfClass(LivingEntity.class,new AABB(a,b).inflate(width/2+1),e->ArkCombat.canHit(p,e)))
+    private void hitLine(LivingEntity p,Vec3 a,Vec3 b,double width,int cooldown,float amount) {
+        for(LivingEntity t:level().getEntitiesOfClass(LivingEntity.class,new AABB(a,b).inflate(width/2+1),e->WeaponUser.canHit(p,e)))
             if(ArkGeometry.line(t.getBoundingBox(),a,b,width,frame)) hit(p,t,cooldown,amount);
     }
-    private void hit(Player p,LivingEntity t,int cooldown,float amount) {
+    private void hit(LivingEntity p,LivingEntity t,int cooldown,float amount) {
+        if(p instanceof MahouTsukaiEntity&&(bossPreDash||bossDash&&!bossDamageStarted))return;
         if(isRemoved() || immunity.containsKey(t.getUUID())) return;
         immunity.put(t.getUUID(),cooldown);
         int fire=weapon.getEnchantmentLevel(net.minecraft.world.item.enchantment.Enchantments.FIRE_ASPECT);
         boolean startedFire=amount>0 && fire>0 && !t.isOnFire();
         if(startedFire)t.setSecondsOnFire(1);
         float enchanted=amount>0?amount+net.minecraft.world.item.enchantment.EnchantmentHelper.getDamageBonus(weapon,t.getMobType()):0;
-        boolean success=amount==0 || WeaponDamage.hurt(t,new net.minecraft.world.damagesource.DamageSource(damageSources().playerAttack(p).typeHolder(),this,p),enchanted);
+        boolean success=amount==0 || WeaponDamage.hurt(t,WeaponUser.source(this,p),enchanted);
         if(!success && startedFire)t.clearFire();
         if(!success) return;
         visualEvent("galaxia_hit",t.getBoundingBox().getCenter(),t.getDeltaMovement());
@@ -330,7 +383,7 @@ public final class GalaxiaEntity extends Entity {
             Set<UUID> excluded=new HashSet<>();excluded.add(t.getUUID());
             for(int i=0;i<3;i++) {
                 LivingEntity next=null;double distance=500/16d;
-                for(LivingEntity candidate:level().getEntitiesOfClass(LivingEntity.class,t.getBoundingBox().inflate(distance),e->ArkCombat.enemy(p,e))) {
+                for(LivingEntity candidate:level().getEntitiesOfClass(LivingEntity.class,t.getBoundingBox().inflate(distance),e->WeaponUser.enemy(p,e))) {
                     double d=candidate.getBoundingBox().getCenter().distanceTo(t.getBoundingBox().getCenter());
                     if(!excluded.contains(candidate.getUUID()) && d<distance) {distance=d;next=candidate;}
                 }
@@ -343,23 +396,29 @@ public final class GalaxiaEntity extends Entity {
         if(kind==BLADE && mode==ANDROMEDA) invulnerable(p,20);
         if(kind==SLASH) for(int i=0;i<3;i++) bolt(p,center(p),rotate(t.getBoundingBox().getCenter().subtract(center(p)).normalize(),(random.nextDouble()-.5)*Math.PI/2),30,GalaxiaRules.damage(1300),1,.55f,(float)Math.PI/100,100);
     }
-    private boolean movePlayer(Player p,Vec3 delta) {
+    private boolean movePlayer(LivingEntity p,Vec3 delta) {
+        if(bossDash&&p instanceof MahouTsukaiEntity boss&&MahouPhaseOneAI.valid(boss,boss.getTarget())){
+            double height=boss.getTarget().getBoundingBox().maxY+2;
+            delta=new Vec3(delta.x,Math.max(delta.y,Math.max(-.3,Math.min(.3,height-boss.getY()))),delta.z);
+        }
         // Split the original substep to keep the complete player volume out of intermediate blocks.
         int slices=Math.max(1,(int)Math.ceil(delta.length()/.2));Vec3 step=delta.scale(1d/slices);
         for(int i=0;i<slices;i++) {
-            if(level().getBlockCollisions(p,p.getBoundingBox().move(step)).iterator().hasNext()) return false;
+            if(!(p instanceof MahouTsukaiEntity)&&level().getBlockCollisions(p,p.getBoundingBox().move(step)).iterator().hasNext()) return false;
             p.setPos(p.position().add(step));movedPlayer=true;
+            if(bossDash&&step.lengthSqr()>1e-10){bossDamageStarted=true;if(wheel!=null)wheel.bossPreDash=false;}
         }
         p.fallDistance=0;p.setDeltaMovement(Vec3.ZERO);
         return true;
     }
-    private void endDash(Player p) {
+    private void endDash(LivingEntity p) {
         if(!dashing)return;dashing=false;
+        if(bossDash&&!bossDamageStarted)return;
         sound("meaty");
         for(int i=0;i<5;i++) bolt(p,center(p),frame.direction(random.nextDouble()*Math.PI*2),15,GalaxiaRules.damage(1300),1,.55f,(float)Math.PI/50,100);
         GalaxiaEntity slash=create(p,SLASH,0,start.lerp(center(p),.5),frame,damage*6*2,20);slash.start=start;slash.end=center(p);slash.publish();
     }
-    private void slam(Player p,Vec3 at,Vec3 normal) {
+    private void slam(LivingEntity p,Vec3 at,Vec3 normal) {
         sound("impact",1.5f,false,false);
         bolt(p,at,direction.scale(-1),16,damage,3,.75f,(float)Math.PI/25,50);
         Vec3 tangent=frame.right().subtract(normal.scale(frame.right().dot(normal))).normalize();
@@ -370,7 +429,7 @@ public final class GalaxiaEntity extends Entity {
         wave.direction=normal;wave.start=at;wave.velocity=tangent;wave.end=other;wave.sproutSize=charge/360d;wave.indicator=3;
         wave.wait=(1-wave.sproutSize)*34;wave.publish();
     }
-    private void waveStep(Player p) {
+    private void waveStep(LivingEntity p) {
         left=2;if(wait-->0)return;
         double radius=(mode+1)*150/16d;
         // Source: two independent SideSprouts chains, one eruption each per generation.
@@ -396,15 +455,15 @@ public final class GalaxiaEntity extends Entity {
         }
         discard();
     }
-    private void sproutStep(Player p) {
+    private void sproutStep(LivingEntity p) {
         if(wait>0) {wait--;left=30;return;}
         if(left==2) {sound("eruption");bolt(p,position(),direction,18,damage,(float)(sproutSize*3),.75f,(float)Math.PI/25,50);}
     }
-    private void finish(Player p) {
+    private void finish(LivingEntity p) {
         if(kind==BLADE && mode==POLARIS) {
             if(charge/325d>.85) {
                 GalaxiaEntity star=create(p,STAR,0,position(),frame,damage*.8f,120);
-                star.charge=charge;star.direction=direction;star.velocity=direction.scale(1);star.scale=1+(float)clamp(charge/325d);star.publish();
+                star.bossPreDash=bossPreDash;star.charge=charge;star.direction=direction;star.velocity=direction.scale(1);star.scale=1+(float)clamp(charge/325d);star.publish();
             }
             if(dashing && wheel!=null) wheel.discard();
         }
@@ -433,6 +492,7 @@ public final class GalaxiaEntity extends Entity {
         net.everla.projectc.arkofcosmos.network.ArkNetwork.effect(this,data);
     }
     @Override public void remove(RemovalReason reason) {
+        if(bossDash&&bossWarning!=null&&!level().isClientSide)bossWarning.discard();
         if(!level().isClientSide && !isRemoved() && reason==RemovalReason.DISCARDED) {
             if(kind==STAR)sound("item60");
             else if(kind==BLADE && mode==POLARIS)sound("hit43");

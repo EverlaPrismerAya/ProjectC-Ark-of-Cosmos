@@ -61,7 +61,7 @@ Calamity 来源的代码须保留 Calamity Team 署名及原条款。本项目�
 | `fx_trail.vsh` | 本项目编写的 Minecraft 顶点格式／矩阵接口适配；该原创适配部分以 MIT 授权，不扩展到原拖尾算法 |
 | `fx_trail.json` | 本项目编写的 Minecraft 着色器注册、采样器和 uniform 配置，以 MIT 授权 |
 | `fx_sprite.vsh`、`fx_sprite.fsh`、`fx_sprite.json` | 本项目编写的通用纹理／顶点颜色绘制及 Minecraft 接口配置，以 MIT 授权；采样到的第三方纹理仍遵循各自许可 |
-
+| `mahou_forcefield.fsh`、`mahou_forcefield.json` | Calamity `Effects/SupremeShieldShader.fx` 及 `NPCs/SupremeCalamitas/ForcefieldTexture.png`、`ExtraTextures/GreyscaleGradients/Perlin.png` 的派生 GLSL 与纹理；Calamity Team，ARR，不适用本项目 MIT，来源与 SHA-256 见 `licenses/RESOURCE-SOURCES.json` |
 将 HLSL／FX 转换为 GLSL 属于实现适配，不会消除原代码的权利或署名要求。
 
 ## 音频 OGG
@@ -77,7 +77,7 @@ Calamity 来源的代码须保留 Calamity Team 署名及原条款。本项目�
 | `galaxia_item*.ogg`、`galaxia_hit*.ogg`、`galaxia_book_*.ogg`、`galaxia_impact_*.ogg`、`galaxia_eruption_*.ogg` | Terraria 原生 SoundID 音频转换；Re-Logic／原权利人所有，不适用本项目 MIT |
 | `elements_item9_0.ogg` | Terraria `Content/Sounds/Item_9.xnb` 原音频转码；Re-Logic／原权利人所有，不适用 MIT |
 | `item*.ogg`、`crystal_*.ogg`、`needle_death_*.ogg` | Terraria 原生 SoundID 音频转换；Re-Logic／原权利人所有，不适用本项目 MIT |
-
+| `calamitas_phase1.ogg`、`calamitas_phase2.ogg`、`calamitas_phase3.ogg` | Calamity Mod Music 的 `CalamitasPhase1.ogg`、`CalamitasPhase2.ogg`、`CalamitasPhase3.ogg`；DM DOKURO《Stained, Brutal Calamity》及相关权利人，不适用本项目 MIT，来源与逐文件 SHA-256 见 `licenses/RESOURCE-SOURCES.json` |
 原音频转码为 OGG、按 Minecraft 事件重新映射，均不构成新的音频授权。当前未在本项目中提供 Re-Logic 对这些音频的单独再分发授权。
 
 ## 语言、模型与配置
@@ -102,6 +102,12 @@ Calamity 来源的代码须保留 Calamity Team 署名及原条款。本项目�
 
 本项目的 MIT 文本不覆盖或修改上述条款，也不构成 Calamity Team／Re-Logic 对本仓库包含的第三方素材的额外公开发布许可。当前目录中未提供另外取得的素材再分发授权文件。
 
+## Odamane Halo 来源
+
+二阶段 Boss 的 Odamane Halo 几何、UV、动画与渲染行为参照Goety Revelation的 OdamaneHaloModel／OdamaneHaloLayer，在本模组命名空间内独立重建，不调用或依赖 Goety Revelation、RevelationFix、Ending Library 或 Curios 的 Java 类。贴图同样原样取自此模组。odamane／rewind GLSL 原样保留，相关后处理 JSON 仅替换资源命名空间。
+
+参考 JAR 的 mods.toml 声明 `ARR`；这些来源素材、着色器及派生模型不属于本项目原创 MIT 内容，权利归原作者／原权利人。逐项来源和 SHA-256 见 `reference/mahou/odamane-halo.json` 与 `licenses/RESOURCE-SOURCES.json`。
+
 ## 上游与署名
 
 - Calamity Mod／Calamity Team：<https://github.com/CalamityTeam/CalamityModPublic>
@@ -111,4 +117,4 @@ Calamity 来源的代码须保留 Calamity Team 署名及原条款。本项目�
 
 Java 移植、Minecraft 三维适配及项目维护：EverlaPrismerAya。
 
-元素方舟新增原图资源：`textures/elements/techy_holosquare.png` 直接取自 Calamity `Particles/TechyHolosquare.png`（ARR）；`textures/elements/dust.png`、`gore_16.png`、`gore_17.png` 是 Terraria `Content/Images/Dust.xnb`、`Gore_16.xnb`、`Gore_17.xnb` 的无损 RGBA 解码，归 Re-Logic／原权利人所有，不适用 MIT。强化太阳针复用前述 `galaxia_tint.fsh` 的 BasicTint 移植；逐项来源、转换及散列见资源清单。
+

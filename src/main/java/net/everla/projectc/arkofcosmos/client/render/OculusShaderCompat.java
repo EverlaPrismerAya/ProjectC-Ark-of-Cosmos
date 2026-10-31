@@ -30,6 +30,8 @@ public final class OculusShaderCompat {
 
     private OculusShaderCompat() {}
 
+    public static boolean shaderPackActive() { return active; }
+
     @SubscribeEvent
     public static void beginFrame(TickEvent.RenderTickEvent event) {
         if (event.phase != TickEvent.Phase.START) return;

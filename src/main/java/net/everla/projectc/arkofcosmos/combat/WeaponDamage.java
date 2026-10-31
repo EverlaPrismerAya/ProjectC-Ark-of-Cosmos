@@ -30,6 +30,10 @@ public final class WeaponDamage {
 
     public static float minimum(LivingEntity target, DamageSource source, float amount) {
         Hit hit = CURRENT.get();
-        return hit != null && hit.target == target && hit.source == source ? Math.max(amount, hit.minimum) : amount;
+        if (hit == null || hit.target != target || hit.source != source) return amount;
+        float minimum = hit.minimum;
+        if (target instanceof net.everla.projectc.arkofcosmos.entity.MahouTsukaiEntity boss)
+            minimum *= boss.damageMultiplier();
+        return Math.max(amount, minimum);
     }
 }
