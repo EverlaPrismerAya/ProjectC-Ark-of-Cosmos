@@ -19,7 +19,7 @@ final class MahouDialogue {
         return player;
     }
     private void say(MahouTsukaiEntity boss, ServerPlayer player, String key) {
-        if (player != null) player.sendSystemMessage(Component.empty().append(boss.getDisplayName()).append(" ").append(Component.translatable(key)).withStyle(ChatFormatting.AQUA));
+        if (player != null) player.sendSystemMessage(Component.empty().append(boss.getName()).append(" ").append(Component.translatable(key)).withStyle(ChatFormatting.AQUA));
     }
     void tick(MahouTsukaiEntity boss) {
         if (boss.level().isClientSide || boss.defeating()) return;

@@ -111,7 +111,11 @@ public final class MahouBossBar {
             RenderSystem.setShaderColor(1, 1, 1, 1);
             RenderSystem.disableBlend();
         }
-        var name = event.getBossEvent().getName();
+        // Some modpacks rebuild BossEvent names and drop the custom font style during sync.
+        // Re-apply the marker at the final GUI boundary so the Font mixin is deterministic.
+        var name = event.getBossEvent().getName().copy()
+                .withStyle(style -> style.withFont(net.everla.projectc.arkofcosmos.util.MahouNameStyle.FONT)
+                        .withColor(net.everla.projectc.arkofcosmos.util.MahouNameStyle.MARKER_COLOR));
         graphics.drawString(mc.font, name, graphics.guiWidth() / 2 - mc.font.width(name) / 2, y - 9, 0xFFFFFF);
     }
 

@@ -111,7 +111,8 @@ public final class MahouTsukaiEntity extends PathfinderMob implements net.minecr
         var custom = getCustomName();
         return (custom != null ? custom.copy() : net.minecraft.network.chat.Component.translatable(
                 "entity.arkofcosmos.mahou_tsukai.phase_" + phase()))
-                .withStyle(style -> style.withFont(net.everla.projectc.arkofcosmos.util.MahouNameStyle.FONT));
+                .withStyle(style -> style.withFont(net.everla.projectc.arkofcosmos.util.MahouNameStyle.FONT)
+                        .withColor(net.everla.projectc.arkofcosmos.util.MahouNameStyle.MARKER_COLOR));
     }
 
     public float damageMultiplier() { return phase() == 1 ? .5f : phase() == 2 ? .67f : 1f; }

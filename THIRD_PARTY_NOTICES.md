@@ -49,6 +49,10 @@ Calamity 来源的代码须保留 Calamity Team 署名及原条款。本项目�
 
 具体来源、当前 SHA-256 和历史来源记录见 `licenses/RESOURCE-SOURCES.json`。不能把该清单当作资源授权书。
 
+| 文件 | 来源与许可范围 |
+| --- | --- |
+| `src/main/resources/assets/arkofcosmos/textures/item/auric_bar.png` | Calamity Mod `Items/Materials/AuricBar.png`；第三方素材，不适用本项目 MIT，来源与 SHA-256 见 `licenses/RESOURCE-SOURCES.json` |
+
 ## 着色器
 
 目录：`src/main/resources/assets/arkofcosmos/shaders/core/`。
@@ -78,6 +82,7 @@ Calamity 来源的代码须保留 Calamity Team 署名及原条款。本项目�
 | `elements_item9_0.ogg` | Terraria `Content/Sounds/Item_9.xnb` 原音频转码；Re-Logic／原权利人所有，不适用 MIT |
 | `item*.ogg`、`crystal_*.ogg`、`needle_death_*.ogg` | Terraria 原生 SoundID 音频转换；Re-Logic／原权利人所有，不适用本项目 MIT |
 | `calamitas_phase1.ogg`、`calamitas_phase2.ogg`、`calamitas_phase3.ogg` | Calamity Mod Music 的 `CalamitasPhase1.ogg`、`CalamitasPhase2.ogg`、`CalamitasPhase3.ogg`；DM DOKURO《Stained, Brutal Calamity》及相关权利人，不适用本项目 MIT，来源与逐文件 SHA-256 见 `licenses/RESOURCE-SOURCES.json` |
+| `calamitas_defeat_long_fade.ogg` | Calamity Mod Music `Sounds/Music/CalamitasDefeat_LongFade.ogg`；第三方素材，不适用本项目 MIT，来源与 SHA-256 见 `licenses/RESOURCE-SOURCES.json` |
 原音频转码为 OGG、按 Minecraft 事件重新映射，均不构成新的音频授权。当前未在本项目中提供 Re-Logic 对这些音频的单独再分发授权。
 
 ## 语言、模型与配置
@@ -116,9 +121,3 @@ Calamity 来源的代码须保留 Calamity Team 署名及原条款。本项目�
 - Gradle：<https://gradle.org/>
 
 Java 移植、Minecraft 三维适配及项目维护：EverlaPrismerAya。
-
-
-
-## 圣金源锭与击败尾曲
-
-圣金源锭贴图取自 Calamity Mod `Items/Materials/AuricBar.png`；击败尾曲取自 Calamity Mod Music `Sounds/Music/CalamitasDefeat_LongFade.ogg`。二者均为第三方素材，不适用本项目 MIT 许可，来源与 SHA-256 见 `licenses/RESOURCE-SOURCES.json`。

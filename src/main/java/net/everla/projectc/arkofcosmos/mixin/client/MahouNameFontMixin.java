@@ -8,20 +8,26 @@ import net.minecraft.util.FormattedCharSequence;
 import org.joml.Matrix4f;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.gen.Invoker;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(Font.class)
+// Run before performance/rendering mods that replace Font's internal batching path.
+@Mixin(value = Font.class, priority = 2000)
 public abstract class MahouNameFontMixin {
     @Unique
     private static boolean arkofcosmos$isAnimated(Style style) {
-        return MahouNameStyle.FONT.equals(style.getFont());
+        return MahouNameStyle.marked(style);
     }
 
-    @Inject(method = {"drawInternal(Lnet/minecraft/util/FormattedCharSequence;FFIZLorg/joml/Matrix4f;Lnet/minecraft/client/renderer/MultiBufferSource;Lnet/minecraft/client/gui/Font$DisplayMode;II)I",
-            "m_92915_(Lnet/minecraft/util/FormattedCharSequence;FFIZLorg/joml/Matrix4f;Lnet/minecraft/client/renderer/MultiBufferSource;Lnet/minecraft/client/gui/Font$DisplayMode;II)I"},
-        at = @At("HEAD"), cancellable = true, require = 0)
+    @Invoker("renderText")
+    protected abstract float arkofcosmos$renderText(FormattedCharSequence text, float x, float y,
+            int color, boolean shadow, Matrix4f matrix, MultiBufferSource buffers,
+            Font.DisplayMode mode, int background, int light);
+
+    @Inject(method = "drawInternal(Lnet/minecraft/util/FormattedCharSequence;FFIZLorg/joml/Matrix4f;Lnet/minecraft/client/renderer/MultiBufferSource;Lnet/minecraft/client/gui/Font$DisplayMode;II)I",
+        at = @At("HEAD"), cancellable = true)
     private void arkofcosmos$renderSuperearth(FormattedCharSequence text, float x, float y,
             int color, boolean shadow, Matrix4f matrix, MultiBufferSource buffers,
             Font.DisplayMode mode, int background, int light, CallbackInfoReturnable<Integer> callback) {
@@ -45,7 +51,7 @@ public abstract class MahouNameFontMixin {
             text.accept((index, style, codePoint) -> {
                 boolean animated = arkofcosmos$isAnimated(style);
                 Style glyphStyle = animated ? style.withFont(Style.DEFAULT_FONT) : style;
-                if (MahouNameStyle.FONT.equals(style.getFont())) {
+                if (MahouNameStyle.marked(style)) {
                     glyphStyle = glyphStyle.withColor(MahouNameStyle.colorAt(System.currentTimeMillis() + character[0] * 120L));
                 }
                 FormattedCharSequence glyph = FormattedCharSequence.codepoint(codePoint, glyphStyle);
@@ -63,7 +69,7 @@ public abstract class MahouNameFontMixin {
                         float dx = direction == 0 ? -1f : direction == 1 ? 1f : 0;
                         float dy = direction == 2 ? -1f : direction == 3 ? 1f : 0;
                         // Bypass adjustColor: it turns alpha values below 4 back into full opacity.
-                        font.drawInBatch(edge, cursor[0] + dx, floatingY,
+                        arkofcosmos$renderText(edge, cursor[0] + dx, floatingY + dy,
                             outlineAlpha << 24 | 0xFFFFFF, false, new Matrix4f(matrix),
                             buffers, mode, 0, light);
                     }

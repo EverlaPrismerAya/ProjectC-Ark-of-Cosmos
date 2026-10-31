@@ -5,6 +5,8 @@ import net.minecraft.resources.ResourceLocation;
 /** Stable name marker; animation is sampled only while drawing. */
 public final class MahouNameStyle {
     public static final ResourceLocation FONT = ResourceLocation.fromNamespaceAndPath("arkofcosmos", "mahou_name");
+    /** Serialized through Style.color, like RevelationFix's custom formatting marker. */
+    public static final int MARKER_COLOR = 0x010203;
     private static final int[] COLORS = {0x00FFFF, 0x8800FF, 0xFF00FF, 0x8800FF, 0x00FFFF};
 
     private MahouNameStyle() {}
@@ -21,5 +23,10 @@ public final class MahouNameStyle {
             color |= Math.round(start + (end - start) * t) << shift;
         }
         return color;
+    }
+
+    public static boolean marked(net.minecraft.network.chat.Style style) {
+        var color = style.getColor();
+        return FONT.equals(style.getFont()) || color != null && color.getValue() == MARKER_COLOR;
     }
 }
