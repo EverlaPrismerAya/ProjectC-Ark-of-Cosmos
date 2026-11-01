@@ -6,7 +6,7 @@
       "sha256": "ef367bbcd7a5db6c670ecfd81e715e3b20f4f0abc92c473062dec92d1bedf6aa",
       "project": "Terraria",
       "path": "Content/Sounds/Custom/dd2_wither_beast_crystal_impact_0.xnb",
-      "license": "Re-Logic / original rights holders; not MIT",
+      "license": "Re-Logic / original rights holders; not GPL-3.0-only",
       "recorded_output_sha256": "ef367bbcd7a5db6c670ecfd81e715e3b20f4f0abc92c473062dec92d1bedf6aa",
       "source_sha256": "1a26695cbbebf4a5ef4b0f45386c85c0f840f3f2192acedd5b67595574f07060",
       "matches_recorded_output": true
@@ -16,7 +16,7 @@
       "sha256": "f78e764686df8f23fd2c99973b5695e742de50b2a9c482f18cb88583dbe215be",
       "project": "Terraria",
       "path": "Content/Sounds/Custom/dd2_wither_beast_crystal_impact_1.xnb",
-      "license": "Re-Logic / original rights holders; not MIT",
+      "license": "Re-Logic / original rights holders; not GPL-3.0-only",
       "recorded_output_sha256": "f78e764686df8f23fd2c99973b5695e742de50b2a9c482f18cb88583dbe215be",
       "source_sha256": "2c7abbeb5c45af987232ddf242b1fa1526aeb46973e2f8a257b12784172c0b3e",
       "matches_recorded_output": true
@@ -26,7 +26,7 @@
       "sha256": "031dc92bf08bd85824d74b5edc035ab82352b7f0a197e684dbdb5b7c8f25b755",
       "project": "Terraria",
       "path": "Content/Sounds/Custom/dd2_wither_beast_crystal_impact_2.xnb",
-      "license": "Re-Logic / original rights holders; not MIT",
+      "license": "Re-Logic / original rights holders; not GPL-3.0-only",
       "recorded_output_sha256": "031dc92bf08bd85824d74b5edc035ab82352b7f0a197e684dbdb5b7c8f25b755",
       "source_sha256": "9214e08de160ca9a921fe77478d3ccf7f340af2f0ae318d6fbfee5e8285a1710",
       "matches_recorded_output": true
@@ -36,7 +36,7 @@
       "sha256": "0c43b9d2fe107d6b4b95fe4be2fcb616dd334425fe2e280e0a404b8f18bfc212",
       "project": "Terraria",
       "path": "Content/Sounds/Item_35.xnb",
-      "license": "Re-Logic / original rights holders; not MIT",
+      "license": "Re-Logic / original rights holders; not GPL-3.0-only",
       "recorded_output_sha256": "0c43b9d2fe107d6b4b95fe4be2fcb616dd334425fe2e280e0a404b8f18bfc212",
       "source_sha256": "0bd78b3b4db85396cc55669926dcbf3cc0002c9ca671aaa1db168b3fc2d903a7",
       "matches_recorded_output": true
@@ -46,7 +46,7 @@
       "sha256": "31dcdcefd31617cc5d58202ffbd926d9d4d50a13ac8f1d2eea543e74c4030ab8",
       "project": "Terraria",
       "path": "Content/Sounds/Item_4.xnb",
-      "license": "Re-Logic / original rights holders; not MIT",
+      "license": "Re-Logic / original rights holders; not GPL-3.0-only",
       "recorded_output_sha256": "31dcdcefd31617cc5d58202ffbd926d9d4d50a13ac8f1d2eea543e74c4030ab8",
       "source_sha256": "54071a3b24228b36586e6e549680a5b04530d1717a37e157eb19a8f2780aa98f",
       "matches_recorded_output": true
@@ -56,7 +56,7 @@
       "sha256": "c5088b30a2268d715aead89a163eaf61ee341be3227a98fc03f9f0a5bbf47069",
       "project": "Terraria",
       "path": "Content/Sounds/Item_63.xnb",
-      "license": "Re-Logic / original rights holders; not MIT",
+      "license": "Re-Logic / original rights holders; not GPL-3.0-only",
       "recorded_output_sha256": "c5088b30a2268d715aead89a163eaf61ee341be3227a98fc03f9f0a5bbf47069",
       "source_sha256": "a93467b3d19b00fb9f22926fefb89952b7f124b0d5f2adaf6de3cafd9ad2b628",
       "matches_recorded_output": true
@@ -66,7 +66,7 @@
       "sha256": "bb5a123d328c2320b8857d5491d01d09095087abb11d986117423ace7732aade",
       "project": "Terraria",
       "path": "Content/Sounds/Item_64.xnb",
-      "license": "Re-Logic / original rights holders; not MIT",
+      "license": "Re-Logic / original rights holders; not GPL-3.0-only",
       "recorded_output_sha256": "bb5a123d328c2320b8857d5491d01d09095087abb11d986117423ace7732aade",
       "source_sha256": "47674c25fbca2c7983bc92dce1a404b31e071d9a3b8fbafe1eb2936c9e65127b",
       "matches_recorded_output": true
@@ -76,7 +76,7 @@
       "sha256": "1ed54ab27eb2f4a09d970542bf1f1b11dc0806a70fd4c5a1567b2afa0731aa42",
       "project": "Terraria",
       "path": "Content/Sounds/Item_65.xnb",
-      "license": "Re-Logic / original rights holders; not MIT",
+      "license": "Re-Logic / original rights holders; not GPL-3.0-only",
       "recorded_output_sha256": "1ed54ab27eb2f4a09d970542bf1f1b11dc0806a70fd4c5a1567b2afa0731aa42",
       "source_sha256": "a65776ef3260e44189e06e23ff72f2963f3e77229f19edbd266eeb1d0212297a",
       "matches_recorded_output": true
@@ -86,7 +86,7 @@
       "sha256": "8001c9fb0dbe53d25929e214e6fb0bd3eb75f06fe432a9fcdc98c3b5f4754d3d",
       "project": "Terraria",
       "path": "Content/Sounds/Item_71.xnb",
-      "license": "Re-Logic / original rights holders; not MIT",
+      "license": "Re-Logic / original rights holders; not GPL-3.0-only",
       "recorded_output_sha256": "8001c9fb0dbe53d25929e214e6fb0bd3eb75f06fe432a9fcdc98c3b5f4754d3d",
       "source_sha256": "11c6fd4857dafd9dbba64e6fc0d239dfd5bfd49aa9dffd2e3bf9780069828a19",
       "matches_recorded_output": true
@@ -96,7 +96,7 @@
       "sha256": "d6ab62b7cec3255ecad3b875001bc3782c53ba2bf179429710a34f6c5bbd8d42",
       "project": "Terraria",
       "path": "Content/Sounds/Item_84.xnb",
-      "license": "Re-Logic / original rights holders; not MIT",
+      "license": "Re-Logic / original rights holders; not GPL-3.0-only",
       "recorded_output_sha256": "d6ab62b7cec3255ecad3b875001bc3782c53ba2bf179429710a34f6c5bbd8d42",
       "source_sha256": "ab71e2b0fdeb73cbd03f8202cfc2d55e4c88faaf36b5a27ae358f884b49afc81",
       "matches_recorded_output": true
@@ -116,7 +116,7 @@
       "sha256": "0508b738f0ce6a7e14d0daa852f8caa1fdcc0722d99b89f578fffe4b67f6ac4c",
       "project": "Terraria",
       "path": "Content/Sounds/Custom/dd2_wither_beast_death_0.xnb",
-      "license": "Re-Logic / original rights holders; not MIT",
+      "license": "Re-Logic / original rights holders; not GPL-3.0-only",
       "recorded_output_sha256": "0508b738f0ce6a7e14d0daa852f8caa1fdcc0722d99b89f578fffe4b67f6ac4c",
       "source_sha256": "7d3fdaa3164c83bed8c9725686aee2773974a17c7e79e96f23862a0c58dae469",
       "matches_recorded_output": true
@@ -126,7 +126,7 @@
       "sha256": "a6b56d15f5c546acb077ae75226664db597c9d6df3353c0410e5effbc0ae5d29",
       "project": "Terraria",
       "path": "Content/Sounds/Custom/dd2_wither_beast_death_1.xnb",
-      "license": "Re-Logic / original rights holders; not MIT",
+      "license": "Re-Logic / original rights holders; not GPL-3.0-only",
       "recorded_output_sha256": "a6b56d15f5c546acb077ae75226664db597c9d6df3353c0410e5effbc0ae5d29",
       "source_sha256": "ef534148e40f692abef3e619c30dd625b7ce7b204c63cf884fdf4942056d5a06",
       "matches_recorded_output": true
@@ -136,7 +136,7 @@
       "sha256": "a9bea94f4196ccb28764eed16d146c8cd6a29df8010fe4fe50ac0e343367ab73",
       "project": "Terraria",
       "path": "Content/Sounds/Custom/dd2_wither_beast_death_2.xnb",
-      "license": "Re-Logic / original rights holders; not MIT",
+      "license": "Re-Logic / original rights holders; not GPL-3.0-only",
       "recorded_output_sha256": "a9bea94f4196ccb28764eed16d146c8cd6a29df8010fe4fe50ac0e343367ab73",
       "source_sha256": "30d4d326ac7aeb01f06fed7882440cbe936ff0393a297242dea3dff9739c3e28",
       "matches_recorded_output": true
@@ -475,7 +475,7 @@
       "project": "Calamity Mod",
       "path": "Effects/FadedUVMapStreak.fx (TrailPass)",
       "adaptation": "HLSL/FX to GLSL 150",
-      "license": "Calamity-derived; not relicensed under MIT"
+      "license": "Calamity-derived; not relicensed under GPL-3.0-only"
     },
     {
       "sha256": "2b072a843799d6416f496294537e64feacaeebba1c992096837bda91d7d9ae69",
@@ -624,7 +624,7 @@
       "sha256": "5c843de46c01965f0e23b2e857701591f4bdeb0095f266a1878938280f2a3e17",
       "project": "Terraria",
       "path": "Content/Sounds/Item_60.xnb",
-      "license": "Original rights holders; not MIT",
+      "license": "Original rights holders; not GPL-3.0-only",
       "source_sha256": "4a39fef8a27fe152496a8f300e44ee1b14d75b1ab3c2caee58e655b7533e9605",
       "recorded_output_sha256": "5c843de46c01965f0e23b2e857701591f4bdeb0095f266a1878938280f2a3e17",
       "matches_recorded_output": true
@@ -634,7 +634,7 @@
       "sha256": "d8e9254da4b60b177359c4aebf88738745a4e2bdebb539690ca89113aadbe362",
       "project": "Terraria",
       "path": "Content/Sounds/Item_76.xnb",
-      "license": "Original rights holders; not MIT",
+      "license": "Original rights holders; not GPL-3.0-only",
       "source_sha256": "49c7d2d5958d82745ac89e06cad473669b82ac9f913f9306b03ec6917bbe5fc2",
       "recorded_output_sha256": "d8e9254da4b60b177359c4aebf88738745a4e2bdebb539690ca89113aadbe362",
       "matches_recorded_output": true
@@ -644,7 +644,7 @@
       "sha256": "a96841d90760173f88bd4102bf6acd198d82071014c5bbf5b459709dad489672",
       "project": "Terraria",
       "path": "Content/Sounds/Item_77.xnb",
-      "license": "Original rights holders; not MIT",
+      "license": "Original rights holders; not GPL-3.0-only",
       "source_sha256": "99abeac2be353165e11fc47f08ddd8aadbaf97ebd4fd91349ede5c31cfb1acb2",
       "recorded_output_sha256": "a96841d90760173f88bd4102bf6acd198d82071014c5bbf5b459709dad489672",
       "matches_recorded_output": true
@@ -654,7 +654,7 @@
       "sha256": "7ae80b346f63ec6567057bd1765b6bd83d3449a03a4221f64a232d8079c8a8a9",
       "project": "Terraria",
       "path": "Content/Sounds/Item_78.xnb",
-      "license": "Original rights holders; not MIT",
+      "license": "Original rights holders; not GPL-3.0-only",
       "source_sha256": "d8a56daba6f486d1ec0b88459b68dd29298a09f3c0a2d6eecf19885e5db75a91",
       "recorded_output_sha256": "7ae80b346f63ec6567057bd1765b6bd83d3449a03a4221f64a232d8079c8a8a9",
       "matches_recorded_output": true
@@ -664,7 +664,7 @@
       "sha256": "37cd688d5cb8ee41cc2c0caa72f070b5b8a8370e8f79e9ad566a2280a6f6c638",
       "project": "Terraria",
       "path": "Content/Sounds/Item_79.xnb",
-      "license": "Original rights holders; not MIT",
+      "license": "Original rights holders; not GPL-3.0-only",
       "source_sha256": "cd5deef403a2d76ff96e843ace94b827b636fe4f9ab1c16729c811246804281f",
       "recorded_output_sha256": "37cd688d5cb8ee41cc2c0caa72f070b5b8a8370e8f79e9ad566a2280a6f6c638",
       "matches_recorded_output": true
@@ -674,7 +674,7 @@
       "sha256": "b11d56e6817a15ae50e4ab0d58bdabc4362f1d276c51e6936f614d273050bf31",
       "project": "Terraria",
       "path": "Content/Sounds/Item_80.xnb",
-      "license": "Original rights holders; not MIT",
+      "license": "Original rights holders; not GPL-3.0-only",
       "source_sha256": "947b5ec7fd14c3fceaf06ae1ac6aab900390592db34b106efb2d7240c1af6622",
       "recorded_output_sha256": "b11d56e6817a15ae50e4ab0d58bdabc4362f1d276c51e6936f614d273050bf31",
       "matches_recorded_output": true
@@ -684,7 +684,7 @@
       "sha256": "05631f089002f150139a2b7456460c8f6243475087941a4e4eda82ed8daaaaa3",
       "project": "Terraria",
       "path": "Content/Sounds/Item_90.xnb",
-      "license": "Original rights holders; not MIT",
+      "license": "Original rights holders; not GPL-3.0-only",
       "source_sha256": "9f2c3dbe7790004ded7d1c2e973f8b9999a0ee2f017eaf5a085742f71f7531fd",
       "recorded_output_sha256": "05631f089002f150139a2b7456460c8f6243475087941a4e4eda82ed8daaaaa3",
       "matches_recorded_output": true
@@ -694,7 +694,7 @@
       "sha256": "f19f6fa6e0ad2c9cc0d9c5ba16b4580990093fddbd189d7e5bf93c68c636261e",
       "project": "Terraria",
       "path": "Content/Sounds/Item_101.xnb",
-      "license": "Original rights holders; not MIT",
+      "license": "Original rights holders; not GPL-3.0-only",
       "source_sha256": "04abe71979efb254b59172e2bac3bfa289d3706e0a634777c620f43fba3d4449",
       "recorded_output_sha256": "f19f6fa6e0ad2c9cc0d9c5ba16b4580990093fddbd189d7e5bf93c68c636261e",
       "matches_recorded_output": true
@@ -704,7 +704,7 @@
       "sha256": "a2151b710300dd2a554762f938c8ba6b2b96da2c67b3ada36776780d7e7296e0",
       "project": "Terraria",
       "path": "Content/Sounds/Item_109.xnb",
-      "license": "Original rights holders; not MIT",
+      "license": "Original rights holders; not GPL-3.0-only",
       "source_sha256": "0a0685e5a8a14de684bfe6808ef6ed78493ebcda4669ff3c1c9a4dccc52b8d0f",
       "recorded_output_sha256": "a2151b710300dd2a554762f938c8ba6b2b96da2c67b3ada36776780d7e7296e0",
       "matches_recorded_output": true
@@ -714,7 +714,7 @@
       "sha256": "4b89d8a8d1b0e7c0774eb362d4bc834fecf7e83ea9aad362022a8bd7a8272be1",
       "project": "Terraria",
       "path": "Content/Sounds/Item_120.xnb",
-      "license": "Original rights holders; not MIT",
+      "license": "Original rights holders; not GPL-3.0-only",
       "source_sha256": "8078fd6d6428001e9952dcb8ace1804ce7313c194bd1e6683f2025c37cf7f34d",
       "recorded_output_sha256": "4b89d8a8d1b0e7c0774eb362d4bc834fecf7e83ea9aad362022a8bd7a8272be1",
       "matches_recorded_output": true
@@ -724,7 +724,7 @@
       "sha256": "53d354c42990c8e0483abd787e6e68f46511d799445418c9fbee6b1560db7fb0",
       "project": "Terraria",
       "path": "Content/Sounds/NPC_Hit_30.xnb",
-      "license": "Original rights holders; not MIT",
+      "license": "Original rights holders; not GPL-3.0-only",
       "source_sha256": "474daefcfc0d69f18f07c9338c143414b451e79bbb7f6d47693f94bba282f27f",
       "recorded_output_sha256": "53d354c42990c8e0483abd787e6e68f46511d799445418c9fbee6b1560db7fb0",
       "matches_recorded_output": true
@@ -734,7 +734,7 @@
       "sha256": "78da9a3f011ec55199660a62b0cdb3e71a3006c5c512952ed06b52e26161c0c6",
       "project": "Terraria",
       "path": "Content/Sounds/NPC_Hit_43.xnb",
-      "license": "Original rights holders; not MIT",
+      "license": "Original rights holders; not GPL-3.0-only",
       "source_sha256": "f7d43046ef0790b38f6be00a60a8b0f431b5a12ade0283720f2d1b441fce2be3",
       "recorded_output_sha256": "78da9a3f011ec55199660a62b0cdb3e71a3006c5c512952ed06b52e26161c0c6",
       "matches_recorded_output": true
@@ -744,7 +744,7 @@
       "sha256": "9ff02352774459a5c159c03990acfae0a909c640514ba5426704c64bcae2eab9",
       "project": "Terraria",
       "path": "Content/Sounds/Custom/dd2_book_staff_cast_0.xnb",
-      "license": "Original rights holders; not MIT",
+      "license": "Original rights holders; not GPL-3.0-only",
       "source_sha256": "e9d2798175245e5f3185701f23b72c5ac547afa0172f20f0a1d9f8384897f05f",
       "recorded_output_sha256": "9ff02352774459a5c159c03990acfae0a909c640514ba5426704c64bcae2eab9",
       "matches_recorded_output": true
@@ -754,7 +754,7 @@
       "sha256": "355e785c4207f9c8bbef339fd1d36ccd06ab7a04b5a3b26a3f176958d36ff9ef",
       "project": "Terraria",
       "path": "Content/Sounds/Custom/dd2_book_staff_cast_1.xnb",
-      "license": "Original rights holders; not MIT",
+      "license": "Original rights holders; not GPL-3.0-only",
       "source_sha256": "f2b907dc5a638cc81f55e98b5879fc1817a8cae60e4ad950c98cf0720f2b356b",
       "recorded_output_sha256": "355e785c4207f9c8bbef339fd1d36ccd06ab7a04b5a3b26a3f176958d36ff9ef",
       "matches_recorded_output": true
@@ -764,7 +764,7 @@
       "sha256": "7796faa159082ff202cf8579c2597897817cfa9958896bdb8410a4bb9b4f9e0e",
       "project": "Terraria",
       "path": "Content/Sounds/Custom/dd2_book_staff_cast_2.xnb",
-      "license": "Original rights holders; not MIT",
+      "license": "Original rights holders; not GPL-3.0-only",
       "source_sha256": "281d779be5084f4ff90121802bd0cdb027adab852f9899c1b4d8d2d7691f9896",
       "recorded_output_sha256": "7796faa159082ff202cf8579c2597897817cfa9958896bdb8410a4bb9b4f9e0e",
       "matches_recorded_output": true
@@ -774,7 +774,7 @@
       "sha256": "aaade1b41f33460c9d2086c4625faad84e8a92ce391432915d0d822406c9dde4",
       "project": "Terraria",
       "path": "Content/Sounds/Custom/dd2_monk_staff_ground_impact_0.xnb",
-      "license": "Original rights holders; not MIT",
+      "license": "Original rights holders; not GPL-3.0-only",
       "source_sha256": "e0648afede8ae70ad61cbb47293e8653b7818e5f090c90ec22e5867b60590a31",
       "recorded_output_sha256": "aaade1b41f33460c9d2086c4625faad84e8a92ce391432915d0d822406c9dde4",
       "matches_recorded_output": true
@@ -784,7 +784,7 @@
       "sha256": "b517a32571d0f8a769e2b21fa1c37bf99904ee8a682aa34495a18f8ff1cfb5c0",
       "project": "Terraria",
       "path": "Content/Sounds/Custom/dd2_monk_staff_ground_impact_1.xnb",
-      "license": "Original rights holders; not MIT",
+      "license": "Original rights holders; not GPL-3.0-only",
       "source_sha256": "1c6cb82197743ce096c91df6f0c9589a12866b0e63eafef798593fef3a0bf832",
       "recorded_output_sha256": "b517a32571d0f8a769e2b21fa1c37bf99904ee8a682aa34495a18f8ff1cfb5c0",
       "matches_recorded_output": true
@@ -794,7 +794,7 @@
       "sha256": "a7596ed17050b00d14f444cc9635236d69bd0acd602ff7aab8e769af546c4287",
       "project": "Terraria",
       "path": "Content/Sounds/Custom/dd2_monk_staff_ground_impact_2.xnb",
-      "license": "Original rights holders; not MIT",
+      "license": "Original rights holders; not GPL-3.0-only",
       "source_sha256": "d86ea64681e57ab9a883b999f8171894bca5c562d7205f94aa3794f086221bff",
       "recorded_output_sha256": "a7596ed17050b00d14f444cc9635236d69bd0acd602ff7aab8e769af546c4287",
       "matches_recorded_output": true
@@ -804,7 +804,7 @@
       "sha256": "1baa6646b2b7fd6d6267cfeb0eca56741ec52ab975ca4a56510913699d2ac2a2",
       "project": "Terraria",
       "path": "Content/Sounds/Custom/dd2_etherian_portal_dryad_touch.xnb",
-      "license": "Original rights holders; not MIT",
+      "license": "Original rights holders; not GPL-3.0-only",
       "source_sha256": "f916088babe6e3f5aa7ca19d2fbc81159acc00ad03ea926fd52a6aab4de9850b",
       "recorded_output_sha256": "1baa6646b2b7fd6d6267cfeb0eca56741ec52ab975ca4a56510913699d2ac2a2",
       "matches_recorded_output": true
@@ -814,7 +814,7 @@
       "sha256": "ae4797a1197aa1f3c5ed493a7c3cc29f8e655929138478397f2ccbfe1320148d",
       "project": "Calamity Mod",
       "path": "Sounds/Custom/AstralBeaconUse.ogg",
-      "license": "Original rights holders; not MIT",
+      "license": "Original rights holders; not GPL-3.0-only",
       "source_sha256": "ae4797a1197aa1f3c5ed493a7c3cc29f8e655929138478397f2ccbfe1320148d",
       "recorded_output_sha256": "ae4797a1197aa1f3c5ed493a7c3cc29f8e655929138478397f2ccbfe1320148d",
       "matches_recorded_output": true
@@ -824,7 +824,7 @@
       "sha256": "854e1e371df1a01d1db0f023f00415a0db0055987677c6c8798662853b7a4611",
       "project": "Calamity Mod",
       "path": "Sounds/Custom/LightningStrike.ogg",
-      "license": "Original rights holders; not MIT",
+      "license": "Original rights holders; not GPL-3.0-only",
       "source_sha256": "854e1e371df1a01d1db0f023f00415a0db0055987677c6c8798662853b7a4611",
       "recorded_output_sha256": "854e1e371df1a01d1db0f023f00415a0db0055987677c6c8798662853b7a4611",
       "matches_recorded_output": true
@@ -866,63 +866,63 @@
       "sha256": "e8c7e80c910c14f95cb365488d2ff53bb367b5206a774b91dd5c2f38a64d9884",
       "project": "Calamity Mod",
       "path": "Items/Weapons/Melee/ArkoftheElements.png",
-      "license": "Calamity Team / original rights holders; All Rights Reserved; not MIT"
+      "license": "Calamity Team / original rights holders; All Rights Reserved; not GPL-3.0-only"
     },
     {
       "file": "src/main/resources/assets/arkofcosmos/textures/item/ark_of_the_elements_back.png",
       "sha256": "8c53e9472d186aa242adcd90c8d835874802251e985d198cbee4914aa5deb38a",
       "project": "Calamity Mod",
       "path": "Items/Weapons/Melee/ArkoftheElementsBack.png",
-      "license": "Calamity Team / original rights holders; All Rights Reserved; not MIT"
+      "license": "Calamity Team / original rights holders; All Rights Reserved; not GPL-3.0-only"
     },
     {
       "file": "src/main/resources/assets/arkofcosmos/textures/elements/rending_scissors_right.png",
       "sha256": "c2c4ea2f3f324dbe8c69e20a0658e52afc46354a90acfa3b884718f3c5802595",
       "project": "Calamity Mod",
       "path": "Projectiles/Melee/RendingScissorsRight.png",
-      "license": "Calamity Team / original rights holders; All Rights Reserved; not MIT"
+      "license": "Calamity Team / original rights holders; All Rights Reserved; not GPL-3.0-only"
     },
     {
       "file": "src/main/resources/assets/arkofcosmos/textures/elements/rending_scissors_left.png",
       "sha256": "692351965e874b207a549926e6b8ad3c29849c2543aa895777fadc702ab28b5d",
       "project": "Calamity Mod",
       "path": "Projectiles/Melee/RendingScissorsLeft.png",
-      "license": "Calamity Team / original rights holders; All Rights Reserved; not MIT"
+      "license": "Calamity Team / original rights holders; All Rights Reserved; not GPL-3.0-only"
     },
     {
       "file": "src/main/resources/assets/arkofcosmos/textures/elements/rending_scissors_right_glow.png",
       "sha256": "0bff717253523722cf0ad253b3eb92828b828e63476904b7b867bf939bae7942",
       "project": "Calamity Mod",
       "path": "Projectiles/Melee/RendingScissorsRightGlow.png",
-      "license": "Calamity Team / original rights holders; All Rights Reserved; not MIT"
+      "license": "Calamity Team / original rights holders; All Rights Reserved; not GPL-3.0-only"
     },
     {
       "file": "src/main/resources/assets/arkofcosmos/textures/elements/rending_scissors_left_glow.png",
       "sha256": "7b78d9998566ec4a87afe8bd87e15bfede55bd4dc6403b0877bfe54e52b60ac4",
       "project": "Calamity Mod",
       "path": "Projectiles/Melee/RendingScissorsLeftGlow.png",
-      "license": "Calamity Team / original rights holders; All Rights Reserved; not MIT"
+      "license": "Calamity Team / original rights holders; All Rights Reserved; not GPL-3.0-only"
     },
     {
       "file": "src/main/resources/assets/arkofcosmos/textures/elements/solar_needle.png",
       "sha256": "1acc792cc6962f41e32c2421f64eef6e858686c85be1b25706e14509ec0e567f",
       "project": "Calamity Mod",
       "path": "Projectiles/Melee/SolarNeedle.png",
-      "license": "Calamity Team / original rights holders; All Rights Reserved; not MIT"
+      "license": "Calamity Team / original rights holders; All Rights Reserved; not GPL-3.0-only"
     },
     {
       "file": "src/main/resources/assets/arkofcosmos/textures/elements/elemental_glass_star.png",
       "sha256": "9add935da5a44ca44e2c2b4f5afc7ff225fc0130779131676e08fe1c54c4b54d",
       "project": "Calamity Mod",
       "path": "Projectiles/Melee/ElementalGlassStar.png",
-      "license": "Calamity Team / original rights holders; All Rights Reserved; not MIT"
+      "license": "Calamity Team / original rights holders; All Rights Reserved; not GPL-3.0-only"
     },
     {
       "file": "src/main/resources/assets/arkofcosmos/textures/mob_effect/elemental_mix.png",
       "sha256": "32551cef5891730c0a680648be2f86dbbb00e5542117b4f8904260cdbf42789f",
       "project": "Calamity Mod",
       "path": "Buffs/DamageOverTime/ElementalMix.png",
-      "license": "Calamity Team / original rights holders; All Rights Reserved; not MIT"
+      "license": "Calamity Team / original rights holders; All Rights Reserved; not GPL-3.0-only"
     },
     {
       "file": "src/main/resources/assets/arkofcosmos/sounds/elements_item9_0.ogg",
@@ -930,7 +930,7 @@
       "project": "Terraria",
       "path": "Content/Sounds/Item_9.xnb",
       "source_sha256": "6df74552651c5548fe0fcc61f81b3835a3cd2a6db1c47fd4dad15abb43a9f76d",
-      "license": "Re-Logic / original rights holders; not MIT"
+      "license": "Re-Logic / original rights holders; not GPL-3.0-only"
     },
     {
       "file": "src/main/resources/assets/arkofcosmos/textures/elements/dust.png",
@@ -939,7 +939,7 @@
       "source_sha256": "0c84497a27ff8d9c706fbe9f0890b67bd27914b61e9bad799e65bc783f77b329",
       "project": "Terraria",
       "path": "Content/Images/Dust.xnb",
-      "license": "Re-Logic / original rights holders; not MIT",
+      "license": "Re-Logic / original rights holders; not GPL-3.0-only",
       "conversion": "XNB LZX Texture2D RGBA decoded losslessly to PNG; premultiplied channel bytes unchanged",
       "rgba_sha256": "d66069c16123c59b96e4bda53369fc963931478e5ac36a741a6e17abf9d0c5fe"
     },
@@ -950,7 +950,7 @@
       "source_sha256": "ac26d5eb877709d3e93035f085293bc9f5f07d7ba083926e7cea88a38f855ae0",
       "project": "Terraria",
       "path": "Content/Images/Gore_16.xnb",
-      "license": "Re-Logic / original rights holders; not MIT",
+      "license": "Re-Logic / original rights holders; not GPL-3.0-only",
       "conversion": "XNB LZX Texture2D RGBA decoded losslessly to PNG; premultiplied channel bytes unchanged",
       "rgba_sha256": "625caf302714eeb43a36f4cce5be9dbd2008f0b91a61bc46cf21599d2e176fe5"
     },
@@ -961,7 +961,7 @@
       "source_sha256": "1e1d295af8edba3901f86dbfa59e7d26e58cb215c9591f3ab4a65a4566560eef",
       "project": "Terraria",
       "path": "Content/Images/Gore_17.xnb",
-      "license": "Re-Logic / original rights holders; not MIT",
+      "license": "Re-Logic / original rights holders; not GPL-3.0-only",
       "conversion": "XNB LZX Texture2D RGBA decoded losslessly to PNG; premultiplied channel bytes unchanged",
       "rgba_sha256": "d65af3f1225535181b9f8a3b98a1e78e8cdd4776d4102c68ab5db772ac140d65"
     },
@@ -972,14 +972,14 @@
       "source_sha256": "e22c322da6e785917b586cb6f4871f832bb412b2ef86e537d2f0a432930e5de9",
       "project": "Calamity Mod",
       "path": "Particles/TechyHolosquare.png",
-      "license": "Calamity Team / original rights holders; All Rights Reserved; not MIT"
+      "license": "Calamity Team / original rights holders; All Rights Reserved; not GPL-3.0-only"
     },
     {
       "file": "src/main/resources/assets/arkofcosmos/textures/entity/odamane_halo.png",
       "sha256": "816296d2496a078d6c8a17bd2615d6e392c6bfddf926e8c4abc0dc13ca7b59f5",
       "project": "RevelationFix / Goety Revelation",
       "path": "assets/revelationfix/textures/entity/player/halo_the_end.png",
-      "license": "ARR / original rights holders; not MIT",
+      "license": "ARR / original rights holders; not GPL-3.0-only",
       "source_jar": "sample\\[Forge]RevelationFix-1.20.1-4.6.jar",
       "source_sha256": "816296d2496a078d6c8a17bd2615d6e392c6bfddf926e8c4abc0dc13ca7b59f5",
       "transformation": "Byte-identical"
@@ -989,7 +989,7 @@
       "sha256": "adf04b5560baf20894013cd567e204fead2a2e486d86bcd1ed8c20f09e1042d7",
       "project": "RevelationFix / Goety Revelation",
       "path": "assets/revelationfix/shaders/post/odamane.json",
-      "license": "ARR / original rights holders; not MIT",
+      "license": "ARR / original rights holders; not GPL-3.0-only",
       "source_jar": "sample\\[Forge]RevelationFix-1.20.1-4.6.jar",
       "source_sha256": "6716578cf8b3e980314568f9e924f598127061737dc11e2a1958749699037c76",
       "transformation": "Resource namespace only"
@@ -999,7 +999,7 @@
       "sha256": "5b006a309a0fa97c68a4890780a7a9bd168052c58645b7acb939cfa842255b10",
       "project": "RevelationFix / Goety Revelation",
       "path": "assets/revelationfix/shaders/program/odamane.json",
-      "license": "ARR / original rights holders; not MIT",
+      "license": "ARR / original rights holders; not GPL-3.0-only",
       "source_jar": "sample\\[Forge]RevelationFix-1.20.1-4.6.jar",
       "source_sha256": "1d6232ce2d63b3e24648aec6d3698e600d0a0a40f46d8cc1f22b11993594d9aa",
       "transformation": "Resource namespace only"
@@ -1009,7 +1009,7 @@
       "sha256": "824fbac0d58aa7b8ff3811f69b32cc826ad74c478a821c90771ca84ea4109752",
       "project": "RevelationFix / Goety Revelation",
       "path": "assets/revelationfix/shaders/program/odamane.fsh",
-      "license": "ARR / original rights holders; not MIT",
+      "license": "ARR / original rights holders; not GPL-3.0-only",
       "source_jar": "sample\\[Forge]RevelationFix-1.20.1-4.6.jar",
       "source_sha256": "824fbac0d58aa7b8ff3811f69b32cc826ad74c478a821c90771ca84ea4109752",
       "transformation": "Byte-identical"
@@ -1019,7 +1019,7 @@
       "sha256": "eeef6f5a23d6e807dd9fe419e12bb76abc5e83996b165c9ed4bc097d86d95b16",
       "project": "RevelationFix / Goety Revelation",
       "path": "assets/revelationfix/shaders/program/rewind.json",
-      "license": "ARR / original rights holders; not MIT",
+      "license": "ARR / original rights holders; not GPL-3.0-only",
       "source_jar": "sample\\[Forge]RevelationFix-1.20.1-4.6.jar",
       "source_sha256": "379a497b382a0f2f1f6c5867cd51c0089ab1d2b8be9dfbcf9ffd9f35f5150e97",
       "transformation": "Resource namespace only"
@@ -1029,7 +1029,7 @@
       "sha256": "dc7fac6f6f7411da228af77a6d6a2ad9a14688a85481d3fe80b3a25d3dd05799",
       "project": "RevelationFix / Goety Revelation",
       "path": "assets/revelationfix/shaders/program/rewind.fsh",
-      "license": "ARR / original rights holders; not MIT",
+      "license": "ARR / original rights holders; not GPL-3.0-only",
       "source_jar": "sample\\[Forge]RevelationFix-1.20.1-4.6.jar",
       "source_sha256": "dc7fac6f6f7411da228af77a6d6a2ad9a14688a85481d3fe80b3a25d3dd05799",
       "transformation": "Byte-identical"
@@ -1039,7 +1039,7 @@
       "sha256": "a1d0dce648fa1ccf7d662fb038ee9a5eb89cb37fed6c97652cd8fec02b7564a6",
       "project": "Calamity Mod",
       "path": "NPCs/SupremeCalamitas/ForcefieldTexture.png",
-      "license": "Calamity Team / original rights holders; not MIT",
+      "license": "Calamity Team / original rights holders; not GPL-3.0-only",
       "source_sha256": "a1d0dce648fa1ccf7d662fb038ee9a5eb89cb37fed6c97652cd8fec02b7564a6",
       "transformation": "Byte-identical"
     },
@@ -1048,7 +1048,7 @@
       "sha256": "978e1c9a7572f690e10be99a53213eec6f05ae8fad83722eb43d700539bc1b44",
       "project": "Calamity Mod",
       "path": "ExtraTextures/GreyscaleGradients/Perlin.png",
-      "license": "Calamity Team / original rights holders; not MIT",
+      "license": "Calamity Team / original rights holders; not GPL-3.0-only",
       "source_sha256": "978e1c9a7572f690e10be99a53213eec6f05ae8fad83722eb43d700539bc1b44",
       "transformation": "Byte-identical"
     },
@@ -1057,7 +1057,7 @@
       "sha256": "b4358f36717c5814e7c8a474b4bf251b440138947b170aaa4599cacbee320320",
       "project": "Calamity Mod",
       "path": "Effects/SupremeShieldShader.fx",
-      "license": "Calamity Team / original rights holders; not MIT",
+      "license": "Calamity Team / original rights holders; not GPL-3.0-only",
       "source_sha256": "20852fdc08bf4770798e888749ecd266866b549fc0b05109927f14b2f86a4742",
       "transformation": "HLSL-to-GLSL port with phase palette and native total-health flicker"
     },
@@ -1067,7 +1067,7 @@
       "source_sha256": "e53aa171822c25920de84e9674fff514976870bf746d52597bdaf4a2e694c39d",
       "project": "Calamity Mod Music / DM DOKURO",
       "path": "Sounds/Music/CalamitasPhase1.ogg",
-      "license": "Original music rights holders; not MIT",
+      "license": "Original music rights holders; not GPL-3.0-only",
       "matches_recorded_output": true
     },
     {
@@ -1076,7 +1076,7 @@
       "source_sha256": "bc2dca9894eadace2e4b30198868dedc23bbeeadb21caf9a0e3a7edf21746dee",
       "project": "Calamity Mod Music / DM DOKURO",
       "path": "Sounds/Music/CalamitasPhase2.ogg",
-      "license": "Original music rights holders; not MIT",
+      "license": "Original music rights holders; not GPL-3.0-only",
       "matches_recorded_output": true
     },
     {
@@ -1085,7 +1085,7 @@
       "source_sha256": "9ad33ccf0b8697a7420088dde4b68bc76b346298ac98c05dce189c2188aee946",
       "project": "Calamity Mod Music / DM DOKURO",
       "path": "Sounds/Music/CalamitasPhase3.ogg",
-      "license": "Original music rights holders; not MIT",
+      "license": "Original music rights holders; not GPL-3.0-only",
       "matches_recorded_output": true
     },
     {
@@ -1094,7 +1094,7 @@
       "source_sha256": "ab24adc5c8bf28fda6c7c186ed8411b3a38af769b89f13113053f47b5106577f",
       "project": "Calamity Mod",
       "path": "Items/Materials/AuricBar.png",
-      "license": "Original rights holders; not MIT",
+      "license": "Original rights holders; not GPL-3.0-only",
       "matches_recorded_output": true,
       "recorded_output_sha256": "e3919afb22e1ab3be5840a5b8a4d75a15c1c39f44f0276f84dac6326a40e881f",
       "adaptation": "Original 62x528 vertical animated sheet converted to twelve 62x62 Minecraft animation frames; transparent padding preserves each original frame."
@@ -1105,7 +1105,7 @@
       "source_sha256": "8015038b8714623b807ed20c1118b3b9465349a02901a6e3a9325ed4d7a3a819",
       "project": "Calamity Mod Music / DM DOKURO",
       "path": "Sounds/Music/CalamitasDefeat_LongFade.ogg",
-      "license": "Original rights holders; not MIT",
+      "license": "Original rights holders; not GPL-3.0-only",
       "matches_recorded_output": true
     },
     {
@@ -1114,7 +1114,7 @@
       "source_sha256": "8bc7e11a72e8038b39690a724e963f2f5aba741f5f32141916336cfd27ebfe7d",
       "project": "Calamity Mod",
       "path": "Sounds/Custom/SCalSounds/BrimstoneMonsterDrone.ogg",
-      "license": "Calamity Team / original rights holders; All Rights Reserved; not MIT",
+      "license": "Calamity Team / original rights holders; All Rights Reserved; not GPL-3.0-only",
       "matches_recorded_output": true
     }
   ]

@@ -29,7 +29,7 @@ import java.util.List;
 
 /** Calamity Team attack phases, timing and hit rules, adapted to Minecraft units.
  * Minecraft lifecycle, synchronization, enchantments and dash collision live in ArkAttackEntity.
- * Derived code retains the terms in THIRD_PARTY_NOTICES.md; this is not a standalone MIT file.
+ * Derived code retains the terms in THIRD_PARTY_NOTICES.md; this is not a standalone GPL-3.0-only file.
  */
 public abstract class CalamityAttackEntity extends Entity {
     protected Kind attackKind = Kind.BLADE;

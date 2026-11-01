@@ -99,9 +99,16 @@ Linux／macOS 可使用 `bash ./gradlew build`。构建产物位于 `build/libs/
 
 ## 许可与致谢
 
-**MIT 仅覆盖本项目有权授权的原创部分，不覆盖整个资源目录，也不重新授权 Calamity 的移植代码。**
+**`main` 的原创部分采用 GNU GPL v3（`GPL-3.0-only`），不覆盖整个资源目录，也不重新授权第三方移植代码。**
 
-- 原创 Minecraft／Forge 适配代码、原创配置和文档：见 [MIT License](LICENSE.txt)。
+| 分支 | 许可范围 |
+| --- | --- |
+| `main` | 本项目有权授权的原创部分采用 GPL-3.0-only |
+| `1.20-legacy` | 固定于 `c5508f85c40755f5d6cff1208a151e0c2445cba9`，原创部分保留 MIT，第三方内容沿用各自条款 |
+
+分发 GPL 覆盖的二进制或修改版本时，须保留版权及许可声明、标明修改，并按 GPL v3 要求提供对应版本的源码和必要构建脚本。此前 MIT 授权不被撤销，原声明见 [MIT 授权文本](licenses/MIT-legacy.txt)。第三方派生代码与 GPL 的组合分发仍须另外核对许可兼容性。
+
+- 原创 Minecraft／Forge 适配代码、原创配置和文档：见 [GNU GPL v3](LICENSE.txt)。
 - Calamity 派生的 Java 逻辑及拖尾片元着色器：保留 Calamity 原作品权利与署名，见 [许可范围说明](THIRD_PARTY_NOTICES.md)。
 - Calamity 纹理与音效：Calamity Team／原作者所有，原许可为 All Rights Reserved。
 - Terraria 音频：Re-Logic 所有；转码为 OGG 不改变权利归属。
