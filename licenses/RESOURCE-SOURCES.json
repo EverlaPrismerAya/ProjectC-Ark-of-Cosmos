@@ -1988,6 +1988,14 @@
         "item.arkofcosmos.heavy_core": "block.minecraft.heavy_core",
         "entity.arkofcosmos.player_wind_charge": "entity.minecraft.wind_charge"
       }
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/item/ark_of_cosmos.png",
+      "sha256": "A4A048F1340C851E291A00191C7347ACC9DBC6CB1EAC43B386C29F50831CC126",
+      "project": "CalamityModLegacy",
+      "path": "Items/Weapons/Melee/ArkoftheCosmos.png",
+      "license": "Calamity/ Re-Logic original rights holders; not GPL-3.0-only",
+      "matches_recorded_output": true
     }
   ]
 }

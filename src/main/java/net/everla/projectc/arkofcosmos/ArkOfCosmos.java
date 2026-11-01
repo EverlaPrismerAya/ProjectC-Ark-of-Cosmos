@@ -66,6 +66,11 @@ public final class ArkOfCosmos {
     }
     public static final RegistryObject<Item> ARK_OF_COSMOS = ITEMS.register("ark_of_cosmos",
             ArkItem::new);
+    public static final RegistryObject<Item> ARK_OF_THE_OLD_ONE = ITEMS.register("ark_of_the_old_one",
+            net.everla.projectc.arkofcosmos.item.OldOneItem::new);
+    public static final RegistryObject<EntityType<net.everla.projectc.arkofcosmos.entity.OldOneEntity>> OLD_ONE_ATTACK = ENTITIES.register("old_one_attack",
+            () -> EntityType.Builder.<net.everla.projectc.arkofcosmos.entity.OldOneEntity>of(net.everla.projectc.arkofcosmos.entity.OldOneEntity::new, MobCategory.MISC)
+                    .sized(.25f,.25f).noSave().noSummon().clientTrackingRange(128).updateInterval(1).build("arkofcosmos:old_one_attack"));
     public static final RegistryObject<Item> AURIC_BAR = ITEMS.register("auric_bar",
             net.everla.projectc.arkofcosmos.item.AuricBarItem::new);
 
@@ -75,6 +80,7 @@ public final class ArkOfCosmos {
         ITEMS.register(bus);
         ENTITIES.register(bus);
         SOUNDS.register(bus);
+        net.everla.projectc.arkofcosmos.combat.OldOneEffects.register(bus);
         EFFECTS.register(bus);
         ArkNetwork.register();
         bus.addListener(this::addCreativeContents);
@@ -89,6 +95,7 @@ public final class ArkOfCosmos {
     private void addCreativeContents(BuildCreativeModeTabContentsEvent event) {
         if (event.getTabKey() == CreativeModeTabs.COMBAT) {
             event.accept(ARK_OF_COSMOS);
+            event.accept(ARK_OF_THE_OLD_ONE);
             event.accept(GALAXIA);
             event.accept(ARK_OF_THE_ELEMENTS);
         }

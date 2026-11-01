@@ -3,6 +3,8 @@
   "advancements.arkofcosmos.fly_swatter.title": "Expert Fly Swatter",
   "advancements.arkofcosmos.fly_swatter.description": "Kill a fly with the Ark of the Cosmos",
   "item.arkofcosmos.ark_of_cosmos": "Ark of the Cosmos",
+  "item.arkofcosmos.ark_of_the_old_one": "Ark of The Old One",
+  "tooltip.arkofcosmos.old_one_attack": "Fires different homing projectiles based on what biome you're in\nUpon hitting an enemy you are granted a buff based on what biome you're in\nThe physical culmination of your journey, capable of rending gods asunder\nEmpowered by the might of the Fourth Calamity, it has reclaimed the strength lost to the annals of history.",
   "tooltip.arkofcosmos.controls": "<left> to perform a 5-swing combo that ends by throwing the blade\nThe thrown blade will follow your cursor\nReleasing while the blade is out will cause an exploding snap",
   "tooltip.arkofcosmos.parry": "<right> to snip out the scissor blades in front of you\nHitting an enemy with it will parry them\nParry can granting you brief invulnerability\nParrying anything will empower the next 16 swings of the sword",
   "message.arkofcosmos.parry": "§bParry！",

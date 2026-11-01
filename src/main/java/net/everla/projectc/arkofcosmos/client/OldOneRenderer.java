@@ -1,0 +1,3 @@
+package net.everla.projectc.arkofcosmos.client;
+import com.mojang.blaze3d.vertex.PoseStack;import net.minecraft.client.renderer.MultiBufferSource;import net.minecraft.client.renderer.entity.*;import net.minecraft.resources.ResourceLocation;import net.everla.projectc.arkofcosmos.entity.OldOneEntity;
+public final class OldOneRenderer extends EntityRenderer<OldOneEntity>{public OldOneRenderer(EntityRendererProvider.Context c){super(c);shadowRadius=0;}public ResourceLocation getTextureLocation(OldOneEntity e){return ResourceLocation.fromNamespaceAndPath("arkofcosmos","textures/item/ark_of_cosmos.png");}@Override public void render(OldOneEntity e,float y,float p,PoseStack s,MultiBufferSource b,int l){}}
