@@ -13,6 +13,18 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(value = LivingEntity.class, remap = false)
 abstract class LivingEntityMixin {
+    @Inject(method = {"hurt", "m_6469_"}, at = @At("HEAD"), cancellable = true)
+    private void ark$wardenDamage(DamageSource source,float amount,
+            org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable<Boolean> cir){
+        if(source.getEntity() instanceof net.everla.projectc.arkofcosmos.entity.MahoragaWardenEntity warden){
+            LivingEntity target=(LivingEntity)(Object)this;
+            if(warden.attacksPaused())cir.setReturnValue(false);
+            else if(target instanceof net.minecraft.world.entity.player.Player
+                    &&!net.everla.projectc.arkofcosmos.combat.WeaponDamage.handling(target,source))
+                cir.setReturnValue(net.everla.projectc.arkofcosmos.combat.WeaponDamage.hurt(target,source,amount));
+        }
+    }
+
     @Group(name = "ark$deathLoot", min = 1, max = 1)
     @Redirect(method = {"die", "m_6667_"}, at = @At(value = "INVOKE",
             target = "Lnet/minecraft/world/entity/LivingEntity;dropAllDeathLoot(Lnet/minecraft/world/damagesource/DamageSource;)V"), require = 0)

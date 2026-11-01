@@ -10,13 +10,17 @@ public final class WeaponDamage {
     private static final ThreadLocal<Hit> CURRENT = new ThreadLocal<>();
     private static final java.util.Map<Player, Long> BOSS_HIT_UNTIL = new java.util.WeakHashMap<>();
     private WeaponDamage() {}
+    public static boolean handling(LivingEntity target,DamageSource source){
+        Hit hit=CURRENT.get();return hit!=null&&hit.target==target&&hit.source==source;
+    }
 
     public static boolean hurt(LivingEntity target, DamageSource source, float amount) {
         if (target.level().isClientSide || target.isRemoved() || !target.isAlive()
                 || !Float.isFinite(amount) || amount <= 0
                 || target instanceof Player player && (player.isCreative() || player.isSpectator())) return false;
         boolean bossHit = target instanceof Player
-                && source.getEntity() instanceof net.everla.projectc.arkofcosmos.entity.MahouTsukaiEntity;
+                && (source.getEntity() instanceof net.everla.projectc.arkofcosmos.entity.MahouTsukaiEntity
+                    || source.getEntity() instanceof net.everla.projectc.arkofcosmos.entity.MahoragaWardenEntity);
         long now = target.level().getGameTime();
         Long previousUntil = bossHit ? BOSS_HIT_UNTIL.get((Player) target) : null;
         if (previousUntil != null && now < previousUntil) return false;
@@ -43,14 +47,13 @@ public final class WeaponDamage {
     }
 
     public static float minimum(LivingEntity target, DamageSource source, float amount) {
+        if(target instanceof net.everla.projectc.arkofcosmos.entity.MahoragaWardenEntity)return amount;
         Hit hit = CURRENT.get();
         if (hit == null || hit.target != target || hit.source != source)
-            return target instanceof net.everla.projectc.arkofcosmos.entity.MahoragaWardenEntity && amount>0 ? Math.max(1,amount) : amount;
+            return amount;
         float minimum = hit.minimum;
         if (target instanceof net.everla.projectc.arkofcosmos.entity.MahouTsukaiEntity boss)
             minimum *= boss.damageMultiplier();
-        if(target instanceof net.everla.projectc.arkofcosmos.entity.MahoragaWardenEntity warden)
-            minimum = Math.max(1,minimum * warden.adaptationMultiplier(source));
         return Math.max(amount, minimum);
     }
 }

@@ -15,6 +15,45 @@ public final class MahoragaWardenEntity extends Warden {
     private UUID bossId;
     private final Map<String,Integer> adaptation=new HashMap<>();
     private long nextLearn;
+    private static final net.minecraft.world.effect.MobEffect[] ADAPTATION_EFFECTS={
+        net.minecraft.world.effect.MobEffects.DAMAGE_RESISTANCE,net.minecraft.world.effect.MobEffects.REGENERATION,
+        net.minecraft.world.effect.MobEffects.ABSORPTION,net.minecraft.world.effect.MobEffects.MOVEMENT_SPEED,
+        net.minecraft.world.effect.MobEffects.DAMAGE_BOOST};
+    private final int[] effectUses=new int[5];
+    private final long[] effectUntil=new long[5];
+    private static final UUID ADAPTATION_ATTACK=UUID.fromString("d37cd057-429d-453e-a5d8-798c20fe9740");
+    public boolean attacksPaused(){
+        return bossId!=null&&level() instanceof ServerLevel server
+                &&server.getEntity(bossId) instanceof MahouTsukaiEntity boss&&boss.fusionShield();
+    }
+    private void updateAdaptationAttributes(){
+        long complete=adaptation.values().stream().filter(count->count==5).count();
+        getAttribute(net.minecraft.world.entity.ai.attributes.Attributes.ARMOR).setBaseValue(Math.min(60,complete*5));
+        getAttribute(net.minecraft.world.entity.ai.attributes.Attributes.ARMOR_TOUGHNESS).setBaseValue(Math.min(30,complete*2));
+        var attack=getAttribute(net.minecraft.world.entity.ai.attributes.Attributes.ATTACK_DAMAGE);
+        attack.removeModifier(ADAPTATION_ATTACK);
+        if(complete>0)attack.addTransientModifier(new net.minecraft.world.entity.ai.attributes.AttributeModifier(
+                ADAPTATION_ATTACK,"Full adaptation",Math.min(.75,complete*.05),
+                net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation.MULTIPLY_BASE));
+    }
+    private void grantAdaptationEffect(){
+        double total=0;
+        double[] weights=new double[5];
+        for(int i=0;i<5;i++){
+            if(effectUntil[i]>level().getGameTime()&&hasEffect(ADAPTATION_EFFECTS[i]))continue;
+            total+=weights[i]=1.0/(1.0+effectUses[i]);
+        }
+        if(total==0)return;
+        double roll=random.nextDouble()*total;
+        for(int i=0;i<5;i++){
+            if(weights[i]==0)continue;
+            roll-=weights[i];
+            if(roll<0){
+                addEffect(new net.minecraft.world.effect.MobEffectInstance(ADAPTATION_EFFECTS[i],600,1+random.nextInt(3)));
+                effectUses[i]++;effectUntil[i]=level().getGameTime()+600;return;
+            }
+        }
+    }
     private long nonPlayerInvulnerableUntil;
     private int healthWriteDepth,healthSyncDepth;
     private float vitality;
@@ -42,7 +81,8 @@ public final class MahoragaWardenEntity extends Warden {
     @Override protected void customServerAiStep(){
         // Direct creation skips Warden.finalizeSpawn. Its cooldown refresher cannot
         // create a missing memory, leaving DIG ahead of FIGHT even with a target.
-        getBrain().setMemoryWithExpiry(net.minecraft.world.entity.ai.memory.MemoryModuleType.DIG_COOLDOWN,net.minecraft.util.Unit.INSTANCE,1200L);
+        getBrain().setMemory(net.minecraft.world.entity.ai.memory.MemoryModuleType.DIG_COOLDOWN,net.minecraft.util.Unit.INSTANCE);
+        if(attacksPaused()){getNavigation().stop();return;}
         var target=getTarget();
         if(target==null){
             target=level().getNearestPlayer(getX(),getY(),getZ(),35,this::canTargetEntity);
@@ -73,7 +113,7 @@ public final class MahoragaWardenEntity extends Warden {
         return "damage:"+source.typeHolder().unwrapKey().map(key->key.location().toString()).orElse(source.getMsgId());
     }
     public int adaptation(String key){return adaptation.getOrDefault(key,0);}
-    public float adaptationMultiplier(DamageSource source){return Math.max(0,1-adaptation(sourceKey(source))*.2f);}
+    public float adaptationMultiplier(DamageSource source){return adaptation(sourceKey(source))>=5?.1f:1-adaptation(sourceKey(source))*.2f;}
     public boolean blocksNonPlayerDamage(DamageSource source){
         return !net.everla.projectc.arkofcosmos.combat.WeaponUser.playerOwnedDamage(source)&&level().getGameTime()<nonPlayerInvulnerableUntil;
     }
@@ -111,10 +151,11 @@ public final class MahoragaWardenEntity extends Warden {
         String key=sourceKey(source);int count=adaptation(key);
         float before=getHealth();
         healthWriteDepth++;
-        try{super.actuallyHurt(source,amount>0?Math.max(1,amount*(1-count*.2f)):amount);}finally{healthWriteDepth--;}
+        try{super.actuallyHurt(source,amount>0?amount*adaptationMultiplier(source):amount);}finally{healthWriteDepth--;}
         if(getHealth()<before&&!net.everla.projectc.arkofcosmos.combat.WeaponUser.playerOwnedDamage(source))nonPlayerInvulnerableUntil=level().getGameTime()+10;
+        if(count==5&&amount>0)grantAdaptationEffect();
         if(count<5&&getHealth()<before&&level().getGameTime()>=nextLearn&&(count>0||adaptation.size()<20)){
-            adaptation.put(key,Math.min(5,count+1));nextLearn=level().getGameTime()+50;
+            adaptation.put(key,Math.min(5,count+1));updateAdaptationAttributes();nextLearn=level().getGameTime()+50;
             level().broadcastEntityEvent(this,ADAPTED);
             level().playSound(null,getX(),getY(),getZ(),net.minecraft.sounds.SoundEvents.BELL_BLOCK,
                     net.minecraft.sounds.SoundSource.HOSTILE,1.5f,1f);
@@ -138,6 +179,8 @@ public final class MahoragaWardenEntity extends Warden {
     @Override public void addAdditionalSaveData(CompoundTag tag){
         super.addAdditionalSaveData(tag);if(bossId!=null)tag.putUUID("Summoner",bossId);
         CompoundTag values=new CompoundTag();adaptation.forEach(values::putInt);tag.put("Adaptation",values);
+        tag.putIntArray("AdaptationEffectUses",effectUses);
+        for(int i=0;i<5;i++)tag.putInt("AdaptationEffectTicks"+i,(int)Math.max(0,effectUntil[i]-level().getGameTime()));
         tag.putInt("LearnCooldown",(int)Math.max(0,nextLearn-level().getGameTime()));
         tag.putInt("NonPlayerInvulnerabilityTicks",(int)Math.max(0,nonPlayerInvulnerableUntil-level().getGameTime()));
     }
@@ -148,6 +191,13 @@ public final class MahoragaWardenEntity extends Warden {
         nonPlayerInvulnerableUntil=level().getGameTime()+net.minecraft.util.Mth.clamp(tag.getInt("NonPlayerInvulnerabilityTicks"),0,10);
         adaptation.clear();var values=tag.getCompound("Adaptation");
         for(String key:values.getAllKeys())if(adaptation.size()<20)adaptation.put(key,net.minecraft.util.Mth.clamp(values.getInt(key),0,5));
+        int[] uses=tag.getIntArray("AdaptationEffectUses");
+        for(int i=0;i<5;i++){
+            effectUses[i]=i<uses.length?Math.max(0,uses[i]):0;
+            effectUntil[i]=level().getGameTime()+net.minecraft.util.Mth.clamp(tag.getInt("AdaptationEffectTicks"+i),0,600);
+        }
+        updateAdaptationAttributes();
+        getBrain().setMemory(net.minecraft.world.entity.ai.memory.MemoryModuleType.DIG_COOLDOWN,net.minecraft.util.Unit.INSTANCE);
         nextLearn=level().getGameTime()+Math.min(50,Math.max(0,tag.getInt("LearnCooldown")));
     }
 }
