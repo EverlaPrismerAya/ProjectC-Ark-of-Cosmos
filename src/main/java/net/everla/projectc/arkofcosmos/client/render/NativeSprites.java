@@ -83,7 +83,8 @@ public final class NativeSprites extends RenderType {
                 double t=Math.max(0,Math.min(1,(d-(clearOwnerView?1.5:.5))/2.5));fade=clearOwnerView?t*t*(3-2*t):.12+.88*t*t*(3-2*t);
                 if(clearOwnerView){var look=camera.getLookVector();double cosine=d<1e-8?1:relative.dot(new Vec3(look.x(),look.y(),look.z()))/d;
                     double outside=Math.max(0,Math.min(1,(Math.cos(Math.toRadians(12))-cosine)/(Math.cos(Math.toRadians(12))-Math.cos(Math.toRadians(28)))));
-                    fade*=.35*outside*outside*(3-2*outside);
+                    // Keep the blade visible even near the camera or directly under the crosshair.
+                    fade=.12+.23*fade*outside*outside*(3-2*outside);
                 }
             }
             Vec3 local=at.subtract(base);double rgb=1;

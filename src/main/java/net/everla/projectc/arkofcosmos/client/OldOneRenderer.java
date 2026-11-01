@@ -20,7 +20,7 @@ import static net.everla.projectc.arkofcosmos.entity.OldOneEntity.Kind.*;
 public final class OldOneRenderer extends EntityRenderer<OldOneEntity> {
     public OldOneRenderer(EntityRendererProvider.Context context){super(context);shadowRadius=0;}
     @Override public ResourceLocation getTextureLocation(OldOneEntity e){return NativeSprites.texture(texture(e.kind()));}
-    @Override public boolean shouldRender(OldOneEntity e,Frustum f,double x,double y,double z){return e.shouldRenderAtSqrDistance(x*x+y*y+z*z);}
+    @Override public boolean shouldRender(OldOneEntity e,Frustum f,double x,double y,double z){return e.shouldRenderAtSqrDistance(e.distanceToSqr(x,y,z));}
     public static String texture(OldOneEntity.Kind k){return switch(k){case SWORD->"item/ark_of_the_old_one";case EON->"old_one/eon";case EON_V2->"old_one/eon_v2";case EON_V3->"old_one/eon_v3";case EON_V4->"old_one/eon_v4";case ORB->"old_one/orb";case ASTRAL_STAR->"old_one/astral_star";default->"old_one/projectile_"+k.nativeId;};}
     @Override public void render(OldOneEntity e,float yaw,float partial,PoseStack poses,MultiBufferSource buffers,int light){
         CompoundTag s=e.renderState(partial);if(s.isEmpty())return;
