@@ -168,12 +168,31 @@ public final class MahoragaWardenEntity extends Warden {
             else ShikigamiDeaths.get(server).record(getUUID());
         }
     }
+    private boolean followingBoss(){
+        return level()!=null&&!level().isClientSide&&bossId!=null&&level() instanceof ServerLevel server
+                &&server.getEntity(bossId) instanceof MahouTsukaiEntity boss&&boss.distantOrbit();
+    }
+    @Override public void setPos(double x,double y,double z){
+        // Ignore generic previous-tick position locks while the forced escape owns movement.
+        if(followingBoss()&&x==xo&&y==yo&&z==zo)return;
+        super.setPos(x,y,z);
+    }
     @Override public void aiStep(){
         if(!level().isClientSide)syncVitality();
         super.aiStep();
         if(!level().isClientSide&&bossId!=null&&level() instanceof ServerLevel server){
             var boss=server.getEntity(bossId);
             if(boss!=null&&!boss.isAlive())discard();
+            else if(boss instanceof MahouTsukaiEntity summoner&&summoner.distantOrbit()){
+                getNavigation().stop();
+                getBrain().eraseMemory(net.minecraft.world.entity.ai.memory.MemoryModuleType.WALK_TARGET);
+                var delta=summoner.position().subtract(position());
+                if(delta.length()>4){
+                    setPos(position().add(delta.normalize().scale(Math.min(.65,delta.length()-4))));
+                    hasImpulse=true;
+                }
+                setDeltaMovement(net.minecraft.world.phys.Vec3.ZERO);
+            }
         }
     }
     @Override public void addAdditionalSaveData(CompoundTag tag){

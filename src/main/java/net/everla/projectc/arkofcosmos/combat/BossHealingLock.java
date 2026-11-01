@@ -34,7 +34,7 @@ public final class BossHealingLock {
         float cap=health(living);
         return Float.isNaN(value)||value>cap;
     }
-    /** Observe the final result of foreign health ceilings, including independently recovering offsets. */
+    /** Observe a completed getHealth call, never an arbitrary float filter or health offset read. */
     public static float filterHealth(float value,Object target){
         if(!(target instanceof LivingEntity living)||!active(living))return value;
         float cap=health(living);

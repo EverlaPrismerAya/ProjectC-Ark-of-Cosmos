@@ -13,7 +13,7 @@ final class MahouPhaseOneAI {
     private final MahouTsukaiEntity boss;
     private final MahouPhaseTwoAI phaseTwo;
     private final MahouPhaseThreeAI phaseThree;
-    private int movementPhase=1;
+    private int movementPhase=1, orbitAttackTicks=-1;
     private int attack, age, cooldown = 20, lastAttack, unseen;
     private Vec3 wander, territory, aim = Vec3.ZERO;
     private int patrolPause, patrolBlocked;
@@ -33,22 +33,22 @@ final class MahouPhaseOneAI {
 
     static boolean valid(MahouTsukaiEntity boss, LivingEntity target) {
         return target != null && target != boss && target.isAlive() && !target.isRemoved()
-                && target.level() == boss.level() && !boss.isAlliedTo(target) && boss.distanceToSqr(target) <= 64 * 64
+                && target.level() == boss.level() && !boss.isAlliedTo(target) && boss.distanceToSqr(target) <= 128 * 128
                 && (!(target instanceof Player p) || !p.isCreative() && !p.isSpectator());
     }
 
     void tick() {
-        if(boss.phaseRecovering()||boss.phaseTransitionTicks()>0){reset();phaseTwo.reset();boss.setNoGravity(true);return;}
+        if(boss.phaseRecovering()||boss.phaseTransitionTicks()>0){orbitAttackTicks=-1;reset();phaseTwo.reset();boss.setNoGravity(true);return;}
         if(movementPhase!=boss.phase()){reset();phaseTwo.reset();phaseThree.reset();movementPhase=boss.phase();}
         boss.setNoGravity(true);
-        Player player = boss.level().getNearestPlayer(boss.getX(), boss.getY(), boss.getZ(), 48,
+        Player player = boss.level().getNearestPlayer(boss.getX(), boss.getY(), boss.getZ(), 128,
                 p -> p instanceof Player candidate && valid(boss, candidate) && boss.hasLineOfSight(candidate));
         LivingEntity target = boss.getTarget();
         if (player != null) { target = player; unseen = 0; }
         else if (!valid(boss, target) || target instanceof Player && ++unseen > 100) target = null;
         if(player==null&&!(target instanceof Player&&valid(boss,target))){
             var warden=boss.level().getEntitiesOfClass(net.minecraft.world.entity.monster.warden.Warden.class,
-                    boss.getBoundingBox().inflate(48),w->valid(boss,w)&&boss.hasLineOfSight(w)).stream()
+                    boss.getBoundingBox().inflate(128),w->valid(boss,w)&&boss.hasLineOfSight(w)).stream()
                     .min(java.util.Comparator.comparingDouble(boss::distanceToSqr)).orElse(null);
             if(warden!=null)target=warden;
         }
@@ -60,6 +60,12 @@ final class MahouPhaseOneAI {
         }
 
         face(target.getBoundingBox().getCenter());
+        if(boss.distantOrbit()){
+            if(orbitAttackTicks<0){reset();phaseTwo.reset();phaseThree.reset();orbitAttackTicks=0;}
+            phaseTwo.distantOrbitAttack(target,orbitAttackTicks++);
+            return;
+        }
+        if(orbitAttackTicks>=0){phaseTwo.reset();orbitAttackTicks=-1;}
         if(boss.phase()==2){phaseTwo.tick(target);return;}
         if(boss.phase()==3){phaseThree.tick(target);return;}
         if (attack == 0) {
@@ -290,6 +296,21 @@ final class MahouPhaseOneAI {
         double height=(grounded?ground(boss.position().add(horizontal)):combatHeight(boss.position().add(horizontal),target));
         boss.setDeltaMovement(avoidSolid(horizontal.add(0,Math.max(-.3,Math.min(.3,height-boss.getY())),0)));
         if(!grounded&&holdAltitude(target))boss.setDeltaMovement(boss.getDeltaMovement().multiply(1,0,1));
+    }
+
+    void forceDistantOrbit(){
+        LivingEntity target=boss.getTarget();
+        if(!valid(boss,target))return;
+        Vec3 away=boss.position().subtract(target.position()).multiply(1,0,1);
+        double distance=away.length();
+        away=distance<.001?Vec3.directionFromRotation(0,boss.getYRot()).scale(-1):away.normalize();
+        double radial=net.minecraft.util.Mth.clamp(36-distance,-2,1.5);
+        Vec3 delta=away.scale(radial).add(new Vec3(-away.z,0,away.x).scale(.32));
+        if(!holdAltitude(target))delta=delta.add(0,net.minecraft.util.Mth.clamp(combatHeight(boss.position().add(delta),target)-boss.getY(),-.3,.3),0);
+        // Position updates bypass generic move/velocity locks without optional-mod hooks.
+        boss.setPos(boss.position().add(delta));
+        boss.setDeltaMovement(Vec3.ZERO);
+        boss.hasImpulse=true;
     }
 
     private void beginRetreat(LivingEntity target){

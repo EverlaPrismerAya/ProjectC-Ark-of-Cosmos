@@ -9,6 +9,7 @@ import org.objectweb.asm.tree.*;
 /** Match the vanilla method contracts in every class, without mod IDs or entity names. */
 public final class ArkHealthTransformer implements ILaunchPluginService, Opcodes {
     private static final String HOOK = "net/everla/projectc/arkofcosmos/combat/ArkDamage";
+    private static final String HEALING = "net/everla/projectc/arkofcosmos/combat/BossHealingLock";
 
     @Override public String name() { return "ark_health"; }
     @Override public EnumSet<Phase> handlesClass(Type type, boolean empty) {
@@ -19,6 +20,22 @@ public final class ArkHealthTransformer implements ILaunchPluginService, Opcodes
     @Override public boolean processClass(Phase phase, ClassNode node, Type type) {
         boolean changed = BossDamageTransformer.apply(node);
         for (MethodNode method : node.methods) {
+            // Observe only a completed vanilla health read. Float filters may also process offsets.
+            // Skip internal super-getter calls: those can return an intermediate backing value.
+            if (!(method.desc.equals("()F") && named(method,"getHealth","m_21223_"))) {
+                for (var instruction : method.instructions.toArray()) {
+                    if (!(instruction instanceof MethodInsnNode call) || call.getOpcode()==INVOKESTATIC
+                            || !call.desc.equals("()F")
+                            || !(call.name.equals("getHealth") || call.name.equals("m_21223_"))) continue;
+                    var next=call.getNext();
+                    if(next!=null && next.getOpcode()==SWAP && next.getNext() instanceof MethodInsnNode observer
+                            && observer.owner.equals(HEALING) && observer.name.equals("filterHealth")) continue;
+                    method.instructions.insertBefore(call,new InsnNode(DUP));
+                    InsnList observe=new InsnList();observe.add(new InsnNode(SWAP));
+                    observe.add(new MethodInsnNode(INVOKESTATIC,HEALING,"filterHealth","(FLjava/lang/Object;)F",false));
+                    method.instructions.insert(call,observe);changed=true;
+                }
+            }
             if ((method.access & (ACC_STATIC | ACC_ABSTRACT | ACC_NATIVE)) != 0) continue;
             String hook = null;
             if (method.desc.equals("()F") && named(method, "getHealth", "m_21223_")) hook = "health";

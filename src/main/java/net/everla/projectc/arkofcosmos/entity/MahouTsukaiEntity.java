@@ -58,6 +58,7 @@ public final class MahouTsukaiEntity extends PathfinderMob implements net.minecr
         return other instanceof MahoragaWardenEntity w&&getUUID().equals(w.bossId())||super.isAlliedTo(other);
     }
     private long weaponInvulnerableUntil, nonPlayerInvulnerableUntil;
+    private final DistantOrbitTrigger distantOrbitTrigger=new DistantOrbitTrigger();
     private int healthWriteDepth, healthSyncDepth;
     private float vitality;
     private boolean vitalityReady;
@@ -74,7 +75,7 @@ public final class MahouTsukaiEntity extends PathfinderMob implements net.minecr
     }
 
     public static net.minecraft.world.entity.ai.attributes.AttributeSupplier.Builder createAttributes() {
-        return Mob.createMobAttributes().add(Attributes.MAX_HEALTH, 1000.0D).add(Attributes.MOVEMENT_SPEED, .2D).add(Attributes.FOLLOW_RANGE, 48).add(Attributes.KNOCKBACK_RESISTANCE, 1.0D).add(Attributes.ARMOR,20.0D).add(Attributes.ARMOR_TOUGHNESS,8.0D);
+        return Mob.createMobAttributes().add(Attributes.MAX_HEALTH, 1000.0D).add(Attributes.MOVEMENT_SPEED, .2D).add(Attributes.FOLLOW_RANGE, 128).add(Attributes.KNOCKBACK_RESISTANCE, 1.0D).add(Attributes.ARMOR,20.0D).add(Attributes.ARMOR_TOUGHNESS,8.0D);
     }
 
     @Override protected void registerGoals() {}
@@ -84,6 +85,9 @@ public final class MahouTsukaiEntity extends PathfinderMob implements net.minecr
     void weaponInvulnerable(int updates) { weaponInvulnerableUntil=Math.max(weaponInvulnerableUntil,level().getGameTime()+(updates+2)/3); }
     @Override public boolean hurt(DamageSource source,float amount) {
         if (immuneDamage(source)) return false;
+        if(amount>0&&!level().isClientSide&&!defeating()
+                &&!net.everla.projectc.arkofcosmos.combat.WeaponUser.playerOwnedDamage(source))
+            distantOrbitTrigger.hit(level().getGameTime());
         if (defeating()) { setHealth(1); return false; }
         if(amount>0&&(phaseTransitionTicks()>0||shikigamiAlive()))return false;
         if(amount>0 && phase()==1 && !phaseRecovering && level().getGameTime()<weaponInvulnerableUntil)return false;
@@ -148,6 +152,7 @@ public final class MahouTsukaiEntity extends PathfinderMob implements net.minecr
         if(health<vitality){ordinaryDamage(damageSources().generic(),vitality-health);return true;}
         return false;
     }
+    public boolean distantOrbit(){return level()!=null&&!level().isClientSide&&distantOrbitTrigger!=null&&distantOrbitTrigger.active(level().getGameTime());}
     public void ordinaryDamage(DamageSource source,float amount){
         if(!(amount>0)||Float.isNaN(amount))return;
         // Strip bypass tags while retaining ownership and projectile attribution.
@@ -266,6 +271,11 @@ public final class MahouTsukaiEntity extends PathfinderMob implements net.minecr
         for (ServerPlayer player : bossEvent.getPlayers()) syncBossBar(player, next);
     }
 
+    @Override public void setPos(double x,double y,double z){
+        // Ignore generic previous-tick position locks while the forced escape owns movement.
+        if(distantOrbit()&&x==xo&&y==yo&&z==zo)return;
+        super.setPos(x,y,z);
+    }
     @Override public void aiStep() {
         // Defeat is synchronized; both sides must stop using the combat-only noclip movement.
         noPhysics = !defeating();
@@ -305,7 +315,10 @@ public final class MahouTsukaiEntity extends PathfinderMob implements net.minecr
             entityData.set(TOTAL_HEALTH,totalHealthProgress());
             bossEvent.setProgress(bossBarProgress());
             bossEvent.setName(getName());
-            if (!isNoAi()) phaseOne.tick();
+            if (!isNoAi()) {
+                phaseOne.tick();
+                if(distantOrbit())phaseOne.forceDistantOrbit();
+            }
         }
     }
 
@@ -315,7 +328,7 @@ public final class MahouTsukaiEntity extends PathfinderMob implements net.minecr
         boolean validLock=locked!=null&&locked!=this&&locked.isAlive()&&!locked.isRemoved()&&locked.level()==level()
                 &&!isAlliedTo(locked)&&EntitySelector.NO_CREATIVE_OR_SPECTATOR.test(locked);
         if (!validLock) {
-            LivingEntity player=level().getNearestPlayer(getX(),getY(),getZ(),64,
+            LivingEntity player=level().getNearestPlayer(getX(),getY(),getZ(),128,
                     e->e instanceof net.minecraft.world.entity.player.Player p&&MahouPhaseOneAI.valid(this,p));
             if (player != null) { setTarget(player); locked=player; validLock=true; }
         }
@@ -331,7 +344,7 @@ public final class MahouTsukaiEntity extends PathfinderMob implements net.minecr
         }
         if(remaining<40||remaining%10!=0)return;
         if((phase()==2||phase()==3)&&remaining%20==0){
-            LivingEntity player=validLock?locked:level().getNearestPlayer(getX(),getY(),getZ(),48,
+            LivingEntity player=validLock?locked:level().getNearestPlayer(getX(),getY(),getZ(),128,
                     e->e instanceof net.minecraft.world.entity.player.Player p&&MahouPhaseOneAI.valid(this,p));
             if(player==null&&MahouPhaseOneAI.valid(this,getTarget()))player=getTarget();
             if(player==null&&MahouPhaseOneAI.valid(this,getLastHurtByMob()))player=getLastHurtByMob();

@@ -11,11 +11,9 @@ final class BossDamageTransformer implements Opcodes {
     private static final String SOURCE="Lnet/minecraft/world/damagesource/DamageSource;";
     private static final String DATA="Lnet/minecraft/network/syncher/EntityDataAccessor;";
     private static final String HOOK="net/everla/projectc/arkofcosmos/combat/BossDamageBridge";
-    private static final String HEALING="net/everla/projectc/arkofcosmos/combat/BossHealingLock";
 
     static boolean apply(ClassNode node){
         if(node.name.startsWith("net/everla/projectc/arkofcosmos/"))return false;
-        boolean changed=false;
         Set<String> readers=new HashSet<>();
         // A float health filter receives the original health and an arbitrary entity.
         for(var method:node.methods)if((method.access&ACC_STATIC)!=0&&method.desc.equals("(FLjava/lang/Object;)F")){
@@ -23,19 +21,8 @@ final class BossDamageTransformer implements Opcodes {
             for(var insn:method.instructions)if(insn instanceof MethodInsnNode call
                     &&call.owner.equals("net/minecraft/world/entity/LivingEntity")
                     &&(call.name.equals("getMaxHealth")||call.name.equals("m_21233_")))ceiling=true;
-            if(ceiling){
-                boolean installed=false;
-                for(var insn:method.instructions){
-                    if(insn instanceof MethodInsnNode call&&call.owner.equals(HEALING))installed=true;
-                    if(insn instanceof MethodInsnNode call&&call.owner.equals(node.name)
-                            &&call.desc.equals("("+LIVING+")F"))readers.add(call.name);
-                }
-                if(!installed)for(var insn:method.instructions.toArray())if(insn.getOpcode()==FRETURN){
-                    InsnList guard=new InsnList();guard.add(new VarInsnNode(ALOAD,1));
-                    guard.add(new MethodInsnNode(INVOKESTATIC,HEALING,"filterHealth","(FLjava/lang/Object;)F",false));
-                    method.instructions.insertBefore(insn,guard);changed=true;
-                }
-            }
+            if(ceiling)for(var insn:method.instructions)if(insn instanceof MethodInsnNode call
+                    &&call.owner.equals(node.name)&&call.desc.equals("("+LIVING+")F"))readers.add(call.name);
         }
         Set<String> offsets=new HashSet<>();
         for(var method:node.methods)if(readers.contains(method.name)&&method.desc.equals("("+LIVING+")F"))
@@ -56,6 +43,7 @@ final class BossDamageTransformer implements Opcodes {
                     added|=adapters.add(method.name+method.desc);
             }
         }while(added);
+        boolean changed=false;
         for(var method:node.methods){
             boolean installed=false;
             for(var insn:method.instructions)if(insn instanceof MethodInsnNode call&&call.owner.equals(HOOK))installed=true;

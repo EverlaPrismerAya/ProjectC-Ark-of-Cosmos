@@ -43,7 +43,7 @@ public final class MahouMusic {
         if (mc.isPaused()) return;
         // Keep the current boss until it leaves range, so nearby bosses cannot alternate tracks.
         MahouTsukaiEntity boss = current != null && eligible(mc, current.boss) ? current.boss :
-                mc.level.getEntitiesOfClass(MahouTsukaiEntity.class, mc.player.getBoundingBox().inflate(64),
+                mc.level.getEntitiesOfClass(MahouTsukaiEntity.class, mc.player.getBoundingBox().inflate(128),
                         candidate -> eligible(mc, candidate)).stream()
                         .min(java.util.Comparator.comparingDouble(candidate -> candidate.distanceToSqr(mc.player)))
                         .orElse(null);
@@ -61,7 +61,7 @@ public final class MahouMusic {
 
     private static boolean eligible(Minecraft mc, MahouTsukaiEntity boss) {
         return boss.level() == mc.level && boss.isAlive() && !boss.isRemoved()
-                && boss.distanceToSqr(mc.player) <= 64 * 64;
+                && boss.distanceToSqr(mc.player) <= 128 * 128;
     }
 
     private static void stop(Minecraft mc) {

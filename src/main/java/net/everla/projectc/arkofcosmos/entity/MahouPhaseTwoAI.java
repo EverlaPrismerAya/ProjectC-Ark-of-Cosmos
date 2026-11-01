@@ -95,7 +95,7 @@ final class MahouPhaseTwoAI {
                 }
                 Vec3 at=target.position().add(destination);
                 movement.steer(new Vec3(at.x,movement.combatHeight(at,target),at.z),.9);
-                if(tick>=20&&(tick-20)%10==0){bolt(frame(target).forward(),.15,1.025);sound();}
+                acceleratingBolt(target,tick);
                 if(tick>=20+repeats*10-1)finish();
             }
             case 6->{
@@ -124,6 +124,14 @@ final class MahouPhaseTwoAI {
                 if(tick>=repeats*16-1)finish();
             }
         }
+    }
+    void distantOrbitAttack(LivingEntity target,int tick){
+        if(!boss.getMainHandItem().is(ArkOfCosmos.GALAXIA.get()))
+            boss.setItemSlot(EquipmentSlot.MAINHAND,new ItemStack(ArkOfCosmos.GALAXIA.get()));
+        acceleratingBolt(target,tick);
+    }
+    private void acceleratingBolt(LivingEntity target,int tick){
+        if(tick>=20&&(tick-20)%10==0){bolt(frame(target).forward(),.15,1.025);sound();}
     }
     private AttackFrame frame(LivingEntity target){
         return GalaxiaEntity.aimFrame(target.getBoundingBox().getCenter().subtract(boss.getBoundingBox().getCenter()).normalize(),AttackFrame.capture(boss).right());
