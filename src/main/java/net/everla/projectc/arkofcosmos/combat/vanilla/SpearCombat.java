@@ -89,7 +89,8 @@ public final class SpearCombat {
             double power=.4f+attacker.getAttributeValue(Attributes.ATTACK_KNOCKBACK)+EnchantmentHelper.getKnockbackBonus(attacker);double yaw=attacker.getYRot()*Math.PI/180;
             if(target instanceof LivingEntity living)living.knockback(power,Math.sin(yaw),-Math.cos(yaw));
             else target.push(-Math.sin(yaw)*power,.1,Math.cos(yaw)*power);
-            attacker.setDeltaMovement(attacker.getDeltaMovement().multiply(.6,1,.6));VanillaCombat.syncMotion(attacker);
+            // Player movement is client-owned; forcing the server velocity back resets sprint jumps.
+            if(!attacker.isFallFlying())attacker.setDeltaMovement(attacker.getDeltaMovement().multiply(.6,1,.6));
             VanillaCombat.syncMotion(target);
             if(target instanceof net.minecraft.server.level.ServerPlayer){target.hurtMarked=false;target.setDeltaMovement(oldMovement);}
         }
