@@ -182,6 +182,12 @@ public final class MahouTsukaiEntity extends PathfinderMob implements net.minecr
         entityData.set(TOTAL_HEALTH,totalHealthProgress());
     }
 
+    /** Called only by the player-originated /kill command hook. */
+    public void removeByPlayerCommand() {
+        clearCombatEntities();
+        discard();
+    }
+
     @Override public void die(DamageSource source) {
         if (phase() == MAX_PHASE && !defeating() && !level().isClientSide) {
             beginDefeat(source);

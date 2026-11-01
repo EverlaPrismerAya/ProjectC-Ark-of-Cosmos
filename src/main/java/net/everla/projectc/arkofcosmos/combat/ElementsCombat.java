@@ -104,8 +104,8 @@ public final class ElementsCombat {
         int elapsed=data.getInt("ElementsDotElapsed")+1;data.putInt("ElementsDotElapsed",elapsed);
         if(ElementsRules.dotDue(elapsed)){
             if(t instanceof Player p&&(p.isCreative()||p.isSpectator()))return;
-            var source=t.damageSources().magic();
-            if(data.hasUUID("ElementsDotOwner")&&t.level() instanceof net.minecraft.server.level.ServerLevel level){var owner=WeaponUser.resolve(level,data.getUUID("ElementsDotOwner"));if(owner!=null)source=t.damageSources().indirectMagic(owner,owner);}
+            var source=new net.minecraft.world.damagesource.DamageSource(t.level().registryAccess().registryOrThrow(net.minecraft.core.registries.Registries.DAMAGE_TYPE).getHolderOrThrow(net.minecraft.world.damagesource.DamageTypes.PLAYER_ATTACK));
+            if(data.hasUUID("ElementsDotOwner")&&t.level() instanceof net.minecraft.server.level.ServerLevel level){var owner=WeaponUser.resolve(level,data.getUUID("ElementsDotOwner"));if(owner!=null)source=new net.minecraft.world.damagesource.DamageSource(t.level().registryAccess().registryOrThrow(net.minecraft.core.registries.Registries.DAMAGE_TYPE).getHolderOrThrow(net.minecraft.world.damagesource.DamageTypes.PLAYER_ATTACK),owner,owner);}
             int cooldown=t.invulnerableTime;t.invulnerableTime=0;
             LivingEntity previous=RESONANCE_HIT.get();RESONANCE_HIT.set(t);
             try{
