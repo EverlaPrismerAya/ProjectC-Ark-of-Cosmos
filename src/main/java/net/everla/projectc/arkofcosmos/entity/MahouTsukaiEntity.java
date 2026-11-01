@@ -85,9 +85,6 @@ public final class MahouTsukaiEntity extends PathfinderMob implements net.minecr
     void weaponInvulnerable(int updates) { weaponInvulnerableUntil=Math.max(weaponInvulnerableUntil,level().getGameTime()+(updates+2)/3); }
     @Override public boolean hurt(DamageSource source,float amount) {
         if (immuneDamage(source)) return false;
-        if(amount>0&&!level().isClientSide&&!defeating()
-                &&!net.everla.projectc.arkofcosmos.combat.WeaponUser.playerOwnedDamage(source))
-            distantOrbitTrigger.hit(level().getGameTime());
         if (defeating()) { setHealth(1); return false; }
         if(amount>0&&(phaseTransitionTicks()>0||shikigamiAlive()))return false;
         if(amount>0 && phase()==1 && !phaseRecovering && level().getGameTime()<weaponInvulnerableUntil)return false;
@@ -153,6 +150,12 @@ public final class MahouTsukaiEntity extends PathfinderMob implements net.minecr
         return false;
     }
     public boolean distantOrbit(){return level()!=null&&!level().isClientSide&&distantOrbitTrigger!=null&&distantOrbitTrigger.active(level().getGameTime());}
+    /** Count server-emitted hurt feedback, even if health protection rejected the loss. */
+    public void receivedDamageFeedback(DamageSource source){
+        if(!level().isClientSide&&!defeating())
+            distantOrbitTrigger.feedback(level().getGameTime(),
+                    net.everla.projectc.arkofcosmos.combat.WeaponUser.playerOwnedDamage(source));
+    }
     public void ordinaryDamage(DamageSource source,float amount){
         if(!(amount>0)||Float.isNaN(amount))return;
         // Strip bypass tags while retaining ownership and projectile attribution.
