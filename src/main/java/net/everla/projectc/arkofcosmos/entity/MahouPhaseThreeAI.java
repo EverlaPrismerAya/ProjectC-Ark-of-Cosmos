@@ -94,11 +94,33 @@ final class MahouPhaseThreeAI {
             }
             case 6->{
                 boss.setDeltaMovement(Vec3.ZERO);
-                if(t==0)spawn(boss,DOMAIN,boss.position(),Vec3.ZERO,30,190,0);
+                if(t==0)spawn(boss,DOMAIN,target.getBoundingBox().getCenter(),Vec3.ZERO,30,190,0);
                 if(t>=30&&t<180&&t%5==0){
                     double a=boss.getRandom().nextDouble()*Math.PI*2;
                     Vec3 from=target.position().add(Math.cos(a)*18,2+boss.getRandom().nextDouble()*10,Math.sin(a)*18);
                     spawn(boss,DOMAIN_TEXT,from,target.getBoundingBox().getCenter().subtract(from).normalize().scale(.55),18,100,10);
+                }
+                // SCal bullet hell: random edge positions, inward parallel shots,
+                // staged directions, and a periodic shot aligned with the player.
+                if(t>=30&&t<180&&(t-30)%4==0){
+                    int elapsed=t-30;
+                    Vec3 center=target.getBoundingBox().getCenter();
+                    for(int side=0;side<4;side++){
+                        if(elapsed<50&&side!=0||elapsed>=50&&elapsed<100&&side<2)continue;
+                        Vec3 outward=switch(side){case 0->new Vec3(0,0,1);case 1->new Vec3(0,0,-1);
+                            case 2->new Vec3(1,0,0);default->new Vec3(-1,0,0);};
+                        Vec3 along=new Vec3(-outward.z,0,outward.x);
+                        Vec3 from=center.add(outward.scale(18))
+                                .add(along.scale((boss.getRandom().nextDouble()*2-1)*18))
+                                .add(0,(boss.getRandom().nextDouble()-.5)*.7,0);
+                        double speed=elapsed<50?.4:elapsed<100?.35:.3;
+                        spawn(boss,DOMAIN_TEXT,from,outward.scale(-speed),18,160,10);
+                    }
+                    if(elapsed%24==0){
+                        double side=boss.getRandom().nextBoolean()?1:-1;
+                        Vec3 from=center.add(side*18,(boss.getRandom().nextDouble()-.5)*.7,0);
+                        spawn(boss,DOMAIN_TEXT,from,new Vec3(-side*.4,0,0),18,160,10);
+                    }
                 }
                 if(t>=195)finish();
             }
@@ -119,7 +141,7 @@ final class MahouPhaseThreeAI {
         boss.setPos(landing);
         fusionPosition=boss.position();boss.setDeltaMovement(Vec3.ZERO);
     }
-    void reset(){attack=age=0;cooldown=20;blueAim=Vec3.ZERO;fusionPosition=null;fusionDirection=Vec3.ZERO;boss.spell(0);if(warning!=null)warning.discard();if(orb!=null)orb.discard();warning=orb=null;}
+    void reset(){if(attack==6)endDomainText(boss);attack=age=0;cooldown=20;blueAim=Vec3.ZERO;fusionPosition=null;fusionDirection=Vec3.ZERO;boss.spell(0);if(warning!=null)warning.discard();if(orb!=null)orb.discard();warning=orb=null;}
     void cancel(){reset();}
-    private void finish(){reset();cooldown=12+boss.getRandom().nextInt(11);}
+    private void finish(){reset();cooldown=10;}
 }

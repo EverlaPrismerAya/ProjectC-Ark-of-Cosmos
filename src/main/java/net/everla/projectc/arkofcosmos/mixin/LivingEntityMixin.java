@@ -13,11 +13,19 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(value = LivingEntity.class, remap = false)
 abstract class LivingEntityMixin {
+    @Inject(method={"onSyncedDataUpdated","m_7350_"},at=@At("HEAD"))
+    private void ark$healingData(net.minecraft.network.syncher.EntityDataAccessor<?> key,CallbackInfo ci){
+        net.everla.projectc.arkofcosmos.combat.BossHealingLock.synced((LivingEntity)(Object)this,key);
+    }
     @Inject(method = {"hurt", "m_6469_"}, at = @At("HEAD"), cancellable = true)
     private void ark$wardenDamage(DamageSource source,float amount,
             org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable<Boolean> cir){
+        LivingEntity target=(LivingEntity)(Object)this;
+        if(source.getEntity() instanceof net.everla.projectc.arkofcosmos.entity.MahouTsukaiEntity
+                &&!net.everla.projectc.arkofcosmos.combat.WeaponDamage.handling(target,source)){
+            cir.setReturnValue(net.everla.projectc.arkofcosmos.combat.WeaponDamage.hurt(target,source,amount));return;
+        }
         if(source.getEntity() instanceof net.everla.projectc.arkofcosmos.entity.MahoragaWardenEntity warden){
-            LivingEntity target=(LivingEntity)(Object)this;
             if(warden.attacksPaused())cir.setReturnValue(false);
             else if(target instanceof net.minecraft.world.entity.player.Player
                     &&!net.everla.projectc.arkofcosmos.combat.WeaponDamage.handling(target,source))

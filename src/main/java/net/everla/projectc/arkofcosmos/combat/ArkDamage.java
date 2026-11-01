@@ -47,19 +47,30 @@ public final class ArkDamage {
     public static void bootstrap() {}
 
     public static boolean protectedPlayer(Object entity) {
+        // LivingEntity initializes health before ServerPlayer initializes its game mode.
+        if (entity instanceof Player player && player.getAbilities() == null) return false;
+        if (entity instanceof ServerPlayer player && player.gameMode == null) return false;
         return entity instanceof Player player && (player.isCreative() || player.isSpectator());
     }
 
     public static void define(LivingEntity entity) { entity.getEntityData().define(HEALTH, -1f); }
+    public static boolean isHealthData(EntityDataAccessor<?> key){return key.equals(HEALTH)||key.equals(LivingEntity.DATA_HEALTH_ID);}
+    public static void syncHealingLock(LivingEntity target){
+        if(target.getEntityData().hasItem(HEALTH)&&target.getEntityData().get(HEALTH)>=0)BossHealingLock.synced(target,HEALTH);
+    }
 
     public static void restore(LivingEntity entity, float health) {
-        if (!protectedPlayer(entity) && !ordinaryTarget(entity) && Float.isFinite(health) && health >= 0)
+        if (entity.getEntityData().hasItem(HEALTH) && !protectedPlayer(entity) && !ordinaryTarget(entity) && Float.isFinite(health) && health >= 0)
             entity.getEntityData().set(HEALTH, Math.min(health, entity.getMaxHealth()));
     }
 
     // Object signatures keep the launch plugin independent of game class loading.
     public static float health(Object object) {
-        if (!(object instanceof LivingEntity entity)) return -1;
+        // Constructor callbacks may arrive before LivingEntity defines our health data.
+        if (!(object instanceof LivingEntity entity) || !entity.getEntityData().hasItem(HEALTH)) return -1;
+        float locked=BossHealingLock.health(object);if(locked>=0)return locked;
+        if(object instanceof net.everla.projectc.arkofcosmos.entity.MahouTsukaiEntity boss&&!boss.level().isClientSide)
+            return boss.combatVitality();
         Float value = entity.getEntityData().get(HEALTH);
         return value == null || value < 0 || protectedPlayer(entity) || ordinaryTarget(entity) ? -1 : value;
     }
@@ -75,13 +86,15 @@ public final class ArkDamage {
     }
 
     public static boolean setHealth(Object object, float value) {
-        if(object instanceof net.everla.projectc.arkofcosmos.entity.MahouTsukaiEntity boss && boss.blocksHealthWrite(value))return true;
+        if (!(object instanceof LivingEntity entity) || !entity.getEntityData().hasItem(HEALTH)) return false;
+        if(BossHealingLock.blockWrite(object,value))return true;
+        if(object instanceof net.everla.projectc.arkofcosmos.entity.MahouTsukaiEntity boss)
+            return boss.redirectHealthWrite(value)||boss.blocksHealthWrite(value);
         if(object instanceof net.everla.projectc.arkofcosmos.entity.MahoragaWardenEntity warden && warden.blocksHealthWrite(value))return true;
         if (health(object) < 0) return false;
         // Death remains final after die() returns: tick-based revival also uses this setter.
         if (finishing(object) || health(object) == 0) return true;
         if (Float.isFinite(value)) {
-            LivingEntity entity = (LivingEntity)object;
             entity.getEntityData().set(HEALTH, Math.max(0, Math.min(value, entity.getMaxHealth())));
         }
         return true;
@@ -144,6 +157,8 @@ public final class ArkDamage {
     }
 
     public static boolean hurt(LivingEntity target, DamageSource source, float amount) {
+        if(source.getEntity() instanceof net.everla.projectc.arkofcosmos.entity.MahouTsukaiEntity
+                &&!WeaponDamage.handling(target,source))return WeaponDamage.hurt(target,source,amount);
         boolean hurt = hurtTarget(target, source, amount);
         if (hurt && !target.isAlive() && source.getEntity() instanceof ServerPlayer player
                 && ResourceLocation.fromNamespaceAndPath("alexsmobs", "fly").equals(
@@ -158,7 +173,8 @@ public final class ArkDamage {
     private static boolean hurtTarget(LivingEntity target, DamageSource source, float amount) {
         if (target.level().isClientSide || protectedPlayer(target) || target.isRemoved()
                 || !Float.isFinite(amount) || amount <= 0 || !target.isAlive()) return false;
-        if (ordinaryTarget(target)) return WeaponDamage.hurt(target, source, amount);
+        if (ordinaryTarget(target)) return WeaponDamage.handling(target,source)
+                ? target.hurt(source,amount) : WeaponDamage.hurt(target, source, amount);
         float before = target.getHealth();
         if (!Float.isFinite(before) || before <= 0) return false;
         boolean seagull = seagull(target);
@@ -179,7 +195,8 @@ public final class ArkDamage {
             var deathSound = target.getDeathSound();
             if (deathSound != null) target.playSound(deathSound, target.getSoundVolume(), target.getVoicePitch());
             // Let animated bosses dispatch their own death, delayed loot and eventual removal.
-            if (target.getType().is(IGNORE_DEATH_REMOVE)) {
+            boolean bossDamage=source.getEntity() instanceof net.everla.projectc.arkofcosmos.entity.MahouTsukaiEntity;
+            if (bossDamage ? !(target instanceof Player) : target.getType().is(IGNORE_DEATH_REMOVE)) {
                 target.die(source);
                 return true;
             }

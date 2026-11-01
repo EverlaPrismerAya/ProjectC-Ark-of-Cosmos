@@ -398,8 +398,11 @@ public final class GalaxiaEntity extends Entity {
     }
     private boolean movePlayer(LivingEntity p,Vec3 delta) {
         if(bossDash&&p instanceof MahouTsukaiEntity boss&&MahouPhaseOneAI.valid(boss,boss.getTarget())){
-            double height=boss.getTarget().getBoundingBox().maxY+2;
-            delta=new Vec3(delta.x,Math.max(delta.y,Math.max(-.3,Math.min(.3,height-boss.getY()))),delta.z);
+            if(MahouPhaseOneAI.holdAltitude(boss.getTarget()))delta=delta.multiply(1,0,1);
+            else {
+                double height=boss.getTarget().getBoundingBox().maxY+2;
+                delta=new Vec3(delta.x,Math.max(delta.y,Math.max(-.3,Math.min(.3,height-boss.getY()))),delta.z);
+            }
         }
         // Split the original substep to keep the complete player volume out of intermediate blocks.
         int slices=Math.max(1,(int)Math.ceil(delta.length()/.2));Vec3 step=delta.scale(1d/slices);
@@ -513,7 +516,7 @@ public final class GalaxiaEntity extends Entity {
         return new AttackFrame(forward,across);
     }
     @Override public void onSyncedDataUpdated(EntityDataAccessor<?> key) {
-        if (level().isClientSide && key.equals(VIEW) && !view().isEmpty())
+        if (clientSnapshot != null && level().isClientSide && key.equals(VIEW) && !view().isEmpty())
             clientSnapshot.initialize(view());
         super.onSyncedDataUpdated(key);
     }

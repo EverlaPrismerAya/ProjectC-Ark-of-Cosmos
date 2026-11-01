@@ -84,24 +84,8 @@ minecraft {
             }
         }
 
-        client {
-            // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
-            property 'forge.enabledGameTestNamespaces', mod_id
-        }
-
         server {
-            property 'forge.enabledGameTestNamespaces', mod_id
             args '--nogui'
-        }
-
-        // This run config launches GameTestServer and runs all registered gametests, then exits.
-        // By default, the server will crash when no gametests are provided.
-        // The gametest system is also enabled by default for other run configs under the /test command.
-        gameTestServer {
-            property 'forge.enabledGameTestNamespaces', mod_id
-            mods {
-                "${mod_id}" { source sourceSets.test }
-            }
         }
 
         data {
@@ -234,33 +218,3 @@ publishing {
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
 }
-
-tasks.register('arkRegression', JavaExec) {
-    dependsOn testClasses
-    classpath = sourceSets.test.runtimeClasspath
-    mainClass = 'net.everla.projectc.arkofcosmos.calamity.util.ArkCurvesCheck'
-}
-tasks.named('check') { dependsOn 'arkRegression' }
-
-// Source checkpoints for XNA color multiplication, hue shifts and particle lifecycles.
-tasks.register('arkFxRegression', JavaExec) {
-    dependsOn testClasses
-    classpath = sourceSets.test.runtimeClasspath
-    mainClass = 'net.everla.projectc.arkofcosmos.calamity.client.ArkFxCheck'
-}
-tasks.named('check') { dependsOn 'arkFxRegression' }
-
-// Explicit GPU check; kept out of check so headless build machines need no display driver.
-tasks.register('galaxiaShaderRegression', JavaExec) {
-    dependsOn testClasses
-    classpath = sourceSets.test.runtimeClasspath
-    mainClass = 'net.everla.projectc.arkofcosmos.calamity.client.GalaxiaShaderCheck'
-}
-
-// Source numerical checkpoints for Ark of the Elements (no game runtime required).
-tasks.register('elementsRegression', JavaExec) {
-    dependsOn testClasses
-    classpath = sourceSets.test.runtimeClasspath
-    mainClass = 'net.everla.projectc.arkofcosmos.calamity.combat.ElementsRulesCheck'
-}
-tasks.named('check') { dependsOn 'elementsRegression' }

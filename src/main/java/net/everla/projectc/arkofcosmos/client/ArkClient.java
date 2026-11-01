@@ -94,6 +94,7 @@ public final class ArkClient {
     public static final class Registration {
         @SubscribeEvent public static void shaders(RegisterShadersEvent event) throws java.io.IOException {
             OdamaneHaloEffects.reset();
+            DomainEffects.reset();
             ArkFxDraw.register(event);
             MahouBossBar.registerShader(event);
         }

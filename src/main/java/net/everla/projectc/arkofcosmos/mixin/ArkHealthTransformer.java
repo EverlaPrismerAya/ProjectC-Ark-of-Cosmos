@@ -17,7 +17,7 @@ public final class ArkHealthTransformer implements ILaunchPluginService, Opcodes
     }
 
     @Override public boolean processClass(Phase phase, ClassNode node, Type type) {
-        boolean changed = false;
+        boolean changed = BossDamageTransformer.apply(node);
         for (MethodNode method : node.methods) {
             if ((method.access & (ACC_STATIC | ACC_ABSTRACT | ACC_NATIVE)) != 0) continue;
             String hook = null;

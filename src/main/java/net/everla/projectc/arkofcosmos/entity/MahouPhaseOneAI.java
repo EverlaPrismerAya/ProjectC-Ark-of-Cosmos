@@ -289,6 +289,7 @@ final class MahouPhaseOneAI {
                 :new Vec3(-away.z,0,away.x).scale(lastAttack%2==0?.32:-.32);
         double height=(grounded?ground(boss.position().add(horizontal)):combatHeight(boss.position().add(horizontal),target));
         boss.setDeltaMovement(avoidSolid(horizontal.add(0,Math.max(-.3,Math.min(.3,height-boss.getY())),0)));
+        if(!grounded&&holdAltitude(target))boss.setDeltaMovement(boss.getDeltaMovement().multiply(1,0,1));
     }
 
     private void beginRetreat(LivingEntity target){
@@ -303,8 +304,16 @@ final class MahouPhaseOneAI {
         boss.setDeltaMovement(Vec3.ZERO);keepAltitude(boss.getTarget());return true;
     }
     double combatHeight(Vec3 at,LivingEntity target){
+        if(holdAltitude(target))return boss.getY();
         double targetHeight=target.getBoundingBox().maxY+2;
         return Math.max(hoverGround(at,targetHeight-2)+2,targetHeight);
+    }
+    static boolean holdAltitude(LivingEntity target){
+        if(target==null||target.onGround())return false;
+        Vec3 feet=target.position();
+        BlockHitResult hit=target.level().clip(new ClipContext(feet,feet.add(0,-30.001,0),
+                ClipContext.Block.COLLIDER,ClipContext.Fluid.ANY,target));
+        return hit.getType()==HitResult.Type.MISS||feet.y-hit.getLocation().y>=30-1e-6;
     }
     void keepAltitude(LivingEntity target){
         if(target==null)return;
@@ -327,9 +336,12 @@ final class MahouPhaseOneAI {
         return hit.getType()==HitResult.Type.MISS ? boss.getY() : hit.getLocation().y;
     }
     void steer(Vec3 at,double speed) {
+        boolean hold=holdAltitude(boss.getTarget())&&attack!=2&&!boss.fusionShield();
+        if(hold)at=new Vec3(at.x,boss.getY(),at.z);
         if(attack!=2&&!boss.fusionShield()&&boss.getTarget()!=null)at=new Vec3(at.x,Math.max(at.y,combatHeight(at,boss.getTarget())),at.z);
         Vec3 delta=at.subtract(boss.position());
         boss.setDeltaMovement(avoidSolid(delta.length()<speed?delta:delta.normalize().scale(speed)));
+        if(hold)boss.setDeltaMovement(boss.getDeltaMovement().multiply(1,0,1));
         // Respect explicitly higher waypoints; only correct motion that would cross the combat-height floor.
         if(attack!=2&&!boss.fusionShield()&&boss.getTarget()!=null){
             Vec3 velocity=boss.getDeltaMovement();
@@ -342,7 +354,7 @@ final class MahouPhaseOneAI {
         Vec3 before=boss.position(); boss.move(MoverType.SELF,delta); boss.hasImpulse=true;
         return boss.position().subtract(before);
     }
-    private void finish() { reset(); cooldown=12+boss.getRandom().nextInt(11); }
+    private void finish() { reset(); cooldown=14; }
     private void reset() {
         attack=age=0; lightningOrigins.clear(); boss.setDeltaMovement(Vec3.ZERO);
         if(galaxyBlade!=null&&!galaxyBlade.isRemoved())galaxyBlade.discard();galaxyBlade=null;

@@ -106,18 +106,17 @@ public final class MahouAttackRenderer extends EntityRenderer<MahouAttackEntity>
             line(p,p.add(velocity),.22,new float[]{1,.03f,.1f,.85f});
             line(p,p.add(velocity),.06,new float[]{1,.8f,.8f,1});
         }else if(kind==DOMAIN_TEXT){
-            pose.pushPose();pose.mulPose(this.entityRenderDispatcher.cameraOrientation());pose.scale(-.035f,-.035f,.035f);
+            int alpha=(int)(255*Mth.clamp(fade,0,1));
+            if(alpha<4)return;
+            pose.pushPose();pose.mulPose(this.entityRenderDispatcher.cameraOrientation());pose.scale(-.075f,-.075f,.075f);
             var font=Minecraft.getInstance().font;
             String letters="abcdefghijklmnopqrstuvwxyz";
             String text="";for(int i=0;i<5;i++)text+=letters.charAt(Math.floorMod(e.getId()*7+i*11,26));
             var component=net.minecraft.network.chat.Component.literal(text).withStyle(style->style.withFont(ResourceLocation.fromNamespaceAndPath("minecraft","alt")));
-            font.drawInBatch(component,-font.width(component)/2f,0,0xFFBBDFFF,false,pose.last().pose(),buffers,net.minecraft.client.gui.Font.DisplayMode.NORMAL,0,15728880);
+            font.drawInBatch8xOutline(component.getVisualOrderText(),-font.width(component)/2f,-font.lineHeight/2f,(alpha<<24)|0xF0F8FF,(alpha<<24)|0x162840,pose.last().pose(),buffers,15728880);
             pose.popPose();
         }else if(kind==DOMAIN){
-            Vec3 right=new Vec3(-velocity.z,0,velocity.x).normalize();
-            if(right.lengthSqr()<.1)right=new Vec3(1,0,0);
-            AttackFrame plane=new AttackFrame(right,new Vec3(0,1,0));
-            ArkFxDraw.moon(p.add(0,5,0),plane,12,fade*.55f,time,false);
+            // Domain background is drawn before terrain and entities by DomainEffects.
         }else if(kind==NEEDLE_GATE){
             ArkFxDraw.moon(p,NativeSprites.billboard(),.9,fade,time,false);
             if(age<=delay){

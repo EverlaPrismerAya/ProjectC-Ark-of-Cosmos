@@ -203,5 +203,8 @@
         "stream": true
       }
     ]
+  },
+  "mahou_vortex": {
+    "sounds": ["arkofcosmos:brimstone_monster_drone"]
   }
 }

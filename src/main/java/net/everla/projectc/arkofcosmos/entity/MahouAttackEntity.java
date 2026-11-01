@@ -18,7 +18,7 @@ public final class MahouAttackEntity extends Entity {
     private int age,life,delay,kind,swingMode,ownerPhase;
     private float damage;
     private Vec3 velocity=Vec3.ZERO;
-    private boolean landed;
+    private boolean landed,fading;
     private final Set<Integer> hits=new HashSet<>();
     public MahouAttackEntity(EntityType<? extends MahouAttackEntity> type,Level level) { super(type,level); setNoGravity(true); }
     public static MahouAttackEntity spawn(MahouTsukaiEntity boss,int kind,Vec3 at,Vec3 velocity,int delay,int life,float damage) {
@@ -42,6 +42,21 @@ public final class MahouAttackEntity extends Entity {
         return new org.joml.Quaternionf().rotationTo(0,1,0,(float)axis.x,(float)axis.y,(float)axis.z);
     }
     public boolean ownedBy(MahouTsukaiEntity boss){return boss.getUUID().equals(owner);}
+    static void endDomainText(MahouTsukaiEntity boss){
+        fadeDomainText((ServerLevel)boss.level(),boss.getUUID());
+    }
+    private static void fadeDomainText(ServerLevel level,UUID owner){
+        for(Entity entity:level.getAllEntities())
+            if(entity instanceof MahouAttackEntity text&&text.kind==DOMAIN_TEXT&&Objects.equals(text.owner,owner))text.fadeText();
+    }
+    private void fadeText(){
+        if(fading)return;
+        fading=true;damage=0;velocity=Vec3.ZERO;life=Math.min(life,age+6);publish();
+    }
+    @Override public void remove(RemovalReason reason){
+        if(kind==DOMAIN&&level() instanceof ServerLevel server)fadeDomainText(server,owner);
+        super.remove(reason);
+    }
     void anchor(Vec3 at){setPos(at);publish();}
     public CompoundTag view() { return entityData.get(DATA); }
     void pointSwingWarning(Vec3 at,Vec3 direction){setPos(at);velocity=direction;publish();}
@@ -75,8 +90,14 @@ public final class MahouAttackEntity extends Entity {
     @Override public boolean shouldRenderAtSqrDistance(double distance) { return distance<256*256; }
     @Override public void tick() {
         super.tick(); if(level().isClientSide)return;
+        if(kind==DOMAIN_TEXT&&fading){
+            if(++age>=life)discard();else publish();
+            return;
+        }
         Entity entity=owner==null?null:((ServerLevel)level()).getEntity(owner);
-        if (!(entity instanceof MahouTsukaiEntity boss) || !boss.isAlive() || boss.phase()!=ownerPhase || boss.phaseRecovering() || boss.isNoAi()) { discard();return; }
+        if (!(entity instanceof MahouTsukaiEntity boss) || !boss.isAlive() || boss.phase()!=ownerPhase || boss.phaseRecovering() || boss.isNoAi()) {
+            if(kind==DOMAIN_TEXT)fadeText();else discard();return;
+        }
         if(kind==VOID_VORTEX&&position().distanceTo(boss.position())>48){
             setPos(boss.position().add(0,6,0));
             velocity=Vec3.ZERO;

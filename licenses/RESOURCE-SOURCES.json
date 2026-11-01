@@ -1107,6 +1107,15 @@
       "path": "Sounds/Music/CalamitasDefeat_LongFade.ogg",
       "license": "Original rights holders; not MIT",
       "matches_recorded_output": true
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/brimstone_monster_drone.ogg",
+      "sha256": "8bc7e11a72e8038b39690a724e963f2f5aba741f5f32141916336cfd27ebfe7d",
+      "source_sha256": "8bc7e11a72e8038b39690a724e963f2f5aba741f5f32141916336cfd27ebfe7d",
+      "project": "Calamity Mod",
+      "path": "Sounds/Custom/SCalSounds/BrimstoneMonsterDrone.ogg",
+      "license": "Calamity Team / original rights holders; All Rights Reserved; not MIT",
+      "matches_recorded_output": true
     }
   ]
 }

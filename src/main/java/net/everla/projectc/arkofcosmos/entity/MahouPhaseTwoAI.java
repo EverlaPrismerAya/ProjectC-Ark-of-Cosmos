@@ -141,7 +141,7 @@ final class MahouPhaseTwoAI {
         uses[selected-1]++;lastAttack=selected;return selected;
     }
     private void clearWarning(){if(warning!=null)warning.discard();warning=null;}
-    private void finish(){reset();cooldown=12+boss.getRandom().nextInt(11);}
+    private void finish(){reset();cooldown=12;}
     void cancel(){if(attack!=0)reset();}
     void reset(){
         attack=age=positioningTicks=0;positioned=false;destination=null;clearWarning();

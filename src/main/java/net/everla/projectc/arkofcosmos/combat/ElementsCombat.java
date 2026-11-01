@@ -123,7 +123,9 @@ public final class ElementsCombat {
         if(RESONANCE_HIT.get()==e.getEntity())e.setCanceled(true);
     }
     public static void applyResonance(LivingEntity t,LivingEntity owner,int ticks){
-        t.addEffect(new net.minecraft.world.effect.MobEffectInstance(ArkOfCosmos.ELEMENTAL_MIX.get(),ticks,0,false,false,true),owner);
+        boolean boss=owner instanceof net.everla.projectc.arkofcosmos.entity.MahouTsukaiEntity;
+        var effect=new net.minecraft.world.effect.MobEffectInstance(ArkOfCosmos.ELEMENTAL_MIX.get(),boss?20:ticks,0,false,false,true);
+        if(boss)t.forceAddEffect(effect,owner);else t.addEffect(effect,owner);
         t.getPersistentData().putUUID("ElementsDotOwner",owner.getUUID());
     }
     public static void sound(net.minecraft.world.entity.Entity at,int owner,String name,float volume,boolean ownerOnly,boolean relative){

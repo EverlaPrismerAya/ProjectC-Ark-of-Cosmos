@@ -44,6 +44,10 @@ public final class MahouTsukaiEntity extends PathfinderMob implements net.minecr
     }
     private void summonShikigami(){
         if(phase()!=3||shikigamiSummoned||getHealth()>=getMaxHealth()*.5f)return;
+        if(level().getBlockCollisions(this,getBoundingBox()).iterator().hasNext()){
+            if(getHealth()<=0)setHealth(1);
+            return;
+        }
         var summon=net.everla.projectc.arkofcosmos.ArkOfCosmos.MAHORAGA.get().create(level());
         if(summon==null)return;
         summon.bind(this);summon.setPos(position().add(4,0,0));
@@ -137,12 +141,25 @@ public final class MahouTsukaiEntity extends PathfinderMob implements net.minecr
         return vitalityReady && !level().isClientSide && healthWriteDepth==0 && health<getHealth()
                 && (phaseTransitionTicks()>0 || shikigamiAlive() || level().getGameTime()<nonPlayerInvulnerableUntil);
     }
+    public float combatVitality(){return vitalityReady?vitality:-1;}
+    public boolean redirectHealthWrite(float health){
+        if(!vitalityReady||level().isClientSide||healthWriteDepth>0||healthSyncDepth>0)return false;
+        if(Float.isNaN(health))return true;
+        if(health<vitality){ordinaryDamage(damageSources().generic(),vitality-health);return true;}
+        return false;
+    }
+    public void ordinaryDamage(DamageSource source,float amount){
+        if(!(amount>0)||Float.isNaN(amount))return;
+        // Strip bypass tags while retaining ownership and projectile attribution.
+        var ordinary=new DamageSource(damageSources().generic().typeHolder(),source.getDirectEntity(),source.getEntity());
+        hurt(ordinary,Math.min(amount,50f));
+    }
     @Override public float getHealth() {
         return vitalityReady&&!level().isClientSide?vitality:super.getHealth();
     }
     @Override public void setHealth(float health) {
         if(!vitalityReady||level().isClientSide){super.setHealth(health);return;}
-        if(Float.isNaN(health)||blocksHealthWrite(health))return;
+        if(redirectHealthWrite(health)||Float.isNaN(health)||blocksHealthWrite(health))return;
         float before=vitality;
         vitality=net.minecraft.util.Mth.clamp(health,0,getMaxHealth());
         if(healthWriteDepth==0 && vitality<before){
@@ -189,6 +206,7 @@ public final class MahouTsukaiEntity extends PathfinderMob implements net.minecr
     }
 
     @Override public void die(DamageSource source) {
+        if(!level().isClientSide&&vitality>0)return;
         if (phase() == MAX_PHASE && !defeating() && !level().isClientSide) {
             beginDefeat(source);
             return;

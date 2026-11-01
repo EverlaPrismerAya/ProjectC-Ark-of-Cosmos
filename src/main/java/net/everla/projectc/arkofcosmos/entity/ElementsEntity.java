@@ -247,7 +247,7 @@ public final class ElementsEntity extends Entity {
     private void publish(){CompoundTag s=snapshot();s.put("Samples",samples.copy());entityData.set(VIEW,s);}
     public CompoundTag view(){return entityData.get(VIEW);}
     @Override public void onSyncedDataUpdated(EntityDataAccessor<?> key) {
-        if (level().isClientSide && key.equals(VIEW) && !view().isEmpty())
+        if (clientSnapshot != null && level().isClientSide && key.equals(VIEW) && !view().isEmpty())
             clientSnapshot.initialize(view());
         super.onSyncedDataUpdated(key);
     }

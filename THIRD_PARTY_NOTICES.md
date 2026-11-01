@@ -82,6 +82,7 @@ Calamity 来源的代码须保留 Calamity Team 署名及原条款。本项目�
 | `elements_item9_0.ogg` | Terraria `Content/Sounds/Item_9.xnb` 原音频转码；Re-Logic／原权利人所有，不适用 MIT |
 | `item*.ogg`、`crystal_*.ogg`、`needle_death_*.ogg` | Terraria 原生 SoundID 音频转换；Re-Logic／原权利人所有，不适用本项目 MIT |
 | `calamitas_phase1.ogg`、`calamitas_phase2.ogg`、`calamitas_phase3.ogg` | Calamity Mod Music 的 `CalamitasPhase1.ogg`、`CalamitasPhase2.ogg`、`CalamitasPhase3.ogg`；DM DOKURO《Stained, Brutal Calamity》及相关权利人，不适用本项目 MIT，来源与逐文件 SHA-256 见 `licenses/RESOURCE-SOURCES.json` |
+| `brimstone_monster_drone.ogg` | Calamity Mod `Sounds/Custom/SCalSounds/BrimstoneMonsterDrone.ogg`，至尊灾厄低语漩涡持续音效；Calamity Team／原作者，ARR，不适用 MIT；原样复制，SHA-256：`8bc7e11a72e8038b39690a724e963f2f5aba741f5f32141916336cfd27ebfe7d` |
 | `calamitas_defeat_long_fade.ogg` | Calamity Mod Music `Sounds/Music/CalamitasDefeat_LongFade.ogg`；第三方素材，不适用本项目 MIT，来源与 SHA-256 见 `licenses/RESOURCE-SOURCES.json` |
 原音频转码为 OGG、按 Minecraft 事件重新映射，均不构成新的音频授权。当前未在本项目中提供 Re-Logic 对这些音频的单独再分发授权。
 

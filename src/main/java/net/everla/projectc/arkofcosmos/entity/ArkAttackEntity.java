@@ -130,7 +130,7 @@ public final class ArkAttackEntity extends CalamityAttackEntity {
     private static void vector(CompoundTag tag, String key, Vec3 v) { tag.putDouble(key + "X", v.x); tag.putDouble(key + "Y", v.y); tag.putDouble(key + "Z", v.z); }
 
     @Override public void onSyncedDataUpdated(EntityDataAccessor<?> key) {
-        if (level().isClientSide && key.equals(VIEW) && !view().isEmpty()) {
+        if (clientSnapshot != null && level().isClientSide && key.equals(VIEW) && !view().isEmpty()) {
             setPos(vector(view(), "Position"));
             clientSnapshot.initialize(view());
         }
