@@ -66,7 +66,7 @@ public final class GalaxiaEntity extends Entity {
         if(mode==POLARIS) for(GalaxiaEntity star:p.level().getEntitiesOfClass(GalaxiaEntity.class,p.getBoundingBox().inflate(128),
                 s->s.ownerId==p.getId() && s.kind==STAR)) {
             Vec3 towards=star.position().subtract(p.getBoundingBox().getCenter()).normalize();
-            if(towards.dot(WeaponUser.aim(p).subtract(p.getBoundingBox().getCenter()).normalize())<Math.cos(Math.PI/4)) star.discard();
+            if(towards.dot(WeaponUser.aim(p).subtract(p.getBoundingBox().getCenter()).normalize())<Math.cos(Math.PI/4)) star.discardAttack();
             else {e.wheel=star;e.dashing=true;e.start=p.getBoundingBox().getCenter();star.left=60;e.invulnerable(p,20);}
             break;
         }
@@ -84,7 +84,7 @@ public final class GalaxiaEntity extends Entity {
         for(GalaxiaEntity star:boss.level().getEntitiesOfClass(GalaxiaEntity.class,boss.getBoundingBox().inflate(128),s->s.ownerId==boss.getId()&&s.kind==STAR)){
             e.wheel=star;e.dashing=true;star.left=60;break;
         }
-        if(e.wheel==null){e.discard();return e;}
+        if(e.wheel==null){e.discardAttack();return e;}
         e.invulnerable(boss,20);
         e.direction=e.wheel.position().subtract(e.center(boss)).normalize();
         if(warning!=null)warning.pointWarning(e.center(boss),e.direction);
@@ -116,7 +116,7 @@ public final class GalaxiaEntity extends Entity {
     @Override public boolean shouldRenderAtSqrDistance(double distance) { return distance<256*256; }
     @Override public void tick() {
         super.tick(); if(level().isClientSide) {clientSnapshot.tick(view(),"Age");return;}
-        LivingEntity p=owner(); if(!WeaponUser.active(p)||p instanceof MahouTsukaiEntity boss&&(boss.phase()!=ownerPhase||bossRain&&boss.phaseTransitionTicks()==0)) {discard();return;}
+        LivingEntity p=owner(); if(!WeaponUser.active(p)||p instanceof MahouTsukaiEntity boss&&(boss.phase()!=ownerPhase||bossRain&&boss.phaseTransitionTicks()==0)) {discardAttack();return;}
         samples=new net.minecraft.nbt.ListTag();samples.add(snapshot());
         int steps=kind==STAR?12:kind==BLADE && mode!=ARIES?6:3;
         for(int step=0;step<steps && !isRemoved();step++) {
@@ -176,7 +176,7 @@ public final class GalaxiaEntity extends Entity {
                 direction=frame.direction(phase);
             }
             if(!held && state==0) {
-                if(charge<300) {sound("item77");discard();return;}
+                if(charge<300) {sound("item77");discardAttack();return;}
                 sound("item80");
                 state=1;left=90;direction=aim(p).subtract(c).normalize();
                 for(int i=0;i<6;i++) bolt(p,c,rotate(direction,-Math.PI/4+Math.PI/2*i/5),30,damage,1,.1f,(float)Math.PI/50,80);
@@ -208,7 +208,7 @@ public final class GalaxiaEntity extends Entity {
         } else if(mode==ARIES) {
             if(!held) {
                 Vec3 offset=c.subtract(position());
-                if(offset.length()<30/16d || offset.length()>2000/16d || velocity.length()>100/16d) {discard();return;}
+                if(offset.length()<30/16d || offset.length()>2000/16d || velocity.length()>100/16d) {discardAttack();return;}
                 if(left<=2) velocity=velocity.scale(10);
                 double dot=velocity.normalize().dot(offset.normalize());
                 Vec3 turned=ArkGeometry.turn(velocity,offset,dot<Math.cos(Math.PI/4)?Math.PI/20:Math.PI,frame.normal());
@@ -241,11 +241,11 @@ public final class GalaxiaEntity extends Entity {
                 if(wheel==null || wheel.isRemoved()) endDash(p);
                 else {
                     Vec3 offset=wheel.position().subtract(c);
-                    if((bossDash?offset.multiply(1,0,1).length():offset.length())<60/16d) {wheel.discard();endDash(p);}
-                    else if(!movePlayer(p,offset.normalize().scale(60/16d))) {wheel.discard();endDash(p);}
+                    if((bossDash?offset.multiply(1,0,1).length():offset.length())<60/16d) {wheel.discardAttack();endDash(p);}
+                    else if(!movePlayer(p,offset.normalize().scale(60/16d))) {wheel.discardAttack();endDash(p);}
                 }
             }
-            if(bossDash&&!dashing){discard();return;}
+            if(bossDash&&!dashing){discardAttack();return;}
             if(charge>=30) {int cooldown=30-(int)(14*ratio);
                 hitLine(p,c,c.add(direction.scale(145/16d*scale)),86/16d*scale,cooldown,(float)(damage*(1+ratio)*cooldown/30));}
             if(ratio>.85) {
@@ -254,7 +254,7 @@ public final class GalaxiaEntity extends Entity {
             charge=Math.min(650,charge+(p instanceof MahouTsukaiEntity&&!bossDash?4:1));
         } else {
             if(!held && state==0) {
-                if(charge<90) {sound("item109");discard();return;}
+                if(charge<90) {sound("item109");discardAttack();return;}
                 sound("item120",.5f,false,false);
                 state=1;duration=left=lungeDuration(charge);displacement=position().subtract(c);
             }
@@ -299,7 +299,7 @@ public final class GalaxiaEntity extends Entity {
         var terrain=bossRain?level().clip(new ClipContext(old,next,ClipContext.Block.COLLIDER,ClipContext.Fluid.ANY,this)):null;
         setPos(terrain!=null&&terrain.getType()!=HitResult.Type.MISS?terrain.getLocation():next);rotation=(float)frame.angle(velocity);
         hitLine(p,old,position(),30/16d*scale,80,damage);
-        if(terrain!=null&&terrain.getType()!=HitResult.Type.MISS)discard();
+        if(terrain!=null&&terrain.getType()!=HitResult.Type.MISS)discardAttack();
     }
     private void starStep() {
         if(age==0)sound("item90");
@@ -374,7 +374,7 @@ public final class GalaxiaEntity extends Entity {
             net.minecraft.world.item.enchantment.EnchantmentHelper.doPostHurtEffects(t,p);
             weapon.getAllEnchantments().forEach((enchantment,level)->enchantment.doPostAttack(p,t,level));
         }
-        if(kind==BOLT) {discard();return;}
+        if(kind==BOLT) {discardAttack();return;}
         if(kind==RING) {
             if(mode==0 && random.nextFloat()<.4) p.heal(GalaxiaRules.damage(3));
             else t.addEffect(new net.minecraft.world.effect.MobEffectInstance(ArkOfCosmos.ARMOR_CRUNCH.get(),67));
@@ -456,7 +456,7 @@ public final class GalaxiaEntity extends Entity {
             next.direction=direction;next.start=start;next.velocity=velocity;next.end=end;next.sproutSize=sproutSize*.8;next.indicator=surviving;
             next.wait=1+Math.sqrt(1-Math.pow(next.sproutSize-1,2))*3;next.publish();
         }
-        discard();
+        discardAttack();
     }
     private void sproutStep(LivingEntity p) {
         if(wait>0) {wait--;left=30;return;}
@@ -468,9 +468,9 @@ public final class GalaxiaEntity extends Entity {
                 GalaxiaEntity star=create(p,STAR,0,position(),frame,damage*.8f,120);
                 star.bossPreDash=bossPreDash;star.charge=charge;star.direction=direction;star.velocity=direction.scale(1);star.scale=1+(float)clamp(charge/325d);star.publish();
             }
-            if(dashing && wheel!=null) wheel.discard();
+            if(dashing && wheel!=null) wheel.discardAttack();
         }
-        discard();
+        discardAttack();
     }
     private CompoundTag snapshot() {
         CompoundTag s=new CompoundTag();s.putInt("Owner",ownerId);s.putInt("Kind",kind);s.putInt("Mode",mode);s.putInt("State",state);
@@ -494,8 +494,16 @@ public final class GalaxiaEntity extends Entity {
         data.put("Samples",finalSamples);vector(data,"At",at);vector(data,"TargetVelocity",targetVelocity);
         net.everla.projectc.arkofcosmos.network.ArkNetwork.effect(this,data);
     }
+    private boolean endingAttack;
+    void discardAttack() {
+        endingAttack = true;
+        try { discard(); }
+        finally { endingAttack = false; }
+    }
     @Override public void remove(RemovalReason reason) {
-        if(bossDash&&bossWarning!=null&&!level().isClientSide)bossWarning.discard();
+        if (!level().isClientSide && reason == RemovalReason.DISCARDED && !endingAttack && left > 0
+                && WeaponUser.active(owner())) return;
+        if(bossDash&&bossWarning!=null&&!level().isClientSide)bossWarning.discardAttack();
         if(!level().isClientSide && !isRemoved() && reason==RemovalReason.DISCARDED) {
             if(kind==STAR)sound("item60");
             else if(kind==BLADE && mode==POLARIS)sound("hit43");

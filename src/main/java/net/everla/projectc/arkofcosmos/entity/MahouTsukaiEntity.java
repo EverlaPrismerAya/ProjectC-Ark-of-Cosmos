@@ -59,8 +59,15 @@ public final class MahouTsukaiEntity extends PathfinderMob implements net.minecr
     }
     private long weaponInvulnerableUntil, nonPlayerInvulnerableUntil;
     private final DistantOrbitTrigger distantOrbitTrigger=new DistantOrbitTrigger();
-    private int healthWriteDepth, healthSyncDepth;
+    private long nonPlayerPressureUntil,combatSteps,observedCombatSteps;
+    private Vec3 observedPosition;
+    private Vec3 requestedMovement=Vec3.ZERO;
+    private long positionRewoundAt=Long.MIN_VALUE;
+    private LivingEntity pressureAttacker;
+    private LivingEntity orbitAnchor;
+    private int healthWriteDepth, healthSyncDepth, translatedDamageDepth;
     private float vitality;
+    private float damageHealthFloor=Float.NEGATIVE_INFINITY;
     private boolean vitalityReady;
     private final MahouPhaseOneAI phaseOne = new MahouPhaseOneAI(this);
 
@@ -84,6 +91,11 @@ public final class MahouTsukaiEntity extends PathfinderMob implements net.minecr
     public int defeatTicks() { return entityData.get(DEFEAT_TICKS); }
     void weaponInvulnerable(int updates) { weaponInvulnerableUntil=Math.max(weaponInvulnerableUntil,level().getGameTime()+(updates+2)/3); }
     @Override public boolean hurt(DamageSource source,float amount) {
+        if(Float.isNaN(amount))return false;
+        if(amount>0){
+            if(translatedDamageDepth==0)observeNonPlayerPressure(source);
+            if(!net.everla.projectc.arkofcosmos.combat.WeaponUser.playerOwnedDamage(source))amount=Math.min(amount,50f);
+        }
         if (immuneDamage(source)) return false;
         if (defeating()) { setHealth(1); return false; }
         if(amount>0&&(phaseTransitionTicks()>0||shikigamiAlive()))return false;
@@ -150,17 +162,56 @@ public final class MahouTsukaiEntity extends PathfinderMob implements net.minecr
         return false;
     }
     public boolean distantOrbit(){return level()!=null&&!level().isClientSide&&distantOrbitTrigger!=null&&distantOrbitTrigger.active(level().getGameTime());}
-    /** Count server-emitted hurt feedback, even if health protection rejected the loss. */
-    public void receivedDamageFeedback(DamageSource source){
-        if(!level().isClientSide&&!defeating())
-            distantOrbitTrigger.feedback(level().getGameTime(),
-                    net.everla.projectc.arkofcosmos.combat.WeaponUser.playerOwnedDamage(source));
+    private boolean presentThreat(LivingEntity entity){
+        // A zero-health source can still execute attacks before its removal.
+        return entity!=null&&entity!=this&&!entity.isRemoved()&&entity.level()==level()
+                &&!isAlliedTo(entity)&&distanceToSqr(entity)<=128*128
+                &&(!(entity instanceof net.minecraft.world.entity.player.Player player)||!player.isCreative()&&!player.isSpectator());
+    }
+    LivingEntity orbitTarget(){
+        return MahouPhaseOneAI.valid(this,getTarget())?getTarget():presentThreat(orbitAnchor)?orbitAnchor:null;
+    }
+    private void observeNonPlayerPressure(DamageSource source){
+        if(!level().isClientSide&&!defeating()
+                &&!net.everla.projectc.arkofcosmos.combat.WeaponUser.playerOwnedDamage(source))
+        {
+            nonPlayerPressureUntil=level().getGameTime()+40;
+            if(source.getEntity() instanceof LivingEntity attacker&&attacker!=this)pressureAttacker=attacker;
+        }
+    }
+    void monitorCombatStall(){
+        long now=level().getGameTime();
+        boolean acted=combatSteps!=observedCombatSteps;
+        boolean moved=observedPosition==null||position().distanceToSqr(observedPosition)>1e-6;
+        if(!MahouPhaseOneAI.valid(this,getTarget())&&now<nonPlayerPressureUntil
+                &&MahouPhaseOneAI.valid(this,pressureAttacker))setTarget(pressureAttacker);
+        boolean eligible=isAlive()&&!defeating()&&!isNoAi()&&!phaseRecovering()&&phaseTransitionTicks()==0
+                &&(MahouPhaseOneAI.valid(this,getTarget())||presentThreat(pressureAttacker))&&now<nonPlayerPressureUntil;
+        boolean rewound=positionRewoundAt==now||positionRewoundAt==now-1;
+        boolean blocked=rewound||!moved&&(!acted||requestedMovement.lengthSqr()>1e-6);
+        boolean wasOrbiting=distantOrbit();
+        distantOrbitTrigger.observe(now,eligible,blocked);
+        if(!wasOrbiting&&distantOrbit()){
+            orbitAnchor=MahouPhaseOneAI.valid(this,getTarget())?getTarget():pressureAttacker;
+        }
+        if(distantOrbit()&&isAlive()&&!defeating()&&!isNoAi()&&!phaseRecovering()&&phaseTransitionTicks()==0){
+            // Run even when another system has stopped this entity's normal AI tick.
+            if(!acted){phaseOne.tick();requestedMovement=getDeltaMovement();combatSteps++;}
+            phaseOne.forceDistantOrbit();
+            if(shikigami!=null&&level() instanceof net.minecraft.server.level.ServerLevel server
+                    &&server.getEntity(shikigami) instanceof MahoragaWardenEntity warden)warden.forceFollowBoss(this);
+        }
+        observedCombatSteps=combatSteps;
+        observedPosition=position();
     }
     public void ordinaryDamage(DamageSource source,float amount){
         if(!(amount>0)||Float.isNaN(amount))return;
+        observeNonPlayerPressure(source);
         // Strip bypass tags while retaining ownership and projectile attribution.
         var ordinary=new DamageSource(damageSources().generic().typeHolder(),source.getDirectEntity(),source.getEntity());
-        hurt(ordinary,Math.min(amount,50f));
+        translatedDamageDepth++;
+        try { hurt(ordinary,Math.min(amount,50f)); }
+        finally { translatedDamageDepth--; }
     }
     @Override public float getHealth() {
         return vitalityReady&&!level().isClientSide?vitality:super.getHealth();
@@ -169,7 +220,7 @@ public final class MahouTsukaiEntity extends PathfinderMob implements net.minecr
         if(!vitalityReady||level().isClientSide){super.setHealth(health);return;}
         if(redirectHealthWrite(health)||Float.isNaN(health)||blocksHealthWrite(health))return;
         float before=vitality;
-        vitality=net.minecraft.util.Mth.clamp(health,0,getMaxHealth());
+        vitality=net.minecraft.util.Mth.clamp(Math.max(health,damageHealthFloor),0,getMaxHealth());
         if(healthWriteDepth==0 && vitality<before){
             nonPlayerInvulnerableUntil=level().getGameTime()+10;
             beginPhaseRecovery();
@@ -194,10 +245,15 @@ public final class MahouTsukaiEntity extends PathfinderMob implements net.minecr
     @Override protected void actuallyHurt(DamageSource source, float amount) {
         if (defeating()) return;
         if(amount>0&&(phaseTransitionTicks()>0||shikigamiAlive()||blocksNonPlayerDamage(source)))return;
-        float before=getHealth();
+        if(Float.isNaN(amount))return;
+        float before=getHealth(),previousFloor=damageHealthFloor;
+        if(amount>0&&!net.everla.projectc.arkofcosmos.combat.WeaponUser.playerOwnedDamage(source)){
+            amount=Math.min(amount,50f);
+            damageHealthFloor=Math.max(previousFloor,before-50f);
+        }
         healthWriteDepth++;
         try { super.actuallyHurt(source, amount); }
-        finally { healthWriteDepth--; }
+        finally { healthWriteDepth--;damageHealthFloor=previousFloor; }
         if(getHealth()<before && !net.everla.projectc.arkofcosmos.combat.WeaponUser.playerOwnedDamage(source))
             nonPlayerInvulnerableUntil=level().getGameTime()+10;
         // Evaluate actual health after armor, absorption and Forge damage events.
@@ -255,9 +311,9 @@ public final class MahouTsukaiEntity extends PathfinderMob implements net.minecr
 
     private void clearCombatEntities() {
         if (level().isClientSide) return;
-        level().getEntitiesOfClass(MahouAttackEntity.class, getBoundingBox().inflate(192), e -> e.ownedBy(this)).forEach(Entity::discard);
-        level().getEntitiesOfClass(net.everla.projectc.arkofcosmos.entity.GalaxiaEntity.class, getBoundingBox().inflate(192), e -> e.ownerId() == getId()).forEach(Entity::discard);
-        level().getEntitiesOfClass(net.everla.projectc.arkofcosmos.entity.ElementsEntity.class, getBoundingBox().inflate(192), e -> e.ownerId() == getId()).forEach(Entity::discard);
+        level().getEntitiesOfClass(MahouAttackEntity.class, getBoundingBox().inflate(192), e -> e.ownedBy(this)).forEach(MahouAttackEntity::discardAttack);
+        level().getEntitiesOfClass(net.everla.projectc.arkofcosmos.entity.GalaxiaEntity.class, getBoundingBox().inflate(192), e -> e.ownerId() == getId()).forEach(GalaxiaEntity::discardAttack);
+        level().getEntitiesOfClass(net.everla.projectc.arkofcosmos.entity.ElementsEntity.class, getBoundingBox().inflate(192), e -> e.ownerId() == getId()).forEach(ElementsEntity::discardAttack);
     }
 
     private void beginPhaseRecovery() {
@@ -275,10 +331,15 @@ public final class MahouTsukaiEntity extends PathfinderMob implements net.minecr
     }
 
     @Override public void setPos(double x,double y,double z){
-        // Ignore generic previous-tick position locks while the forced escape owns movement.
-        if(distantOrbit()&&x==xo&&y==yo&&z==zo)return;
+        // xOld/yOld/zOld are the interpolation snapshot used by generic position locks.
+        boolean previousPosition=x==xOld&&y==yOld&&z==zOld;
+        if(previousPosition&&level()!=null&&!level().isClientSide){
+            if(distantOrbit())return;
+            if(position().distanceToSqr(x,y,z)>1e-6)positionRewoundAt=level().getGameTime();
+        }
         super.setPos(x,y,z);
     }
+    void forceCombatPosition(Vec3 position){super.setPos(position.x,position.y,position.z);}
     @Override public void aiStep() {
         // Defeat is synchronized; both sides must stop using the combat-only noclip movement.
         noPhysics = !defeating();
@@ -320,7 +381,8 @@ public final class MahouTsukaiEntity extends PathfinderMob implements net.minecr
             bossEvent.setName(getName());
             if (!isNoAi()) {
                 phaseOne.tick();
-                if(distantOrbit())phaseOne.forceDistantOrbit();
+                requestedMovement=getDeltaMovement();
+                combatSteps++;
             }
         }
     }

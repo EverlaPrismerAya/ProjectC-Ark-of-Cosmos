@@ -141,7 +141,7 @@ final class MahouPhaseThreeAI {
         boss.setPos(landing);
         fusionPosition=boss.position();boss.setDeltaMovement(Vec3.ZERO);
     }
-    void reset(){if(attack==6)endDomainText(boss);attack=age=0;cooldown=20;blueAim=Vec3.ZERO;fusionPosition=null;fusionDirection=Vec3.ZERO;boss.spell(0);if(warning!=null)warning.discard();if(orb!=null)orb.discard();warning=orb=null;}
+    void reset(){if(attack==6)endDomainText(boss);attack=age=0;cooldown=20;blueAim=Vec3.ZERO;fusionPosition=null;fusionDirection=Vec3.ZERO;boss.spell(0);if(warning!=null)warning.discardAttack();if(orb!=null)orb.discardAttack();warning=orb=null;}
     void cancel(){reset();}
     private void finish(){reset();cooldown=10;}
 }

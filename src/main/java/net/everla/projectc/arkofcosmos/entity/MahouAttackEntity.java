@@ -53,7 +53,17 @@ public final class MahouAttackEntity extends Entity {
         if(fading)return;
         fading=true;damage=0;velocity=Vec3.ZERO;life=Math.min(life,age+6);publish();
     }
+    private boolean endingAttack;
+    void discardAttack() {
+        endingAttack = true;
+        try { discard(); }
+        finally { endingAttack = false; }
+    }
     @Override public void remove(RemovalReason reason){
+        // Match ArkAttackEntity: external clearing cannot end a live boss attack.
+        if (!level().isClientSide && reason == RemovalReason.DISCARDED && !endingAttack && age <= life
+                && owner != null && level() instanceof ServerLevel server
+                && server.getEntity(owner) instanceof MahouTsukaiEntity boss && boss.isAlive()) return;
         if(kind==DOMAIN&&level() instanceof ServerLevel server)fadeDomainText(server,owner);
         super.remove(reason);
     }
@@ -85,27 +95,27 @@ public final class MahouAttackEntity extends Entity {
         }
     }
     @Override public net.minecraft.network.protocol.Packet<net.minecraft.network.protocol.game.ClientGamePacketListener> getAddEntityPacket() { return NetworkHooks.getEntitySpawningPacket(this); }
-    @Override protected void readAdditionalSaveData(CompoundTag tag) { discard(); }
+    @Override protected void readAdditionalSaveData(CompoundTag tag) { discardAttack(); }
     @Override protected void addAdditionalSaveData(CompoundTag tag) {}
     @Override public boolean shouldRenderAtSqrDistance(double distance) { return distance<256*256; }
     @Override public void tick() {
         super.tick(); if(level().isClientSide)return;
         if(kind==DOMAIN_TEXT&&fading){
-            if(++age>=life)discard();else publish();
+            if(++age>=life)discardAttack();else publish();
             return;
         }
         Entity entity=owner==null?null:((ServerLevel)level()).getEntity(owner);
         if (!(entity instanceof MahouTsukaiEntity boss) || !boss.isAlive() || boss.phase()!=ownerPhase || boss.phaseRecovering() || boss.isNoAi()) {
-            if(kind==DOMAIN_TEXT)fadeText();else discard();return;
+            if(kind==DOMAIN_TEXT)fadeText();else discardAttack();return;
         }
         if(kind==VOID_VORTEX&&position().distanceTo(boss.position())>48){
             setPos(boss.position().add(0,6,0));
             velocity=Vec3.ZERO;
         }
-        if (++age>life) { discard();return; }
+        if (++age>life) { discardAttack();return; }
         if(kind==PILLAR&&age<=delay&&MahouPhaseOneAI.valid(boss,boss.getTarget()))
             velocity=boss.getTarget().position().subtract(position()).normalize().scale(1.4);
-        if(kind==RAIN&&boss.phaseTransitionTicks()==0){discard();return;}
+        if(kind==RAIN&&boss.phaseTransitionTicks()==0){discardAttack();return;}
         if(kind==RAIN&&age==delay+1){
             Vec3 from=position().add(0,14,0);
             if(swingMode==0)GalaxiaEntity.rainBolt(boss,from);
@@ -139,7 +149,7 @@ public final class MahouAttackEntity extends Entity {
                     ArkOfCosmos.sound(this,"galaxia_impact",1);
                     if(kind==PILLAR) { BlockHitResult impact=level().clip(new ClipContext(from,from.add(0,-6,0),ClipContext.Block.COLLIDER,ClipContext.Fluid.NONE,this));
                         Vec3 waveAt=impact.getType()==HitResult.Type.MISS?position():impact.getLocation();
-                        spawn(boss,WAVE,waveAt.add(0,.1,0),Vec3.ZERO,0,18,10);discard();return; }
+                        spawn(boss,WAVE,waveAt.add(0,.1,0),Vec3.ZERO,0,18,10);discardAttack();return; }
                 }
 
             }
@@ -189,16 +199,16 @@ public final class MahouAttackEntity extends Entity {
                     var collision=level().clip(new ClipContext(from,end,ClipContext.Block.COLLIDER,ClipContext.Fluid.ANY,this));
                     if(collision.getType()!=HitResult.Type.MISS){
                         setPos(collision.getLocation());
-                        if(kind==BLUE){landed=true;velocity=Vec3.ZERO;life=age+100;}else{discard();return;}
+                        if(kind==BLUE){landed=true;velocity=Vec3.ZERO;life=age+100;}else{discardAttack();return;}
                     }else setPos(end);
                     double radius=kind==DOMAIN_TEXT?1.3:kind==PURPLE?1:1.6;
                     for(LivingEntity victim:level().getEntitiesOfClass(LivingEntity.class,new AABB(from,position()).inflate(radius),v->MahouPhaseOneAI.valid(boss,v))){
                         hit(boss,victim);
                         if(kind==RED){
                             for(LivingEntity impactVictim:level().getEntitiesOfClass(LivingEntity.class,getBoundingBox().inflate(2.5),v->MahouPhaseOneAI.valid(boss,v)))hit(boss,impactVictim);
-                            ArkOfCosmos.sound(this,"galaxia_impact",1);discard();return;
+                            ArkOfCosmos.sound(this,"galaxia_impact",1);discardAttack();return;
                         }
-                        if(kind==PURPLE){discard();return;}
+                        if(kind==PURPLE){discardAttack();return;}
                     }
                 }
             }

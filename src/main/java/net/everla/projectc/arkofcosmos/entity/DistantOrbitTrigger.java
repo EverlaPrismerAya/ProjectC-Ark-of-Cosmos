@@ -1,14 +1,15 @@
 package net.everla.projectc.arkofcosmos.entity;
 
-/** Rolling server hurt-feedback window; an active orbit has a fixed duration. */
+/** Detect blocked movement independently of whether AI counters are still advancing. */
 final class DistantOrbitTrigger {
-    private final java.util.ArrayDeque<Long> hits=new java.util.ArrayDeque<>();
-    private long until;
+    private long until,lastTick=Long.MIN_VALUE;
+    private int stalled;
     boolean active(long now){return now<until;}
-    void feedback(long now,boolean playerOwned){
-        if(playerOwned||active(now))return;
-        while(!hits.isEmpty()&&now-hits.peekFirst()>=60)hits.removeFirst();
-        hits.addLast(now);
-        if(hits.size()>=59){until=now+36*20;hits.clear();}
+    void observe(long now,boolean eligible,boolean blocked){
+        if(now==lastTick)return;
+        if(now-lastTick!=1)stalled=0;
+        lastTick=now;
+        if(active(now)||!eligible||!blocked){stalled=0;return;}
+        if(++stalled>=20){until=now+36*20;stalled=0;}
     }
 }

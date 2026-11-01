@@ -41,6 +41,12 @@ final class MahouPhaseOneAI {
         if(boss.phaseRecovering()||boss.phaseTransitionTicks()>0){orbitAttackTicks=-1;reset();phaseTwo.reset();boss.setNoGravity(true);return;}
         if(movementPhase!=boss.phase()){reset();phaseTwo.reset();phaseThree.reset();movementPhase=boss.phase();}
         boss.setNoGravity(true);
+        if(boss.distantOrbit()){
+            LivingEntity orbitTarget=boss.orbitTarget();
+            if(orbitAttackTicks<0){reset();phaseTwo.reset();phaseThree.reset();orbitAttackTicks=0;}
+            if(orbitTarget!=null){face(orbitTarget.getBoundingBox().getCenter());phaseTwo.distantOrbitAttack(orbitTarget,orbitAttackTicks++);}
+            return;
+        }
         Player player = boss.level().getNearestPlayer(boss.getX(), boss.getY(), boss.getZ(), 128,
                 p -> p instanceof Player candidate && valid(boss, candidate) && boss.hasLineOfSight(candidate));
         LivingEntity target = boss.getTarget();
@@ -60,11 +66,6 @@ final class MahouPhaseOneAI {
         }
 
         face(target.getBoundingBox().getCenter());
-        if(boss.distantOrbit()){
-            if(orbitAttackTicks<0){reset();phaseTwo.reset();phaseThree.reset();orbitAttackTicks=0;}
-            phaseTwo.distantOrbitAttack(target,orbitAttackTicks++);
-            return;
-        }
         if(orbitAttackTicks>=0){phaseTwo.reset();orbitAttackTicks=-1;}
         if(boss.phase()==2){phaseTwo.tick(target);return;}
         if(boss.phase()==3){phaseThree.tick(target);return;}
@@ -174,7 +175,7 @@ final class MahouPhaseOneAI {
                 swingFrame=net.everla.projectc.arkofcosmos.util.AttackFrame.capture(boss);
                 bladeWarning.pointSwingWarning(new Vec3(boss.getX(),ground(boss.position())+.08,boss.getZ()),swingFrame.forward());
                 if(--swingWait<=0){
-                    bladeWarning.discard();bladeWarning=null;
+                    bladeWarning.discardAttack();bladeWarning=null;
                     elementBlade=net.everla.projectc.arkofcosmos.combat.ElementsCombat.swing(boss,swings%2,0,
                             net.everla.projectc.arkofcosmos.calamity.combat.ElementsRules.BASE_DAMAGE,swingFrame);
                     boss.swing(net.minecraft.world.InteractionHand.MAIN_HAND);swings++;
@@ -299,8 +300,8 @@ final class MahouPhaseOneAI {
     }
 
     void forceDistantOrbit(){
-        LivingEntity target=boss.getTarget();
-        if(!valid(boss,target))return;
+        LivingEntity target=boss.orbitTarget();
+        if(target==null)return;
         Vec3 away=boss.position().subtract(target.position()).multiply(1,0,1);
         double distance=away.length();
         away=distance<.001?Vec3.directionFromRotation(0,boss.getYRot()).scale(-1):away.normalize();
@@ -308,7 +309,7 @@ final class MahouPhaseOneAI {
         Vec3 delta=away.scale(radial).add(new Vec3(-away.z,0,away.x).scale(.32));
         if(!holdAltitude(target))delta=delta.add(0,net.minecraft.util.Mth.clamp(combatHeight(boss.position().add(delta),target)-boss.getY(),-.3,.3),0);
         // Position updates bypass generic move/velocity locks without optional-mod hooks.
-        boss.setPos(boss.position().add(delta));
+        boss.forceCombatPosition(boss.position().add(delta));
         boss.setDeltaMovement(Vec3.ZERO);
         boss.hasImpulse=true;
     }
@@ -378,10 +379,10 @@ final class MahouPhaseOneAI {
     private void finish() { reset(); cooldown=14; }
     private void reset() {
         attack=age=0; lightningOrigins.clear(); boss.setDeltaMovement(Vec3.ZERO);
-        if(galaxyBlade!=null&&!galaxyBlade.isRemoved())galaxyBlade.discard();galaxyBlade=null;
-        if(elementBlade!=null&&!elementBlade.isRemoved())elementBlade.discard();elementBlade=null;
-        if(warning!=null)warning.discard();warning=null;
-        if(bladeWarning!=null)bladeWarning.discard();bladeWarning=null;
+        if(galaxyBlade!=null&&!galaxyBlade.isRemoved())galaxyBlade.discardAttack();galaxyBlade=null;
+        if(elementBlade!=null&&!elementBlade.isRemoved())elementBlade.discardAttack();elementBlade=null;
+        if(warning!=null)warning.discardAttack();warning=null;
+        if(bladeWarning!=null)bladeWarning.discardAttack();bladeWarning=null;
         boss.setItemSlot(net.minecraft.world.entity.EquipmentSlot.MAINHAND,ItemStack.EMPTY);
     }
 }

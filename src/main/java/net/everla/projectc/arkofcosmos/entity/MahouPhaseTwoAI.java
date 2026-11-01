@@ -148,12 +148,12 @@ final class MahouPhaseTwoAI {
         if(min>1000)for(int i=0;i<6;i++)uses[i]-=min;
         uses[selected-1]++;lastAttack=selected;return selected;
     }
-    private void clearWarning(){if(warning!=null)warning.discard();warning=null;}
+    private void clearWarning(){if(warning!=null)warning.discardAttack();warning=null;}
     private void finish(){reset();cooldown=12;}
     void cancel(){if(attack!=0)reset();}
     void reset(){
         attack=age=positioningTicks=0;positioned=false;destination=null;clearWarning();
-        if(rift!=null)rift.discard();rift=null;
+        if(rift!=null)rift.discardAttack();rift=null;
         boss.setItemSlot(EquipmentSlot.MAINHAND,ItemStack.EMPTY);
         boss.setDeltaMovement(Vec3.ZERO);
     }

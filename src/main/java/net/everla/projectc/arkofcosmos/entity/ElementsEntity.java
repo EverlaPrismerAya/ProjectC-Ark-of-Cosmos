@@ -221,6 +221,12 @@ public final class ElementsEntity extends Entity {
         if(kind==BLADE&&mode==3)sound("snap",1,false,false);
         if(kind==NEEDLE||kind==STAR)finish(true);
     }
+    void discardAttack() { finish(false); }
+    @Override public void remove(RemovalReason reason) {
+        if (!level().isClientSide && reason == RemovalReason.DISCARDED && !ended && left > 0
+                && WeaponUser.active(owner())) return;
+        super.remove(reason);
+    }
     private void finish(boolean natural){
         if(ended)return;ended=true;
         if(natural){
