@@ -64,6 +64,7 @@ public final class ArkEffects {
         ArkFxParticle a=particle(SQUISH,p,v,c,range(.3,.6),60,f); a.squish=squish; a.hueShift=hue;
     }
     public static void receive(CompoundTag data){
+        if(data.getString("Event").startsWith("old_one_")){net.everla.projectc.arkofcosmos.client.OldOneParticles.receive(data);return;}
         if(data.getString("Event").startsWith("elements_")){ElementsEffects.receive(data);return;}
         if(data.getString("Event").startsWith("galaxia_")){GalaxiaEffects.receive(data);return;}
         int previousOwner = emittingOwner;

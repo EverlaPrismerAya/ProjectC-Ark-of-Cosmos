@@ -74,6 +74,9 @@ public final class ArkNetwork {
     public static void effect(Entity entity, CompoundTag data) {
         CHANNEL.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> entity), new Effect(data));
     }
+    public static void nearbyEffect(Entity entity,CompoundTag data){
+        CHANNEL.send(PacketDistributor.NEAR.with(()->new PacketDistributor.TargetPoint(entity.getX(),entity.getY(),entity.getZ(),256,entity.level().dimension())),new Effect(data));
+    }
     public static void parryEffect(net.minecraft.world.entity.player.Player player,AttackFrame frame){
         CompoundTag data=new CompoundTag();data.putString("Event","parry");data.putInt("Owner",player.getId());
         net.minecraft.world.phys.Vec3 at=player.getBoundingBox().getCenter();

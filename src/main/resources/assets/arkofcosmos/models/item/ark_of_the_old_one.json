@@ -1,1 +1,14 @@
-{"parent":"minecraft:item/generated","textures":{"layer0":"arkofcosmos:item/ark_of_the_old_one"}}
+{
+  "parent": "minecraft:item/handheld",
+  "textures": {
+    "layer0": "arkofcosmos:item/ark_of_the_old_one"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "arkofcosmos:active": 1
+      },
+      "model": "arkofcosmos:item/ark_of_the_old_one_active"
+    }
+  ]
+}

@@ -42,8 +42,11 @@ public final class NativeSprites extends RenderType {
             sprite(name,at,f,angle,sx,sy,ox,oy,color,additive,thick,light,0);
         }
         public void sprite(String name,Vec3 at,AttackFrame f,double angle,double sx,double sy,double ox,double oy,float[] color,boolean additive,boolean thick,int light,double depthBias){
+            sprite(name,at,f,angle,sx,sy,ox,oy,color,additive,thick,light,depthBias,false);
+        }
+        public void sprite(String name,Vec3 at,AttackFrame f,double angle,double sx,double sy,double ox,double oy,float[] color,boolean additive,boolean thick,int light,double depthBias,boolean translucent){
             Image img=image(name);Vec3 x=f.direction(angle).scale(sx/16),y=f.direction(angle+Math.PI/2).scale(sy/16),n=f.normal();
-            RenderType type=additive?additive(texture(name)):thick?RenderType.entityCutoutNoCull(texture(name)):RenderType.entityTranslucentEmissive(texture(name));
+            RenderType type=additive?additive(texture(name)):translucent?RenderType.entityTranslucent(texture(name)):thick?RenderType.entityCutoutNoCull(texture(name)):RenderType.entityTranslucentEmissive(texture(name));
             VertexConsumer out=buffers.getBuffer(type);double depth=thick?1.5*sx/16+(name.endsWith("_glow")?.002:0)+depthBias:0;
             for(int face=0;face<(thick?2:1);face++){
                 Vec3 origin=at.add(n.scale(face==0?depth:-depth));

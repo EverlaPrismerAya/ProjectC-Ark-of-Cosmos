@@ -22,7 +22,7 @@ public final class OldOneEffects {
     private static final DeferredRegister<MobEffect> EFFECTS=DeferredRegister.create(ForgeRegistries.MOB_EFFECTS,ArkOfCosmos.MOD_ID);
     public enum Status {
         GRAVITY(false,0),THORNS(false,0),WARMTH(false,0),WET(false,0),WRATH(false,0),RAGE(false,0),INFERNO(false,0),TITAN(false,0),WARD(false,8),
-        BRIMSTONE(true,0),GLACIAL(true,-10),PLAGUE(true,-4),HOLY_FIRE(true,0),ASTRAL(true,-6),DEPTH(true,0),TEMPORAL(true,0),FROSTBURN(true,0),CURSED(true,0),ICHOR(true,-20);
+        BRIMSTONE(true,0),GLACIAL(true,-10),PLAGUE(true,-4),HOLY_FIRE(true,0),ASTRAL(true,-6),DEPTH(true,0),TEMPORAL(true,0),FROSTBURN(true,0),CURSED(true,0),ICHOR(true,-20),DAYBREAK(true,0),CELLED(true,0);
         private final RegistryObject<MobEffect> effect;
         Status(boolean harmful,int armor){String name="old_one_"+name().toLowerCase(Locale.ROOT);effect=EFFECTS.register(name,()->{
             MobEffect e=new MobEffect(harmful?MobEffectCategory.HARMFUL:MobEffectCategory.BENEFICIAL,harmful?0x9454bf:0x68bccc){};
@@ -59,7 +59,7 @@ public final class OldOneEffects {
             case DESERT,HOLY->Status.HOLY_FIRE;case MUSHROOM->Status.TEMPORAL;case HELL->Status.BRIMSTONE;case DUNGEON->Status.FROSTBURN;default->null;};
         if(s!=null)apply(t,s,400);else if(z==OldOneEnvironment.Zone.DEFAULT)t.addEffect(new MobEffectInstance(ArkOfCosmos.ARMOR_CRUNCH.get(),400,0,false,false,true));
     }
-    public static boolean regenBlocked(LivingEntity e){return has(e,Status.BRIMSTONE)||has(e,Status.PLAGUE)||has(e,Status.HOLY_FIRE)||has(e,Status.ASTRAL)||has(e,Status.FROSTBURN);}
+    public static boolean regenBlocked(LivingEntity e){return has(e,Status.BRIMSTONE)||has(e,Status.PLAGUE)||has(e,Status.HOLY_FIRE)||has(e,Status.ASTRAL)||has(e,Status.FROSTBURN)||has(e,Status.DAYBREAK)||has(e,Status.CELLED);}
     private static final TagKey<EntityType<?>> FREEZE_IMMUNE=TagKey.create(Registries.ENTITY_TYPE,ResourceLocation.fromNamespaceAndPath(ArkOfCosmos.MOD_ID,"old_one_freeze_immune"));
     private static final TagKey<EntityType<?>> SLOW_IMMUNE=TagKey.create(Registries.ENTITY_TYPE,ResourceLocation.fromNamespaceAndPath(ArkOfCosmos.MOD_ID,"old_one_slow_immune"));
     public static boolean movementImmune(LivingEntity e,boolean freeze){return !e.canChangeDimensions()||e.getType().is(freeze?FREEZE_IMMUNE:SLOW_IMMUNE)
@@ -92,6 +92,9 @@ public final class OldOneEffects {
         float loss=0;
         if(has(e,Status.BRIMSTONE))loss+=4;if(has(e,Status.PLAGUE))loss+=10;if(has(e,Status.HOLY_FIRE))loss+=5;
         if(has(e,Status.ASTRAL))loss+=7.5f;if(has(e,Status.FROSTBURN))loss+=1.6f;
+        if(has(e,Status.DAYBREAK))loss+=20;
+        // The weapon overrides Stardust Cell penetrate to 1. Its death leaves no attached cells,
+        // so NPC.UpdateLifeRegen's celled multiplier is zero; it still cancels positive regen.
         if(loss>0)dot(e,e.damageSources().magic(),loss);
         if(has(e,Status.CURSED))dot(e,e.damageSources().magic(),2);
         if(has(e,Status.DEPTH))dot(e,e.damageSources().drown(),5);

@@ -444,11 +444,10 @@
     },
     {
       "file": "src/main/resources/assets/arkofcosmos/textures/item/ark_of_cosmos.png",
-      "sha256": "76a061dc4f0525320b35d2ee75fea115fbd3da03f07780502efbfa1bf9e83672",
-      "project": "Calamity Mod",
+      "sha256": "A4A048F1340C851E291A00191C7347ACC9DBC6CB1EAC43B386C29F50831CC126",
+      "project": "CalamityModLegacy",
       "path": "Items/Weapons/Melee/ArkoftheCosmos.png",
-      "license": "ARR (Calamity original terms)",
-      "recorded_output_sha256": "76a061dc4f0525320b35d2ee75fea115fbd3da03f07780502efbfa1bf9e83672",
+      "license": "Calamity/ Re-Logic original rights holders; not GPL-3.0-only",
       "matches_recorded_output": true
     },
     {
@@ -968,7 +967,7 @@
     {
       "file": "src/main/resources/assets/arkofcosmos/textures/elements/techy_holosquare.png",
       "sha256": "e22c322da6e785917b586cb6f4871f832bb412b2ef86e537d2f0a432930e5de9",
-      "source": "E:\\工具\\tModUnpacker\\CalamityMod\\Particles\\TechyHolosquare.png",
+      "source": "E:\\宸ュ叿\\tModUnpacker\\CalamityMod\\Particles\\TechyHolosquare.png",
       "source_sha256": "e22c322da6e785917b586cb6f4871f832bb412b2ef86e537d2f0a432930e5de9",
       "project": "Calamity Mod",
       "path": "Particles/TechyHolosquare.png",
@@ -1990,12 +1989,545 @@
       }
     },
     {
-      "file": "src/main/resources/assets/arkofcosmos/textures/item/ark_of_cosmos.png",
-      "sha256": "A4A048F1340C851E291A00191C7347ACC9DBC6CB1EAC43B386C29F50831CC126",
-      "project": "CalamityModLegacy",
+      "file": "src/main/resources/assets/arkofcosmos/textures/old_one/projectile_15.png",
+      "sha256": "ac62b717fe60e21de79160d43d1f7efb1375bece6e8fc962955974df81d16139",
+      "source": "G:\\SteamLibrary\\steamapps\\common\\Terraria\\Content\\Images\\Projectile_15.xnb",
+      "source_sha256": "7e5cc156a9ae3584a7ba28c3d79a1d66b0f134cbf568d0a230104b9e03f036b7",
+      "project": "Terraria 1.4.5 (user-approved texture substitution)",
+      "path": "Content/Images/Projectile_15.xnb",
+      "license": "Re-Logic / original rights holders; not GPL-3.0-only",
+      "dimensions": [
+        16,
+        16
+      ],
+      "conversion": "XNB Texture2D to PNG; retain original premultiplied RGBA bytes (no unpremultiplication)"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/old_one/projectile_27.png",
+      "sha256": "272617409bac912b9ee9d7dfdb1ffa94fdb58123c14309ab41f8b9a944cecadf",
+      "source": "G:\\SteamLibrary\\steamapps\\common\\Terraria\\Content\\Images\\Projectile_27.xnb",
+      "source_sha256": "3a7391c11b64603ebc94559eb704332ca13eeaad1dfa1627aa7c843f5b53e6ca",
+      "project": "Terraria 1.4.5 (user-approved texture substitution)",
+      "path": "Content/Images/Projectile_27.xnb",
+      "license": "Re-Logic / original rights holders; not GPL-3.0-only",
+      "dimensions": [
+        16,
+        16
+      ],
+      "conversion": "XNB Texture2D to PNG; retain original premultiplied RGBA bytes (no unpremultiplication)"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/old_one/projectile_95.png",
+      "sha256": "70b12246a3b4ab3e8fb78a7d041cb20e8340956f09dde9819055654d0e9f152b",
+      "source": "G:\\SteamLibrary\\steamapps\\common\\Terraria\\Content\\Images\\Projectile_95.xnb",
+      "source_sha256": "90e74ef003ec60ac76bfa91d185e7615dbfb871e0295c642a50b0bc18334f2c2",
+      "project": "Terraria 1.4.5 (user-approved texture substitution)",
+      "path": "Content/Images/Projectile_95.xnb",
+      "license": "Re-Logic / original rights holders; not GPL-3.0-only",
+      "dimensions": [
+        16,
+        16
+      ],
+      "conversion": "XNB Texture2D to PNG; retain original premultiplied RGBA bytes (no unpremultiplication)"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/old_one/projectile_118.png",
+      "sha256": "3167c8f8fffb544be96bce0a966cc66f5b0ecee18eed51052b5ac3cc2474a595",
+      "source": "G:\\SteamLibrary\\steamapps\\common\\Terraria\\Content\\Images\\Projectile_118.xnb",
+      "source_sha256": "b6e70b5c46e04f449ebbbf564c051274a0b5cc8a0daa49b3ba2e226d3151b65b",
+      "project": "Terraria 1.4.5 (user-approved texture substitution)",
+      "path": "Content/Images/Projectile_118.xnb",
+      "license": "Re-Logic / original rights holders; not GPL-3.0-only",
+      "dimensions": [
+        16,
+        16
+      ],
+      "conversion": "XNB Texture2D to PNG; retain original premultiplied RGBA bytes (no unpremultiplication)"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/old_one/projectile_131.png",
+      "sha256": "446132c4373dcf6ed19db4d5fad8a11b8952e5d74da5ef0e71b2734defda7691",
+      "source": "G:\\SteamLibrary\\steamapps\\common\\Terraria\\Content\\Images\\Projectile_131.xnb",
+      "source_sha256": "864bc862cbb71714d708e69cbeb8eadc1832b2e0010f6504b49fe92df2b2e2d8",
+      "project": "Terraria 1.4.5 (user-approved texture substitution)",
+      "path": "Content/Images/Projectile_131.xnb",
+      "license": "Re-Logic / original rights holders; not GPL-3.0-only",
+      "dimensions": [
+        22,
+        24
+      ],
+      "conversion": "XNB Texture2D to PNG; retain original premultiplied RGBA bytes (no unpremultiplication)"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/old_one/projectile_206.png",
+      "sha256": "12603eafc0f8aa25a5910648fd1c859bee695f1dd7ac25ba53715c14f884caca",
+      "source": "G:\\SteamLibrary\\steamapps\\common\\Terraria\\Content\\Images\\Projectile_206.xnb",
+      "source_sha256": "a87f2fbf35c6dd95ee93307c73a02190c7cee3f32609baea1b6b08e5e96f29a1",
+      "project": "Terraria 1.4.5 (user-approved texture substitution)",
+      "path": "Content/Images/Projectile_206.xnb",
+      "license": "Re-Logic / original rights holders; not GPL-3.0-only",
+      "dimensions": [
+        24,
+        80
+      ],
+      "conversion": "XNB Texture2D to PNG; retain original premultiplied RGBA bytes (no unpremultiplication)"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/old_one/projectile_280.png",
+      "sha256": "afc6d79b152ef0c1baf59a537115a6f186562fb390c33e0fc36305cb9c883a2f",
+      "source": "G:\\SteamLibrary\\steamapps\\common\\Terraria\\Content\\Images\\Projectile_280.xnb",
+      "source_sha256": "f5285c729ba73b22f53a54477fbd3e04dac83fe6c62faec2c57cacdb97990e58",
+      "project": "Terraria 1.4.5 (user-approved texture substitution)",
+      "path": "Content/Images/Projectile_280.xnb",
+      "license": "Re-Logic / original rights holders; not GPL-3.0-only",
+      "dimensions": [
+        10,
+        16
+      ],
+      "conversion": "XNB Texture2D to PNG; retain original premultiplied RGBA bytes (no unpremultiplication)"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/old_one/projectile_405.png",
+      "sha256": "5b785bb71c02e7d1052661298ed8eb387c0e3e16692c2ef95e0a14f6cd2cabf5",
+      "source": "G:\\SteamLibrary\\steamapps\\common\\Terraria\\Content\\Images\\Projectile_405.xnb",
+      "source_sha256": "b73aa8a4216e92db4ee041c0d1b58e05f15728a4681904e5f2a8178124354926",
+      "project": "Terraria 1.4.5 (user-approved texture substitution)",
+      "path": "Content/Images/Projectile_405.xnb",
+      "license": "Re-Logic / original rights holders; not GPL-3.0-only",
+      "dimensions": [
+        20,
+        20
+      ],
+      "conversion": "XNB Texture2D to PNG; retain original premultiplied RGBA bytes (no unpremultiplication)"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/old_one/projectile_604.png",
+      "sha256": "2971fa23f4d8a9ae42ed6c4697bbdfbf4c3cd915076076f79f49dcf7a86d7c94",
+      "source": "G:\\SteamLibrary\\steamapps\\common\\Terraria\\Content\\Images\\Projectile_604.xnb",
+      "source_sha256": "6dddb0b222fef609e440f16317237715617912b1cc28f2166895789f3b494909",
+      "project": "Terraria 1.4.5 (user-approved texture substitution)",
+      "path": "Content/Images/Projectile_604.xnb",
+      "license": "Re-Logic / original rights holders; not GPL-3.0-only",
+      "dimensions": [
+        16,
+        16
+      ],
+      "conversion": "XNB Texture2D to PNG; retain original premultiplied RGBA bytes (no unpremultiplication)"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/old_one/projectile_612.png",
+      "sha256": "dcd7cc1930ef45e679e9c5c876d61a8cb4682c930b295ea6365f9a200127cb9d",
+      "source": "G:\\SteamLibrary\\steamapps\\common\\Terraria\\Content\\Images\\Projectile_612.xnb",
+      "source_sha256": "a0ec14121f910265ac0d377ee347f8eaba075add7ffa29707ccc3b6402951857",
+      "project": "Terraria 1.4.5 (user-approved texture substitution)",
+      "path": "Content/Images/Projectile_612.xnb",
+      "license": "Re-Logic / original rights holders; not GPL-3.0-only",
+      "dimensions": [
+        52,
+        260
+      ],
+      "conversion": "XNB Texture2D to PNG; retain original premultiplied RGBA bytes (no unpremultiplication)"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/old_one/projectile_614.png",
+      "sha256": "f6f27b8ace13d1da6007ffb3ac100656dbc8944d02afdcfdeaa669593011c7a5",
+      "source": "G:\\SteamLibrary\\steamapps\\common\\Terraria\\Content\\Images\\Projectile_614.xnb",
+      "source_sha256": "d2232da113d8e41e802fc0fd075937b1cc792e13799a954044db5cdb8d85a8ed",
+      "project": "Terraria 1.4.5 (user-approved texture substitution)",
+      "path": "Content/Images/Projectile_614.xnb",
+      "license": "Re-Logic / original rights holders; not GPL-3.0-only",
+      "dimensions": [
+        18,
+        80
+      ],
+      "conversion": "XNB Texture2D to PNG; retain original premultiplied RGBA bytes (no unpremultiplication)"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/old_one/projectile_616.png",
+      "sha256": "6fb9472e5330043a8f656e1d9340fc8b16f329a9f28c8cf26a3d89487d00375f",
+      "source": "G:\\SteamLibrary\\steamapps\\common\\Terraria\\Content\\Images\\Projectile_616.xnb",
+      "source_sha256": "65a1dc0b12cba09c8e9f0d70f23ce813827037fe42cff490a33141fe156e1963",
+      "project": "Terraria 1.4.5 (user-approved texture substitution)",
+      "path": "Content/Images/Projectile_616.xnb",
+      "license": "Re-Logic / original rights holders; not GPL-3.0-only",
+      "dimensions": [
+        14,
+        20
+      ],
+      "conversion": "XNB Texture2D to PNG; retain original premultiplied RGBA bytes (no unpremultiplication)"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/old_one/projectile_634.png",
+      "sha256": "f6cc11817f2d392d5325eebc4354e6571c0d7d09593dcfb7e801e51c5df2e367",
+      "source": "G:\\SteamLibrary\\steamapps\\common\\Terraria\\Content\\Images\\Projectile_634.xnb",
+      "source_sha256": "bc909ed3f3f7b4b2f6dd2d8543f6acdf327b01451b430ca9500bd760fff8cb68",
+      "project": "Terraria 1.4.5 (user-approved texture substitution)",
+      "path": "Content/Images/Projectile_634.xnb",
+      "license": "Re-Logic / original rights holders; not GPL-3.0-only",
+      "dimensions": [
+        36,
+        144
+      ],
+      "conversion": "XNB Texture2D to PNG; retain original premultiplied RGBA bytes (no unpremultiplication)"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/old_one/projectile_644.png",
+      "sha256": "67ba291353cdfa0383d8542da8ab160ce4cd61f0fb1d0ea36ba97b64f9441bc1",
+      "source": "G:\\SteamLibrary\\steamapps\\common\\Terraria\\Content\\Images\\Projectile_644.xnb",
+      "source_sha256": "e1724dab08769f37c9034ac23b90bf38cf9f89b2f2e29994d504d7163d358819",
+      "project": "Terraria 1.4.5 (user-approved texture substitution)",
+      "path": "Content/Images/Projectile_644.xnb",
+      "license": "Re-Logic / original rights holders; not GPL-3.0-only",
+      "dimensions": [
+        72,
+        72
+      ],
+      "conversion": "XNB Texture2D to PNG; retain original premultiplied RGBA bytes (no unpremultiplication)"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/old_one/projectile_661.png",
+      "sha256": "74c40096cbc2c4a39f5f3f2a750c9dcb156a623dfb8069b6881dbc1455758a3e",
+      "source": "G:\\SteamLibrary\\steamapps\\common\\Terraria\\Content\\Images\\Projectile_661.xnb",
+      "source_sha256": "a00d34f61cb91729c331d56b6bdd77708beeb213d0ced470b15759ff751e8ab9",
+      "project": "Terraria 1.4.5 (user-approved texture substitution)",
+      "path": "Content/Images/Projectile_661.xnb",
+      "license": "Re-Logic / original rights holders; not GPL-3.0-only",
+      "dimensions": [
+        20,
+        42
+      ],
+      "conversion": "XNB Texture2D to PNG; retain original premultiplied RGBA bytes (no unpremultiplication)"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/old_one/dust.png",
+      "sha256": "273322e6822f11ca0fc6258bd420d85c431be8e900b85232bd1ef930d9a8c8a6",
+      "source": "G:\\SteamLibrary\\steamapps\\common\\Terraria\\Content\\Images\\Dust.xnb",
+      "source_sha256": "0c84497a27ff8d9c706fbe9f0890b67bd27914b61e9bad799e65bc783f77b329",
+      "project": "Terraria 1.4.5 (user-approved texture substitution)",
+      "path": "Content/Images/Dust.xnb",
+      "license": "Re-Logic / original rights holders; not GPL-3.0-only",
+      "dimensions": [
+        1000,
+        120
+      ],
+      "conversion": "XNB Texture2D to PNG; retain original premultiplied RGBA bytes (no unpremultiplication)"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/old_one/glow_190.png",
+      "sha256": "76fc342796e183802b020a256a37458e680e1330a03d9d2eb18bfcf96c9b60b9",
+      "source": "G:\\SteamLibrary\\steamapps\\common\\Terraria\\Content\\Images\\Glow_190.xnb",
+      "source_sha256": "16fc70d3553871b1f6aac3640905bdd0cef17e94eb4a179decb72d3d1af53e94",
+      "project": "Terraria 1.4.5 (user-approved texture substitution)",
+      "path": "Content/Images/Glow_190.xnb",
+      "license": "Re-Logic / original rights holders; not GPL-3.0-only",
+      "dimensions": [
+        18,
+        80
+      ],
+      "conversion": "XNB Texture2D to PNG; retain original premultiplied RGBA bytes (no unpremultiplication)"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/old_one/eon.png",
+      "sha256": "97f0d42db2a44b4b3792912a6b1ae3856b57c09acdf7d19864afb14990ee6859",
+      "source": "E:/工具/tModUnpacker/CalamityModLegacy/Projectiles/Melee/EonBeam.png",
+      "source_sha256": "97f0d42db2a44b4b3792912a6b1ae3856b57c09acdf7d19864afb14990ee6859",
+      "project": "Calamity Mod Legacy",
+      "path": "Projectiles/Melee/EonBeam.png",
+      "license": "Calamity Team / original rights holders; All Rights Reserved; not GPL-3.0-only",
+      "dimensions": [
+        48,
+        48
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/old_one/eon_v2.png",
+      "sha256": "82433618a1e13523d97ff3a76f1ee271df3f85c6623c502693b6bf8ed0b1917e",
+      "source": "E:/工具/tModUnpacker/CalamityModLegacy/Projectiles/Melee/EonBeamV2.png",
+      "source_sha256": "82433618a1e13523d97ff3a76f1ee271df3f85c6623c502693b6bf8ed0b1917e",
+      "project": "Calamity Mod Legacy",
+      "path": "Projectiles/Melee/EonBeamV2.png",
+      "license": "Calamity Team / original rights holders; All Rights Reserved; not GPL-3.0-only",
+      "dimensions": [
+        48,
+        48
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/old_one/eon_v3.png",
+      "sha256": "4bd3148722e2bbefd2052200e392f5f7ccd8d77f346d780352c84610e8fb8ce1",
+      "source": "E:/工具/tModUnpacker/CalamityModLegacy/Projectiles/Melee/EonBeamV3.png",
+      "source_sha256": "4bd3148722e2bbefd2052200e392f5f7ccd8d77f346d780352c84610e8fb8ce1",
+      "project": "Calamity Mod Legacy",
+      "path": "Projectiles/Melee/EonBeamV3.png",
+      "license": "Calamity Team / original rights holders; All Rights Reserved; not GPL-3.0-only",
+      "dimensions": [
+        48,
+        48
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/old_one/eon_v4.png",
+      "sha256": "f0fba01c46adf11e38e49c8ba6bd6a4dfb75cd1ef63e9edbb10bbda9409197b1",
+      "source": "E:/工具/tModUnpacker/CalamityModLegacy/Projectiles/Melee/EonBeamV4.png",
+      "source_sha256": "f0fba01c46adf11e38e49c8ba6bd6a4dfb75cd1ef63e9edbb10bbda9409197b1",
+      "project": "Calamity Mod Legacy",
+      "path": "Projectiles/Melee/EonBeamV4.png",
+      "license": "Calamity Team / original rights holders; All Rights Reserved; not GPL-3.0-only",
+      "dimensions": [
+        48,
+        48
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/old_one/orb.png",
+      "sha256": "aeb024ae7880b45c014cfd98ef267f28077cb3ec14cce67b0f49b23ea36c7910",
+      "source": "E:/工具/tModUnpacker/CalamityModLegacy/Projectiles/Melee/Galaxia.png",
+      "source_sha256": "aeb024ae7880b45c014cfd98ef267f28077cb3ec14cce67b0f49b23ea36c7910",
+      "project": "Calamity Mod Legacy",
+      "path": "Projectiles/Melee/Galaxia.png",
+      "license": "Calamity Team / original rights holders; All Rights Reserved; not GPL-3.0-only",
+      "dimensions": [
+        32,
+        32
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/old_one/astral_star.png",
+      "sha256": "5e6731f196ad27161fa29a704451093941cdf3946e7832113840789d6456f647",
+      "source": "E:/工具/tModUnpacker/CalamityModLegacy/Projectiles/Typeless/AstralStar.png",
+      "source_sha256": "5e6731f196ad27161fa29a704451093941cdf3946e7832113840789d6456f647",
+      "project": "Calamity Mod Legacy",
+      "path": "Projectiles/Typeless/AstralStar.png",
+      "license": "Calamity Team / original rights holders; All Rights Reserved; not GPL-3.0-only",
+      "dimensions": [
+        32,
+        32
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/item/ark_of_the_old_one.png",
+      "sha256": "a4a048f1340c851e291a00191c7347acc9dbc6cb1eac43b386c29f50831cc126",
+      "source": "E:/工具/tModUnpacker/CalamityModLegacy/Items/Weapons/Melee/ArkoftheCosmos.png",
+      "source_sha256": "a4a048f1340c851e291a00191c7347acc9dbc6cb1eac43b386c29f50831cc126",
+      "project": "Calamity Mod Legacy",
       "path": "Items/Weapons/Melee/ArkoftheCosmos.png",
-      "license": "Calamity/ Re-Logic original rights holders; not GPL-3.0-only",
-      "matches_recorded_output": true
+      "license": "Calamity Team / original rights holders; All Rights Reserved; not GPL-3.0-only",
+      "dimensions": [
+        102,
+        102
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/mob_effect/old_one_thorns.png",
+      "sha256": "3a2ccbbd15ef39fcd163e5d6e4f9abaf4c6cf41d6e0d447c0a198e5142900616",
+      "source": "G:/SteamLibrary/steamapps/common/Terraria/Content/Images/Buff_14.xnb",
+      "source_sha256": "9ffdc4b5f64b446c9c46495737cfc1b0b6644822fb4098942e6b1a9e4cc92b2e",
+      "project": "Terraria 1.4.5 (user-approved texture substitution)",
+      "path": "Content/Images/Buff_14.xnb",
+      "license": "Re-Logic / original rights holders; not GPL-3.0-only",
+      "conversion": "XNB Texture2D to PNG; original premultiplied RGBA bytes"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/mob_effect/old_one_warmth.png",
+      "sha256": "c578c4b2f608e2e0952bc47b381a31a5afc1821dcb6efc0d1f5540fe64f2f99d",
+      "source": "G:/SteamLibrary/steamapps/common/Terraria/Content/Images/Buff_124.xnb",
+      "source_sha256": "f7532b5c3061ff19052fbb2c7eb5025ee0e02ba8544b8652ee1adac1ac60659b",
+      "project": "Terraria 1.4.5 (user-approved texture substitution)",
+      "path": "Content/Images/Buff_124.xnb",
+      "license": "Re-Logic / original rights holders; not GPL-3.0-only",
+      "conversion": "XNB Texture2D to PNG; original premultiplied RGBA bytes"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/mob_effect/old_one_wet.png",
+      "sha256": "fb7a38189fc5f286be503a320f2da325bfc7eeb43218c40d91ca7c39e6c2443b",
+      "source": "G:/SteamLibrary/steamapps/common/Terraria/Content/Images/Buff_103.xnb",
+      "source_sha256": "21679ca8c1e823318e0fdc916a413d3b6a67fd3e3de70044d62ec8adf83bcc75",
+      "project": "Terraria 1.4.5 (user-approved texture substitution)",
+      "path": "Content/Images/Buff_103.xnb",
+      "license": "Re-Logic / original rights holders; not GPL-3.0-only",
+      "conversion": "XNB Texture2D to PNG; original premultiplied RGBA bytes"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/mob_effect/old_one_wrath.png",
+      "sha256": "cbcc29e41903423247fba292bb1ad77b165fd07bebcfac1d67627fb685b42675",
+      "source": "G:/SteamLibrary/steamapps/common/Terraria/Content/Images/Buff_117.xnb",
+      "source_sha256": "8b56922974823fcd6d6b7fccedb139593dbe0e1b9efc9b7904b39ec58536ccb1",
+      "project": "Terraria 1.4.5 (user-approved texture substitution)",
+      "path": "Content/Images/Buff_117.xnb",
+      "license": "Re-Logic / original rights holders; not GPL-3.0-only",
+      "conversion": "XNB Texture2D to PNG; original premultiplied RGBA bytes"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/mob_effect/old_one_rage.png",
+      "sha256": "22971192533d514453d4808aa5cb1e2a559274bd51de146837545386e36b65ed",
+      "source": "G:/SteamLibrary/steamapps/common/Terraria/Content/Images/Buff_115.xnb",
+      "source_sha256": "8ac08834fd2e3cf04d83e79145bb504e4560d915113d96052d870ea3b4ded7c4",
+      "project": "Terraria 1.4.5 (user-approved texture substitution)",
+      "path": "Content/Images/Buff_115.xnb",
+      "license": "Re-Logic / original rights holders; not GPL-3.0-only",
+      "conversion": "XNB Texture2D to PNG; original premultiplied RGBA bytes"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/mob_effect/old_one_inferno.png",
+      "sha256": "e2a104c28ca57c44d536a0170ece0ad43a5af754b87a8c80a5d66667bdc7f6f1",
+      "source": "G:/SteamLibrary/steamapps/common/Terraria/Content/Images/Buff_116.xnb",
+      "source_sha256": "0de9114e6f5231e1cdc1efe25fe26238d8451b4345db0201ded9d59fb69fb076",
+      "project": "Terraria 1.4.5 (user-approved texture substitution)",
+      "path": "Content/Images/Buff_116.xnb",
+      "license": "Re-Logic / original rights holders; not GPL-3.0-only",
+      "conversion": "XNB Texture2D to PNG; original premultiplied RGBA bytes"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/mob_effect/old_one_titan.png",
+      "sha256": "7f6d4b85f61138ebca6ca4d960af36e58289219f4008b1170e7e715b6287d821",
+      "source": "G:/SteamLibrary/steamapps/common/Terraria/Content/Images/Buff_108.xnb",
+      "source_sha256": "ce640053e50ff4a0256775438c641415288064dd4b1dbcfbd8892a5cf0bd1daa",
+      "project": "Terraria 1.4.5 (user-approved texture substitution)",
+      "path": "Content/Images/Buff_108.xnb",
+      "license": "Re-Logic / original rights holders; not GPL-3.0-only",
+      "conversion": "XNB Texture2D to PNG; original premultiplied RGBA bytes"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/mob_effect/old_one_ward.png",
+      "sha256": "af5ae1a4f82f3926b85270fc94abe4353742c7a02e6d0d01a500a04e0cbf9e35",
+      "source": "G:/SteamLibrary/steamapps/common/Terraria/Content/Images/Buff_165.xnb",
+      "source_sha256": "b1d99721b7999f3573b0d1e16933afb4ad419be4ffa32583f653e790d4c1dade",
+      "project": "Terraria 1.4.5 (user-approved texture substitution)",
+      "path": "Content/Images/Buff_165.xnb",
+      "license": "Re-Logic / original rights holders; not GPL-3.0-only",
+      "conversion": "XNB Texture2D to PNG; original premultiplied RGBA bytes"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/mob_effect/old_one_frostburn.png",
+      "sha256": "386cd3d530e1f5df44f2783bb023e6bf04a3226af1202ade2e9b149e6ebdddd4",
+      "source": "G:/SteamLibrary/steamapps/common/Terraria/Content/Images/Buff_44.xnb",
+      "source_sha256": "a10346a6b9c5d5298d51ab305a063572df75c4faa33ff6e0f6ded7a01ee17e36",
+      "project": "Terraria 1.4.5 (user-approved texture substitution)",
+      "path": "Content/Images/Buff_44.xnb",
+      "license": "Re-Logic / original rights holders; not GPL-3.0-only",
+      "conversion": "XNB Texture2D to PNG; original premultiplied RGBA bytes"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/mob_effect/old_one_cursed.png",
+      "sha256": "8c055b70cc73197c0cec67f84b55592dc630b4dff0a35c7366f8b52c81f6a9db",
+      "source": "G:/SteamLibrary/steamapps/common/Terraria/Content/Images/Buff_39.xnb",
+      "source_sha256": "5ff46fb299c0ac14ca30205dc88ac16354e9eb8c99024474cc300fe350e7b7d0",
+      "project": "Terraria 1.4.5 (user-approved texture substitution)",
+      "path": "Content/Images/Buff_39.xnb",
+      "license": "Re-Logic / original rights holders; not GPL-3.0-only",
+      "conversion": "XNB Texture2D to PNG; original premultiplied RGBA bytes"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/mob_effect/old_one_ichor.png",
+      "sha256": "47ce5f2625c2b2e4383c98e77423a0aacee99b2e38a4b7c6815eaa50604a0c0c",
+      "source": "G:/SteamLibrary/steamapps/common/Terraria/Content/Images/Buff_69.xnb",
+      "source_sha256": "d8e440a131becb44bece8869e18cd62f0808f44cd79c91ddc7cb09cd22d098d0",
+      "project": "Terraria 1.4.5 (user-approved texture substitution)",
+      "path": "Content/Images/Buff_69.xnb",
+      "license": "Re-Logic / original rights holders; not GPL-3.0-only",
+      "conversion": "XNB Texture2D to PNG; original premultiplied RGBA bytes"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/mob_effect/old_one_daybreak.png",
+      "sha256": "a38aa37435197c48f1d4fd5043fe43331625885e0fb975ef30b69dec663a879f",
+      "source": "G:/SteamLibrary/steamapps/common/Terraria/Content/Images/Buff_189.xnb",
+      "source_sha256": "8db0ef3daff9d0e93210272ca651322e2815f8070cafde407039f68c379d0413",
+      "project": "Terraria 1.4.5 (user-approved texture substitution)",
+      "path": "Content/Images/Buff_189.xnb",
+      "license": "Re-Logic / original rights holders; not GPL-3.0-only",
+      "conversion": "XNB Texture2D to PNG; original premultiplied RGBA bytes"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/mob_effect/old_one_celled.png",
+      "sha256": "242b2e4ca21c01e8d512ece2929ede75f7c757388e7fb0622d4b689a58990770",
+      "source": "G:/SteamLibrary/steamapps/common/Terraria/Content/Images/Buff_183.xnb",
+      "source_sha256": "28ba8cdf87601001d2d193a194870d71d89b7267ad1062a65bffc7f81e93504e",
+      "project": "Terraria 1.4.5 (user-approved texture substitution)",
+      "path": "Content/Images/Buff_183.xnb",
+      "license": "Re-Logic / original rights holders; not GPL-3.0-only",
+      "conversion": "XNB Texture2D to PNG; original premultiplied RGBA bytes"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/mob_effect/old_one_gravity.png",
+      "sha256": "d135a82ed87ab95079a231d4b9afcfebeaf0fcaeb25629d1907dfd9fd51f78a0",
+      "source": "E:/工具/tModUnpacker/CalamityModLegacy/Buffs/Potions/GravityNormalizerBuff.png",
+      "source_sha256": "d135a82ed87ab95079a231d4b9afcfebeaf0fcaeb25629d1907dfd9fd51f78a0",
+      "project": "Calamity Mod Legacy",
+      "path": "Buffs/Potions/GravityNormalizerBuff.png",
+      "license": "Calamity Team / original rights holders; All Rights Reserved; not GPL-3.0-only"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/mob_effect/old_one_brimstone.png",
+      "sha256": "88d809512a6f0d04a389138178d6356b4b57b20c8562dd5e9f7d586cea0ea12b",
+      "source": "E:/工具/tModUnpacker/CalamityModLegacy/Buffs/DamageOverTime/BrimstoneFlames.png",
+      "source_sha256": "88d809512a6f0d04a389138178d6356b4b57b20c8562dd5e9f7d586cea0ea12b",
+      "project": "Calamity Mod Legacy",
+      "path": "Buffs/DamageOverTime/BrimstoneFlames.png",
+      "license": "Calamity Team / original rights holders; All Rights Reserved; not GPL-3.0-only"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/mob_effect/old_one_glacial.png",
+      "sha256": "36c30a02173b4e4ffca4af1fcf15eedab0c32e193eb87d1e764772860566aa65",
+      "source": "E:/工具/tModUnpacker/CalamityModLegacy/Buffs/StatDebuffs/GlacialState.png",
+      "source_sha256": "36c30a02173b4e4ffca4af1fcf15eedab0c32e193eb87d1e764772860566aa65",
+      "project": "Calamity Mod Legacy",
+      "path": "Buffs/StatDebuffs/GlacialState.png",
+      "license": "Calamity Team / original rights holders; All Rights Reserved; not GPL-3.0-only"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/mob_effect/old_one_plague.png",
+      "sha256": "a6bb0234bc5a90ae140ece9f14d923498ca21c785464b87b00dcbc80c5e81650",
+      "source": "E:/工具/tModUnpacker/CalamityModLegacy/Buffs/DamageOverTime/Plague.png",
+      "source_sha256": "a6bb0234bc5a90ae140ece9f14d923498ca21c785464b87b00dcbc80c5e81650",
+      "project": "Calamity Mod Legacy",
+      "path": "Buffs/DamageOverTime/Plague.png",
+      "license": "Calamity Team / original rights holders; All Rights Reserved; not GPL-3.0-only"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/mob_effect/old_one_holy_fire.png",
+      "sha256": "d4a5e7959fb82596a60a20b21a83e991c541d78320d8c6c74cf39e49e6ff9cd9",
+      "source": "E:/工具/tModUnpacker/CalamityModLegacy/Buffs/DamageOverTime/HolyFlames.png",
+      "source_sha256": "d4a5e7959fb82596a60a20b21a83e991c541d78320d8c6c74cf39e49e6ff9cd9",
+      "project": "Calamity Mod Legacy",
+      "path": "Buffs/DamageOverTime/HolyFlames.png",
+      "license": "Calamity Team / original rights holders; All Rights Reserved; not GPL-3.0-only"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/mob_effect/old_one_astral.png",
+      "sha256": "615e7b0a221de966f88bcd995f6fb25c6d9d2e346a2c7d873df0f605a7f11ec4",
+      "source": "E:/工具/tModUnpacker/CalamityModLegacy/Buffs/DamageOverTime/AstralInfectionDebuff.png",
+      "source_sha256": "615e7b0a221de966f88bcd995f6fb25c6d9d2e346a2c7d873df0f605a7f11ec4",
+      "project": "Calamity Mod Legacy",
+      "path": "Buffs/DamageOverTime/AstralInfectionDebuff.png",
+      "license": "Calamity Team / original rights holders; All Rights Reserved; not GPL-3.0-only"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/mob_effect/old_one_depth.png",
+      "sha256": "59a99dfd161962be943311d67a4eeb597bcce02c342428c385910335704e1559",
+      "source": "E:/工具/tModUnpacker/CalamityModLegacy/Buffs/DamageOverTime/CrushDepth.png",
+      "source_sha256": "59a99dfd161962be943311d67a4eeb597bcce02c342428c385910335704e1559",
+      "project": "Calamity Mod Legacy",
+      "path": "Buffs/DamageOverTime/CrushDepth.png",
+      "license": "Calamity Team / original rights holders; All Rights Reserved; not GPL-3.0-only"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/mob_effect/old_one_temporal.png",
+      "sha256": "4fb82ed5343eb3c0a7e8e8ed44f65e2bb47b1b63380d92cb587954c8f5f8f9ee",
+      "source": "E:/工具/tModUnpacker/CalamityModLegacy/Buffs/StatDebuffs/TemporalSadness.png",
+      "source_sha256": "4fb82ed5343eb3c0a7e8e8ed44f65e2bb47b1b63380d92cb587954c8f5f8f9ee",
+      "project": "Calamity Mod Legacy",
+      "path": "Buffs/StatDebuffs/TemporalSadness.png",
+      "license": "Calamity Team / original rights holders; All Rights Reserved; not GPL-3.0-only"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/old_one/extra_75.png",
+      "sha256": "f1f2ac512dbb395439b14b540d70ecd6effbc3aff45da95efeeae733cc58da50",
+      "source": "G:/SteamLibrary/steamapps/common/Terraria/Content/Images/Extra_75.xnb",
+      "source_sha256": "9442fbf185e25b97fa2e90eb6d2844ab5c4a38a1716b7606a48a3f43d4ba8420",
+      "project": "Terraria 1.4.5 (user-approved texture substitution)",
+      "path": "Content/Images/Extra_75.xnb",
+      "license": "Re-Logic / original rights holders; not GPL-3.0-only",
+      "conversion": "XNB Texture2D to PNG; retain original premultiplied RGBA bytes (no unpremultiplication)"
     }
   ]
 }
