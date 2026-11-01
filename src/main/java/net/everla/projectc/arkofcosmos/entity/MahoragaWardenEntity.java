@@ -49,7 +49,7 @@ public final class MahoragaWardenEntity extends Warden {
             if(weights[i]==0)continue;
             roll-=weights[i];
             if(roll<0){
-                addEffect(new net.minecraft.world.effect.MobEffectInstance(ADAPTATION_EFFECTS[i],600,1+random.nextInt(3)));
+                addEffect(new net.minecraft.world.effect.MobEffectInstance(ADAPTATION_EFFECTS[i],600,ADAPTATION_EFFECTS[i]==net.minecraft.world.effect.MobEffects.REGENERATION?random.nextInt(2):1+random.nextInt(3)));
                 effectUses[i]++;effectUntil[i]=level().getGameTime()+600;return;
             }
         }
