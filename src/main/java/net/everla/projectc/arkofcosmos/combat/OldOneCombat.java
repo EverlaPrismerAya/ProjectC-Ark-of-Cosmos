@@ -45,7 +45,15 @@ public final class OldOneCombat {
         OldOneEntity.create(p,OldOneEntity.Kind.SWORD,c,Vec3.ZERO,f);
         int beam=p.getRandom().nextInt(4);
         Vec3 straight=target.subtract(c).normalize();if(straight.lengthSqr()<1e-8)straight=f.forward();
-        OldOneEntity.create(p,OldOneEntity.Kind.values()[OldOneEntity.Kind.EON.ordinal()+beam],c,straight.scale(28d/16),f);
+        // EON is the first beam kind; the enum also contains ORB and DERIVED, so
+        // ordinal arithmetic would address past the end when beam == 3.
+        OldOneEntity.Kind beamKind = switch (beam) {
+            case 0 -> OldOneEntity.Kind.EON;
+            case 1 -> OldOneEntity.Kind.EON_V2;
+            case 2 -> OldOneEntity.Kind.EON_V3;
+            default -> OldOneEntity.Kind.EON_V4;
+        };
+        OldOneEntity.create(p, beamKind,c,straight.scale(28d/16),f);
         double speed=22+p.getRandom().nextInt(8);
         for(int i=0;i<4;i++){
             // Source: (mouseX + centerX + width/2 - direction)/2, mountedCenterY - 100*i.
