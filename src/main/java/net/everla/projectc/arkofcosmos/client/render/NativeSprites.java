@@ -16,6 +16,10 @@ public final class NativeSprites extends RenderType {
     private record Image(int width,int height,List<int[]> contour) {}
     private static final Map<String,Image> IMAGES=new HashMap<>();
     private static final Map<ResourceLocation,RenderType> ADDITIVE=new HashMap<>();
+    private static final Map<ResourceLocation,RenderType> OWNER_FADED=new HashMap<>();
+    private static RenderType ownerFaded(ResourceLocation texture){return OWNER_FADED.computeIfAbsent(texture,t->create("old_one_owner_faded",DefaultVertexFormat.NEW_ENTITY,VertexFormat.Mode.QUADS,256,false,true,
+            CompositeState.builder().setShaderState(RENDERTYPE_ENTITY_TRANSLUCENT_SHADER).setTextureState(new TextureStateShard(t,false,false))
+                    .setTransparencyState(TRANSLUCENT_TRANSPARENCY).setCullState(NO_CULL).setLightmapState(LIGHTMAP).setOverlayState(OVERLAY).setWriteMaskState(COLOR_WRITE).createCompositeState(false)));}
     private static RenderType additive(ResourceLocation texture){return ADDITIVE.computeIfAbsent(texture,t->create("elements_additive",DefaultVertexFormat.NEW_ENTITY,VertexFormat.Mode.QUADS,256,false,true,
             CompositeState.builder().setShaderState(RENDERTYPE_ENTITY_TRANSLUCENT_SHADER).setTextureState(new TextureStateShard(t,false,false))
                     .setTransparencyState(LIGHTNING_TRANSPARENCY).setCullState(NO_CULL).setLightmapState(LIGHTMAP).setOverlayState(OVERLAY).setWriteMaskState(COLOR_WRITE).createCompositeState(false)));}
@@ -34,7 +38,9 @@ public final class NativeSprites extends RenderType {
     });}
     public static int width(String name){return image(name).width;}
     public static int height(String name){return image(name).height;}
-    public record Draw(PoseStack pose,MultiBufferSource buffers,Vec3 base,int owner) {
+    public static List<int[]> contour(String name){return image(name).contour;}
+    public record Draw(PoseStack pose,MultiBufferSource buffers,Vec3 base,int owner,boolean clearOwnerView) {
+        public Draw(PoseStack pose,MultiBufferSource buffers,Vec3 base,int owner){this(pose,buffers,base,owner,false);}
         public void centered(String name,Vec3 at,AttackFrame f,double angle,double sx,double sy,float[] color,boolean additive){
             sprite(name,at,f,angle,sx,sy,width(name)/2d,height(name)/2d,color,additive,false,15728880);
         }
@@ -46,7 +52,7 @@ public final class NativeSprites extends RenderType {
         }
         public void sprite(String name,Vec3 at,AttackFrame f,double angle,double sx,double sy,double ox,double oy,float[] color,boolean additive,boolean thick,int light,double depthBias,boolean translucent){
             Image img=image(name);Vec3 x=f.direction(angle).scale(sx/16),y=f.direction(angle+Math.PI/2).scale(sy/16),n=f.normal();
-            RenderType type=additive?additive(texture(name)):translucent?RenderType.entityTranslucent(texture(name)):thick?RenderType.entityCutoutNoCull(texture(name)):RenderType.entityTranslucentEmissive(texture(name));
+            RenderType type=clearOwnerView&&ownerView()?ownerFaded(texture(name)):additive?additive(texture(name)):translucent?RenderType.entityTranslucent(texture(name)):thick?RenderType.entityCutoutNoCull(texture(name)):RenderType.entityTranslucentEmissive(texture(name));
             VertexConsumer out=buffers.getBuffer(type);double depth=thick?1.5*sx/16+(name.endsWith("_glow")?.002:0)+depthBias:0;
             for(int face=0;face<(thick?2:1);face++){
                 Vec3 origin=at.add(n.scale(face==0?depth:-depth));
@@ -72,7 +78,14 @@ public final class NativeSprites extends RenderType {
         }
         private boolean ownerView(){Minecraft mc=Minecraft.getInstance();return mc.player!=null&&mc.getCameraEntity()==mc.player&&mc.player.getId()==owner&&mc.options.getCameraType().isFirstPerson();}
         private void vertex(VertexConsumer out,Vec3 at,float u,float v,Vec3 normal,float[] color,int light,boolean additive){
-            double fade=1;if(ownerView()){double d=at.distanceTo(Minecraft.getInstance().gameRenderer.getMainCamera().getPosition());double t=Math.max(0,Math.min(1,(d-.5)/2.5));fade=.12+.88*t*t*(3-2*t);}
+            double fade=1;if(ownerView()){
+                var camera=Minecraft.getInstance().gameRenderer.getMainCamera();Vec3 relative=at.subtract(camera.getPosition());double d=relative.length();
+                double t=Math.max(0,Math.min(1,(d-(clearOwnerView?1.5:.5))/2.5));fade=clearOwnerView?t*t*(3-2*t):.12+.88*t*t*(3-2*t);
+                if(clearOwnerView){var look=camera.getLookVector();double cosine=d<1e-8?1:relative.dot(new Vec3(look.x(),look.y(),look.z()))/d;
+                    double outside=Math.max(0,Math.min(1,(Math.cos(Math.toRadians(12))-cosine)/(Math.cos(Math.toRadians(12))-Math.cos(Math.toRadians(28)))));
+                    fade*=.35*outside*outside*(3-2*outside);
+                }
+            }
             Vec3 local=at.subtract(base);double rgb=1;
             out.vertex(pose.last().pose(),(float)local.x,(float)local.y,(float)local.z).color(component(color[0]*rgb),component(color[1]*rgb),component(color[2]*rgb),component(color[3]*fade))
                     .uv(u,v).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(pose.last().normal(),(float)normal.x,(float)normal.y,(float)normal.z).endVertex();

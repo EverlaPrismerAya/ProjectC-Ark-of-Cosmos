@@ -34,8 +34,15 @@ public final class OldOneRenderer extends EntityRenderer<OldOneEntity> {
         int frame=Math.min(frames-1,s.getInt("Frame"));float opacity=(float)(1-alpha/255);
         float[] color={opacity,opacity,opacity,opacity};
         if(k==SWORD){
-            new NativeSprites.Draw(poses,buffers,base,e.ownerId()).sprite(name,at,f,rotation+Math.PI/4,1,1,0,NativeSprites.height(name),new float[]{1,1,1,1},false,true,light,0,true);return;
+            double sourceAge=(e.level().getGameTime()-s.getLong("StartTick")+partial)*3;
+            if(sourceAge>=15)return;
+            rotation=OldOneEntity.swordAngle(sourceAge);
+            var owner=e.level().getEntity(e.ownerId());
+            if(owner instanceof net.minecraft.world.entity.player.Player p)at=p.getPosition(partial).add(0,p.getBbHeight()*.6,0);
+            new NativeSprites.Draw(poses,buffers,base,e.ownerId(),true).sprite(name,at,f,rotation+Math.PI/4,1,1,0,NativeSprites.height(name),new float[]{1,1,1,1},false,true,light,0,true);return;
         }
+        boolean billboard=k!=EON&&k!=EON_V2&&k!=EON_V3&&k!=EON_V4;
+        if(billboard)f=NativeSprites.billboard();
         if(k==EON||k==EON_V2||k==EON_V3||k==EON_V4||k==ORB||k==ASTRAL_STAR){
             int[] disco=OldOneParticles.disco();
             color=switch(k){case EON->rgba(disco[0],100,255,alpha);case EON_V2->rgba(53,disco[1],255,alpha);case EON_V3->rgba(disco[0],203,103,alpha);case EON_V4->rgba(255,disco[1],53,alpha);case ASTRAL_STAR->rgba(200,100,250,alpha);default->rgba(disco[0],disco[1],disco[2],alpha);};
@@ -60,10 +67,11 @@ public final class OldOneRenderer extends EntityRenderer<OldOneEntity> {
                 sprite(poses,buffers,base,name,at.add(delta.scale(.5)),line,Math.PI/2,.5,sy*.5,1,0,multiply(color,(float)fade));}
             sprite(poses,buffers,base,name,at,f,rotation,scale,scale,1,0,color);sprite(poses,buffers,base,name,at,f,0,scale,scale,1,0,color);return;
         }
-        if(k!=MUSHROOM&&k!=FLOWER_POW&&k!=SOLAR_EXPLOSION&&k!=TERRARIAN&&velocity.lengthSqr()>1e-10){
+        if(!billboard&&velocity.lengthSqr()>1e-10){
             // Preserve source sprite rotation in the flight plane after three-dimensional homing.
             AttackFrame flight=flight(velocity,f);rotation-=f.angle(velocity);f=flight;
         }
+        if(!billboard){beam(poses,buffers,base,name,at,f,rotation,scale,color);return;}
         if(k==HOLY_ARROW)for(int i=0;i<4;i++)region(poses,buffers,base,"old_one/extra_75",at.add(f.direction(rotation+i*Math.PI/2).scale(.25)),f,rotation,scale,scale,0,0,NativeSprites.width(name),NativeSprites.height(name),rgba(120,40,222,120));
         double sx=k==NEBULA&&velocity.dot(ElementsEntity.vector(s,"F"))<0?-scale:scale;
         sprite(poses,buffers,base,name,at,f,rotation,sx,scale,frames,frame,color);
@@ -72,6 +80,29 @@ public final class OldOneRenderer extends EntityRenderer<OldOneEntity> {
     private static AttackFrame flight(Vec3 direction,AttackFrame original){Vec3 forward=direction.normalize(),side=original.normal().cross(forward).normalize();if(side.lengthSqr()<.5)side=original.right();return new AttackFrame(forward,side);}
     private static float[] rgba(double r,double g,double b,double a){return new float[]{(float)r/255,(float)g/255,(float)b/255,(float)a/255};}
     private static float[] multiply(float[] c,float f){return new float[]{c[0]*f,c[1]*f,c[2]*f,c[3]*f};}
+    /** Three source pixels of extrusion, closed along the original texture's opaque contour. */
+    private static void beam(PoseStack pose,MultiBufferSource buffers,Vec3 base,String name,Vec3 at,AttackFrame plane,double angle,double scale,float[] color){
+        int width=NativeSprites.width(name),height=NativeSprites.height(name);
+        Vec3 x=plane.direction(angle).scale(scale/16),y=plane.direction(angle+Math.PI/2).scale(scale/16),n=plane.normal(),depth=n.scale(1.5*scale/16);
+        VertexConsumer out=buffers.getBuffer(SourceBlend.type(NativeSprites.texture(name),true));
+        for(int side:new int[]{-1,1})for(int i=0;i<4;i++){
+            int corner=side>0?3-i:i,u=corner<2?0:1,v=corner==0||corner==3?0:1;
+            vertex(out,pose,base,at.add(x.scale((u-.5)*width)).add(y.scale((v-.5)*height)).add(depth.scale(side)),n.scale(side),u,v,color);
+        }
+        for(int[] edge:NativeSprites.contour(name)){
+            int px=edge[0],py=edge[1],side=edge[2];double ax=px,ay=py,bx=px,by=py;
+            if(side<2){ax+=side;bx=ax;by++;}else{ay+=side-2;by=ay;bx++;}
+            Vec3 a=at.add(x.scale(ax-width/2d)).add(y.scale(ay-height/2d)),b=at.add(x.scale(bx-width/2d)).add(y.scale(by-height/2d));
+            Vec3 normal=(side<2?x:y).normalize().scale(side==0||side==2?-1:1);float u=(px+.5f)/width,v=(py+.5f)/height;
+            if(b.subtract(a).cross(depth.scale(-2)).dot(normal)<0){Vec3 swap=a;a=b;b=swap;}
+            vertex(out,pose,base,a.add(depth),normal,u,v,color);vertex(out,pose,base,b.add(depth),normal,u,v,color);
+            vertex(out,pose,base,b.subtract(depth),normal,u,v,color);vertex(out,pose,base,a.subtract(depth),normal,u,v,color);
+        }
+    }
+    private static void vertex(VertexConsumer out,PoseStack pose,Vec3 base,Vec3 at,Vec3 normal,float u,float v,float[] color){
+        Vec3 local=at.subtract(base);out.vertex(pose.last().pose(),(float)local.x,(float)local.y,(float)local.z).color(color[0],color[1],color[2],color[3]).uv(u,v)
+                .overlayCoords(OverlayTexture.NO_OVERLAY).uv2(15728880).normal(pose.last().normal(),(float)normal.x,(float)normal.y,(float)normal.z).endVertex();
+    }
     static void sprite(PoseStack pose,MultiBufferSource buffers,Vec3 base,String name,Vec3 at,AttackFrame plane,double angle,double sx,double sy,int frames,int frame,float[] color){
         int width=NativeSprites.width(name),height=NativeSprites.height(name)/frames;
         region(pose,buffers,base,name,at,plane,angle,sx,sy,0,frame*height,width,height,color);
@@ -88,7 +119,9 @@ public final class OldOneRenderer extends EntityRenderer<OldOneEntity> {
     private static final class SourceBlend extends RenderType {
         private SourceBlend(){super("old_one_xna",DefaultVertexFormat.NEW_ENTITY,VertexFormat.Mode.QUADS,256,false,true,()->{},()->{});}
         private static final Map<ResourceLocation,RenderType> TYPES=new HashMap<>();
+        private static final Map<ResourceLocation,RenderType> SOLID_TYPES=new HashMap<>();
         private static final TransparencyStateShard XNA=new TransparencyStateShard("xna_premultiplied",()->{RenderSystem.enableBlend();RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.ONE,GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA,GlStateManager.SourceFactor.ONE,GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);},()->{RenderSystem.disableBlend();RenderSystem.defaultBlendFunc();});
-        static RenderType type(ResourceLocation texture){return TYPES.computeIfAbsent(texture,t->create("old_one_xna",DefaultVertexFormat.NEW_ENTITY,VertexFormat.Mode.QUADS,256,false,true,CompositeState.builder().setShaderState(RENDERTYPE_EYES_SHADER).setTextureState(new TextureStateShard(t,false,false)).setTransparencyState(XNA).setCullState(NO_CULL).setLightmapState(LIGHTMAP).setOverlayState(OVERLAY).setWriteMaskState(COLOR_WRITE).createCompositeState(false)));}
+        static RenderType type(ResourceLocation texture){return type(texture,false);}
+        static RenderType type(ResourceLocation texture,boolean solid){return (solid?SOLID_TYPES:TYPES).computeIfAbsent(texture,t->create("old_one_xna",DefaultVertexFormat.NEW_ENTITY,VertexFormat.Mode.QUADS,256,false,true,CompositeState.builder().setShaderState(RENDERTYPE_EYES_SHADER).setTextureState(new TextureStateShard(t,false,false)).setTransparencyState(XNA).setCullState(solid?CULL:NO_CULL).setLightmapState(LIGHTMAP).setOverlayState(OVERLAY).setWriteMaskState(COLOR_WRITE).createCompositeState(false)));}
     }
 }

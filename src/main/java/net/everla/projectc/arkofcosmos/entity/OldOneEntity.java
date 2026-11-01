@@ -35,6 +35,7 @@ public final class OldOneEntity extends Entity {
     private net.minecraft.world.item.ItemStack weapon=net.minecraft.world.item.ItemStack.EMPTY;
     public net.minecraft.world.item.ItemStack weapon(){return weapon;}
     private UUID ownerUuid;
+    private long startTick;
     private int ownerId,age,updates,left,penetrate,alpha,animationFrame,tileDelay=120,targetId=-1,parentId=-1,solarWidth=8,sourceStep;
     private Kind kind=Kind.SWORD;
     private boolean ended,tileCollide,friendly=true,pulse,waterWet,lavaWet,blockEnd;
@@ -46,7 +47,9 @@ public final class OldOneEntity extends Entity {
     public static OldOneEntity create(Player p,Kind k,Vec3 at,Vec3 speed,AttackFrame f){return spawn(p,k,at,speed,f,0,-1,-1);}
     public static OldOneEntity orb(Player p,Vec3 at,Vec3 speed,AttackFrame f,int parameter){return spawn(p,Kind.ORB,at,speed,f,parameter,-1,-1);}
     private static OldOneEntity spawn(Player p,Kind k,Vec3 at,Vec3 speed,AttackFrame f,float parameter,int target,int parent){
+        if(k==Kind.SWORD)at=swordHilt(p);
         OldOneEntity e=new OldOneEntity(ArkOfCosmos.OLD_ONE_ATTACK.get(),p.level());e.ownerUuid=p.getUUID();e.ownerId=p.getId();e.kind=k;e.weapon=p.getMainHandItem().copy();
+        e.startTick=p.level().getGameTime();
         e.frame=f;e.velocity=speed;e.setDeltaMovement(speed);e.setPos(at);e.spawn=at;e.ai1=parameter;e.targetId=target;e.parentId=parent;e.defaults();
         e.publish();p.level().addFreshEntity(e);return e;
     }
@@ -79,6 +82,8 @@ public final class OldOneEntity extends Entity {
     public Kind kind(){return level().isClientSide?Kind.values()[entityData.get(VIEW).getInt("Kind")]:kind;}
     public int ownerId(){return level().isClientSide?entityData.get(VIEW).getInt("Owner"):ownerId;}
     public int sourceAge(){return age;}
+    public static Vec3 swordHilt(Player p){return p.position().add(0,p.getBbHeight()*.6,0);}
+    public static double swordAngle(double sourceAge){return Math.toRadians(-60+120*Math.max(0,Math.min(15,sourceAge))/15);}
     public int remaining(){return left;}
     public Player owner(){return ownerUuid==null?null:level().getPlayerByUUID(ownerUuid);}
     public int updatesPerFrame(){return switch(kind){case ICHOR,NEBULA,VORTEX_ROCKET->3;case HOLY_ARROW->2;default->1;};}
@@ -104,20 +109,22 @@ public final class OldOneEntity extends Entity {
     @Override public void tick(){
         super.tick();if(level().isClientSide){clientView.tick(entityData.get(VIEW),"Updates");return;}
         Player p=owner();if(p==null||!p.isAlive()||p.isSpectator()){discardAttack();return;}
+        // Allow the final trajectory to arrive and interpolate before removal. No extra damage step.
+        if(kind==Kind.SWORD&&left<=0){if(left==0){left=-1;publish();}else discardAttack();return;}
         samples=new ListTag();samples.add(snapshot());
         for(int step=0;step<3&&!ended;step++){
             sourceStep=step;age++;
             for(int sub=0;sub<updatesPerFrame()&&!ended;sub++){
                 updates++;hitUntil.replaceAll((id,time)->time<0?time:Math.max(0,time-1));remember();ai(p);if(ended)break;emit(false);
                 Vec3 from=position();
-                if(kind==Kind.SWORD){setPos(p.getBoundingBox().getCenter());swordHit(p);}
+                if(kind==Kind.SWORD){setPos(swordHilt(p));swordHit(p);}
                 else{blockEnd=false;travel();if(!ended)hit(p,from,position(),kind==Kind.SOLAR_EXPLOSION,solarWidth/32d);if(blockEnd&&!ended)finish(true);}
-                left--;samples.add(snapshot());if(left<=0)finish(true);
+                left--;samples.add(snapshot());if(left<=0&&kind!=Kind.SWORD)finish(true);
             }
         }if(!ended)publish();
     }
     private void ai(Player p){
-        if(kind==Kind.SWORD){rotation=(float)Math.toRadians(-60+120*(age-1)/14d);return;}
+        if(kind==Kind.SWORD){rotation=(float)swordAngle(age);return;}
         if(beam()){
             if(local1<15)local1++;
             else if(!pulse){scale-=.02f;alpha+=30;if(alpha>=250){alpha=255;pulse=true;}}
@@ -198,7 +205,7 @@ public final class OldOneEntity extends Entity {
     private int localCooldown(){if(beam())return 6-(kind.ordinal()-Kind.EON.ordinal());return switch(kind){case SWORD,RAINBOW_CRYSTAL,VORTEX_ROCKET->-1;case ORB->1;case SOLAR_EXPLOSION->6;case HOLY_ARROW->8;default->0;};}
     private void swordHit(Player p){
         Vec3 start=position();double reach=Math.hypot(OldOneBlade.WIDTH,OldOneBlade.HEIGHT)/16;
-        double previous=Math.toRadians(-60+120*Math.max(0,age-2)/14d);
+        double previous=swordAngle(age-1);
         for(LivingEntity t:level().getEntitiesOfClass(LivingEntity.class,new AABB(start,start).inflate(reach),e->canHit(p,e)))if(OldOneBlade.sweeps(t.getBoundingBox(),start,frame,previous,rotation))strike(p,t,false);
     }
     private void hit(Player p,Vec3 from,Vec3 to,boolean explosion,double radius){
@@ -220,7 +227,7 @@ public final class OldOneEntity extends Entity {
         float amount=(float)Math.rint((20+net.minecraft.world.item.enchantment.EnchantmentHelper.getDamageBonus(weapon,t.getMobType()))*(1f+(random.nextInt(31)-15)*.01f));
         // Native melee base crit 4 plus the item's 15 percentage points; source critical multiplier is two.
         if(kind!=Kind.SOLAR_EXPLOSION&&random.nextInt(100)<19)amount*=2;
-        if(!WeaponDamage.hurt(t,source,amount))return;
+        if(!ArkDamage.hurtUnmitigated(t,source,amount))return;
         p.setLastHurtMob(t);
         int fire=weapon.getEnchantmentLevel(net.minecraft.world.item.enchantment.Enchantments.FIRE_ASPECT);if(fire>0)t.setSecondsOnFire(fire*4);
         Vec3 direction=kind==Kind.SWORD?frame.direction(rotation):velocity.normalize();
@@ -254,7 +261,7 @@ public final class OldOneEntity extends Entity {
     private void remember(){if(kind!=Kind.ORB&&kind!=Kind.ASTRAL_STAR)return;trail.add(0,snapshotPosition());int max=kind==Kind.ORB?6:10;while(trail.size()>max)trail.remove(trail.size()-1);}
     private CompoundTag snapshotPosition(){CompoundTag s=new CompoundTag();ElementsEntity.vector(s,"Position",position());s.putFloat("Rotation",rotation);return s;}
     private CompoundTag snapshot(){
-        CompoundTag s=snapshotPosition();s.putInt("Kind",kind.ordinal());s.putInt("Owner",ownerId);s.putInt("Age",age);s.putInt("Updates",updates);s.putInt("Left",left);s.putInt("Alpha",alpha);s.putInt("Frame",animationFrame);s.putFloat("Scale",scale);s.putInt("Target",targetId);s.putInt("Parent",parentId);
+        CompoundTag s=snapshotPosition();s.putLong("StartTick",startTick);s.putInt("Kind",kind.ordinal());s.putInt("Owner",ownerId);s.putInt("Age",age);s.putInt("Updates",updates);s.putInt("Left",left);s.putInt("Alpha",alpha);s.putInt("Frame",animationFrame);s.putFloat("Scale",scale);s.putInt("Target",targetId);s.putInt("Parent",parentId);
         ElementsEntity.vector(s,"Velocity",velocity);ElementsEntity.vector(s,"F",frame.forward());ElementsEntity.vector(s,"R",frame.right());s.put("Trail",trail.copy());return s;
     }
     private void publish(){CompoundTag s=snapshot();s.put("Samples",samples.copy());entityData.set(VIEW,s);refreshDimensions();}

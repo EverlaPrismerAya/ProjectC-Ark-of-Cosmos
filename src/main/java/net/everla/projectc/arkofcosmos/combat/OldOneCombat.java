@@ -44,9 +44,10 @@ public final class OldOneCombat {
     @SubscribeEvent public static void block(PlayerInteractEvent.LeftClickBlock e){if(holding(e.getEntity()))e.setCanceled(true);}
     private static void attack(ServerPlayer p,State s){
         AttackFrame f=AttackFrame.capture(p); Vec3 c=p.getBoundingBox().getCenter(),target=aim(p);
-        // Terraria screen X/Y are embedded in the captured attack plane. Y increases toward f.right().
-        double tx=target.subtract(c).dot(f.forward()),ty=target.subtract(c).dot(f.right());
-        OldOneEntity.create(p,OldOneEntity.Kind.SWORD,c,Vec3.ZERO,f);
+        // The eye ray centres the orb formation; the sword follows it at arm height.
+        Vec3 eye=p.getEyePosition();
+        double tx=target.subtract(eye).dot(f.forward()),ty=target.subtract(eye).dot(f.right());
+        OldOneEntity.create(p,OldOneEntity.Kind.SWORD,OldOneEntity.swordHilt(p),Vec3.ZERO,f);
         int beam=p.getRandom().nextInt(4);
         Vec3 straight=target.subtract(c).normalize();if(straight.lengthSqr()<1e-8)straight=f.forward();
         // Explicit source variant selection.
@@ -59,9 +60,9 @@ public final class OldOneCombat {
         OldOneEntity.create(p, beamKind,c,straight.scale(28d/16),f);
         double speed=22+p.getRandom().nextInt(8);
         for(int i=0;i<4;i++){
-            // Source: (mouseX + centerX + width/2 - direction)/2, mountedCenterY - 100*i.
-            double x=(tx+p.getBbWidth()/2-1d/16)/2, y=-100d*i/16;
-            Vec3 origin=c.add(f.forward().scale(x)).add(f.right().scale(y));
+            // Preserve the 100-pixel spacing, centred at the midpoint of the eye ray.
+            double x=tx/2, y=(i-1.5)*100/16;
+            Vec3 origin=eye.add(f.forward().scale(x)).add(f.right().scale(y));
             Vec3 delta=f.forward().scale(tx-x).add(f.right().scale(ty-y));
             Vec3 v=delta.lengthSqr()<1e-12?f.forward().scale(speed/16):delta.normalize().scale(speed/16);
             v=v.add(f.forward().scale((p.getRandom().nextInt(721)-360)*.02/16))

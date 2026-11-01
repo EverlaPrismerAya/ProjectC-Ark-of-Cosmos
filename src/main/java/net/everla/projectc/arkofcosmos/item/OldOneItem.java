@@ -7,6 +7,9 @@ public final class OldOneItem extends SwordItem {
         public int getLevel(){return 4;} public int getEnchantmentValue(){return 15;} public Ingredient getRepairIngredient(){return Ingredient.EMPTY;}
     };
     public OldOneItem(){super(TIER,19,0,new Item.Properties().stacksTo(1).fireResistant());}
+    @Override public net.minecraft.network.chat.Component getName(ItemStack stack){
+        return net.minecraft.network.chat.Component.empty().append(net.minecraft.network.chat.Component.translatable(getDescriptionId(stack)).withStyle(style->style.withColor(0x6C2DC7)));
+    }
     @Override public boolean isEnchantable(ItemStack stack){return stack.getCount()==1;}
     @Override public boolean onEntitySwing(ItemStack stack, net.minecraft.world.entity.LivingEntity entity){return true;}
     @Override public void appendHoverText(ItemStack stack, net.minecraft.world.level.Level level, java.util.List<net.minecraft.network.chat.Component> lines, TooltipFlag flag) {

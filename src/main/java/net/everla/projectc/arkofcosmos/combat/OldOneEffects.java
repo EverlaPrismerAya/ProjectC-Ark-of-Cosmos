@@ -79,7 +79,7 @@ public final class OldOneEffects {
     @SubscribeEvent public static void reflect(LivingDamageEvent e){
         if(REFLECTING.get()||e.getAmount()<=0||e.getSource().getDirectEntity()!=e.getSource().getEntity()||!(e.getSource().getEntity() instanceof LivingEntity attacker)||attacker instanceof Player)return;
         LivingEntity victim=e.getEntity();double thorns=has(victim,Status.THORNS)?1d/3:0;if(has(victim,Status.WARD)&&thorns<1)thorns+=.2;
-        if(thorns>0){REFLECTING.set(true);try{attacker.hurt(attacker.damageSources().thorns(victim),(float)(e.getAmount()*thorns));}finally{REFLECTING.set(false);}}
+        if(thorns>0){REFLECTING.set(true);try{ArkDamage.hurtUnmitigated(attacker,attacker.damageSources().thorns(victim),(float)(e.getAmount()*thorns));}finally{REFLECTING.set(false);}}
     }
     @SubscribeEvent public static void tick(LivingEvent.LivingTickEvent event){
         LivingEntity e=event.getEntity();if(e.level().isClientSide||!e.isAlive())return;
@@ -88,7 +88,7 @@ public final class OldOneEffects {
         if(has(e,Status.GLACIAL)&&!movementImmune(e,true)){FROZEN.putIfAbsent(e,e.position());e.setDeltaMovement(Vec3.ZERO);}else FROZEN.remove(e);
         if(e.tickCount%20!=0)return;
         if(has(e,Status.WARD))e.heal(.6f);
-        // Independent life-loss statuses bypass armor, but keep native death, immunity and damage events.
+        // Old One life-loss statuses share Ark authority and all tag fallbacks.
         float loss=0;
         if(has(e,Status.BRIMSTONE))loss+=4;if(has(e,Status.PLAGUE))loss+=10;if(has(e,Status.HOLY_FIRE))loss+=5;
         if(has(e,Status.ASTRAL))loss+=7.5f;if(has(e,Status.FROSTBURN))loss+=1.6f;
@@ -100,6 +100,6 @@ public final class OldOneEffects {
         if(has(e,Status.DEPTH))dot(e,e.damageSources().drown(),5);
         if(has(e,Status.INFERNO))for(var target:e.level().getEntitiesOfClass(LivingEntity.class,e.getBoundingBox().inflate(12.5),t->t.distanceToSqr(e)<=12.5*12.5&&e instanceof Player p&&ArkCombat.enemy(p,t))){target.setSecondsOnFire(2);dot(target,e.damageSources().inFire(),1);}
     }
-    private static void dot(LivingEntity e,net.minecraft.world.damagesource.DamageSource source,float amount){int inv=e.invulnerableTime;e.invulnerableTime=0;try{e.hurt(source,amount);}finally{e.invulnerableTime=Math.max(inv,e.invulnerableTime);}}
+    private static void dot(LivingEntity e,net.minecraft.world.damagesource.DamageSource source,float amount){ArkDamage.hurtUnmitigated(e,source,amount);}
     @SubscribeEvent public static void end(TickEvent.ServerTickEvent e){if(e.phase==TickEvent.Phase.END)FROZEN.entrySet().removeIf(entry->{LivingEntity t=entry.getKey();if(t.isRemoved()||!t.isAlive()||!has(t,Status.GLACIAL))return true;t.setPos(entry.getValue());t.setDeltaMovement(Vec3.ZERO);t.hurtMarked=true;return false;});}
 }

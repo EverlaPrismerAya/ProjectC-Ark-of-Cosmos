@@ -22,7 +22,7 @@ public final class OldOneParticles {
     public static final class Registration {
         @SubscribeEvent public static void setup(net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent e){
             e.enqueueWork(()->net.minecraft.client.renderer.item.ItemProperties.register(ArkOfCosmos.ARK_OF_THE_OLD_ONE.get(),net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(ArkOfCosmos.MOD_ID,"active"),
-                (stack,level,entity,seed)->entity!=null&&!entity.level().getEntitiesOfClass(net.everla.projectc.arkofcosmos.entity.OldOneEntity.class,entity.getBoundingBox().inflate(16),a->a.ownerId()==entity.getId()&&a.kind()==Kind.SWORD).isEmpty()?1:0));
+                (stack,level,entity,seed)->entity!=null&&!entity.level().getEntitiesOfClass(net.everla.projectc.arkofcosmos.entity.OldOneEntity.class,entity.getBoundingBox().inflate(16),a->a.ownerId()==entity.getId()&&a.kind()==Kind.SWORD&&a.level().getGameTime()-a.renderState().getLong("StartTick")<5).isEmpty()?1:0));
         }
     }
     private static final Random RNG=new Random(),SPATIAL=new Random();

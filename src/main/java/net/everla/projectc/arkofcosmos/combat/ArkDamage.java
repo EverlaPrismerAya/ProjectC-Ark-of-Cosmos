@@ -157,9 +157,18 @@ public final class ArkDamage {
     }
 
     public static boolean hurt(LivingEntity target, DamageSource source, float amount) {
+        return hurt(target,source,amount,false);
+    }
+
+    /** Old One uses the same authority and tag fallbacks, without armor/resistance reduction. */
+    public static boolean hurtUnmitigated(LivingEntity target, DamageSource source, float amount) {
+        return hurt(target,source,amount,true);
+    }
+
+    private static boolean hurt(LivingEntity target, DamageSource source, float amount, boolean unmitigated) {
         if(source.getEntity() instanceof net.everla.projectc.arkofcosmos.entity.MahouTsukaiEntity
                 &&!WeaponDamage.handling(target,source))return WeaponDamage.hurt(target,source,amount);
-        boolean hurt = hurtTarget(target, source, amount);
+        boolean hurt = hurtTarget(target, source, amount, unmitigated);
         if (hurt && !target.isAlive() && source.getEntity() instanceof ServerPlayer player
                 && ResourceLocation.fromNamespaceAndPath("alexsmobs", "fly").equals(
                         net.minecraftforge.registries.ForgeRegistries.ENTITY_TYPES.getKey(target.getType()))) {
@@ -170,15 +179,17 @@ public final class ArkDamage {
         return hurt;
     }
 
-    private static boolean hurtTarget(LivingEntity target, DamageSource source, float amount) {
+    private static boolean hurtTarget(LivingEntity target, DamageSource source, float amount, boolean unmitigated) {
         if (target.level().isClientSide || protectedPlayer(target) || target.isRemoved()
                 || !Float.isFinite(amount) || amount <= 0 || !target.isAlive()) return false;
         if (ordinaryTarget(target)) return WeaponDamage.handling(target,source)
                 ? target.hurt(source,amount) : WeaponDamage.hurt(target, source, amount);
+        // The authority bypasses LivingHurtEvent; its native fallback still receives this bonus there.
+        if(unmitigated&&source.getEntity() instanceof LivingEntity attacker&&OldOneEffects.has(attacker,OldOneEffects.Status.WRATH))amount*=1.1f;
         float before = target.getHealth();
         if (!Float.isFinite(before) || before <= 0) return false;
         boolean seagull = seagull(target);
-        amount = seagull ? Float.MAX_VALUE : reducedDamage(target, amount);
+        amount = seagull ? Float.MAX_VALUE : unmitigated ? amount : reducedDamage(target, amount);
         float after = Math.max(0, before - amount);
         target.getEntityData().set(HEALTH, after);
         target.getCombatTracker().recordDamage(source, Math.min(before, amount));
