@@ -1,0 +1,6 @@
+{
+  "parent": "arkofcosmos:item/handheld_mace",
+  "textures": {
+    "layer0": "arkofcosmos:item/mace"
+  }
+}

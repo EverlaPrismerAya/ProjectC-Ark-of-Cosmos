@@ -1116,6 +1116,878 @@
       "path": "Sounds/Custom/SCalSounds/BrimstoneMonsterDrone.ogg",
       "license": "Calamity Team / original rights holders; All Rights Reserved; not GPL-3.0-only",
       "matches_recorded_output": true
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/particles/gust.json",
+      "sha256": "1f63bf6dbf6698a1fbb78c8cf4ff1ba59dadce58e05036ffd37d7439b0565d62",
+      "project": "Minecraft 26.1.2",
+      "path": "assets/minecraft/particles/gust.json",
+      "source_sha256": "546f2de90bb78e750a7452007f9e504a4333c78afc9b963a0bc5cd074d461f34",
+      "license": "Mojang / Microsoft; Minecraft EULA and Usage Guidelines; not GPL-3.0-only"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/block/heavy_core.png",
+      "sha256": "c74cc835fa46f5c24688cb163ee76122538a6920f806d36151260cc13e8242cc",
+      "project": "Minecraft 26.1.2",
+      "path": "assets/minecraft/textures/block/heavy_core.png",
+      "source_sha256": "c74cc835fa46f5c24688cb163ee76122538a6920f806d36151260cc13e8242cc",
+      "license": "Mojang / Microsoft; Minecraft EULA and Usage Guidelines; not GPL-3.0-only"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/item/copper_spear.png",
+      "sha256": "b62c5ea9ec1619b7f996f52e18c7da0ed50a4254e67813b3e58a080c444873f0",
+      "project": "Minecraft 26.1.2",
+      "path": "assets/minecraft/textures/item/copper_spear.png",
+      "source_sha256": "b62c5ea9ec1619b7f996f52e18c7da0ed50a4254e67813b3e58a080c444873f0",
+      "license": "Mojang / Microsoft; Minecraft EULA and Usage Guidelines; not GPL-3.0-only"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/item/copper_spear_in_hand.png",
+      "sha256": "cebbde5bc32247b7b2c7e7285f34af55c6a1544edc9bc84772c61ba522dc8068",
+      "project": "Minecraft 26.1.2",
+      "path": "assets/minecraft/textures/item/copper_spear_in_hand.png",
+      "source_sha256": "cebbde5bc32247b7b2c7e7285f34af55c6a1544edc9bc84772c61ba522dc8068",
+      "license": "Mojang / Microsoft; Minecraft EULA and Usage Guidelines; not GPL-3.0-only"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/item/diamond_spear.png",
+      "sha256": "fa6c967027edcae3bc31a6d81c6d4e846833f21f641a34aef6f9f68895ea5cfb",
+      "project": "Minecraft 26.1.2",
+      "path": "assets/minecraft/textures/item/diamond_spear.png",
+      "source_sha256": "fa6c967027edcae3bc31a6d81c6d4e846833f21f641a34aef6f9f68895ea5cfb",
+      "license": "Mojang / Microsoft; Minecraft EULA and Usage Guidelines; not GPL-3.0-only"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/item/diamond_spear_in_hand.png",
+      "sha256": "b39edc6f9101da3a5a146d3827d50194cff0c41fb9723072f03274ce5aab3f7d",
+      "project": "Minecraft 26.1.2",
+      "path": "assets/minecraft/textures/item/diamond_spear_in_hand.png",
+      "source_sha256": "b39edc6f9101da3a5a146d3827d50194cff0c41fb9723072f03274ce5aab3f7d",
+      "license": "Mojang / Microsoft; Minecraft EULA and Usage Guidelines; not GPL-3.0-only"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/item/golden_spear.png",
+      "sha256": "df81899c53da842a3e91dbbbf0f6b24420786df63cb3585ac6e62dda9ce5e37c",
+      "project": "Minecraft 26.1.2",
+      "path": "assets/minecraft/textures/item/golden_spear.png",
+      "source_sha256": "df81899c53da842a3e91dbbbf0f6b24420786df63cb3585ac6e62dda9ce5e37c",
+      "license": "Mojang / Microsoft; Minecraft EULA and Usage Guidelines; not GPL-3.0-only"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/item/golden_spear_in_hand.png",
+      "sha256": "aab410fc455ec94d5b041e985e929eadbdbd87da38c6e96a0445feab682412fc",
+      "project": "Minecraft 26.1.2",
+      "path": "assets/minecraft/textures/item/golden_spear_in_hand.png",
+      "source_sha256": "aab410fc455ec94d5b041e985e929eadbdbd87da38c6e96a0445feab682412fc",
+      "license": "Mojang / Microsoft; Minecraft EULA and Usage Guidelines; not GPL-3.0-only"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/item/iron_spear.png",
+      "sha256": "dd147a088c206bac507bdeabd48abd5d00f78497d33e539e015f7c1c528b079a",
+      "project": "Minecraft 26.1.2",
+      "path": "assets/minecraft/textures/item/iron_spear.png",
+      "source_sha256": "dd147a088c206bac507bdeabd48abd5d00f78497d33e539e015f7c1c528b079a",
+      "license": "Mojang / Microsoft; Minecraft EULA and Usage Guidelines; not GPL-3.0-only"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/item/iron_spear_in_hand.png",
+      "sha256": "2d9d274689c59dd241c5768587439714ca59af80793a74c408c618748004d365",
+      "project": "Minecraft 26.1.2",
+      "path": "assets/minecraft/textures/item/iron_spear_in_hand.png",
+      "source_sha256": "2d9d274689c59dd241c5768587439714ca59af80793a74c408c618748004d365",
+      "license": "Mojang / Microsoft; Minecraft EULA and Usage Guidelines; not GPL-3.0-only"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/item/mace.png",
+      "sha256": "389119cde42a517b1bb217a9baa216285babfa9f3d8718e05b8b98a5349a45b1",
+      "project": "Minecraft 26.1.2",
+      "path": "assets/minecraft/textures/item/mace.png",
+      "source_sha256": "389119cde42a517b1bb217a9baa216285babfa9f3d8718e05b8b98a5349a45b1",
+      "license": "Mojang / Microsoft; Minecraft EULA and Usage Guidelines; not GPL-3.0-only"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/item/netherite_spear.png",
+      "sha256": "9cf98d37a835fd007f8cd220b02e1d6cb431428d833f7ffc5ca72eab92d97e0a",
+      "project": "Minecraft 26.1.2",
+      "path": "assets/minecraft/textures/item/netherite_spear.png",
+      "source_sha256": "9cf98d37a835fd007f8cd220b02e1d6cb431428d833f7ffc5ca72eab92d97e0a",
+      "license": "Mojang / Microsoft; Minecraft EULA and Usage Guidelines; not GPL-3.0-only"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/item/netherite_spear_in_hand.png",
+      "sha256": "a1c9442d7b9b93f6c88ac19540d457dd15753e547e9c0dbce335258c50daf0ed",
+      "project": "Minecraft 26.1.2",
+      "path": "assets/minecraft/textures/item/netherite_spear_in_hand.png",
+      "source_sha256": "a1c9442d7b9b93f6c88ac19540d457dd15753e547e9c0dbce335258c50daf0ed",
+      "license": "Mojang / Microsoft; Minecraft EULA and Usage Guidelines; not GPL-3.0-only"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/item/stone_spear.png",
+      "sha256": "5f71419de94284e12b3fc75afdf135af80c1be3c1f053754077fcd53f70f26c9",
+      "project": "Minecraft 26.1.2",
+      "path": "assets/minecraft/textures/item/stone_spear.png",
+      "source_sha256": "5f71419de94284e12b3fc75afdf135af80c1be3c1f053754077fcd53f70f26c9",
+      "license": "Mojang / Microsoft; Minecraft EULA and Usage Guidelines; not GPL-3.0-only"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/item/stone_spear_in_hand.png",
+      "sha256": "1934f2b64dead8dd501c55362e332e22ecac62d4123702fe3b6bf40919405634",
+      "project": "Minecraft 26.1.2",
+      "path": "assets/minecraft/textures/item/stone_spear_in_hand.png",
+      "source_sha256": "1934f2b64dead8dd501c55362e332e22ecac62d4123702fe3b6bf40919405634",
+      "license": "Mojang / Microsoft; Minecraft EULA and Usage Guidelines; not GPL-3.0-only"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/item/wooden_spear.png",
+      "sha256": "2d9c4a49c935331ec88236831607dc408ce6420337b0ecd70a081529e1c65f51",
+      "project": "Minecraft 26.1.2",
+      "path": "assets/minecraft/textures/item/wooden_spear.png",
+      "source_sha256": "2d9c4a49c935331ec88236831607dc408ce6420337b0ecd70a081529e1c65f51",
+      "license": "Mojang / Microsoft; Minecraft EULA and Usage Guidelines; not GPL-3.0-only"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/item/wooden_spear_in_hand.png",
+      "sha256": "1107787fd87f8af61345432df03584f3d01b9c62836a948e37bddfc62a462456",
+      "project": "Minecraft 26.1.2",
+      "path": "assets/minecraft/textures/item/wooden_spear_in_hand.png",
+      "source_sha256": "1107787fd87f8af61345432df03584f3d01b9c62836a948e37bddfc62a462456",
+      "license": "Mojang / Microsoft; Minecraft EULA and Usage Guidelines; not GPL-3.0-only"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/particle/gust_0.png",
+      "sha256": "0a703013566736b60c8c09e9cf7037c8362e058fc5deea55c2e146f5d6bc02c2",
+      "project": "Minecraft 26.1.2",
+      "path": "assets/minecraft/textures/particle/gust_0.png",
+      "source_sha256": "0a703013566736b60c8c09e9cf7037c8362e058fc5deea55c2e146f5d6bc02c2",
+      "license": "Mojang / Microsoft; Minecraft EULA and Usage Guidelines; not GPL-3.0-only"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/particle/gust_1.png",
+      "sha256": "1aafaf7df05c03319e68359e04f60aeb390960c609ab734b1c6fde5b9fbe9687",
+      "project": "Minecraft 26.1.2",
+      "path": "assets/minecraft/textures/particle/gust_1.png",
+      "source_sha256": "1aafaf7df05c03319e68359e04f60aeb390960c609ab734b1c6fde5b9fbe9687",
+      "license": "Mojang / Microsoft; Minecraft EULA and Usage Guidelines; not GPL-3.0-only"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/particle/gust_10.png",
+      "sha256": "1095d4ec636cb1ea86da596cf8c530a172da263b078ab4b2fa3d30489b8dbeaa",
+      "project": "Minecraft 26.1.2",
+      "path": "assets/minecraft/textures/particle/gust_10.png",
+      "source_sha256": "1095d4ec636cb1ea86da596cf8c530a172da263b078ab4b2fa3d30489b8dbeaa",
+      "license": "Mojang / Microsoft; Minecraft EULA and Usage Guidelines; not GPL-3.0-only"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/particle/gust_11.png",
+      "sha256": "35e4f9f2c77f0b9417cdbcca8b2c8b4a486c09ef6651a1525227336203e8ea0b",
+      "project": "Minecraft 26.1.2",
+      "path": "assets/minecraft/textures/particle/gust_11.png",
+      "source_sha256": "35e4f9f2c77f0b9417cdbcca8b2c8b4a486c09ef6651a1525227336203e8ea0b",
+      "license": "Mojang / Microsoft; Minecraft EULA and Usage Guidelines; not GPL-3.0-only"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/particle/gust_2.png",
+      "sha256": "5f384940aaeefc433c5f9c5c9e49a96d18aebba5929a3bf827a101400f696d18",
+      "project": "Minecraft 26.1.2",
+      "path": "assets/minecraft/textures/particle/gust_2.png",
+      "source_sha256": "5f384940aaeefc433c5f9c5c9e49a96d18aebba5929a3bf827a101400f696d18",
+      "license": "Mojang / Microsoft; Minecraft EULA and Usage Guidelines; not GPL-3.0-only"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/particle/gust_3.png",
+      "sha256": "33a4a8e2225d2d097ed4a35c446bf012cdae1a310056e2629f7fa498a99efa70",
+      "project": "Minecraft 26.1.2",
+      "path": "assets/minecraft/textures/particle/gust_3.png",
+      "source_sha256": "33a4a8e2225d2d097ed4a35c446bf012cdae1a310056e2629f7fa498a99efa70",
+      "license": "Mojang / Microsoft; Minecraft EULA and Usage Guidelines; not GPL-3.0-only"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/particle/gust_4.png",
+      "sha256": "15e69ba6f8aac0f5a9f6bdb6a3f34770252aa831b7cef6cc0ba45ee58bdf5234",
+      "project": "Minecraft 26.1.2",
+      "path": "assets/minecraft/textures/particle/gust_4.png",
+      "source_sha256": "15e69ba6f8aac0f5a9f6bdb6a3f34770252aa831b7cef6cc0ba45ee58bdf5234",
+      "license": "Mojang / Microsoft; Minecraft EULA and Usage Guidelines; not GPL-3.0-only"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/particle/gust_5.png",
+      "sha256": "7c4dbd24d5781bbc086d1b0e4f6b6ba3eaadb01f3932a92f6d21914287d06240",
+      "project": "Minecraft 26.1.2",
+      "path": "assets/minecraft/textures/particle/gust_5.png",
+      "source_sha256": "7c4dbd24d5781bbc086d1b0e4f6b6ba3eaadb01f3932a92f6d21914287d06240",
+      "license": "Mojang / Microsoft; Minecraft EULA and Usage Guidelines; not GPL-3.0-only"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/particle/gust_6.png",
+      "sha256": "94f03a9f465220e3ff716ffdc98cbed7d49ebdf25fcf6370f939869c0e799251",
+      "project": "Minecraft 26.1.2",
+      "path": "assets/minecraft/textures/particle/gust_6.png",
+      "source_sha256": "94f03a9f465220e3ff716ffdc98cbed7d49ebdf25fcf6370f939869c0e799251",
+      "license": "Mojang / Microsoft; Minecraft EULA and Usage Guidelines; not GPL-3.0-only"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/particle/gust_7.png",
+      "sha256": "a871cbce4855a3ab41141211cc4b2bcf25c41cde434ede51066c71f211717c0c",
+      "project": "Minecraft 26.1.2",
+      "path": "assets/minecraft/textures/particle/gust_7.png",
+      "source_sha256": "a871cbce4855a3ab41141211cc4b2bcf25c41cde434ede51066c71f211717c0c",
+      "license": "Mojang / Microsoft; Minecraft EULA and Usage Guidelines; not GPL-3.0-only"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/particle/gust_8.png",
+      "sha256": "fb82e27b8f85b518ef106d36dd7e60882e2227aaa7f007f78424e030dd8781b9",
+      "project": "Minecraft 26.1.2",
+      "path": "assets/minecraft/textures/particle/gust_8.png",
+      "source_sha256": "fb82e27b8f85b518ef106d36dd7e60882e2227aaa7f007f78424e030dd8781b9",
+      "license": "Mojang / Microsoft; Minecraft EULA and Usage Guidelines; not GPL-3.0-only"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/particle/gust_9.png",
+      "sha256": "79fdb40afe3dfec8c126edfbcf7d50a6858c549bc5f001434f44e520fdee84c2",
+      "project": "Minecraft 26.1.2",
+      "path": "assets/minecraft/textures/particle/gust_9.png",
+      "source_sha256": "79fdb40afe3dfec8c126edfbcf7d50a6858c549bc5f001434f44e520fdee84c2",
+      "license": "Mojang / Microsoft; Minecraft EULA and Usage Guidelines; not GPL-3.0-only"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/item/mace/smash_air1.ogg",
+      "sha256": "06897f90b44c0e536f47ce14f72d9dba1e370f9ea7ab3605308c8be062ea7eae",
+      "project": "Minecraft 26.1.2",
+      "path": "asset-index:30/minecraft/sounds/item/mace/smash_air1.ogg",
+      "source_sha256": "06897f90b44c0e536f47ce14f72d9dba1e370f9ea7ab3605308c8be062ea7eae",
+      "license": "Mojang / Microsoft; Minecraft EULA and Usage Guidelines; not GPL-3.0-only"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/item/mace/smash_air2.ogg",
+      "sha256": "7adfcec22a2e276f641342e9959f0d22d7df98d1709a26220546408ef8fed794",
+      "project": "Minecraft 26.1.2",
+      "path": "asset-index:30/minecraft/sounds/item/mace/smash_air2.ogg",
+      "source_sha256": "7adfcec22a2e276f641342e9959f0d22d7df98d1709a26220546408ef8fed794",
+      "license": "Mojang / Microsoft; Minecraft EULA and Usage Guidelines; not GPL-3.0-only"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/item/mace/smash_air3.ogg",
+      "sha256": "daf03295b3fa2681a50140a0a58a9d2c0a1f0b04b6bde0a09b3a9bacac8a3177",
+      "project": "Minecraft 26.1.2",
+      "path": "asset-index:30/minecraft/sounds/item/mace/smash_air3.ogg",
+      "source_sha256": "daf03295b3fa2681a50140a0a58a9d2c0a1f0b04b6bde0a09b3a9bacac8a3177",
+      "license": "Mojang / Microsoft; Minecraft EULA and Usage Guidelines; not GPL-3.0-only"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/item/mace/smash_ground1.ogg",
+      "sha256": "55094af6fd56ed57bf7e95881c826cce8075991481a574577b5a76f5be1adbba",
+      "project": "Minecraft 26.1.2",
+      "path": "asset-index:30/minecraft/sounds/item/mace/smash_ground1.ogg",
+      "source_sha256": "55094af6fd56ed57bf7e95881c826cce8075991481a574577b5a76f5be1adbba",
+      "license": "Mojang / Microsoft; Minecraft EULA and Usage Guidelines; not GPL-3.0-only"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/item/mace/smash_ground2.ogg",
+      "sha256": "077283b1ba9970f0e01bb1fa442702c4bd32e9cd33d107d6acb662f1da8818c5",
+      "project": "Minecraft 26.1.2",
+      "path": "asset-index:30/minecraft/sounds/item/mace/smash_ground2.ogg",
+      "source_sha256": "077283b1ba9970f0e01bb1fa442702c4bd32e9cd33d107d6acb662f1da8818c5",
+      "license": "Mojang / Microsoft; Minecraft EULA and Usage Guidelines; not GPL-3.0-only"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/item/mace/smash_ground3.ogg",
+      "sha256": "060ea9a9aa79b3cca933c47c47088fb41d704a53f2b88041fc70f9a401904f2c",
+      "project": "Minecraft 26.1.2",
+      "path": "asset-index:30/minecraft/sounds/item/mace/smash_ground3.ogg",
+      "source_sha256": "060ea9a9aa79b3cca933c47c47088fb41d704a53f2b88041fc70f9a401904f2c",
+      "license": "Mojang / Microsoft; Minecraft EULA and Usage Guidelines; not GPL-3.0-only"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/item/mace/smash_ground4.ogg",
+      "sha256": "29ea796bccf8ccc5c15bd49b2f63df138519da258c47a3885b59c3cd14e975bd",
+      "project": "Minecraft 26.1.2",
+      "path": "asset-index:30/minecraft/sounds/item/mace/smash_ground4.ogg",
+      "source_sha256": "29ea796bccf8ccc5c15bd49b2f63df138519da258c47a3885b59c3cd14e975bd",
+      "license": "Mojang / Microsoft; Minecraft EULA and Usage Guidelines; not GPL-3.0-only"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/item/mace/smash_ground_heavy.ogg",
+      "sha256": "5c767de537374768afa4b72890f9ea561d64ddf39418da1b45f97af02b62a1bc",
+      "project": "Minecraft 26.1.2",
+      "path": "asset-index:30/minecraft/sounds/item/mace/smash_ground_heavy.ogg",
+      "source_sha256": "5c767de537374768afa4b72890f9ea561d64ddf39418da1b45f97af02b62a1bc",
+      "license": "Mojang / Microsoft; Minecraft EULA and Usage Guidelines; not GPL-3.0-only"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/item/spear/attack1.ogg",
+      "sha256": "ccdf7ad0894c9534e88cd5cc53ef8b674c8f14a4a41b27ea0dbc4cf63591680b",
+      "project": "Minecraft 26.1.2",
+      "path": "asset-index:30/minecraft/sounds/item/spear/attack1.ogg",
+      "source_sha256": "ccdf7ad0894c9534e88cd5cc53ef8b674c8f14a4a41b27ea0dbc4cf63591680b",
+      "license": "Mojang / Microsoft; Minecraft EULA and Usage Guidelines; not GPL-3.0-only"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/item/spear/attack2.ogg",
+      "sha256": "19fbfe758dec13dbb67c9b5350616d5c25b530dc87a71252b85166177c328af6",
+      "project": "Minecraft 26.1.2",
+      "path": "asset-index:30/minecraft/sounds/item/spear/attack2.ogg",
+      "source_sha256": "19fbfe758dec13dbb67c9b5350616d5c25b530dc87a71252b85166177c328af6",
+      "license": "Mojang / Microsoft; Minecraft EULA and Usage Guidelines; not GPL-3.0-only"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/item/spear/attack3.ogg",
+      "sha256": "39b5adfda849e11c8bdb9488c51d8884ae46153150edd74ab6220043b4475c9d",
+      "project": "Minecraft 26.1.2",
+      "path": "asset-index:30/minecraft/sounds/item/spear/attack3.ogg",
+      "source_sha256": "39b5adfda849e11c8bdb9488c51d8884ae46153150edd74ab6220043b4475c9d",
+      "license": "Mojang / Microsoft; Minecraft EULA and Usage Guidelines; not GPL-3.0-only"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/item/spear/hit1.ogg",
+      "sha256": "508715f2fe2239cc5e70145b791e69ccd111ab4f794d87e483c0b378c6c899cc",
+      "project": "Minecraft 26.1.2",
+      "path": "asset-index:30/minecraft/sounds/item/spear/hit1.ogg",
+      "source_sha256": "508715f2fe2239cc5e70145b791e69ccd111ab4f794d87e483c0b378c6c899cc",
+      "license": "Mojang / Microsoft; Minecraft EULA and Usage Guidelines; not GPL-3.0-only"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/item/spear/hit2.ogg",
+      "sha256": "e75cf0ab32cc60e89027eadbc7715295ddc018a2f13470a6f6d346f9b69c5613",
+      "project": "Minecraft 26.1.2",
+      "path": "asset-index:30/minecraft/sounds/item/spear/hit2.ogg",
+      "source_sha256": "e75cf0ab32cc60e89027eadbc7715295ddc018a2f13470a6f6d346f9b69c5613",
+      "license": "Mojang / Microsoft; Minecraft EULA and Usage Guidelines; not GPL-3.0-only"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/item/spear/hit3.ogg",
+      "sha256": "f4a4cd6f2f62b4bc90b7ec52353531cd58394310c64cf07439197c008aded8ea",
+      "project": "Minecraft 26.1.2",
+      "path": "asset-index:30/minecraft/sounds/item/spear/hit3.ogg",
+      "source_sha256": "f4a4cd6f2f62b4bc90b7ec52353531cd58394310c64cf07439197c008aded8ea",
+      "license": "Mojang / Microsoft; Minecraft EULA and Usage Guidelines; not GPL-3.0-only"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/item/spear/lunge1.ogg",
+      "sha256": "b17ddc6ffba0a46267488280d376daf5a91a08891a6393b86f503f63005b3e1e",
+      "project": "Minecraft 26.1.2",
+      "path": "asset-index:30/minecraft/sounds/item/spear/lunge1.ogg",
+      "source_sha256": "b17ddc6ffba0a46267488280d376daf5a91a08891a6393b86f503f63005b3e1e",
+      "license": "Mojang / Microsoft; Minecraft EULA and Usage Guidelines; not GPL-3.0-only"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/item/spear/lunge2.ogg",
+      "sha256": "94b79dbd0d3bc3ff13d6b90927344e6a80cd1801a0d1e1b9d05c947f2d0c0c7d",
+      "project": "Minecraft 26.1.2",
+      "path": "asset-index:30/minecraft/sounds/item/spear/lunge2.ogg",
+      "source_sha256": "94b79dbd0d3bc3ff13d6b90927344e6a80cd1801a0d1e1b9d05c947f2d0c0c7d",
+      "license": "Mojang / Microsoft; Minecraft EULA and Usage Guidelines; not GPL-3.0-only"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/item/spear/lunge3.ogg",
+      "sha256": "9750c706c60fa13d8b175250962525667d5c75d996668e95231e8e7cae902d77",
+      "project": "Minecraft 26.1.2",
+      "path": "asset-index:30/minecraft/sounds/item/spear/lunge3.ogg",
+      "source_sha256": "9750c706c60fa13d8b175250962525667d5c75d996668e95231e8e7cae902d77",
+      "license": "Mojang / Microsoft; Minecraft EULA and Usage Guidelines; not GPL-3.0-only"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/item/spear/use.ogg",
+      "sha256": "dbb2f79bb8b93551c0af6ff00de21c5bcab7f70f9b858932f5fdc6deb5b1c8c6",
+      "project": "Minecraft 26.1.2",
+      "path": "asset-index:30/minecraft/sounds/item/spear/use.ogg",
+      "source_sha256": "dbb2f79bb8b93551c0af6ff00de21c5bcab7f70f9b858932f5fdc6deb5b1c8c6",
+      "license": "Mojang / Microsoft; Minecraft EULA and Usage Guidelines; not GPL-3.0-only"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/item/spear/wood/attack1.ogg",
+      "sha256": "81368e5f120d1c4c8b642090793f98172ada7d466b583144430709168e9306ed",
+      "project": "Minecraft 26.1.2",
+      "path": "asset-index:30/minecraft/sounds/item/spear/wood/attack1.ogg",
+      "source_sha256": "81368e5f120d1c4c8b642090793f98172ada7d466b583144430709168e9306ed",
+      "license": "Mojang / Microsoft; Minecraft EULA and Usage Guidelines; not GPL-3.0-only"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/item/spear/wood/attack2.ogg",
+      "sha256": "d309c100b8074a9b1dccddb9fcfc515ee03a05ec453bcf3cbc75dc146f4eb430",
+      "project": "Minecraft 26.1.2",
+      "path": "asset-index:30/minecraft/sounds/item/spear/wood/attack2.ogg",
+      "source_sha256": "d309c100b8074a9b1dccddb9fcfc515ee03a05ec453bcf3cbc75dc146f4eb430",
+      "license": "Mojang / Microsoft; Minecraft EULA and Usage Guidelines; not GPL-3.0-only"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/item/spear/wood/attack3.ogg",
+      "sha256": "69c60b129f41c280333757df91e7362b150d8c54b2ebff50149f8f313e558f19",
+      "project": "Minecraft 26.1.2",
+      "path": "asset-index:30/minecraft/sounds/item/spear/wood/attack3.ogg",
+      "source_sha256": "69c60b129f41c280333757df91e7362b150d8c54b2ebff50149f8f313e558f19",
+      "license": "Mojang / Microsoft; Minecraft EULA and Usage Guidelines; not GPL-3.0-only"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/item/spear/wood/hit1.ogg",
+      "sha256": "555005d8c65b0d3e13ba1af989358e90891cdfde24628d1c5a0233351c9c35c2",
+      "project": "Minecraft 26.1.2",
+      "path": "asset-index:30/minecraft/sounds/item/spear/wood/hit1.ogg",
+      "source_sha256": "555005d8c65b0d3e13ba1af989358e90891cdfde24628d1c5a0233351c9c35c2",
+      "license": "Mojang / Microsoft; Minecraft EULA and Usage Guidelines; not GPL-3.0-only"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/item/spear/wood/hit2.ogg",
+      "sha256": "8d5ec42aa2092df24af15af39c63b35c61f0f23c723ae4c58cbca21200559000",
+      "project": "Minecraft 26.1.2",
+      "path": "asset-index:30/minecraft/sounds/item/spear/wood/hit2.ogg",
+      "source_sha256": "8d5ec42aa2092df24af15af39c63b35c61f0f23c723ae4c58cbca21200559000",
+      "license": "Mojang / Microsoft; Minecraft EULA and Usage Guidelines; not GPL-3.0-only"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/item/spear/wood/hit3.ogg",
+      "sha256": "6f5ed4d2c83749fd99607a7ca1fa8b105bcfbd6a2bc42c2823b1e61cd9fd19e7",
+      "project": "Minecraft 26.1.2",
+      "path": "asset-index:30/minecraft/sounds/item/spear/wood/hit3.ogg",
+      "source_sha256": "6f5ed4d2c83749fd99607a7ca1fa8b105bcfbd6a2bc42c2823b1e61cd9fd19e7",
+      "license": "Mojang / Microsoft; Minecraft EULA and Usage Guidelines; not GPL-3.0-only"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/item/spear/wood/use.ogg",
+      "sha256": "81a2a1bcb3b574c90188a5e7c9912aabd530e0e1833a3d5adb681ba6f484bb15",
+      "project": "Minecraft 26.1.2",
+      "path": "asset-index:30/minecraft/sounds/item/spear/wood/use.ogg",
+      "source_sha256": "81a2a1bcb3b574c90188a5e7c9912aabd530e0e1833a3d5adb681ba6f484bb15",
+      "license": "Mojang / Microsoft; Minecraft EULA and Usage Guidelines; not GPL-3.0-only"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/entity/wind_charge/wind_burst1.ogg",
+      "sha256": "66255713c7390009b28d07006ad06c29bf29b0f1e1a18d02a36cba55ea3039c9",
+      "project": "Minecraft 26.1.2",
+      "path": "asset-index:30/minecraft/sounds/entity/wind_charge/wind_burst1.ogg",
+      "source_sha256": "66255713c7390009b28d07006ad06c29bf29b0f1e1a18d02a36cba55ea3039c9",
+      "license": "Mojang / Microsoft; Minecraft EULA and Usage Guidelines; not GPL-3.0-only"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/entity/wind_charge/wind_burst2.ogg",
+      "sha256": "76d96737110ae4baf5434d9b0343a6c11b9ac7afa209e4a9d9ae93c5cb3064f0",
+      "project": "Minecraft 26.1.2",
+      "path": "asset-index:30/minecraft/sounds/entity/wind_charge/wind_burst2.ogg",
+      "source_sha256": "76d96737110ae4baf5434d9b0343a6c11b9ac7afa209e4a9d9ae93c5cb3064f0",
+      "license": "Mojang / Microsoft; Minecraft EULA and Usage Guidelines; not GPL-3.0-only"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/entity/wind_charge/wind_burst3.ogg",
+      "sha256": "80e2a830cc67577d03160f142d5c13ff93d474c0728e0a72ba147f29569bb929",
+      "project": "Minecraft 26.1.2",
+      "path": "asset-index:30/minecraft/sounds/entity/wind_charge/wind_burst3.ogg",
+      "source_sha256": "80e2a830cc67577d03160f142d5c13ff93d474c0728e0a72ba147f29569bb929",
+      "license": "Mojang / Microsoft; Minecraft EULA and Usage Guidelines; not GPL-3.0-only"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/models/item/copper_spear.json",
+      "sha256": "9fdac23d23809767abab66f306a6e06ebbd956c818b9fda85a8f77d0c0e91138",
+      "project": "Minecraft 26.1.2",
+      "path": "assets/minecraft/models/item/copper_spear.json",
+      "source_sha256": "5ed2e76a2e6620ed2554029646d8cecd443be6faa93741ab28c70f23aef00c8a",
+      "license": "Mojang / Microsoft; Minecraft EULA and Usage Guidelines; not GPL-3.0-only"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/models/item/copper_spear_in_hand.json",
+      "sha256": "c0380fb2ee8dab67435d6aa280fdd839e8d8e0592f9af4168b777f8a1be1c2f5",
+      "project": "Minecraft 26.1.2",
+      "path": "assets/minecraft/models/item/copper_spear_in_hand.json",
+      "source_sha256": "72642988117293275c4e9dad14829626a1d18ffc69ca49c7acf0d83e9910a45d",
+      "license": "Mojang / Microsoft; Minecraft EULA and Usage Guidelines; not GPL-3.0-only"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/models/item/diamond_spear.json",
+      "sha256": "dad0e2ed605a18f59070361468de3a92d1eb014e3448e806ab212a7cf43f738f",
+      "project": "Minecraft 26.1.2",
+      "path": "assets/minecraft/models/item/diamond_spear.json",
+      "source_sha256": "ac63cbad28cc90968caecd88576f5ee2f19de368aebe7a4714a349b04213aa54",
+      "license": "Mojang / Microsoft; Minecraft EULA and Usage Guidelines; not GPL-3.0-only"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/models/item/diamond_spear_in_hand.json",
+      "sha256": "31d0cc7fac802b03391e0e8c3a42f4a675410980d92f9a76ae8d82dbe44501c1",
+      "project": "Minecraft 26.1.2",
+      "path": "assets/minecraft/models/item/diamond_spear_in_hand.json",
+      "source_sha256": "4abc8c7a8256f37a31c2ddf45bc945edd379bc18aa909282ecc3f5f4341487bb",
+      "license": "Mojang / Microsoft; Minecraft EULA and Usage Guidelines; not GPL-3.0-only"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/models/item/golden_spear.json",
+      "sha256": "3ca5c5a3f0bd47ccd2cbaf8a01efb82cca26dbc3f9cf0d145ec294ad071a22e2",
+      "project": "Minecraft 26.1.2",
+      "path": "assets/minecraft/models/item/golden_spear.json",
+      "source_sha256": "bd3144fffd1fae2539aade929da56d4e601634834f9692af660c99995b0ce391",
+      "license": "Mojang / Microsoft; Minecraft EULA and Usage Guidelines; not GPL-3.0-only"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/models/item/golden_spear_in_hand.json",
+      "sha256": "af89c07910c18406558484206d9dd754cfd597ec9a9413fefb45735ea1a24f12",
+      "project": "Minecraft 26.1.2",
+      "path": "assets/minecraft/models/item/golden_spear_in_hand.json",
+      "source_sha256": "ca5bb9417046f24d62e94531c56a22d76a820102e66f5c9a0a778bee024dc242",
+      "license": "Mojang / Microsoft; Minecraft EULA and Usage Guidelines; not GPL-3.0-only"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/models/item/handheld_mace.json",
+      "sha256": "4f41a773fe4cd41aa83bff683ec4ce2cc57190371e1a3a7b9aa3248867cf8081",
+      "project": "Minecraft 26.1.2",
+      "path": "assets/minecraft/models/item/handheld_mace.json",
+      "source_sha256": "7d041d5569f2e392dc1670553375a62fd4a362bb477886143bbc88c6b3eeec0c",
+      "license": "Mojang / Microsoft; Minecraft EULA and Usage Guidelines; not GPL-3.0-only"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/models/item/heavy_core.json",
+      "sha256": "bd95845d7eedca22f5c4becda84faad0ec1a05a14b4179d54e8da68cf76080b7",
+      "project": "Minecraft 26.1.2",
+      "path": "assets/minecraft/models/block/heavy_core.json",
+      "source_sha256": "1ea2b5f77b28f48420f6aa284c3adf2578a3fb04c85f98153ddb703511a7e4b4",
+      "license": "Mojang / Microsoft; Minecraft EULA and Usage Guidelines; not GPL-3.0-only"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/models/item/iron_spear.json",
+      "sha256": "7ebd6b755f979cc31cf89b9a637cfbbb64dd78c7033769211d75ec42570b4ef0",
+      "project": "Minecraft 26.1.2",
+      "path": "assets/minecraft/models/item/iron_spear.json",
+      "source_sha256": "d9abc56df331b8b4771d6f14152c76db8c7e68b2151ab7f2e71ef1735783202f",
+      "license": "Mojang / Microsoft; Minecraft EULA and Usage Guidelines; not GPL-3.0-only"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/models/item/iron_spear_in_hand.json",
+      "sha256": "5ed38b6602bc55417fe7074187af7277f547d54c9973e78ec0cfba9d56a0c498",
+      "project": "Minecraft 26.1.2",
+      "path": "assets/minecraft/models/item/iron_spear_in_hand.json",
+      "source_sha256": "b6ad3eaece88a4cc9ae6da9bef294ebfac41a734ec255669ada0dd616a2625a2",
+      "license": "Mojang / Microsoft; Minecraft EULA and Usage Guidelines; not GPL-3.0-only"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/models/item/mace.json",
+      "sha256": "c5cc6b0ead73531ca38b764ff54e4e80cbe18032c4b8bb681fc615d95bb6c5c2",
+      "project": "Minecraft 26.1.2",
+      "path": "assets/minecraft/models/item/mace.json",
+      "source_sha256": "02d97d81fb222555e6b2d6cc3b5f1d717497795f9805293f736df20d460af71d",
+      "license": "Mojang / Microsoft; Minecraft EULA and Usage Guidelines; not GPL-3.0-only"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/models/item/netherite_spear.json",
+      "sha256": "024ad80ffdce0c231a08547fa606eca36215b46d2e1504b3b4df8f68c6e937ce",
+      "project": "Minecraft 26.1.2",
+      "path": "assets/minecraft/models/item/netherite_spear.json",
+      "source_sha256": "586ecf4178da588fb8541c19c7e641d7c3b16dd6ca48b9236faa5957e497900c",
+      "license": "Mojang / Microsoft; Minecraft EULA and Usage Guidelines; not GPL-3.0-only"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/models/item/netherite_spear_in_hand.json",
+      "sha256": "9ad464d82c94374ae3ba1bcaed733b52c7db4844cef52a2435b1fe0d53e78f07",
+      "project": "Minecraft 26.1.2",
+      "path": "assets/minecraft/models/item/netherite_spear_in_hand.json",
+      "source_sha256": "a25d9fbc54cdd3b8465a29009f82a3dfe0242f3668c24ffd36f2c0186913b932",
+      "license": "Mojang / Microsoft; Minecraft EULA and Usage Guidelines; not GPL-3.0-only"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/models/item/spear_in_hand.json",
+      "sha256": "747aba26b67b9f9d9434d6ca3115217a0ef540b141593a60d6ff9eea09f28b43",
+      "project": "Minecraft 26.1.2",
+      "path": "assets/minecraft/models/item/spear_in_hand.json",
+      "source_sha256": "8cdd1011e3a8c936094dc3e32e92060ec07f1592e4c0b5083230e07984858f87",
+      "license": "Mojang / Microsoft; Minecraft EULA and Usage Guidelines; not GPL-3.0-only"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/models/item/stone_spear.json",
+      "sha256": "7f59cb12ae72f7975ffa0c26eaae741d1eb2cdcfaea26861fc17305d956c63c0",
+      "project": "Minecraft 26.1.2",
+      "path": "assets/minecraft/models/item/stone_spear.json",
+      "source_sha256": "95310ebf5327f7adf35c67e2427ac15e64a380680a3dcbebbedb46d018b89bba",
+      "license": "Mojang / Microsoft; Minecraft EULA and Usage Guidelines; not GPL-3.0-only"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/models/item/stone_spear_in_hand.json",
+      "sha256": "734bd011696148ac3714b18bf3b868c152cf1d22a6ae4eabb38965d35a355afa",
+      "project": "Minecraft 26.1.2",
+      "path": "assets/minecraft/models/item/stone_spear_in_hand.json",
+      "source_sha256": "4d876ec21342029d2adb3e163b5c50d9d1fcaadd0e4b7314a33f3f8617cac6d4",
+      "license": "Mojang / Microsoft; Minecraft EULA and Usage Guidelines; not GPL-3.0-only"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/models/item/wooden_spear.json",
+      "sha256": "d56cb778e04ce4f72e82ad01df4d2d90156edbac70de460afbdc3d8913a1054e",
+      "project": "Minecraft 26.1.2",
+      "path": "assets/minecraft/models/item/wooden_spear.json",
+      "source_sha256": "aa1b4cd27cf17942207700f43fca32e6d17b0189ba3fdcea602ef7248bb47c94",
+      "license": "Mojang / Microsoft; Minecraft EULA and Usage Guidelines; not GPL-3.0-only"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/models/item/wooden_spear_in_hand.json",
+      "sha256": "029a5a5ee97f4de2f08f47d03619c1f88efd0a64fc5c9734cfc5566b16d10508",
+      "project": "Minecraft 26.1.2",
+      "path": "assets/minecraft/models/item/wooden_spear_in_hand.json",
+      "source_sha256": "e0e8faefe5b17b91e5187f9eba246a489bce4d4a2b33f287f2ea1d73998355d4",
+      "license": "Mojang / Microsoft; Minecraft EULA and Usage Guidelines; not GPL-3.0-only"
+    },
+    {
+      "file": "src/main/java/net/everla/projectc/arkofcosmos/combat/vanilla/SpearMaterial.java",
+      "sha256": "b837c72e48387ab84817b6e7c6de0abfe9384a01bda9e4d21bbe9048c813b4f6",
+      "project": "Minecraft 26.1.2",
+      "license": "Mojang / Microsoft derived implementation; not GPL-3.0-only",
+      "sources": [
+        {
+          "path": "net/minecraft/world/item/Items.class",
+          "sha256": "6e391ef0ebcd0bb0dd80bf23ba40a8e01ec400b57e183a59238745c13d12872c"
+        },
+        {
+          "path": "net/minecraft/world/item/Item$Properties.class",
+          "sha256": "62c3f6669ee4d2e5fd445d391fc32a1f7b34220bb9a1f8b09f3a8e6452fccd3e"
+        },
+        {
+          "path": "net/minecraft/world/item/ToolMaterial.class",
+          "sha256": "9db5734df2a6037c0d37da9446e98a7fd3db5c72a2384f3d2994481ae11d8956"
+        }
+      ]
+    },
+    {
+      "file": "src/main/java/net/everla/projectc/arkofcosmos/combat/vanilla/SpearCombat.java",
+      "sha256": "10a5cfecea8f249929f9e07aacd0492f62b347d10911c3c504378b944f7e7f5d",
+      "project": "Minecraft 26.1.2",
+      "license": "Mojang / Microsoft derived implementation; not GPL-3.0-only",
+      "sources": [
+        {
+          "path": "net/minecraft/world/item/component/KineticWeapon.class",
+          "sha256": "b15e518490a4c7960daca7e8faea9994ad7b4fe84c21a48ec51acff7840165f1"
+        },
+        {
+          "path": "net/minecraft/world/item/component/PiercingWeapon.class",
+          "sha256": "e0c7dc7abc111cd2f407e9638fcd1a04d5009d50cdd62511110afbf975d61ebc"
+        },
+        {
+          "path": "net/minecraft/world/entity/player/Player.class",
+          "sha256": "15750777d6e1350ebc84cfd636c033e8690f8789e80990f552069c32982566ae"
+        },
+        {
+          "path": "net/minecraft/world/entity/projectile/ProjectileUtil.class",
+          "sha256": "39b80f84374a76606a14943d306255bf5e2b8aacb4db8a908c7ece8b86b57e98"
+        }
+      ]
+    },
+    {
+      "file": "src/main/java/net/everla/projectc/arkofcosmos/combat/vanilla/MaceCombat.java",
+      "sha256": "c8fcc8564677ba5321102218e3b8faab7d4db3ee28f2656c6590e817ae70f17f",
+      "project": "Minecraft 26.1.2",
+      "license": "Mojang / Microsoft derived implementation; not GPL-3.0-only",
+      "sources": [
+        {
+          "path": "net/minecraft/world/item/MaceItem.class",
+          "sha256": "11b8f99b81e2bfc54f519022a00e378526b1e55721d8a696849386d0ae6ea9fc"
+        }
+      ]
+    },
+    {
+      "file": "src/main/java/net/everla/projectc/arkofcosmos/combat/vanilla/ImpulseFall.java",
+      "sha256": "4a3b6f987d0b983c4ba431fdc21c9bb9e0b1d62f9bd401466cc43bf9cddd9b18",
+      "project": "Minecraft 26.1.2",
+      "license": "Mojang / Microsoft derived implementation; not GPL-3.0-only",
+      "sources": [
+        {
+          "path": "net/minecraft/world/entity/LivingEntity.class",
+          "sha256": "b1a68c8942ebdac98b65ce281692491e637b37948649b1e36a8d9a1f1abdcb6e"
+        },
+        {
+          "path": "net/minecraft/server/level/ServerPlayer.class",
+          "sha256": "2c5d211797f183e6adb15a4b8bd1b6b9543c1c7f80f93da71c3dfb4a78578816"
+        }
+      ]
+    },
+    {
+      "file": "src/main/java/net/everla/projectc/arkofcosmos/combat/vanilla/WindBurst.java",
+      "sha256": "c229c75a6799e9b70be02df1970746bc6903c96da5a72403a79bc18758e7551d",
+      "project": "Minecraft 26.1.2",
+      "license": "Mojang / Microsoft derived implementation; not GPL-3.0-only",
+      "sources": [
+        {
+          "path": "net/minecraft/world/level/ServerExplosion.class",
+          "sha256": "444c48dd325a4cdde5c3743c008891d0e4189cf3f26c34fafc32cff749bd6009"
+        },
+        {
+          "path": "net/minecraft/world/level/SimpleExplosionDamageCalculator.class",
+          "sha256": "d7f3c5fe1b152af4685af904947f35851ae4a539bfd56bb4c6012812d4e97a9a"
+        }
+      ]
+    },
+    {
+      "file": "src/main/java/net/everla/projectc/arkofcosmos/combat/vanilla/VanillaEnchantments.java",
+      "sha256": "a921300bdbb3991554088c0d943fa011ca714f229be2c9480403c496eed4c1ff",
+      "project": "Minecraft 26.1.2",
+      "license": "Mojang / Microsoft derived implementation; not GPL-3.0-only",
+      "sources": [
+        {
+          "path": "data/minecraft/enchantment/lunge.json",
+          "sha256": "13375491e10c832d62523cb58749b916dd4cab6a333bc24b89f4504c51e54e0c"
+        },
+        {
+          "path": "data/minecraft/enchantment/density.json",
+          "sha256": "25978206e9711302ab22fe605b24d84edb99ad253bac53e4bdc39005c92efb61"
+        },
+        {
+          "path": "data/minecraft/enchantment/breach.json",
+          "sha256": "c544d3d3c784e15ae35cac1a13e49ebea2116530687afc8b160f0d940efabe79"
+        },
+        {
+          "path": "data/minecraft/enchantment/wind_burst.json",
+          "sha256": "d0fbe1c97f977fb24a6e293b8097a5aa9ecfc4a6c86bc741fcf51d1d5be47537"
+        }
+      ]
+    },
+    {
+      "file": "src/main/java/net/everla/projectc/arkofcosmos/entity/PlayerWindCharge.java",
+      "sha256": "0d8bcef12632dae0e871d4696d9bd29ab975be409ecce6361ace1d1459b2a931",
+      "project": "Minecraft 26.1.2",
+      "license": "Mojang / Microsoft derived implementation; not GPL-3.0-only",
+      "sources": [
+        {
+          "path": "net/minecraft/world/entity/projectile/hurtingprojectile/windcharge/WindCharge.class",
+          "sha256": "9d433da2b536067bfec7d43d03f895bb2a5fc5c02be9f64e7ec01361ccafd0c7"
+        },
+        {
+          "path": "net/minecraft/world/entity/projectile/hurtingprojectile/windcharge/AbstractWindCharge.class",
+          "sha256": "b2b00b18bfeb4784b2e50fda60713d4b044d7841b27aafe980bca0c537c65d8c"
+        },
+        {
+          "path": "net/minecraft/world/entity/projectile/Projectile.class",
+          "sha256": "032c31d51ea4e0cf390e6564a22f8c02885ed6f2c92866b5ac645e8614bfb02b"
+        }
+      ]
+    },
+    {
+      "file": "src/main/java/net/everla/projectc/arkofcosmos/client/vanilla/SpearAnimations.java",
+      "sha256": "afd10cc9a20a8e1b4a5febd0a580a089464d05972536d00a234feaf653a555b1",
+      "project": "Minecraft 26.1.2",
+      "license": "Mojang / Microsoft derived implementation; not GPL-3.0-only",
+      "sources": [
+        {
+          "path": "net/minecraft/client/model/effects/SpearAnimations.class",
+          "sha256": "4d686cd6af3f1f3dbaf48de434ad6b79d575bc049469079e9ea2a6736f841f1f"
+        }
+      ]
+    },
+    {
+      "file": "src/main/java/net/everla/projectc/arkofcosmos/client/vanilla/Ease.java",
+      "sha256": "18f482a82b74928f5a64fd97ff318516c5c18e9ea7a6a010760dfcf28025cfd1",
+      "project": "Minecraft 26.1.2",
+      "license": "Mojang / Microsoft derived implementation; not GPL-3.0-only",
+      "sources": [
+        {
+          "path": "net/minecraft/util/Ease.class",
+          "sha256": "d6d83305f205ca79376399f2aa4ea94dff360cf6bdbd990525a243e6a9892df1"
+        }
+      ]
+    },
+    {
+      "file": "src/main/java/net/everla/projectc/arkofcosmos/client/vanilla/GustParticle.java",
+      "sha256": "852fb2747821690a957f21401634872f199b9ff69c0d4b451adcee6ca9a80321",
+      "project": "Minecraft 26.1.2",
+      "license": "Mojang / Microsoft derived implementation; not GPL-3.0-only",
+      "sources": [
+        {
+          "path": "net/minecraft/client/particle/GustParticle.class",
+          "sha256": "307e9749ff31bd45caaa38597f8e4a6f35ec1365a7345f0ed1e59d76c440115c"
+        },
+        {
+          "path": "net/minecraft/client/particle/GustSeedParticle.class",
+          "sha256": "3b75e9b68eeb7df61b594c723ecfd5d36b7af668b82280dc5713e8825e03fb85"
+        },
+        {
+          "path": "net/minecraft/client/particle/ParticleResources.class",
+          "sha256": "fce2f8c3b1b3bf78c29ec83d24d8cf05e580efc561029a9aa26df72c2de9d968"
+        }
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/lang/zh_cn.json",
+      "sha256": "140de152a08ec44c396888b3262eba90c1f704d9dd03557db819b4d2267936fd",
+      "project": "Minecraft 26.1.2",
+      "path": "minecraft/lang/zh_cn.json (asset index 30, SHA-1 892c36dcec22335e309c6efea355b8d7a8525ba9)",
+      "source_sha256": "3bfb7fe04084c9664038358b65d29a778194c96d0b9213942687d780a94a96e1",
+      "license": "Mojang / Microsoft; Minecraft EULA and Usage Guidelines; not GPL-3.0-only",
+      "translations": {
+        "enchantment.arkofcosmos.breach": "enchantment.minecraft.breach",
+        "enchantment.arkofcosmos.density": "enchantment.minecraft.density",
+        "enchantment.arkofcosmos.lunge": "enchantment.minecraft.lunge",
+        "enchantment.arkofcosmos.wind_burst": "enchantment.minecraft.wind_burst",
+        "item.arkofcosmos.copper_spear": "item.minecraft.copper_spear",
+        "item.arkofcosmos.diamond_spear": "item.minecraft.diamond_spear",
+        "item.arkofcosmos.golden_spear": "item.minecraft.golden_spear",
+        "item.arkofcosmos.iron_spear": "item.minecraft.iron_spear",
+        "item.arkofcosmos.mace": "item.minecraft.mace",
+        "item.arkofcosmos.netherite_spear": "item.minecraft.netherite_spear",
+        "item.arkofcosmos.stone_spear": "item.minecraft.stone_spear",
+        "item.arkofcosmos.wooden_spear": "item.minecraft.wooden_spear",
+        "subtitles.entity.wind_charge.throw": "subtitles.entity.wind_charge.throw",
+        "subtitles.entity.wind_charge.wind_burst": "subtitles.entity.wind_charge.wind_burst",
+        "subtitles.item.mace.smash_air": "subtitles.item.mace.smash_air",
+        "subtitles.item.mace.smash_ground": "subtitles.item.mace.smash_ground",
+        "subtitles.item.spear_wood.attack": "subtitles.item.spear_wood.attack",
+        "subtitles.item.spear_wood.hit": "subtitles.item.spear_wood.hit",
+        "subtitles.item.spear_wood.use": "subtitles.item.spear_wood.use",
+        "subtitles.item.spear.attack": "subtitles.item.spear.attack",
+        "subtitles.item.spear.hit": "subtitles.item.spear.hit",
+        "subtitles.item.spear.lunge": "subtitles.item.spear.lunge",
+        "subtitles.item.spear.use": "subtitles.item.spear.use",
+        "death.attack.mace_smash": "death.attack.mace_smash",
+        "death.attack.mace_smash.item": "death.attack.mace_smash.item",
+        "death.attack.spear": "death.attack.spear",
+        "death.attack.spear.item": "death.attack.spear.item",
+        "item.arkofcosmos.copper_sword": "item.minecraft.copper_sword",
+        "item.arkofcosmos.copper_shovel": "item.minecraft.copper_shovel",
+        "item.arkofcosmos.copper_pickaxe": "item.minecraft.copper_pickaxe",
+        "item.arkofcosmos.copper_axe": "item.minecraft.copper_axe",
+        "item.arkofcosmos.copper_hoe": "item.minecraft.copper_hoe",
+        "item.arkofcosmos.copper_helmet": "item.minecraft.copper_helmet",
+        "item.arkofcosmos.copper_chestplate": "item.minecraft.copper_chestplate",
+        "item.arkofcosmos.copper_leggings": "item.minecraft.copper_leggings",
+        "item.arkofcosmos.copper_boots": "item.minecraft.copper_boots",
+        "item.arkofcosmos.heavy_core": "block.minecraft.heavy_core",
+        "entity.arkofcosmos.player_wind_charge": "entity.minecraft.wind_charge"
+      }
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/lang/en_us.json",
+      "sha256": "9adf31ab5d4af1a28f60082fec2fc9494cde05d030328afecadb8842ec14dc79",
+      "project": "Minecraft 26.1.2",
+      "path": "assets/minecraft/lang/en_us.json",
+      "source_sha256": "443cb6cadba09fe63d4b7b9258da8aa15e6e80c6c3dd14e56d1142db01aa0089",
+      "license": "Mojang / Microsoft; Minecraft EULA and Usage Guidelines; not GPL-3.0-only",
+      "translations": {
+        "enchantment.arkofcosmos.breach": "enchantment.minecraft.breach",
+        "enchantment.arkofcosmos.density": "enchantment.minecraft.density",
+        "enchantment.arkofcosmos.lunge": "enchantment.minecraft.lunge",
+        "enchantment.arkofcosmos.wind_burst": "enchantment.minecraft.wind_burst",
+        "item.arkofcosmos.copper_spear": "item.minecraft.copper_spear",
+        "item.arkofcosmos.diamond_spear": "item.minecraft.diamond_spear",
+        "item.arkofcosmos.golden_spear": "item.minecraft.golden_spear",
+        "item.arkofcosmos.iron_spear": "item.minecraft.iron_spear",
+        "item.arkofcosmos.mace": "item.minecraft.mace",
+        "item.arkofcosmos.netherite_spear": "item.minecraft.netherite_spear",
+        "item.arkofcosmos.stone_spear": "item.minecraft.stone_spear",
+        "item.arkofcosmos.wooden_spear": "item.minecraft.wooden_spear",
+        "subtitles.entity.wind_charge.throw": "subtitles.entity.wind_charge.throw",
+        "subtitles.entity.wind_charge.wind_burst": "subtitles.entity.wind_charge.wind_burst",
+        "subtitles.item.mace.smash_air": "subtitles.item.mace.smash_air",
+        "subtitles.item.mace.smash_ground": "subtitles.item.mace.smash_ground",
+        "subtitles.item.spear_wood.attack": "subtitles.item.spear_wood.attack",
+        "subtitles.item.spear_wood.hit": "subtitles.item.spear_wood.hit",
+        "subtitles.item.spear_wood.use": "subtitles.item.spear_wood.use",
+        "subtitles.item.spear.attack": "subtitles.item.spear.attack",
+        "subtitles.item.spear.hit": "subtitles.item.spear.hit",
+        "subtitles.item.spear.lunge": "subtitles.item.spear.lunge",
+        "subtitles.item.spear.use": "subtitles.item.spear.use",
+        "death.attack.mace_smash": "death.attack.mace_smash",
+        "death.attack.mace_smash.item": "death.attack.mace_smash.item",
+        "death.attack.spear": "death.attack.spear",
+        "death.attack.spear.item": "death.attack.spear.item",
+        "item.arkofcosmos.copper_sword": "item.minecraft.copper_sword",
+        "item.arkofcosmos.copper_shovel": "item.minecraft.copper_shovel",
+        "item.arkofcosmos.copper_pickaxe": "item.minecraft.copper_pickaxe",
+        "item.arkofcosmos.copper_axe": "item.minecraft.copper_axe",
+        "item.arkofcosmos.copper_hoe": "item.minecraft.copper_hoe",
+        "item.arkofcosmos.copper_helmet": "item.minecraft.copper_helmet",
+        "item.arkofcosmos.copper_chestplate": "item.minecraft.copper_chestplate",
+        "item.arkofcosmos.copper_leggings": "item.minecraft.copper_leggings",
+        "item.arkofcosmos.copper_boots": "item.minecraft.copper_boots",
+        "item.arkofcosmos.heavy_core": "block.minecraft.heavy_core",
+        "entity.arkofcosmos.player_wind_charge": "entity.minecraft.wind_charge"
+      }
     }
   ]
 }

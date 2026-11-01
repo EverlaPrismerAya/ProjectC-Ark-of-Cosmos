@@ -35,7 +35,17 @@ public final class ArkNetwork {
             context.setPacketHandled(true);
         }
     }
+    public static void spearJab() { CHANNEL.sendToServer(new SpearJab()); }
+    private record SpearJab() {}
+    private record SpearFeedback(int entity) {}
+    public static void spearFeedback(Entity entity) { CHANNEL.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(()->entity),new SpearFeedback(entity.getId())); }
     public static void register() {
+        CHANNEL.messageBuilder(SpearFeedback.class,5,NetworkDirection.PLAY_TO_CLIENT)
+            .encoder((p,b)->b.writeVarInt(p.entity())).decoder(b->new SpearFeedback(b.readVarInt()))
+            .consumerMainThread((p,c)->DistExecutor.unsafeRunWhenOn(Dist.CLIENT,()->()->net.everla.projectc.arkofcosmos.client.vanilla.VanillaClient.feedback(p.entity()))).add();
+        CHANNEL.messageBuilder(SpearJab.class,4,NetworkDirection.PLAY_TO_SERVER)
+            .encoder((p,b)->{}).decoder(b->new SpearJab())
+            .consumerMainThread((p,c)->{ if(c.get().getSender()!=null) net.everla.projectc.arkofcosmos.combat.vanilla.SpearCombat.jab(c.get().getSender()); }).add();
         CHANNEL.messageBuilder(BossBar.class, 3, NetworkDirection.PLAY_TO_CLIENT)
                 .encoder((p, b) -> { b.writeUUID(p.id()); b.writeByte(p.phase()); })
                 .decoder(b -> new BossBar(b.readUUID(), b.readByte()))

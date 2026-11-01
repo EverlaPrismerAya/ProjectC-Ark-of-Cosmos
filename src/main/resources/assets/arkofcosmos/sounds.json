@@ -205,6 +205,119 @@
     ]
   },
   "mahou_vortex": {
-    "sounds": ["arkofcosmos:brimstone_monster_drone"]
+    "sounds": [
+      "arkofcosmos:brimstone_monster_drone"
+    ]
+  },
+  "entity.wind_charge.throw": {
+    "sounds": [
+      "minecraft:random/bow"
+    ],
+    "subtitle": "subtitles.entity.wind_charge.throw"
+  },
+  "entity.wind_charge.wind_burst": {
+    "sounds": [
+      {
+        "attenuation_distance": 8,
+        "name": "arkofcosmos:entity/wind_charge/wind_burst1",
+        "pitch": 1.25
+      },
+      {
+        "attenuation_distance": 8,
+        "name": "arkofcosmos:entity/wind_charge/wind_burst2",
+        "pitch": 1.25
+      },
+      {
+        "attenuation_distance": 8,
+        "name": "arkofcosmos:entity/wind_charge/wind_burst3",
+        "pitch": 1.25
+      }
+    ],
+    "subtitle": "subtitles.entity.wind_charge.wind_burst"
+  },
+  "item.mace.smash_air": {
+    "sounds": [
+      "arkofcosmos:item/mace/smash_air1",
+      "arkofcosmos:item/mace/smash_air2",
+      "arkofcosmos:item/mace/smash_air3"
+    ],
+    "subtitle": "subtitles.item.mace.smash_air"
+  },
+  "item.mace.smash_ground": {
+    "sounds": [
+      "arkofcosmos:item/mace/smash_ground1",
+      "arkofcosmos:item/mace/smash_ground2",
+      "arkofcosmos:item/mace/smash_ground3",
+      "arkofcosmos:item/mace/smash_ground4"
+    ],
+    "subtitle": "subtitles.item.mace.smash_ground"
+  },
+  "item.mace.smash_ground_heavy": {
+    "sounds": [
+      "arkofcosmos:item/mace/smash_ground_heavy"
+    ],
+    "subtitle": "subtitles.item.mace.smash_ground"
+  },
+  "item.spear.attack": {
+    "sounds": [
+      "arkofcosmos:item/spear/attack1",
+      "arkofcosmos:item/spear/attack2",
+      "arkofcosmos:item/spear/attack3"
+    ],
+    "subtitle": "subtitles.item.spear.attack"
+  },
+  "item.spear.hit": {
+    "sounds": [
+      "arkofcosmos:item/spear/hit1",
+      "arkofcosmos:item/spear/hit2",
+      "arkofcosmos:item/spear/hit3"
+    ],
+    "subtitle": "subtitles.item.spear.hit"
+  },
+  "item.spear.lunge_1": {
+    "sounds": [
+      "arkofcosmos:item/spear/lunge1"
+    ],
+    "subtitle": "subtitles.item.spear.lunge"
+  },
+  "item.spear.lunge_2": {
+    "sounds": [
+      "arkofcosmos:item/spear/lunge2"
+    ],
+    "subtitle": "subtitles.item.spear.lunge"
+  },
+  "item.spear.lunge_3": {
+    "sounds": [
+      "arkofcosmos:item/spear/lunge3"
+    ],
+    "subtitle": "subtitles.item.spear.lunge"
+  },
+  "item.spear.use": {
+    "sounds": [
+      "arkofcosmos:item/spear/use"
+    ],
+    "subtitle": "subtitles.item.spear.use"
+  },
+  "item.spear_wood.attack": {
+    "sounds": [
+      "arkofcosmos:item/spear/wood/attack1",
+      "arkofcosmos:item/spear/wood/attack2",
+      "arkofcosmos:item/spear/wood/attack3"
+    ],
+    "subtitle": "subtitles.item.spear_wood.attack"
+  },
+  "item.spear_wood.hit": {
+    "sounds": [
+      "arkofcosmos:item/spear/wood/hit1",
+      "arkofcosmos:item/spear/wood/hit2",
+      "arkofcosmos:item/spear/wood/hit3"
+    ],
+    "subtitle": "subtitles.item.spear_wood.hit"
+  },
+  "item.spear_wood.use": {
+    "sounds": [
+      "arkofcosmos:item/spear/wood/use"
+    ],
+    "subtitle": "subtitles.item.spear_wood.use"
   }
 }

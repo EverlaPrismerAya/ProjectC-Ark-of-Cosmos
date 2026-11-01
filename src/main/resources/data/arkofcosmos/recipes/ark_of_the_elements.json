@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:smithing_transform",
+  "template": {
+    "item": "minecraft:dragon_head"
+  },
+  "base": {
+    "item": "minecraft:netherite_sword"
+  },
+  "addition": {
+    "item": "minecraft:beacon"
+  },
+  "result": {
+    "item": "arkofcosmos:ark_of_the_elements"
+  }
+}

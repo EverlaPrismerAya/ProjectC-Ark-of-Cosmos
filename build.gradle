@@ -88,6 +88,8 @@ minecraft {
             args '--nogui'
         }
 
+        client { }
+
         data {
             // example of overriding the workingDirectory set in configureEach above
             workingDirectory project.file('run-data')

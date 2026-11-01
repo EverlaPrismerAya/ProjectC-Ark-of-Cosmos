@@ -1,0 +1,28 @@
+{
+  "loader": "forge:separate_transforms",
+  "gui_light": "front",
+  "base": {
+    "gui_light": "front",
+    "parent": "minecraft:item/generated",
+    "textures": {
+      "layer0": "arkofcosmos:item/golden_spear"
+    }
+  },
+  "perspectives": {
+    "firstperson_righthand": {
+      "parent": "arkofcosmos:item/golden_spear_in_hand"
+    },
+    "firstperson_lefthand": {
+      "parent": "arkofcosmos:item/golden_spear_in_hand"
+    },
+    "thirdperson_righthand": {
+      "parent": "arkofcosmos:item/golden_spear_in_hand"
+    },
+    "thirdperson_lefthand": {
+      "parent": "arkofcosmos:item/golden_spear_in_hand"
+    }
+  }
+}
+
+
+

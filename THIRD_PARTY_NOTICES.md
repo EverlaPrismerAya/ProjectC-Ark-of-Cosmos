@@ -47,6 +47,16 @@ Calamity 来源的代码须保留 Calamity Team 署名及原条款。本项目�
 
 `combat/ArkDamage.java` 中的不死图腾流程参考并适配 Minecraft 1.20.1 的原版实现，保留双手检查、伤害类型限制、Forge 图腾使用事件、物品消耗、统计与进度、恢复效果及实体事件。Minecraft 原始代码及其派生部分的权利归 Mojang／Microsoft 等原权利人，适用 Minecraft 自身的许可与使用条款；本项目不将其重新授权为 GPL-3.0-only，也不声称拥有额外再分发授权。相关条款见 <https://www.minecraft.net/eula>。
 
+
+| Mojang 派生文件 | 来源与权利归属 |
+| --- | --- |
+| `combat/vanilla/SpearMaterial.java`、`SpearCombat.java`、`item/SpearItem.java` | Minecraft 26.1.2 `Items`、`Item.Properties.spear`、`ToolMaterial`、`KineticWeapon`、`PiercingWeapon`、`AttackRange`、`ProjectileUtil`、`LivingEntity`、`Player` 的参数、命中和相对速度规则；含 Forge 1.20.1 输入与扫掠适配 |
+| `combat/vanilla/MaceCombat.java`、`ImpulseFall.java`、`item/MaceItem.java`、`mixin/VanillaPlayerAttackMixin.java`、`VanillaLivingCombatMixin.java` | Minecraft 26.1.2 `MaceItem`、`CombatRules`、`LivingEntity`、`ServerPlayer`、附魔数据的下砸、分段伤害、突破与冲量落差派生逻辑 |
+| `combat/vanilla/WindBurst.java`、`entity/PlayerWindCharge.java`、`VanillaEnchantments.java` | Minecraft 26.1.2 `WindChargeItem`、`WindCharge`、`AbstractWindCharge`、`AbstractHurtingProjectile`、`Projectile`、`ServerExplosion`、`SimpleExplosionDamageCalculator`、方块爆风触发和附魔数据；含 1.20.1 原生接口适配 |
+| `client/vanilla/SpearAnimations.java`、`Ease.java`、`GustParticle.java`、`mixin/client/Spear*Mixin.java` | Minecraft 26.1.2 `SpearAnimations`、`Ease`、`GustParticle`、`GustSeedParticle`、`ParticleResources`、`ItemInHandRenderer`、`HumanoidModel` 的动作曲线、持握与粒子派生实现 |
+
+上述 Mojang 原始及派生内容归 Mojang／Microsoft 及原权利人所有，受 [Minecraft EULA](https://www.minecraft.net/eula) 与 [Minecraft Usage Guidelines](https://www.minecraft.net/usage-guidelines) 约束；不是本项目原创 GPL-3.0-only 代码，也不由本项目重新授予 Mojang 内容的再分发许可。来源为只读 Minecraft 26.1.2 实例及其官方资源索引 30，源类／资源 SHA-256 与适配文件 SHA-256 见 `licenses/RESOURCE-SOURCES.json`。
+
 ## 纹理 PNG
 
 范围：`src/main/resources/assets/arkofcosmos/textures/` 内的物品、刀刃、弹幕和 FX 纹理。
@@ -80,6 +90,8 @@ Calamity 来源的代码须保留 Calamity Team 署名及原条款。本项目�
 
 | 文件 | 来源与权利归属 |
 | --- | --- |
+| `sounds/item/spear/**/*.ogg`、`sounds/item/mace/*.ogg`、`sounds/entity/wind_charge/*.ogg` | Minecraft 26.1.2 官方资源索引 30 的原始 OGG，逐字节复制；Mojang／Microsoft 及音频原权利人，非 GPL-3.0-only；投掷声引用 Minecraft 既有 `random/bow`，不重复复制 |
+| `textures/item/*_spear*.png`、`textures/item/mace.png`、`textures/block/heavy_core.png`、`textures/particle/gust_*.png` | Minecraft 26.1.2 原始 PNG，逐字节复制；Mojang／Microsoft，非 GPL-3.0-only；逐文件来源与 SHA-256 见资源清单 |
 | `snap_0.ogg` | Calamity 的 `ScissorGuillotineSnap`；Calamity Team／原作者，ARR |
 | `phoenix_0.ogg`～`phoenix_2.ogg` | Calamity 的 `LouderPhantomPhoenix`；Calamity Team／原作者，ARR |
 | `meaty_0.ogg` | Calamity 的 `MeatySlash`；Calamity Team／原作者，ARR |
@@ -93,6 +105,11 @@ Calamity 来源的代码须保留 Calamity Team 署名及原条款。本项目�
 原音频转码为 OGG、按 Minecraft 事件重新映射，均不构成新的音频授权。当前未在本项目中提供 Re-Logic 对这些音频的单独再分发授权。
 
 ## 语言、模型与配置
+
+| Mojang 派生资源 | 来源与权利归属 |
+| --- | --- |
+| `models/item/*_spear*.json`、`spear_in_hand.json`、`mace.json`、`handheld_mace.json`、`heavy_core.json` | Minecraft 26.1.2 原模型、纹理引用和显示变换；为 1.20.1 调整命名空间、纹理变量及 Forge 显示上下文，模型形状与变换仍归 Mojang／Microsoft，非 GPL-3.0-only |
+| 七材质长矛及重锤配方、gust 粒子定义、新增物品／附魔／字幕语言条目 | Minecraft 26.1.2 原配方、粒子资源和语言文字的接口适配；Mojang／Microsoft 及原翻译权利人，非 GPL-3.0-only。重锤配方与修理将旋风棒替换为烈焰棒 |
 
 本项目原创的 Minecraft 模型定义、标签、音效事件映射及集成配置适用 GPL-3.0-only。中英文语言文件包含原作品名称、描述与翻译；来自原作品的文字仍保留原作者权利，新增的操作绑定说明等原创文字适用 GPL-3.0-only。资源 JSON 对第三方 PNG／OGG 的引用不使这些资源成为 GPL-3.0-only。
 

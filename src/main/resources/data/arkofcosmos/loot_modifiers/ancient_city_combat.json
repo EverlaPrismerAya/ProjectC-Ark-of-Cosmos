@@ -1,0 +1,9 @@
+{
+  "type": "arkofcosmos:ancient_city_combat",
+  "conditions": [
+    {
+      "condition": "forge:loot_table_id",
+      "loot_table_id": "minecraft:chests/ancient_city"
+    }
+  ]
+}

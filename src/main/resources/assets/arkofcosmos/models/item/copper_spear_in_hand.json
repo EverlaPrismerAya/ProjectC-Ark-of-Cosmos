@@ -1,0 +1,6 @@
+{
+  "parent": "arkofcosmos:item/spear_in_hand",
+  "textures": {
+    "layer0": "arkofcosmos:item/copper_spear_in_hand"
+  }
+}

@@ -13,6 +13,10 @@
       "id": "touhou_little_maid:maid",
       "required": false
     },
-    "arkofcosmos:mahoraga_warden"
+    "arkofcosmos:mahoraga_warden",
+    {
+      "id": "arkofcosmos:the_player",
+      "required": false
+    }
   ]
 }

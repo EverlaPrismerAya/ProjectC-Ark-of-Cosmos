@@ -71,6 +71,7 @@ public final class ArkOfCosmos {
 
     public ArkOfCosmos(FMLJavaModLoadingContext context) {
         IEventBus bus = context.getModEventBus();
+        net.everla.projectc.arkofcosmos.combat.vanilla.VanillaCombat.register(bus);
         ITEMS.register(bus);
         ENTITIES.register(bus);
         SOUNDS.register(bus);

@@ -5,7 +5,27 @@
   "compatibilityLevel": "JAVA_17",
   "refmap": "arkofcosmos.refmap.json",
   "plugin": "net.everla.projectc.arkofcosmos.mixin.ArkMixinPlugin",
-  "mixins": ["DomainCollisionMixin", "KillCommandMixin", "LivingEntityMixin", "SynchedEntityDataMixin", "ForgeHooksMixin", "ItemEntityMixin"],
-  "client": ["client.DomainBlockEntityMixin", "client.DomainWorldMixin", "client.DomainPostMixin", "client.MahouNameFontMixin"],
-  "injectors": {"defaultRequire": 1}
+  "mixins": [
+    "DomainCollisionMixin",
+    "KillCommandMixin",
+    "LivingEntityMixin",
+    "SynchedEntityDataMixin",
+    "ForgeHooksMixin",
+    "ItemEntityMixin",
+    "VanillaPlayerAttackMixin",
+    "VanillaLivingCombatMixin"
+  ],
+  "client": [
+    "client.DomainBlockEntityMixin",
+    "client.DomainWorldMixin",
+    "client.DomainPostMixin",
+    "client.MahouNameFontMixin",
+    "client.SpearFirstPersonMixin",
+    "client.SpearHumanoidMixin",
+    "client.SpearHeldItemMixin",
+    "client.SpearMovementMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
 }
