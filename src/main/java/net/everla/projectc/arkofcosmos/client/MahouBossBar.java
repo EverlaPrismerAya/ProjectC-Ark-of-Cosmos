@@ -72,13 +72,13 @@ public final class MahouBossBar {
         RenderSystem.defaultBlendFunc();
         RenderSystem.setShaderColor(1, 1, 1, 1);
         shader.safeGetUniform("uTime").set((mc.level == null ? 0 : mc.level.getGameTime()) / 20f);
-        RenderSystem.setShaderTexture(0, BAR);
         for (int i = 0; i < STARS.length; i++) {
             shader.setSampler("Cosmic" + i, mc.getTextureManager().getTexture(STARS[i]).getId());
             int[] frames = STAR_FRAMES[i];
             if (frames.length > 0) shader.safeGetUniform("Frame" + i).set(frames[Math.floorMod(mc.level == null ? 0 : mc.level.getGameTime(), frames.length)]);
         }
         RenderSystem.setShader(() -> shader);
+        RenderSystem.setShaderTexture(0, BAR);
         quad(graphics, x, y, width, 0, 1f);
         RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
         RenderSystem.disableBlend();
