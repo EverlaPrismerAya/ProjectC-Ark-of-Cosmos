@@ -34,6 +34,7 @@ public final class FourthCalamityAI {
     private int age,airAge,airborne,grounded,crystals,remaining,meleeDelay;
     private int crystalStall,crystalRetryAt;
     private boolean aerial,hadTarget,pearlOpening,swordAttempted;
+    private double aerialGroundY;
     private float interrupt;
     private BlockPos base,explosive,shield;
     private Vec3 lockedLanding;
@@ -73,15 +74,39 @@ public final class FourthCalamityAI {
             &&boss.distanceToSqr(target)<=128*128&&!(target instanceof FourthCalamityEntity)
             &&(!(target instanceof Player p)||!p.isCreative()&&!p.isSpectator());
     }
+    private boolean proactiveTarget(LivingEntity target) {
+        if(!valid(target))return false;
+        if(target instanceof net.minecraft.world.entity.monster.Shulker)
+            return boss.level().dimension()==net.minecraft.world.level.Level.OVERWORLD
+                ||boss.level().dimension()==net.minecraft.world.level.Level.NETHER;
+        return target instanceof Player
+            ||target instanceof Mob&&target.hasCustomName()
+            ||target instanceof net.minecraft.world.entity.npc.Villager
+            ||target instanceof net.minecraft.world.entity.animal.allay.Allay
+            ||target instanceof net.minecraft.world.entity.animal.IronGolem
+            ||target instanceof net.minecraft.world.entity.animal.SnowGolem
+            ||target instanceof net.minecraft.world.entity.boss.wither.WitherBoss;
+    }
+    private boolean alwaysAirTarget(LivingEntity target) {
+        return target instanceof net.minecraft.world.entity.boss.wither.WitherBoss
+            ||target instanceof net.minecraft.world.entity.animal.allay.Allay;
+    }
+    private boolean requiresAir(LivingEntity target) {
+        return alwaysAirTarget(target)||target.onGround()&&target.getY()>(aerial&&!boss.onGround()?aerialGroundY:boss.getY())+AIR_CLEARANCE;
+    }
     public void tick() {
         LivingEntity target=boss.getTarget();
         if(!valid(target)) {
-            target=boss.level().getNearestPlayer(boss.getX(),boss.getY(),boss.getZ(),128,p->p instanceof LivingEntity living&&valid(living));
+            target=boss.level().getEntitiesOfClass(LivingEntity.class,boss.getBoundingBox().inflate(128),this::proactiveTarget)
+                .stream().min(java.util.Comparator.comparingDouble(boss::distanceToSqr)).orElse(null);
             boss.setTarget(target);
         }
         if(!valid(target)) { if(hadTarget){stop();boss.actions.cleanup();}hadTarget=false;return; }
+        if(!hadTarget)boss.getNavigation().stop();
         hadTarget=true;if(meleeDelay>0)meleeDelay--;
-        if(fluidAttack(target))return;
+        if(alwaysAirTarget(target)) {
+            if(fluidCombat)stop();
+        } else if(fluidAttack(target))return;
         boolean approaching=target instanceof Player&&previousTargetId==target.getId()&&previousTargetPosition!=null
             &&target.position().subtract(previousTargetPosition).multiply(1,0,1)
                 .dot(boss.position().subtract(target.position()).multiply(1,0,1).normalize())>.02;
@@ -99,7 +124,9 @@ public final class FourthCalamityAI {
             pearlOpening=true;transition(Ground.ARROW);boss.getNavigation().stop();boss.stopUsingItem();
         }
         if(boss.phase()!=3)followCrystalLaunch(target);
-        if((boss.phase()==3||!explosivePending())&&!shortCrystalCharge)updateMode(target);
+        boolean requiresAir=requiresAir(target);
+        if(requiresAir)shortCrystalCharge=false;
+        if((boss.phase()==3||!explosivePending()||requiresAir)&&!shortCrystalCharge)updateMode(target);
         if(boss.phase()!=3)tailGround=false;
         if(boss.phase()==3&&air==Air.GROUND) {
             if(!tailGround) {
@@ -202,9 +229,12 @@ public final class FourthCalamityAI {
         boolean gliding=!nearGround&&target.isFallFlying();
         boolean flying=!nearGround&&target instanceof Player p&&p.getAbilities().flying;
         boolean hovering=!nearGround&&!target.isInWater()&&Math.abs(target.getDeltaMovement().y)<.12;
-        airborne=gliding?20:flying||hovering?airborne+1:0;grounded=nearGround?grounded+1:0;
+        boolean required=requiresAir(target);
+        airborne=required||gliding?20:flying||hovering?airborne+1:0;grounded=nearGround&&!required?grounded+1:0;
         boolean mace=air==Air.CLIMB||air==Air.WINDUP||air==Air.DROP||air==Air.FALL;
-        if(!aerial&&airborne>=20&&!mace) {
+        if(!aerial&&airborne>=20&&(!mace||required)) {
+            aerialGroundY=boss.getY();
+            crystalAura.abandonPlan("AERIAL_TARGET");base=explosive=shield=null;
             aerial=true;groundCharge=false;pearlOpening=false;landing=null;enterAir(Air.APPROACH);ground=Ground.ARROW;age=0;
         } else if(aerial&&grounded>=10) {
             aerial=false;

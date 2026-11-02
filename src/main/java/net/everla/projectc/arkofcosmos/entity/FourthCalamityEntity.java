@@ -44,7 +44,7 @@ public final class FourthCalamityEntity extends Monster {
     /** One native hurt transaction, including event handlers which write health directly. */
     private final class Defense {
         final float armor=getArmorValue(),toughness=(float)getAttributeValue(Attributes.ARMOR_TOUGHNESS);
-        final float resistance=hasEffect(MobEffects.DAMAGE_RESISTANCE)?Math.max(0,1-.2f*(getEffect(MobEffects.DAMAGE_RESISTANCE).getAmplifier()+1)):1;
+        final float resistance=.8f;
         final float absorption=getAbsorptionAmount();
         final float phaseMultiplier=phase()==3?.25f:1;
         final int protection;
@@ -83,7 +83,11 @@ public final class FourthCalamityEntity extends Monster {
         defense.budget(amount);return defense.armor(amount);
     }
     @Override protected float getDamageAfterMagicAbsorb(DamageSource source,float amount) {
-        if(defense==null)return super.getDamageAfterMagicAbsorb(source,amount)*(phase()==3?.25f:1);
+        if(defense==null) {
+            if(!source.is(DamageTypeTags.BYPASSES_EFFECTS)&&!source.is(DamageTypeTags.BYPASSES_RESISTANCE)
+                &&!source.is(DamageTypeTags.BYPASSES_INVULNERABILITY))amount*=.8f;
+            return super.getDamageAfterMagicAbsorb(source,amount)*(phase()==3?.25f:1);
+        }
         float resisted=amount*(1-defense.resistance);
         if(resisted>0&&resisted<Float.MAX_VALUE&&source.getEntity() instanceof ServerPlayer player)
             player.awardStat(net.minecraft.stats.Stats.DAMAGE_DEALT_RESISTED,Math.round(resisted*10));
@@ -137,7 +141,6 @@ public final class FourthCalamityEntity extends Monster {
         equip(EquipmentSlot.CHEST,Items.NETHERITE_CHESTPLATE);
         equip(EquipmentSlot.LEGS,Items.NETHERITE_LEGGINGS);
         equip(EquipmentSlot.FEET,Items.NETHERITE_BOOTS);
-        addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE,-1,0,false,false));
         for(EquipmentSlot slot:EquipmentSlot.values())setDropChance(slot,0);
         xpReward=0;
     }
@@ -167,7 +170,23 @@ public final class FourthCalamityEntity extends Monster {
         stack.getOrCreateTag().putBoolean("Unbreakable",true);setItemSlot(slot,stack);
         getAttributes().addTransientAttributeModifiers(stack.getAttributeModifiers(slot));
     }
-    @Override protected void registerGoals() {}
+    @Override public boolean canBeAffected(MobEffectInstance effect) { return false; }
+    private void clearStatusEffects() {
+        for(MobEffectInstance effect:java.util.List.copyOf(getActiveEffects())) {
+            removeEffectNoUpdate(effect.getEffect());
+            onEffectRemoved(effect);
+        }
+    }
+    @Override protected void tickEffects() {
+        clearStatusEffects();
+        super.tickEffects();
+    }
+    @Override protected void registerGoals() {
+        goalSelector.addGoal(5,new net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal(this,.6) {
+            @Override public boolean canUse() { return getTarget()==null&&!defeated()&&super.canUse(); }
+            @Override public boolean canContinueToUse() { return getTarget()==null&&!defeated()&&super.canContinueToUse(); }
+        });
+    }
     @Override protected void defineSynchedData() { super.defineSynchedData();entityData.define(GLIDING,false);entityData.define(MACE_WINDUP,false);entityData.define(DEFEAT_TICKS,-1); }
     public boolean maceWindup() { return entityData.get(MACE_WINDUP); }
     public void setMaceWindup(boolean value) { entityData.set(MACE_WINDUP,value); }
@@ -199,7 +218,6 @@ public final class FourthCalamityEntity extends Monster {
                 }
                 return;
             }
-            if(isAlive()&&!hasEffect(MobEffects.DAMAGE_RESISTANCE))addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE,-1,0,false,false));
             bar.setProgress(barProgress());
             bar.setVisible(isAlive());
             if(lastBars!=bars()||lastPhase!=phase()) {
@@ -250,7 +268,7 @@ public final class FourthCalamityEntity extends Monster {
         super.addAdditionalSaveData(tag);if(defeated())tag.putInt("FourthDefeatTicks",defeatTicks());
     }
     @Override public void readAdditionalSaveData(CompoundTag tag) {
-        super.readAdditionalSaveData(tag);setGliding(false);combat.stop();
+        super.readAdditionalSaveData(tag);clearStatusEffects();setGliding(false);combat.stop();
         nonPlayerInvulnerableUntil=level().getGameTime()+Mth.clamp(tag.getInt("NonPlayerInvulnerabilityTicks"),0,10);
         if(tag.contains("FourthDefeatTicks")) {
             beginDefeat(damageSources().generic());

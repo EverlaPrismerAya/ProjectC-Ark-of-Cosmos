@@ -4,7 +4,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 
-/** Native weapon damage with a 35% floor; Boss attacks share Ark authority and a five-tick victim cooldown; Fourth Calamity has no floor. */
+/** Native weapon damage with a 35% floor; Boss attacks share Ark authority and a victim cooldown; Fourth Calamity uses ten ticks and has no floor. */
 public final class WeaponDamage {
     private record Hit(LivingEntity target, DamageSource source, float minimum) {}
     private static final ThreadLocal<Hit> CURRENT = new ThreadLocal<>();
@@ -28,8 +28,8 @@ public final class WeaponDamage {
         long now = target.level().getGameTime();
         Long previousUntil = bossHit ? BOSS_HIT_UNTIL.get(target) : null;
         if (previousUntil != null && now < previousUntil) return false;
-        // Reserve before dispatch so all boss attacks share the victim's five-tick cooldown.
-        if (bossHit) BOSS_HIT_UNTIL.put(target, now + 5);
+        // Reserve before dispatch; all Fourth Calamity attack kinds share ten ticks.
+        if (bossHit) BOSS_HIT_UNTIL.put(target, now + (fourthHit ? 10 : 5));
         boolean success = false;
         Hit previous = CURRENT.get();
         int cooldown = target.invulnerableTime;

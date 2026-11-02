@@ -21,6 +21,7 @@
     "FourthCalamityExplosionMixin",
     "FourthCalamityArrowMixin",
     "FourthCalamityDefenseMixin",
+    "FourthCalamityEffectMixin",
     "CalamityAttackRemovalMixin",
     "VanillaLivingCombatMixin"
   ],
