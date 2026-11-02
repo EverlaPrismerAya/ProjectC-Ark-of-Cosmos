@@ -9,8 +9,8 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 @Mixin(LivingEntity.class)
 public abstract class FourthCalamityDefenseMixin {
     @Redirect(method="actuallyHurt",at=@At(value="INVOKE",target="Lnet/minecraft/world/entity/LivingEntity;setHealth(F)V"))
-    private void fourthCommitDamage(LivingEntity entity,float health) {
-        if(entity instanceof FourthCalamityEntity boss)boss.commitDamageHealth(health);
+    private void fourthCommitDamage(LivingEntity entity,float health,net.minecraft.world.damagesource.DamageSource source,float amount) {
+        if(entity instanceof FourthCalamityEntity boss)boss.commitDamageHealth(source,health);
         else entity.setHealth(health);
     }
 }

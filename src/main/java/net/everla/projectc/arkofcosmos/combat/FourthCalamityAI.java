@@ -15,7 +15,7 @@ import net.minecraftforge.event.entity.EntityTeleportEvent;
 
 /** One decision tick per server tick; all attacks are delegated to real items and entities. */
 public final class FourthCalamityAI {
-    public static final int RECOVER_TICKS=20,AURA_INTERVAL=2,TAIL_INTERVAL=2;
+    public static final int RECOVER_TICKS=20,TAIL_INTERVAL=2;
     public static final double RETREAT_TRIGGER=4.5,RETREAT_DISTANCE=7;
     public static final int WINDUP_TICKS=20;
     public static final int CRYSTAL_STALL_TICKS=8,CRYSTAL_RETRY_TICKS=20;
@@ -46,6 +46,7 @@ public final class FourthCalamityAI {
     private int crystalLaunchTarget=-1,crystalLaunchTick;
     private double crystalLaunchY,crystalLaunchVelocity;
     private boolean crystalLifted,shortCrystalCharge;
+    private boolean tailGround;
     public void crystalBlast(LivingEntity target) {
         if(target!=boss.getTarget()||air!=Air.GROUND)return;
         if(crystalLaunchTarget==target.getId()&&boss.tickCount-crystalLaunchTick<=20)return;
@@ -93,8 +94,21 @@ public final class FourthCalamityAI {
             crystalAura.abandonPlan("PEARL_ARRIVAL");base=null;
             pearlOpening=true;transition(Ground.ARROW);boss.getNavigation().stop();boss.stopUsingItem();
         }
-        followCrystalLaunch(target);
-        if(!explosivePending()&&!shortCrystalCharge)updateMode(target);
+        if(boss.phase()!=3)followCrystalLaunch(target);
+        if((boss.phase()==3||!explosivePending())&&!shortCrystalCharge)updateMode(target);
+        if(boss.phase()!=3)tailGround=false;
+        if(boss.phase()==3&&air==Air.GROUND) {
+            if(!tailGround) {
+                crystalAura.clear();boss.actions.cleanup();boss.stopUsingItem();
+                base=explosive=shield=null;placementPosition=null;pearlOpening=spacing=false;
+                crystalLaunchTarget=-1;transition(Ground.HIT);meleeDelay=0;tailGround=true;
+            }
+            if(boss.tickCount%TAIL_INTERVAL==0)teleport(target);
+            boss.setGliding(false);boss.setNoGravity(false);aim(target.getEyePosition(),30);
+            boss.actions.hold(Items.NETHERITE_SWORD);chase(target);
+            if(meleeDelay==0&&boss.actions.melee(target))meleeDelay=13;
+            return;
+        }
         if(air==Air.GROUND&&!explosivePending()&&boss.actions.chasePearlFlying()) {
             crystalAura.abandonPlan("PEARL_CHASE");base=null;chase(target);return;
         }
@@ -110,7 +124,6 @@ public final class FourthCalamityAI {
             }
             spacing=false;
         }
-        if(boss.phase()==3&&air==Air.GROUND&&boss.tickCount%TAIL_INTERVAL==0)teleport(target);
         if(air!=Air.GROUND)flight(target);
         else ground(target);
     }
@@ -185,11 +198,6 @@ public final class FourthCalamityAI {
             if(result==FourthCalamityCrystalAura.TickResult.PROGRESSED||result==FourthCalamityCrystalAura.TickResult.WAITING) {
                 boss.getNavigation().stop();boss.setSprinting(false);boss.setJumping(false);
             } else positionForCrystals(target);
-            return;
-        }
-        if(boss.phase()==3&&ground!=Ground.RETREAT&&ground!=Ground.PREPARE&&ground!=Ground.SHIELD&&ground!=Ground.PLACE&&ground!=Ground.CHARGE&&ground!=Ground.DETONATE) {
-            if(boss.tickCount%AURA_INTERVAL==0)crystalStep(target);
-            if(boss.isAlive()&&boss.actions.attackAvailable()&&boss.distanceToSqr(target)<9&&meleeDelay==0){boss.actions.hold(Items.NETHERITE_SWORD);boss.actions.melee(target);meleeDelay=13;}
             return;
         }
         switch(ground) {
@@ -560,6 +568,7 @@ public final class FourthCalamityAI {
             &&boss.level().getWorldBorder().isWithinBounds(bounds)&&boss.level().noCollision(boss,bounds)&&!boss.level().containsAnyLiquid(bounds);
     }
     public void stop() {
+        tailGround=false;
         shortCrystalCharge=false;crystalLaunchTarget=-1;
         previousTargetPosition=null;previousTargetId=-1;spacing=escaping=false;
         boss.getNavigation().stop();boss.stopUsingItem();boss.setGliding(false);boss.setMaceWindup(false);boss.setNoGravity(false);boss.setSprinting(false);boss.setJumping(false);

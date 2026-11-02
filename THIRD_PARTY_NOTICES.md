@@ -152,6 +152,8 @@ Java 移植、Minecraft 三维适配及项目维护：EverlaPrismerAya。
 
 ## 第四天灾玩家皮肤
 
+第四天灾战斗音乐 `assets/arkofcosmos/sounds/music/masquerade_waltz.ogg` 由用户提供，原文件未转码，来源路径与 SHA-256 见资源清单。作者及许可未随文件提供，权利归原作者／原权利人，不纳入本项目 GPL-3.0-only 授权。
+
 | 资源 | 来源与权利说明 |
 | --- | --- |
 | `assets/arkofcosmos/textures/entity/kira_official.png` | 正版玩家 `Kira_Official`，UUID `d150668b708846f8aa9d367bbd962d85` 的 slim 皮肤快照；来源为 Mojang Session Server 返回的 Minecraft Textures 地址，URL 与 SHA-256 见资源清单。皮肤权利归原作者／原权利人，不纳入 GPL-3.0-only 授权。 |

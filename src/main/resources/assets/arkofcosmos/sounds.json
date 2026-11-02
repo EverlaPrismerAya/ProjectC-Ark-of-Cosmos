@@ -172,6 +172,14 @@
       "arkofcosmos:elements_item9_0"
     ]
   },
+  "fourth_calamity_music": {
+    "sounds": [
+      {
+        "name": "arkofcosmos:music/masquerade_waltz",
+        "stream": true
+      }
+    ]
+  },
   "mahou_music_phase_1": {
     "sounds": [
       {

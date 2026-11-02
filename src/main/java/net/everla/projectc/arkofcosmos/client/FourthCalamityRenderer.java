@@ -20,7 +20,18 @@ public final class FourthCalamityRenderer extends HumanoidMobRenderer<FourthCala
                     boss.isUsingItem()?HumanoidModel.ArmPose.BLOCK:HumanoidModel.ArmPose.ITEM;
                 leftArmPose=HumanoidModel.ArmPose.EMPTY;
                 super.setupAnim(boss,swing,amount,age,yaw,pitch);
-                if(boss.maceWindup())rightArm.xRot=-2.6f;
+                if(boss.defeated()) {
+                    // Peter's prone death silhouette: head sideways, hands behind the back, uneven legs.
+                    head.xRot=.1f;head.yRot=1.25f;head.zRot=0;
+                    body.xRot=body.yRot=body.zRot=0;
+                    rightArm.xRot=.65f;leftArm.xRot=.45f;
+                    rightArm.yRot=-.65f;leftArm.yRot=.5f;
+                    rightArm.zRot=-.4f;leftArm.zRot=.3f;
+                    rightLeg.xRot=.08f;leftLeg.xRot=-.2f;
+                    rightLeg.yRot=0;leftLeg.yRot=.2f;
+                    rightLeg.zRot=-.08f;leftLeg.zRot=.35f;
+                    hat.copyFrom(head);jacket.copyFrom(body);leftPants.copyFrom(leftLeg);rightPants.copyFrom(rightLeg);
+                } else if(boss.maceWindup())rightArm.xRot=-2.6f;
                 leftSleeve.copyFrom(leftArm);rightSleeve.copyFrom(rightArm);
             }
         },.5f);
@@ -29,7 +40,11 @@ public final class FourthCalamityRenderer extends HumanoidMobRenderer<FourthCala
     }
     @Override protected void setupRotations(FourthCalamityEntity boss,PoseStack pose,float age,float yaw,float partial) {
         super.setupRotations(boss,pose,age,yaw,partial);
-        if(boss.isFallFlying()) {
+        if(boss.defeated()) {
+            float fall=Mth.clamp((boss.defeatTicks()+partial)/12f,0,1);
+            fall=fall*fall*(3-2*fall);
+            pose.translate(0,.18f*fall,0);pose.mulPose(Axis.XP.rotationDegrees(-90*fall));
+        } else if(boss.isFallFlying()) {
             float ticks=boss.getFallFlyingTicks()+partial;
             pose.mulPose(Axis.XP.rotationDegrees(Mth.clamp(ticks*ticks/100,0,1)*(-90-boss.getXRot())));
         }

@@ -30,17 +30,21 @@ import net.minecraftforge.network.NetworkHooks;
 public final class FourthCalamityEntity extends Monster {
     private static final EntityDataAccessor<Boolean> GLIDING=SynchedEntityData.defineId(FourthCalamityEntity.class,EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> MACE_WINDUP=SynchedEntityData.defineId(FourthCalamityEntity.class,EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Integer> DEFEAT_TICKS=SynchedEntityData.defineId(FourthCalamityEntity.class,EntityDataSerializers.INT);
+    public static final int DEFEAT_DURATION=100;
     private final ServerBossEvent bar=new ServerBossEvent(Component.translatable("boss.arkofcosmos.the_player"),BossEvent.BossBarColor.RED,BossEvent.BossBarOverlay.PROGRESS);
     public final FourthCalamityAI combat=new FourthCalamityAI(this);
     public final FourthCalamityActions actions=new FourthCalamityActions(this);
     private int lastBars=-1,lastPhase=-1;
     private Defense defense;
+    private DamageSource defeatSource;
 
     /** One native hurt transaction, including event handlers which write health directly. */
     private final class Defense {
         final float armor=getArmorValue(),toughness=(float)getAttributeValue(Attributes.ARMOR_TOUGHNESS);
         final float resistance=hasEffect(MobEffects.DAMAGE_RESISTANCE)?Math.max(0,1-.2f*(getEffect(MobEffects.DAMAGE_RESISTANCE).getAmplifier()+1)):1;
         final float absorption=getAbsorptionAmount();
+        final float phaseMultiplier=phase()==3?.25f:1;
         final int protection;
         float limit;
         Defense(DamageSource source,float amount) {
@@ -59,7 +63,7 @@ public final class FourthCalamityEntity extends Monster {
             float effective=Mth.clamp(armor-amount/(2+toughness/4),armor*.2f,20);
             return amount*(1-effective/25);
         }
-        float magic(float amount) { return amount*resistance*(1-protection/25f); }
+        float magic(float amount) { return amount*resistance*(1-protection/25f)*phaseMultiplier; }
         void budget(float raw) { limit=Math.max(0,magic(armor(raw))-absorption); }
     }
     private boolean defend(DamageSource source) {
@@ -77,7 +81,7 @@ public final class FourthCalamityEntity extends Monster {
         defense.budget(amount);return defense.armor(amount);
     }
     @Override protected float getDamageAfterMagicAbsorb(DamageSource source,float amount) {
-        if(defense==null)return super.getDamageAfterMagicAbsorb(source,amount);
+        if(defense==null)return super.getDamageAfterMagicAbsorb(source,amount)*(phase()==3?.25f:1);
         float resisted=amount*(1-defense.resistance);
         if(resisted>0&&resisted<Float.MAX_VALUE&&source.getEntity() instanceof ServerPlayer player)
             player.awardStat(net.minecraft.stats.Stats.DAMAGE_DEALT_RESISTED,Math.round(resisted*10));
@@ -90,14 +94,33 @@ public final class FourthCalamityEntity extends Monster {
         finally { defense=previous; }
     }
     @Override public void setHealth(float health) {
+        if(defeated()){super.setHealth(1);return;}
         // Event callbacks must not apply damage before cancellation, i-frames or totem checks.
         if(defense!=null&&health<getHealth())return;
         super.setHealth(health);
     }
     /** Called only from vanilla actuallyHurt's health commit, after Forge damage events. */
-    public void commitDamageHealth(float health) {
+    public void commitDamageHealth(DamageSource source,float health) {
+        if(defeated())return;
         if(defense!=null&&health<getHealth())health=getHealth()-Math.min(getHealth()-health,defense.limit);
+        if(phase()==3&&health<=0){beginDefeat(source);return;}
         super.setHealth(health);
+    }
+    public boolean defeated() { return entityData.hasItem(DEFEAT_TICKS)&&entityData.get(DEFEAT_TICKS)>=0; }
+    public int defeatTicks() { return defeated()?entityData.get(DEFEAT_TICKS):0; }
+    @Override public void onSyncedDataUpdated(EntityDataAccessor<?> key) {
+        super.onSyncedDataUpdated(key);
+        if(key==DEFEAT_TICKS&&defeated()&&getBbHeight()>.4f)refreshDimensions();
+    }
+    private void beginDefeat(DamageSource source) {
+        if(defeated())return;
+        super.setHealth(1);defeatSource=source;entityData.set(DEFEAT_TICKS,0);
+        // Keep vanilla travel/gravity active; customServerAiStep gates all combat while defeated.
+        clearCombat();setTarget(null);setNoAi(false);stopRiding();removeAllEffects();
+        setXxa(0);setYya(0);setZza(0);getMoveControl().setWantedPosition(getX(),getY(),getZ(),0);
+        setDeltaMovement(net.minecraft.world.phys.Vec3.ZERO);
+        setItemSlot(EquipmentSlot.MAINHAND,ItemStack.EMPTY);setItemSlot(EquipmentSlot.OFFHAND,ItemStack.EMPTY);
+        refreshDimensions();
     }
 
     public FourthCalamityEntity(EntityType<? extends FourthCalamityEntity> type,Level level) {
@@ -127,7 +150,7 @@ public final class FourthCalamityEntity extends Monster {
         getAttributes().addTransientAttributeModifiers(stack.getAttributeModifiers(slot));
     }
     @Override protected void registerGoals() {}
-    @Override protected void defineSynchedData() { super.defineSynchedData();entityData.define(GLIDING,false);entityData.define(MACE_WINDUP,false); }
+    @Override protected void defineSynchedData() { super.defineSynchedData();entityData.define(GLIDING,false);entityData.define(MACE_WINDUP,false);entityData.define(DEFEAT_TICKS,-1); }
     public boolean maceWindup() { return entityData.get(MACE_WINDUP); }
     public void setMaceWindup(boolean value) { entityData.set(MACE_WINDUP,value); }
     public int bars() { return Math.max(0,(int)Math.ceil(getHealth()/20)); }
@@ -139,15 +162,24 @@ public final class FourthCalamityEntity extends Monster {
         boolean flying=gliding()&&!onGround()&&!isPassenger()&&!hasEffect(MobEffects.LEVITATION);
         setSharedFlag(7,flying);setPose(flying?Pose.FALL_FLYING:Pose.STANDING);
     }
-    @Override public EntityDimensions getDimensions(Pose pose) { return pose==Pose.FALL_FLYING?EntityDimensions.scalable(.6f,.6f):super.getDimensions(pose); }
-    @Override protected float getStandingEyeHeight(Pose pose,EntityDimensions size) { return pose==Pose.FALL_FLYING?.4f:1.62f; }
+    @Override public EntityDimensions getDimensions(Pose pose) { return defeated()?EntityDimensions.scalable(.6f,.35f):pose==Pose.FALL_FLYING?EntityDimensions.scalable(.6f,.6f):super.getDimensions(pose); }
+    @Override protected float getStandingEyeHeight(Pose pose,EntityDimensions size) { return defeated()?.2f:pose==Pose.FALL_FLYING?.4f:1.62f; }
     @Override public void teleportTo(double x,double y,double z) {
         super.teleportTo(x,y,z);net.everla.projectc.arkofcosmos.combat.vanilla.SpearCombat.resetMotion(this);
     }
-    @Override protected void customServerAiStep() { if(isAlive())combat.tick(); }
+    @Override protected void customServerAiStep() { if(isAlive()&&!defeated())combat.tick(); }
     @Override public void tick() {
         super.tick();
         if(!level().isClientSide) {
+            if(defeated()) {
+                setDeltaMovement(0,Math.min(0,getDeltaMovement().y),0);
+                int elapsed=defeatTicks()+1;entityData.set(DEFEAT_TICKS,elapsed);
+                if(elapsed>=DEFEAT_DURATION) {
+                    super.setHealth(0);super.die(defeatSource!=null?defeatSource:damageSources().generic());
+                    remove(RemovalReason.KILLED);
+                }
+                return;
+            }
             if(isAlive()&&!hasEffect(MobEffects.DAMAGE_RESISTANCE))addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE,-1,0,false,false));
             bar.setProgress(barProgress());
             bar.setVisible(isAlive());
@@ -159,23 +191,37 @@ public final class FourthCalamityEntity extends Monster {
         }
     }
     private void syncBar(ServerPlayer player,boolean present) { ArkNetwork.fourthBossBar(player,bar.getId(),present?phase():0,present?bars():0); }
-    @Override public void startSeenByPlayer(ServerPlayer player) { super.startSeenByPlayer(player);syncBar(player,true);bar.addPlayer(player); }
+    @Override public void startSeenByPlayer(ServerPlayer player) { super.startSeenByPlayer(player);if(!defeated()){syncBar(player,true);bar.addPlayer(player);} }
     @Override public void stopSeenByPlayer(ServerPlayer player) { super.stopSeenByPlayer(player);bar.removePlayer(player);syncBar(player,false); }
     @Override public boolean hurt(DamageSource source,float amount) {
+        if(defeated())return false;
         Defense previous=defense;
         defense=defend(source)?new Defense(source,amount):null;
         try {
             float before=getHealth();boolean hit=super.hurt(source,amount);
-            if(hit&&combat!=null)combat.damaged(Math.max(0,before-getHealth()));return hit;
+            if(hit&&combat!=null&&!defeated())combat.damaged(Math.max(0,before-getHealth()));return hit;
         } finally { defense=previous; }
     }
-    @Override public void die(DamageSource source) { super.die(source);clearCombat(); }
+    @Override public void die(DamageSource source) {
+        if(defeated())return;
+        super.die(source);clearCombat();
+    }
+    @Override public boolean isAttackable() { return !defeated()&&super.isAttackable(); }
     private void clearCombat() {
         if(combat!=null)combat.stop();
         if(actions!=null)actions.cleanup();
         if(bar!=null){for(ServerPlayer player:bar.getPlayers())syncBar(player,false);bar.removeAllPlayers();}
     }
     @Override public void remove(RemovalReason reason) { if(!level().isClientSide)clearCombat();super.remove(reason); }
-    @Override public void readAdditionalSaveData(CompoundTag tag) { super.readAdditionalSaveData(tag);setGliding(false);combat.stop(); }
+    @Override public void addAdditionalSaveData(CompoundTag tag) {
+        super.addAdditionalSaveData(tag);if(defeated())tag.putInt("FourthDefeatTicks",defeatTicks());
+    }
+    @Override public void readAdditionalSaveData(CompoundTag tag) {
+        super.readAdditionalSaveData(tag);setGliding(false);combat.stop();
+        if(tag.contains("FourthDefeatTicks")) {
+            beginDefeat(damageSources().generic());
+            entityData.set(DEFEAT_TICKS,Mth.clamp(tag.getInt("FourthDefeatTicks"),0,DEFEAT_DURATION-1));
+        }
+    }
     @Override public Packet<ClientGamePacketListener> getAddEntityPacket() { return NetworkHooks.getEntitySpawningPacket(this); }
 }
