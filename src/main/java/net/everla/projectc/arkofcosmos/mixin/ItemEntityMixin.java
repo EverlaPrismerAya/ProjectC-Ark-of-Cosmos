@@ -49,7 +49,7 @@ abstract class ItemEntityMixin {
     private boolean ark$protected() {
         ItemEntity self=(ItemEntity)(Object)this;
         var item=self.getItem().getItem();
-        return item==ArkOfCosmos.AURIC_BAR.get()||item==ArkOfCosmos.ARK_OF_COSMOS.get()||item==ArkOfCosmos.ARK_OF_THE_OLD_ONE.get();
+        return item==ArkOfCosmos.AURIC_BAR.get()||item==ArkOfCosmos.ANNIHILATION_EMBER.get()||item==ArkOfCosmos.ARK_OF_COSMOS.get()||item==ArkOfCosmos.ARK_OF_THE_OLD_ONE.get();
     }
     @Inject(method={"tick", "m_6478_"}, at=@At("HEAD"), require=0)
     private void ark$keep(CallbackInfo ci) { if(ark$protected()) ark$resetAge(); }

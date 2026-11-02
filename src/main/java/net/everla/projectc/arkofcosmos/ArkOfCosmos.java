@@ -81,6 +81,8 @@ public final class ArkOfCosmos {
                     .sized(.25f,.25f).noSave().noSummon().clientTrackingRange(128).updateInterval(1).build("arkofcosmos:old_one_attack"));
     public static final RegistryObject<Item> AURIC_BAR = ITEMS.register("auric_bar",
             net.everla.projectc.arkofcosmos.item.AuricBarItem::new);
+    public static final RegistryObject<Item> ANNIHILATION_EMBER = ITEMS.register("annihilation_ember",
+            net.everla.projectc.arkofcosmos.item.AnnihilationEmberItem::new);
 
     public ArkOfCosmos(FMLJavaModLoadingContext context) {
         IEventBus bus = context.getModEventBus();
@@ -110,6 +112,7 @@ public final class ArkOfCosmos {
             event.accept(ARK_OF_THE_ELEMENTS);
         }
         if (event.getTabKey() == CreativeModeTabs.INGREDIENTS) event.accept(AURIC_BAR);
+        if (event.getTabKey() == CreativeModeTabs.INGREDIENTS) event.accept(ANNIHILATION_EMBER);
         if (event.getTabKey() == CreativeModeTabs.SPAWN_EGGS) event.accept(THE_PLAYER_SPAWN_EGG);
     }
 }

@@ -38,6 +38,7 @@ public final class FourthCalamityEntity extends Monster {
     private int lastBars=-1,lastPhase=-1;
     private Defense defense;
     private DamageSource defeatSource;
+    private boolean annihilationEmberDropped;
 
     /** One native hurt transaction, including event handlers which write health directly. */
     private final class Defense {
@@ -185,6 +186,7 @@ public final class FourthCalamityEntity extends Monster {
                 setDeltaMovement(0,Math.min(0,getDeltaMovement().y),0);
                 int elapsed=defeatTicks()+1;entityData.set(DEFEAT_TICKS,elapsed);
                 if(elapsed>=DEFEAT_DURATION) {
+                    dropAnnihilationEmbers();
                     super.setHealth(0);super.die(defeatSource!=null?defeatSource:damageSources().generic());
                     remove(RemovalReason.KILLED);
                 }
@@ -215,6 +217,16 @@ public final class FourthCalamityEntity extends Monster {
     @Override public void die(DamageSource source) {
         if(defeated())return;
         super.die(source);clearCombat();
+        if (!level().isClientSide) {
+            dropAnnihilationEmbers();
+        }
+    }
+    private void dropAnnihilationEmbers() {
+        if (annihilationEmberDropped || level().isClientSide) return;
+        annihilationEmberDropped = true;
+        int count = 3 + random.nextInt(3);
+        var drop = spawnAtLocation(new ItemStack(ArkOfCosmos.ANNIHILATION_EMBER.get(), count), 0.4f);
+        if (drop != null) drop.setGlowingTag(true);
     }
     @Override public boolean isAttackable() { return !defeated()&&super.isAttackable(); }
     private void clearCombat() {

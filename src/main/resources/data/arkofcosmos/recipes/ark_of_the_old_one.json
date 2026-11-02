@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:smithing_transform",
+  "template": { "item": "arkofcosmos:annihilation_ember" },
+  "base": { "item": "arkofcosmos:ark_of_cosmos" },
+  "addition": { "item": "arkofcosmos:auric_bar" },
+  "result": { "item": "arkofcosmos:ark_of_the_old_one" }
+}

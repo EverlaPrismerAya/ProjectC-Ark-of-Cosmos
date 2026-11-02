@@ -49,6 +49,7 @@ public final class FourthCalamityAI {
     private boolean tailGround;
     private int fluidTicks,riptideCharge,riptideCooldown;
     private boolean fluidCombat;
+    private Vec3 riptideVelocity;
     public void crystalBlast(LivingEntity target) {
         if(target!=boss.getTarget()||air!=Air.GROUND)return;
         if(crystalLaunchTarget==target.getId()&&boss.tickCount-crystalLaunchTick<=20)return;
@@ -142,9 +143,17 @@ public final class FourthCalamityAI {
             // Fluid recovery takes ownership even during a crystal combo or a failed landing.
             stop();boss.actions.cleanup();fluidCombat=true;
         }
-        if(boss.isAutoSpinAttack())return true;
+        if(boss.isAutoSpinAttack()) {
+            // The Boss is non-pushable, so keep the vanilla Riptide velocity explicitly.
+            // Writing the motion each AI tick also prevents fluid drag from pinning it in place.
+            if(riptideVelocity!=null) {
+                boss.setDeltaMovement(riptideVelocity);
+                VanillaCombat.syncMotion(boss);
+            }
+            return true;
+        }
         if(!immersed) {
-            fluidCombat=false;riptideCharge=riptideCooldown=0;boss.stopUsingItem();
+            fluidCombat=false;riptideCharge=riptideCooldown=0;riptideVelocity=null;boss.stopUsingItem();
             recover();return false;
         }
         boss.getNavigation().stop();boss.setGliding(false);boss.setNoGravity(false);
@@ -165,7 +174,8 @@ public final class FourthCalamityAI {
         if(direction.lengthSqr()<.01)direction=new Vec3(0,1,0);
         aim(boss.getEyePosition().add(direction),180);boss.stopUsingItem();
         // Vanilla Riptide III adds a 3-block/tick impulse and spins for 20 ticks.
-        boss.push(direction.x*3,direction.y*3,direction.z*3);
+        riptideVelocity=direction.scale(3);
+        boss.setDeltaMovement(riptideVelocity);
         boss.setRiptideTicks(20);boss.resetFallDistance();
         if(boss.onGround())boss.move(MoverType.SELF,new Vec3(0,1.1999999,0));
         boss.playSound(net.minecraft.sounds.SoundEvents.TRIDENT_RIPTIDE_3,1,1);
@@ -610,7 +620,7 @@ public final class FourthCalamityAI {
             &&boss.level().getWorldBorder().isWithinBounds(bounds)&&boss.level().noCollision(boss,bounds)&&!boss.level().containsAnyLiquid(bounds);
     }
     public void stop() {
-        fluidTicks=riptideCharge=riptideCooldown=0;fluidCombat=false;boss.setRiptideTicks(0);
+        fluidTicks=riptideCharge=riptideCooldown=0;fluidCombat=false;riptideVelocity=null;boss.setRiptideTicks(0);
         tailGround=false;
         shortCrystalCharge=false;crystalLaunchTarget=-1;
         previousTargetPosition=null;previousTargetId=-1;spacing=escaping=false;
