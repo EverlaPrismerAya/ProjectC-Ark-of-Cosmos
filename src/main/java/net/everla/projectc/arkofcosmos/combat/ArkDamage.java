@@ -179,6 +179,19 @@ public final class ArkDamage {
         return hurt;
     }
 
+    /** Fourth Calamity keeps Ark authority, but uses vanilla source-specific mitigation without a floor. */
+    private static float fourthCalamityDamage(LivingEntity target, DamageSource source, float amount) {
+        if (!source.is(DamageTypeTags.BYPASSES_ARMOR))
+            amount = CombatRules.getDamageAfterAbsorb(amount, target.getArmorValue(),
+                    (float)target.getAttributeValue(Attributes.ARMOR_TOUGHNESS));
+        if (source.is(DamageTypeTags.BYPASSES_EFFECTS)) return amount;
+        var resistance = target.getEffect(MobEffects.DAMAGE_RESISTANCE);
+        if (resistance != null && !source.is(DamageTypeTags.BYPASSES_RESISTANCE))
+            amount = Math.max(amount * (25 - (resistance.getAmplifier() + 1) * 5) / 25f, 0);
+        if (amount <= 0 || source.is(DamageTypeTags.BYPASSES_ENCHANTMENTS)) return amount;
+        int protection = net.minecraft.world.item.enchantment.EnchantmentHelper.getDamageProtection(target.getArmorSlots(), source);
+        return protection > 0 ? CombatRules.getDamageAfterMagicAbsorb(amount, protection) : amount;
+    }
     public static boolean hurtFourthCalamity(LivingEntity target, DamageSource source, float amount) {
         return hurtTarget(target,source,amount,false,false);
     }
@@ -195,7 +208,7 @@ public final class ArkDamage {
         float before = target.getHealth();
         if (!Float.isFinite(before) || before <= 0) return false;
         boolean seagull = seagull(target);
-        amount = seagull ? Float.MAX_VALUE : unmitigated ? amount : reducedDamage(target, amount, floor);
+        amount = seagull ? Float.MAX_VALUE : unmitigated ? amount : floor ? reducedDamage(target, amount, true) : fourthCalamityDamage(target, source, amount);
         float after = Math.max(0, before - amount);
         target.getEntityData().set(HEALTH, after);
         target.getCombatTracker().recordDamage(source, Math.min(before, amount));
