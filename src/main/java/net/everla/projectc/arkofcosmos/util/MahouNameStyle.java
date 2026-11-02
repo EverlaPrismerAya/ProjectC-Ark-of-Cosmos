@@ -7,7 +7,7 @@ public final class MahouNameStyle {
     public static final ResourceLocation FONT = ResourceLocation.fromNamespaceAndPath("arkofcosmos", "mahou_name");
     /** Serialized through Style.color, like RevelationFix's custom formatting marker. */
     public static final int MARKER_COLOR = 0x010203;
-    private static final int[] COLORS = {0xFF6FCF, 0xB982FF, 0x5AA9FF, 0xB982FF, 0xFF6FCF};
+    private static final int[] COLORS = {0x00FFFF, 0x8800FF, 0xFF00FF, 0x8800FF, 0x00FFFF};
 
     private MahouNameStyle() {}
 

@@ -46,37 +46,65 @@ public final class FourthCalamityCrystalAura {
     private final Map<UUID,Integer> attempts=new HashMap<>(),waiting=new HashMap<>();
     private final Deque<Integer> attacks=new ArrayDeque<>();
     private BlockPos supportBase;
+    private BlockPos coverColumn;
+    private Vec3 planTarget,planBoss;
+    private int planTargetId=-1,stalled;
+    private final Map<UUID,Integer> deferred=new HashMap<>();
     private int placeAt,breakAt,switchAt,supportUntil;
     public FourthCalamityCrystalAura(FourthCalamityEntity boss){this.boss=boss;}
-    public void clear(){targets.clear();attempts.clear();waiting.clear();attacks.clear();supportBase=null;placeAt=breakAt=switchAt=supportUntil=0;}
+    public void clear(){targets.clear();attempts.clear();waiting.clear();attacks.clear();deferred.clear();supportBase=coverColumn=null;planTarget=planBoss=null;planTargetId=-1;stalled=0;placeAt=breakAt=switchAt=supportUntil=0;}
+    boolean followTarget(LivingEntity primary) {
+        boolean changed=planTarget!=null&&(primary.getId()!=planTargetId||primary.position().distanceToSqr(planTarget)>16
+            ||boss.position().distanceToSqr(planBoss)>36||boss.distanceToSqr(primary)>settings.targetRange*settings.targetRange);
+        if(changed)abandonPlan("TARGET_OR_BOSS_MOVED");
+        if(planTarget==null){planTarget=primary.position();planBoss=boss.position();planTargetId=primary.getId();}
+        return changed;
+    }
+    void abandonPlan(String reason) {
+        EndCrystal old=boss.actions.pendingCrystal();
+        if(old!=null)deferred.put(old.getUUID(),boss.tickCount+40);
+        boss.actions.forgetPendingCrystal();supportBase=null;planTarget=planBoss=null;stalled=0;
+        boss.actions.diagnostic("AURA_PLAN",null,FourthCalamityActions.CrystalResult.BLOCKED,reason);
+    }
     public TickResult tick(LivingEntity primary) {
+        followTarget(primary);
         int tick=boss.tickCount;
+        deferred.entrySet().removeIf(entry->tick>=entry.getValue());
         while(!attacks.isEmpty()&&tick-attacks.peekFirst()>=20)attacks.removeFirst();
         var nearby=boss.level().getEntitiesOfClass(EndCrystal.class,boss.getBoundingBox().inflate(FourthCalamityActions.REACH));
         Set<UUID> loaded=new HashSet<>();for(var crystal:nearby)loaded.add(crystal.getUUID());
         attempts.keySet().retainAll(loaded);waiting.keySet().retainAll(loaded);
         findTargets(primary);
-        if(targets.isEmpty()||boss.getHealth()+boss.getAbsorptionAmount()<=settings.pauseHealth
-            ||settings.pauseOnUse&&boss.isUsingItem())return TickResult.NO_OPPORTUNITY;
+        if(targets.isEmpty()||boss.getHealth()+boss.getAbsorptionAmount()<=settings.pauseHealth)return TickResult.NO_OPPORTUNITY;
         EndCrystal pending=boss.actions.pendingCrystal(),best=null;double damage=0;
+        if(pending!=null&&(!boss.actions.canAttack(pending)||damage(pending.position(),pending.blockPosition().below(),true,false)<=0)) {
+            abandonPlan("CRYSTAL_NO_LONGER_USEFUL");pending=null;
+        }
         if(pending!=null) {
-            if(!boss.actions.canAttack(pending))return TickResult.REPOSITION;
             best=pending;
         } else for(var crystal:nearby){double value=breakDamage(crystal);if(value>damage){damage=value;best=crystal;}}
         boolean progressed=false;
         if(best!=null&&settings.breakCrystals) {
+            boss.stopUsingItem();
             var result=attack(best);
             progressed=result==FourthCalamityActions.CrystalResult.DETONATED;
-            if(best.isAlive())return result==FourthCalamityActions.CrystalResult.WAITING?TickResult.WAITING:TickResult.REPOSITION;
+            if(best.isAlive())return result.progressed()?TickResult.PROGRESSED:result==FourthCalamityActions.CrystalResult.WAITING?TickResult.WAITING:TickResult.REPOSITION;
         }
         if(!boss.isAlive())return progressed?TickResult.PROGRESSED:TickResult.NO_OPPORTUNITY;
+        if(settings.pauseOnUse&&boss.isUsingItem())return progressed?TickResult.PROGRESSED:TickResult.NO_OPPORTUNITY;
         if(!settings.place)return progressed?TickResult.PROGRESSED:TickResult.NO_OPPORTUNITY;
         if(tick<placeAt)return progressed?TickResult.PROGRESSED:TickResult.WAITING;
+        if(boss.position().subtract(primary.position()).horizontalDistance()<3)return progressed?TickResult.PROGRESSED:TickResult.REPOSITION;
         BlockPos selected=chooseBase();
         if(selected==null) {
             return progressed?TickResult.PROGRESSED:TickResult.NO_OPPORTUNITY;
         }
         if(!rotate(Vec3.atCenterOf(selected).add(0,.5,0)))return TickResult.WAITING;
+        // Validate and build cover before committing a real crystal; never leave it behind just to retreat.
+        if(foundation(boss.level().getBlockState(selected))) {
+            var cover=prepareCover(Vec3.atBottomCenterOf(selected.above()));
+            if(cover!=null)return cover.progressed()?TickResult.PROGRESSED:cover==FourthCalamityActions.CrystalResult.WAITING?TickResult.WAITING:TickResult.REPOSITION;
+        }
         var result=boss.actions.crystal(selected);
         if(result==FourthCalamityActions.CrystalResult.BASE_PLACED) {
             supportBase=selected;supportUntil=tick+20;placeAt=tick+Math.max(1,settings.supportDelay);
@@ -118,23 +146,30 @@ public final class FourthCalamityCrystalAura {
         return false;
     }
     private double damage(Vec3 at,BlockPos base,boolean breaking,boolean fast) {
-        float self=forecast(boss,at,base);
+        float self=forecast(boss,at,base,false);
         if(self>settings.maxSelfDamage||settings.antiSuicide&&self>=boss.getHealth()+boss.getAbsorptionAmount())return 0;
         double total=0;
         LivingEntity nearest=fast?targets.stream().min(Comparator.comparingDouble(boss::distanceToSqr)).orElse(null):null;
         for(var target:targets) {
             if(fast&&target!=nearest||breaking&&settings.smartDelay&&target.hurtTime>0)continue;
-            total+=forecast(target,at,base);
+            total+=forecast(target,at,base,true);
         }
         return total>=Math.min(settings.minDamage,facePlace()?1.5:settings.minDamage)?total:0;
     }
     private double breakDamage(EndCrystal crystal) {
-        if(!crystal.isAlive()||settings.onlyOwn&&!CalamityAttackGuard.owned(crystal,boss)||crystal.tickCount<settings.minimumAge
+        if(deferred.containsKey(crystal.getUUID())||!crystal.isAlive()||settings.onlyOwn&&!CalamityAttackGuard.owned(crystal,boss)||crystal.tickCount<settings.minimumAge
             ||boss.getEyePosition().distanceToSqr(crystal.getBoundingBox().getCenter())>settings.breakRange*settings.breakRange
             ||!boss.actions.canAttack(crystal))return 0;
         return damage(crystal.position(),crystal.blockPosition().below(),true,false);
     }
-    private FourthCalamityActions.CrystalResult attack(EndCrystal crystal) {
+    FourthCalamityActions.CrystalResult attack(EndCrystal crystal) {
+        if(deferred.containsKey(crystal.getUUID()))return FourthCalamityActions.CrystalResult.BLOCKED;
+        var result=attackStep(crystal);
+        if(result.progressed())stalled=0;
+        else if(result==FourthCalamityActions.CrystalResult.BLOCKED&&++stalled>=FourthCalamityAI.CRYSTAL_STALL_TICKS)abandonPlan("CRYSTAL_STALLED");
+        return result;
+    }
+    private FourthCalamityActions.CrystalResult attackStep(EndCrystal crystal) {
         var wait=FourthCalamityActions.CrystalResult.WAITING;
         int tick=boss.tickCount;
         if(!boss.actions.canAttack(crystal)||boss.getEyePosition().distanceToSqr(crystal.getBoundingBox().getCenter())>settings.breakRange*settings.breakRange)
@@ -151,12 +186,61 @@ public final class FourthCalamityCrystalAura {
             boss.actions.hold(Items.NETHERITE_SWORD);switchAt=tick+Math.max(1,settings.switchDelay);return wait;
         }
         if(!rotate(crystal.getBoundingBox().getCenter()))return wait;
+        var cover=prepareCover(crystal.position());
+        if(cover!=null)return cover;
         var result=boss.actions.detonateCrystal(crystal);
         if(result==wait)return result;
         attacks.addLast(tick);attempts.merge(crystal.getUUID(),1,Integer::sum);
         waiting.put(crystal.getUUID(),tick+10);breakAt=tick+settings.breakDelay;
         if(result==FourthCalamityActions.CrystalResult.DETONATED){attempts.remove(crystal.getUUID());waiting.remove(crystal.getUUID());}
         return result;
+    }
+    private FourthCalamityActions.CrystalResult prepareCover(Vec3 explosion) {
+        refreshCover();
+        double current=exposure(boss,explosion,boss.getBoundingBox(),null,null,false);
+        if(protectedFromBlast(explosion,current))return null;
+        BlockPos best=null;double bestExposure=current;boolean bestDirect=false;
+        BlockPos feet=boss.blockPosition();
+        for(BlockPos pos:BlockPos.betweenClosed(feet.offset(-2,0,-2),feet.offset(2,1,2))) {
+            if(new AABB(pos).intersects(new AABB(explosion.x-1,explosion.y,explosion.z-1,explosion.x+1,explosion.y+2,explosion.z+1)))continue;
+            if(coverColumn!=null&&(pos.getX()!=coverColumn.getX()||pos.getZ()!=coverColumn.getZ()
+                ||pos.getY()<coverColumn.getY()||pos.getY()>coverColumn.getY()+1))continue;
+            if(!boss.actions.canPlaceCrystalCover(pos)||!leavesExits(pos))continue;
+            double value=exposure(boss,explosion,boss.getBoundingBox(),null,pos,false);
+            boolean direct=value<current;
+            // A raised crystal can require a two-block wall: the lower block is its real support.
+            if(boss.level().getBlockState(pos.above()).canBeReplaced()
+                &&boss.level().isUnobstructed(Blocks.OBSIDIAN.defaultBlockState(),pos.above(),net.minecraft.world.phys.shapes.CollisionContext.empty()))
+                value=Math.min(value,exposure(boss,explosion,boss.getBoundingBox(),null,pos,false,true));
+            if(value<bestExposure||best!=null&&value==bestExposure&&direct&&!bestDirect){bestExposure=value;best=pos.immutable();bestDirect=direct;}
+        }
+        if(best!=null) {
+            var result=boss.actions.crystalCover(best);
+            if(result==FourthCalamityActions.CrystalResult.BASE_PLACED&&coverColumn==null)coverColumn=best;
+            return result;
+        }
+        boss.actions.diagnostic("AURA_COVER",null,FourthCalamityActions.CrystalResult.BLOCKED,"NO_LEGAL_BLAST_COVER");
+        return FourthCalamityActions.CrystalResult.BLOCKED;
+    }
+    private void refreshCover() {
+        if(coverColumn!=null&&(boss.position().distanceToSqr(Vec3.atBottomCenterOf(coverColumn))>36
+            ||!boss.level().getBlockState(coverColumn).is(Blocks.OBSIDIAN)))coverColumn=null;
+    }
+    private boolean protectedFromBlast(Vec3 explosion,double exposure) {
+        // Require real body cover, not perfect occlusion of every edge sample: that can deadlock at a wall corner.
+        return exposure==0||exposure<1&&boss.level().clip(new ClipContext(boss.getBoundingBox().getCenter(),explosion,
+            ClipContext.Block.COLLIDER,ClipContext.Fluid.NONE,boss)).getType()==HitResult.Type.BLOCK;
+    }
+    private boolean leavesExits(BlockPos cover) {
+        AABB wall=new AABB(cover).expandTowards(0,1,0);int exits=0;
+        for(var direction:net.minecraft.core.Direction.Plane.HORIZONTAL) {
+            AABB corridor=boss.getBoundingBox().expandTowards(direction.getStepX()*1.2,0,direction.getStepZ()*1.2);
+            if(!corridor.intersects(wall)&&boss.level().noCollision(boss,corridor))exits++;
+        }
+        return exits>=2;
+    }
+    double coverExposure(Vec3 explosion,Vec3 feet) {
+        return exposure(boss,explosion,boss.getBoundingBox().move(feet.subtract(boss.position())),null,null,false);
     }
     private boolean validBase(BlockPos base) {
         return baseRejection(base)==null;
@@ -169,6 +253,7 @@ public final class FourthCalamityCrystalAura {
         return foundation(boss.level().getBlockState(base))||settings.support!=Support.DISABLED?null:"SUPPORT_DISABLED";
     }
     private BlockPos chooseBase() {
+        refreshCover();
         if(supportBase!=null&&boss.tickCount<=supportUntil&&validBase(supportBase)
             &&damage(Vec3.atBottomCenterOf(supportBase.above()),supportBase,false,false)>0)return supportBase;
         supportBase=null;
@@ -179,6 +264,11 @@ public final class FourthCalamityCrystalAura {
             String reason=baseRejection(pos);
             if(reason!=null){rejected.merge(reason,1,Integer::sum);continue;}
             boolean existing=foundation(boss.level().getBlockState(pos));
+            // Once a wall exists, place on its protected side instead of creating crystals we cannot break.
+            Vec3 explosion=Vec3.atBottomCenterOf(pos.above());
+            if(coverColumn!=null&&!protectedFromBlast(explosion,exposure(boss,explosion,boss.getBoundingBox(),null,null,false))) {
+                rejected.merge("OUTSIDE_EXISTING_COVER",1,Integer::sum);continue;
+            }
             double value=damage(Vec3.atBottomCenterOf(pos.above()),pos,false,!existing&&settings.support==Support.FAST);
             if(value<=0)rejected.merge("DAMAGE_BELOW_THRESHOLD",1,Integer::sum);
             if(value>0&&((existing&&!bestExisting)||(existing==bestExisting&&value>bestDamage))) {
@@ -197,19 +287,32 @@ public final class FourthCalamityCrystalAura {
         boss.setYHeadRot(boss.getYRot());boss.setYBodyRot(boss.getYRot());
         return Math.abs(Mth.wrapDegrees(yaw-boss.getYRot()))<.01;
     }
-    private float forecast(LivingEntity target,Vec3 explosion,BlockPos support) {
+    private float forecast(LivingEntity target,Vec3 explosion,BlockPos support,boolean targetRanking) {
         Vec3 motion=settings.predictMovement?target.getDeltaMovement():Vec3.ZERO;
         if(!boss.level().noCollision(target,target.getBoundingBox().move(motion)))motion=Vec3.ZERO;
         Vec3 position=target.position().add(motion);AABB bounds=target.getBoundingBox().move(motion);
         double distance=position.distanceTo(explosion)/12;if(distance>1)return 0;
-        // Meteor predicts with the prospective obsidian present and weak terrain removed. Never writes the world.
+        double impact=(1-distance)*exposure(target,explosion,bounds,support,null,true);float amount=(int)((impact*impact+impact)*42+1);
+        if(target instanceof Player)amount=switch(boss.level().getDifficulty()){case PEACEFUL->0;case EASY->Math.min(amount/2+1,amount);case HARD->amount*1.5f;default->amount;};
+        // Rank enemies by raw blast potential; native explosions still apply all mitigation.
+        if(targetRanking)return amount;
+        amount=CombatRules.getDamageAfterAbsorb(amount,target.getArmorValue(),(float)target.getAttributeValue(Attributes.ARMOR_TOUGHNESS));
+        var resistance=target.getEffect(MobEffects.DAMAGE_RESISTANCE);
+        if(resistance!=null)amount*=Math.max(0,1-.2f*(resistance.getAmplifier()+1));
+        return CombatRules.getDamageAfterMagicAbsorb(amount,EnchantmentHelper.getDamageProtection(target.getArmorSlots(),boss.damageSources().explosion(null,boss)));
+    }
+    private double exposure(LivingEntity target,Vec3 explosion,AABB bounds,BlockPos support,BlockPos cover,boolean predictTerrain) {
+        return exposure(target,explosion,bounds,support,cover,predictTerrain,false);
+    }
+    private double exposure(LivingEntity target,Vec3 explosion,AABB bounds,BlockPos support,BlockPos cover,boolean predictTerrain,boolean coverStack) {
+        // Scoring predicts terrain; cover validation uses real blocks and the boss's current body.
         BlockGetter view=new BlockGetter() {
             public BlockEntity getBlockEntity(BlockPos pos){return null;}
             public BlockState getBlockState(BlockPos pos) {
-                if(pos.equals(support))return Blocks.OBSIDIAN.defaultBlockState();
+                if(pos.equals(cover)||coverStack&&cover!=null&&pos.equals(cover.above())||predictTerrain&&pos.equals(support))return Blocks.OBSIDIAN.defaultBlockState();
                 if(!boss.level().hasChunkAt(pos))return Blocks.BEDROCK.defaultBlockState();
                 var state=boss.level().getBlockState(pos);
-                return state.getBlock().getExplosionResistance()<600?Blocks.AIR.defaultBlockState():state;
+                return predictTerrain&&state.getBlock().getExplosionResistance()<600?Blocks.AIR.defaultBlockState():state;
             }
             public FluidState getFluidState(BlockPos pos){return getBlockState(pos).getFluidState();}
             public int getHeight(){return boss.level().getHeight();}
@@ -222,10 +325,6 @@ public final class FourthCalamityCrystalAura {
             if(view.clip(new ClipContext(from,explosion,ClipContext.Block.COLLIDER,ClipContext.Fluid.NONE,target)).getType()==HitResult.Type.MISS)clear++;
             total++;
         }
-        double impact=(1-distance)*clear/total;float amount=(int)((impact*impact+impact)*42+1);
-        if(target instanceof Player)amount=switch(boss.level().getDifficulty()){case PEACEFUL->0;case EASY->Math.min(amount/2+1,amount);case HARD->amount*1.5f;default->amount;};
-        amount=CombatRules.getDamageAfterAbsorb(amount,target.getArmorValue(),(float)target.getAttributeValue(Attributes.ARMOR_TOUGHNESS));
-        var resistance=target.getEffect(MobEffects.DAMAGE_RESISTANCE);if(resistance!=null)amount*=Math.max(0,1-.2f*(resistance.getAmplifier()+1));
-        return CombatRules.getDamageAfterMagicAbsorb(amount,EnchantmentHelper.getDamageProtection(target.getArmorSlots(),boss.damageSources().explosion(null,boss)));
+        return (double)clear/total;
     }
 }

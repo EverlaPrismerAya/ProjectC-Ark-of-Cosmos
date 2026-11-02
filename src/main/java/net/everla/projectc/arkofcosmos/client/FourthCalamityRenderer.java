@@ -16,7 +16,7 @@ public final class FourthCalamityRenderer extends HumanoidMobRenderer<FourthCala
     public FourthCalamityRenderer(EntityRendererProvider.Context context) {
         super(context,new PlayerModel<FourthCalamityEntity>(context.bakeLayer(ModelLayers.PLAYER_SLIM),true) {
             @Override public void setupAnim(FourthCalamityEntity boss,float swing,float amount,float age,float yaw,float pitch) {
-                rightArmPose=boss.getMainHandItem().is(Items.CROSSBOW)?HumanoidModel.ArmPose.CROSSBOW_HOLD:
+                rightArmPose=boss.getMainHandItem().is(Items.CROSSBOW)?(boss.isUsingItem()?HumanoidModel.ArmPose.CROSSBOW_CHARGE:HumanoidModel.ArmPose.CROSSBOW_HOLD):
                     boss.isUsingItem()?HumanoidModel.ArmPose.BLOCK:HumanoidModel.ArmPose.ITEM;
                 leftArmPose=HumanoidModel.ArmPose.EMPTY;
                 super.setupAnim(boss,swing,amount,age,yaw,pitch);

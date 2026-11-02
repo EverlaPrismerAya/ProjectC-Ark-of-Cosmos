@@ -53,10 +53,7 @@ public final class FourthCalamityBossBar {
         graphics.fill(x,y,x+(int)Math.round(182*trailing),y+5,0xFFFFF2B0);
         int filled=Math.round(182*event.getBossEvent().getProgress());
         graphics.fill(x,y,x+filled,y+5,color);
-        MahouBossBar.cosmicOverlay(graphics,x,y,filled);
-        Component name=Component.literal(event.getBossEvent().getName().getString())
-                .withStyle(style -> style.withFont(net.everla.projectc.arkofcosmos.util.MahouNameStyle.FONT)
-                        .withColor(net.everla.projectc.arkofcosmos.util.MahouNameStyle.MARKER_COLOR));
+        Component name=event.getBossEvent().getName();
         graphics.drawString(font,name,graphics.guiWidth()/2-font.width(name)/2,y-10,0xFFFFFF);
         graphics.drawString(font,"×"+state.bars,x+187,y-2,color);
     }
