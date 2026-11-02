@@ -131,5 +131,8 @@
   "effect.arkofcosmos.old_one_cursed": "Cursed Inferno",
   "effect.arkofcosmos.old_one_ichor": "Ichor",
   "effect.arkofcosmos.old_one_daybreak": "Daybroken",
-  "effect.arkofcosmos.old_one_celled": "Stardust Cell"
+  "effect.arkofcosmos.old_one_celled": "Stardust Cell",
+  "entity.arkofcosmos.the_player": "The Fourth Calamity",
+  "boss.arkofcosmos.the_player": "Kira Official",
+  "item.arkofcosmos.the_player_spawn_egg": "The Fourth Calamity Spawn Egg"
 }

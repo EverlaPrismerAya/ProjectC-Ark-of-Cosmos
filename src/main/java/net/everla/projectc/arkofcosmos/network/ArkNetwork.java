@@ -20,7 +20,7 @@ import net.minecraftforge.api.distmarker.Dist;
 public final class ArkNetwork {
     private ArkNetwork() {}
     private static final SimpleChannel CHANNEL = NetworkRegistry.newSimpleChannel(
-            ResourceLocation.fromNamespaceAndPath(ArkOfCosmos.MOD_ID, "input"), () -> "1", "1"::equals, "1"::equals);
+            ResourceLocation.fromNamespaceAndPath(ArkOfCosmos.MOD_ID, "input"), () -> "2", "2"::equals, "2"::equals);
     public record Input(boolean left, boolean right, boolean alt) {
         static Input read(FriendlyByteBuf buffer) { return new Input(buffer.readBoolean(), buffer.readBoolean(), buffer.readBoolean()); }
         void write(FriendlyByteBuf buffer) { buffer.writeBoolean(left); buffer.writeBoolean(right); buffer.writeBoolean(alt); }
@@ -41,6 +41,10 @@ public final class ArkNetwork {
     private record SpearFeedback(int entity) {}
     public static void spearFeedback(Entity entity) { CHANNEL.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(()->entity),new SpearFeedback(entity.getId())); }
     public static void register() {
+        CHANNEL.messageBuilder(FourthBossBar.class,6,NetworkDirection.PLAY_TO_CLIENT)
+            .encoder((p,b)->{b.writeUUID(p.id());b.writeByte(p.phase());b.writeVarInt(p.bars());})
+            .decoder(b->new FourthBossBar(b.readUUID(),b.readByte(),b.readVarInt()))
+            .consumerMainThread((p,c)->DistExecutor.unsafeRunWhenOn(Dist.CLIENT,()->()->net.everla.projectc.arkofcosmos.client.FourthCalamityBossBar.update(p.id(),p.phase(),p.bars()))).add();
         CHANNEL.messageBuilder(SpearFeedback.class,5,NetworkDirection.PLAY_TO_CLIENT)
             .encoder((p,b)->b.writeVarInt(p.entity())).decoder(b->new SpearFeedback(b.readVarInt()))
             .consumerMainThread((p,c)->DistExecutor.unsafeRunWhenOn(Dist.CLIENT,()->()->net.everla.projectc.arkofcosmos.client.vanilla.VanillaClient.feedback(p.entity()))).add();
@@ -65,6 +69,10 @@ public final class ArkNetwork {
                         () -> () -> ArkEffects.receive(packet.data))).add();
     }
     private record BossBar(java.util.UUID id, int phase) {}
+    private record FourthBossBar(java.util.UUID id,int phase,int bars) {}
+    public static void fourthBossBar(net.minecraft.server.level.ServerPlayer player,java.util.UUID id,int phase,int bars) {
+        CHANNEL.send(PacketDistributor.PLAYER.with(()->player),new FourthBossBar(id,phase,bars));
+    }
     public static void bossBar(net.minecraft.server.level.ServerPlayer player, java.util.UUID id, int phase) {
         CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), new BossBar(id, phase));
     }

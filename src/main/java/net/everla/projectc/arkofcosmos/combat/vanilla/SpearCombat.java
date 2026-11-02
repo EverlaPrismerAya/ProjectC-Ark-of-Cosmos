@@ -32,6 +32,10 @@ public final class SpearCombat {
         }
         return new Vec3(e.getX()-e.xo,e.getY()-e.yo,e.getZ()-e.zo);
     }
+    /** Teleports are discontinuities, never kinetic weapon velocity. Retain contact cooldowns. */
+    public static void resetMotion(LivingEntity e) {
+        State state=STATES.computeIfAbsent(e,k->new State());state.position=e.position();state.motion=Vec3.ZERO;
+    }
     public static void start(LivingEntity e) {
         STATES.computeIfAbsent(e,k->new State()).contacts.clear();
         sound(e,(SpearItem)e.getUseItem().getItem(),"use");

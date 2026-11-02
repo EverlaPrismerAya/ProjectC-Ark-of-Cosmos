@@ -125,6 +125,7 @@ public final class ArkClient {
             event.registerEntityRenderer(ArkOfCosmos.ATTACK.get(), ArkAttackRenderer::new);
             event.registerEntityRenderer(ArkOfCosmos.OLD_ONE_ATTACK.get(), net.everla.projectc.arkofcosmos.client.OldOneRenderer::new);
             event.registerEntityRenderer(ArkOfCosmos.MAHOU_TSUKAI.get(), MahouTsukaiRenderer::new);
+            event.registerEntityRenderer(ArkOfCosmos.THE_PLAYER.get(), FourthCalamityRenderer::new);
             event.registerEntityRenderer(ArkOfCosmos.MAHOU_ATTACK.get(), MahouAttackRenderer::new);
             event.registerEntityRenderer(ArkOfCosmos.MAHORAGA.get(), MahoragaRenderer::new);
         }

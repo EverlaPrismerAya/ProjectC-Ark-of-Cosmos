@@ -24,6 +24,14 @@ public final class ArkOfCosmos {
     private static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MOD_ID);
     private static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, MOD_ID);
     private static final DeferredRegister<SoundEvent> SOUNDS = DeferredRegister.create(ForgeRegistries.SOUND_EVENTS, MOD_ID);
+    private static final DeferredRegister<net.minecraft.world.entity.ai.attributes.Attribute> ATTRIBUTES=DeferredRegister.create(ForgeRegistries.ATTRIBUTES,MOD_ID);
+    public static final RegistryObject<net.minecraft.world.entity.ai.attributes.Attribute> FOURTH_MAX_HEALTH=ATTRIBUTES.register("fourth_max_health",
+        ()->new net.minecraft.world.entity.ai.attributes.RangedAttribute("attribute.name.generic.max_health",1300,1,Double.MAX_VALUE).setSyncable(true));
+    public static final RegistryObject<EntityType<net.everla.projectc.arkofcosmos.entity.FourthCalamityEntity>> THE_PLAYER=ENTITIES.register("the_player",
+        ()->EntityType.Builder.<net.everla.projectc.arkofcosmos.entity.FourthCalamityEntity>of(net.everla.projectc.arkofcosmos.entity.FourthCalamityEntity::new,MobCategory.MONSTER)
+            .sized(.6f,1.8f).clientTrackingRange(128).updateInterval(1).build("arkofcosmos:the_player"));
+    public static final RegistryObject<Item> THE_PLAYER_SPAWN_EGG=ITEMS.register("the_player_spawn_egg",
+        ()->new net.minecraftforge.common.ForgeSpawnEggItem(THE_PLAYER,0x191923,0xCE4DCC,new Item.Properties()));
     private static final DeferredRegister<net.minecraft.world.effect.MobEffect> EFFECTS = DeferredRegister.create(ForgeRegistries.MOB_EFFECTS, MOD_ID);
     public static final RegistryObject<net.minecraft.world.effect.MobEffect> ARMOR_CRUNCH = EFFECTS.register("armor_crunch",
             () -> new net.minecraft.world.effect.MobEffect(net.minecraft.world.effect.MobEffectCategory.HARMFUL, 0x7140BC) {}
@@ -78,6 +86,7 @@ public final class ArkOfCosmos {
         IEventBus bus = context.getModEventBus();
         net.everla.projectc.arkofcosmos.combat.vanilla.VanillaCombat.register(bus);
         ITEMS.register(bus);
+        ATTRIBUTES.register(bus);
         ENTITIES.register(bus);
         SOUNDS.register(bus);
         net.everla.projectc.arkofcosmos.combat.OldOneEffects.register(bus);
@@ -88,6 +97,7 @@ public final class ArkOfCosmos {
     }
 
     private void attributes(EntityAttributeCreationEvent event) {
+        event.put(THE_PLAYER.get(),net.everla.projectc.arkofcosmos.entity.FourthCalamityEntity.createAttributes().build());
         event.put(MAHORAGA.get(),net.minecraft.world.entity.monster.warden.Warden.createAttributes().build());
         event.put(MAHOU_TSUKAI.get(), net.everla.projectc.arkofcosmos.entity.MahouTsukaiEntity.createAttributes().build());
     }
@@ -100,5 +110,6 @@ public final class ArkOfCosmos {
             event.accept(ARK_OF_THE_ELEMENTS);
         }
         if (event.getTabKey() == CreativeModeTabs.INGREDIENTS) event.accept(AURIC_BAR);
+        if (event.getTabKey() == CreativeModeTabs.SPAWN_EGGS) event.accept(THE_PLAYER_SPAWN_EGG);
     }
 }

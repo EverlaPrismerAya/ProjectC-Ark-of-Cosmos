@@ -2584,6 +2584,16 @@
         36
       ],
       "conversion": "XNB LZX Texture2D to PNG; preserve original premultiplied RGBA bytes without unpremultiplication"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/entity/kira_official.png",
+      "sha256": "447c890a67aeda5bf1fe77210d31ae0da81efd343865c9b51beea19550664b23",
+      "project": "Minecraft player skin",
+      "path": "https://textures.minecraft.net/texture/447c890a67aeda5bf1fe77210d31ae0da81efd343865c9b51beea19550664b23",
+      "profile_name": "Kira_Official",
+      "profile_uuid": "d150668b708846f8aa9d367bbd962d85",
+      "model": "slim",
+      "license": "Original skin author / rights holders; not GPL-3.0-only"
     }
   ]
 }

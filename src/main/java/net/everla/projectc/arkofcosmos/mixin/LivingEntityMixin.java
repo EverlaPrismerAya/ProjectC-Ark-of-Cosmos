@@ -21,6 +21,7 @@ abstract class LivingEntityMixin {
     private void ark$wardenDamage(DamageSource source,float amount,
             org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable<Boolean> cir){
         LivingEntity target=(LivingEntity)(Object)this;
+          if(target instanceof net.everla.projectc.arkofcosmos.entity.FourthCalamityEntity)return;
         if(source.getEntity() instanceof net.everla.projectc.arkofcosmos.entity.MahouTsukaiEntity
                 &&!net.everla.projectc.arkofcosmos.combat.WeaponDamage.handling(target,source)){
             cir.setReturnValue(net.everla.projectc.arkofcosmos.combat.WeaponDamage.hurt(target,source,amount));return;

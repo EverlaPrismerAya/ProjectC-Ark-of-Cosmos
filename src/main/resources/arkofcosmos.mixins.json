@@ -16,6 +16,9 @@
     "ForgeHooksMixin",
     "ItemEntityMixin",
     "VanillaPlayerAttackMixin",
+    "VanillaMobAttackMixin",
+    "FourthCalamityGlidingMixin",
+    "CalamityAttackRemovalMixin",
     "VanillaLivingCombatMixin"
   ],
   "client": [
