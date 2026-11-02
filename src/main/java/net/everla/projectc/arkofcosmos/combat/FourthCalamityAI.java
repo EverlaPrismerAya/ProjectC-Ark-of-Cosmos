@@ -21,11 +21,15 @@ public final class FourthCalamityAI {
     public static final double AIR_CLEARANCE=1.5;
     public static final double MACE_HEIGHT=12,INTERRUPT_DAMAGE=20;
     private enum Ground { ARROW,PEARL,HIT,CHECK,CRYSTALS,RETREAT,PREPARE,SHIELD,PLACE,CHARGE,DETONATE,RECOVER }
-    private enum Air { APPROACH,STRAFE,CLIMB,WINDUP,DROP,LAND }
+    private enum Air { GROUND,APPROACH,READY,CHARGE,STRAFE,CLIMB,WINDUP,DROP,FALL,LAND,WIND_LAND }
     private final FourthCalamityEntity boss;
     private final FourthCalamityCrystalAura crystalAura;
     private Ground ground=Ground.ARROW;
-    private Air air=Air.APPROACH;
+    private Air air=Air.GROUND;
+    public static final double MACE_RANGE=6,GROUND_CHARGE_RANGE=24,SETUP_DISTANCE=21,SETUP_HEIGHT=5;
+    private Vec3 chargePoint,chargeDirection,landing;
+    private int shotsLeft,spearSequence,chargeTarget=-1,windWait;
+    private boolean chargeHit,groundCharge,windFired;
     private int age,airAge,airborne,grounded,crystals,remaining,meleeDelay;
     private int crystalStall,crystalRetryAt;
     private boolean aerial,hadTarget,pearlOpening,swordAttempted;
@@ -50,19 +54,19 @@ public final class FourthCalamityAI {
         }
         if(!valid(target)) { if(hadTarget){stop();boss.actions.cleanup();}hadTarget=false;return; }
         hadTarget=true;if(meleeDelay>0)meleeDelay--;
-        if(boss.phase()==3&&boss.tickCount%TAIL_INTERVAL==0)teleport(target);
         boolean jumped=lastTargetId==target.getId()&&targetWasGrounded&&!target.onGround()
             &&target.getDeltaMovement().y>0&&!target.isInWater()&&!target.isFallFlying();
         lastTargetId=target.getId();targetWasGrounded=target.onGround();
-        if(jumped&&!explosivePending()&&!aerial&&(air==Air.APPROACH||air==Air.STRAFE)) {
+        if(jumped&&boss.phase()==1&&ground!=Ground.CRYSTALS&&boss.actions.pendingCrystal()==null&&!explosivePending()&&air==Air.GROUND) {
             boss.actions.pearl(target);boss.stopUsingItem();boss.getNavigation().stop();
             base=null;crystals=0;remaining=1+boss.getRandom().nextInt(3);transition(Ground.CRYSTALS);
         }
-        if(boss.actions.consumePearlArrival()&&boss.phase()==2&&!aerial&&!explosivePending()) {
+        if(boss.actions.consumePearlArrival()&&boss.phase()==2&&air==Air.GROUND&&!explosivePending()) {
             pearlOpening=true;transition(Ground.ARROW);boss.getNavigation().stop();boss.stopUsingItem();
         }
         if(!explosivePending())updateMode(target);
-        if(aerial||air==Air.CLIMB||air==Air.WINDUP||air==Air.DROP||air==Air.LAND)flight(target);
+        if(boss.phase()==3&&air==Air.GROUND&&boss.tickCount%TAIL_INTERVAL==0)teleport(target);
+        if(air!=Air.GROUND)flight(target);
         else ground(target);
     }
     private boolean explosivePending() {
@@ -77,10 +81,14 @@ public final class FourthCalamityAI {
         boolean flying=!nearGround&&target instanceof Player p&&p.getAbilities().flying;
         boolean hovering=!nearGround&&!target.isInWater()&&Math.abs(target.getDeltaMovement().y)<.12;
         airborne=gliding?20:flying||hovering?airborne+1:0;grounded=nearGround?grounded+1:0;
-        if(!aerial&&airborne>=20) {
-            aerial=true;pearlOpening=false;air=Air.APPROACH;airAge=0;boss.getNavigation().stop();boss.stopUsingItem();ground=Ground.ARROW;age=0;
+        boolean mace=air==Air.CLIMB||air==Air.WINDUP||air==Air.DROP||air==Air.FALL;
+        if(!aerial&&airborne>=20&&!mace) {
+            aerial=true;groundCharge=false;pearlOpening=false;landing=null;enterAir(Air.APPROACH);ground=Ground.ARROW;age=0;
         } else if(aerial&&grounded>=10) {
-            aerial=false;air=Air.CLIMB;airAge=0;boss.stopUsingItem();
+            aerial=false;
+            double distance=target.position().subtract(boss.position()).horizontalDistance();
+            groundCharge=distance>GROUND_CHARGE_RANGE;
+            enterAir(distance<=MACE_RANGE?Air.CLIMB:groundCharge?Air.READY:Air.LAND);
         }
     }
     private void aim(Vec3 point,float turn) {
@@ -109,19 +117,15 @@ public final class FourthCalamityAI {
             }
         }
         if(boss.phase()==2&&!pearlOpening&&ground!=Ground.RETREAT&&ground!=Ground.PREPARE&&ground!=Ground.SHIELD&&ground!=Ground.PLACE&&ground!=Ground.CHARGE&&ground!=Ground.DETONATE) {
-            if(crystalAura.tick(target)) {
+            var result=crystalAura.tick(target);
+            if(result==FourthCalamityCrystalAura.TickResult.PROGRESSED||result==FourthCalamityCrystalAura.TickResult.WAITING) {
                 boss.getNavigation().stop();boss.setSprinting(false);boss.setJumping(false);
             } else positionForCrystals(target);
             return;
         }
         if(boss.phase()==3&&ground!=Ground.RETREAT&&ground!=Ground.PREPARE&&ground!=Ground.SHIELD&&ground!=Ground.PLACE&&ground!=Ground.CHARGE&&ground!=Ground.DETONATE) {
-            chase(target);
-            if(boss.tickCount%AURA_INTERVAL==0) {
-                var crystal=boss.actions.bestCrystal(target);
-                if(crystal!=null)boss.actions.breakCrystal(crystal);
-                else {BlockPos candidate=boss.actions.bestBase(target);if(candidate!=null)boss.actions.crystal(candidate);}
-            }
-            if(boss.distanceToSqr(target)<9&&meleeDelay==0){boss.actions.hold(Items.NETHERITE_SWORD);boss.actions.melee(target);meleeDelay=13;}
+            if(boss.tickCount%AURA_INTERVAL==0)crystalStep(target);
+            if(boss.isAlive()&&boss.actions.attackAvailable()&&boss.distanceToSqr(target)<9&&meleeDelay==0){boss.actions.hold(Items.NETHERITE_SWORD);boss.actions.melee(target);meleeDelay=13;}
             return;
         }
         switch(ground) {
@@ -139,20 +143,11 @@ public final class FourthCalamityAI {
                 } else if(age>=8)transition(Ground.RETREAT);
             }
             case CRYSTALS -> {
-                boolean progressed=false;
-                var crystal=boss.actions.bestCrystal(target);
-                if(crystal!=null) {
-                    if(boss.actions.breakCrystal(crystal)){crystals++;progressed=true;}
-                } else {
-                    if(base==null||!boss.actions.crystalSpace(base))base=boss.actions.bestBase(target);
-                    if(base!=null) {
-                        boss.getNavigation().stop();boss.setSprinting(false);boss.setJumping(false);
-                        boolean hadBase=boss.level().getBlockState(base).is(Blocks.OBSIDIAN)||boss.level().getBlockState(base).is(Blocks.BEDROCK);
-                        progressed=boss.actions.crystal(base);
-                        if(!hadBase&&boss.level().getBlockState(base).is(Blocks.OBSIDIAN))progressed=true;
-                    } else positionForCrystals(target);
-                }
-                crystalStall=progressed?0:crystalStall+1;
+                var result=crystalStep(target);
+                if(result==FourthCalamityActions.CrystalResult.DETONATED)crystals++;
+                if(result.progressed())crystalStall=0;
+                else if(result==FourthCalamityActions.CrystalResult.WAITING)age--;
+                else crystalStall++;
                 if(crystals>=remaining)recover();
                 else if(crystalStall>=CRYSTAL_STALL_TICKS) {
                     crystalRetryAt=boss.tickCount+CRYSTAL_RETRY_TICKS;base=null;
@@ -195,10 +190,29 @@ public final class FourthCalamityAI {
             case RECOVER -> { if(age>=RECOVER_TICKS)transition(Ground.ARROW); }
         }
     }
+    private FourthCalamityActions.CrystalResult crystalStep(LivingEntity target) {
+        var crystal=boss.actions.pendingCrystal();
+        if(crystal==null)crystal=boss.actions.bestCrystal(target);
+        FourthCalamityActions.CrystalResult result;
+        if(crystal!=null)result=boss.actions.detonateCrystal(crystal);
+        else {
+            if(!boss.actions.validCrystalBase(base))base=boss.actions.bestBase(target);
+            result=base==null?FourthCalamityActions.CrystalResult.BLOCKED:boss.actions.crystal(base);
+        }
+        if(result==FourthCalamityActions.CrystalResult.BLOCKED) { base=null;positionForCrystals(target); }
+        else { boss.getNavigation().stop();boss.setSprinting(false);boss.setJumping(false); }
+        return result;
+    }
     private void positionForCrystals(LivingEntity target) {
         boss.actions.hold(Items.END_CRYSTAL);boss.setSprinting(false);boss.setJumping(false);
         Vec3 away=boss.position().subtract(target.position()).multiply(1,0,1).normalize();
         if(away.lengthSqr()<.01)away=new Vec3(1,0,0);
+        var pending=boss.actions.pendingCrystal();
+        if(pending!=null) {
+            Vec3 fromCrystal=boss.position().subtract(pending.position()).multiply(1,0,1).normalize();
+            if(fromCrystal.lengthSqr()<.01)fromCrystal=away;
+            moveToPoint(pending.position().add(fromCrystal.scale(2.5)));return;
+        }
         // Keep space for the real crystal entity instead of pathing into the target's occupied block.
         Vec3 destination=target.position().add(away.scale(3.5)).add(-away.z,0,away.x);
         moveToPoint(destination);
@@ -207,46 +221,108 @@ public final class FourthCalamityAI {
         // Reach the placement waypoint precisely rather than stopping a block short.
         boss.getNavigation().moveTo(boss.getNavigation().createPath(BlockPos.containing(point),0),1.1);
     }
+    private void enterAir(Air next) {
+        boss.stopUsingItem();boss.getNavigation().stop();boss.setSprinting(false);boss.setJumping(false);
+        boss.setMaceWindup(false);boss.setNoGravity(false);air=next;airAge=0;
+        if(next==Air.APPROACH||next==Air.READY) { chargeHit=false;chargeTarget=-1; }
+        if(next==Air.LAND||next==Air.WIND_LAND) { landing=null;windFired=false;windWait=0; }
+    }
+    private double flightFactor() { return boss.phase()>=2?1.5:1; }
+    private boolean blocked(Vec3 point) {
+        return boss.level().clip(new net.minecraft.world.level.ClipContext(boss.getEyePosition(),point,
+            net.minecraft.world.level.ClipContext.Block.COLLIDER,net.minecraft.world.level.ClipContext.Fluid.NONE,boss)).getType()!=HitResult.Type.MISS;
+    }
     private void propel(Vec3 point,boolean climb) {
         boss.getNavigation().stop();boss.setJumping(false);boss.setGliding(true);boss.setNoGravity(false);
         Vec3 next=point;
-        Vec3 ahead=boss.position().add(boss.getDeltaMovement().normalize().scale(4));
-        if(boss.level().clip(new net.minecraft.world.level.ClipContext(boss.getEyePosition(),ahead,net.minecraft.world.level.ClipContext.Block.COLLIDER,net.minecraft.world.level.ClipContext.Fluid.NONE,boss)).getType()!=HitResult.Type.MISS)next=boss.position().add(0,6,0);
-        aim(next,8);
-        double factor=boss.phase()>=2?1.5:1;
-        Vec3 motion=boss.getDeltaMovement().add(boss.getLookAngle().scale(.07*factor)).add(0,climb?.12:0,0);
+        Vec3 ahead=boss.getEyePosition().add(boss.getDeltaMovement().normalize().scale(4));
+        if(blocked(ahead))next=boss.position().add(0,6,0);
+        aim(next,12);
+        double factor=flightFactor();
+        Vec3 direction=next.subtract(boss.position()).normalize();
+        Vec3 motion=boss.getDeltaMovement().scale(.92).add(direction.scale(.16*factor)).add(0,climb?.08:0,0);
         if(boss.onGround())motion=motion.add(0,.65,0);
         double cap=2.2*factor;if(motion.length()>cap)motion=motion.normalize().scale(cap);
         boss.setDeltaMovement(motion);VanillaCombat.syncMotion(boss);
+    }
+    private Vec3 setupPoint(LivingEntity target) {
+        Vec3 away=boss.position().subtract(target.position()).multiply(1,0,1).normalize();
+        if(away.lengthSqr()<.01)away=new Vec3(1,0,0);
+        return target.position().add(away.scale(SETUP_DISTANCE)).add(0,SETUP_HEIGHT,0);
+    }
+    private void brace() {
+        boss.actions.hold(VanillaCombat.SPEARS.get("netherite").get());
+        if(!boss.isUsingItem()) {
+            boss.startUsingItem(net.minecraft.world.InteractionHand.MAIN_HAND);SpearCombat.start(boss);
+            spearSequence=SpearCombat.sequence(boss);
+        }
+    }
+    private Vec3 predictedChargePoint(LivingEntity target) {
+        double travel=Mth.clamp(boss.distanceTo(target)/(2.8*flightFactor()),1,20);
+        return target.getBoundingBox().getCenter().add(target.getDeltaMovement().scale(travel));
+    }
+    /** Synchronous notification from the real spear damage path; other targets/uses cannot complete this pass. */
+    public void spearHit(Entity target,int sequence) {
+        if(air==Air.CHARGE&&target==boss.getTarget()&&target.getId()==chargeTarget&&sequence==spearSequence)chargeHit=true;
+    }
+    private void finishCharge() {
+        boss.stopUsingItem();
+        if(groundCharge)enterAir(Air.WIND_LAND);
+        else if(chargeHit)enterAir(Air.APPROACH);
+        else { enterAir(Air.STRAFE);shotsLeft=3+boss.getRandom().nextInt(8); }
     }
     private void flight(LivingEntity target) {
         airAge++;
         boss.setMaceWindup(air==Air.WINDUP);
         switch(air) {
             case APPROACH -> {
-                Vec3 point=target.getEyePosition().add(target.getDeltaMovement().scale(5));propel(point,target.getY()>boss.getY()+3);
+                Vec3 point=setupPoint(target);propel(point,boss.getY()<point.y-1);
                 boss.actions.hold(VanillaCombat.SPEARS.get("netherite").get());
-                if(!boss.isUsingItem()){boss.startUsingItem(net.minecraft.world.InteractionHand.MAIN_HAND);SpearCombat.start(boss);}
-                Vec3 delta=target.position().subtract(boss.position());
-                if(airAge>12&&(delta.length()<6&&delta.normalize().dot(boss.getLookAngle())<.25||airAge>60)) {
-                    boss.stopUsingItem();air=Air.STRAFE;airAge=0;
+                double horizontal=target.position().subtract(boss.position()).horizontalDistance(),height=boss.getY()-target.getY();
+                if(horizontal>=18&&horizontal<=24&&height>=4&&height<=6)enterAir(Air.READY);
+            }
+            case READY -> {
+                boss.setGliding(true);boss.setNoGravity(false);brace();
+                boss.setDeltaMovement(boss.getDeltaMovement().scale(.7).add(0,.04,0));
+                Vec3 point=predictedChargePoint(target);aim(point,30);
+                if(airAge>=8&&boss.getTicksUsingItem()>=8) {
+                    chargePoint=point;chargeDirection=point.subtract(boss.getEyePosition()).normalize();
+                    if(boss.getLookAngle().dot(chargeDirection)>.95) {
+                        chargeTarget=target.getId();chargeHit=false;air=Air.CHARGE;airAge=0;
+                        boss.setDeltaMovement(chargeDirection.scale(2.8*flightFactor()));VanillaCombat.syncMotion(boss);
+                    }
+                }
+            }
+            case CHARGE -> {
+                boss.setGliding(true);aim(boss.getEyePosition().add(chargeDirection.scale(20)),30);
+                boss.setDeltaMovement(chargeDirection.scale(2.8*flightFactor()));VanillaCombat.syncMotion(boss);
+                boolean passed=chargePoint.subtract(boss.getEyePosition()).dot(chargeDirection)<=-3;
+                boolean touchdown=groundCharge&&boss.level().clip(new net.minecraft.world.level.ClipContext(boss.position(),
+                    boss.position().add(boss.getDeltaMovement()).add(0,-2,0),net.minecraft.world.level.ClipContext.Block.COLLIDER,
+                    net.minecraft.world.level.ClipContext.Fluid.NONE,boss)).getType()==HitResult.Type.BLOCK;
+                if(chargeHit||passed||touchdown||boss.horizontalCollision||blocked(boss.getEyePosition().add(chargeDirection.scale(3)))||airAge>=40) {
+                    finishCharge();if(air==Air.WIND_LAND)land();
                 }
             }
             case STRAFE -> {
-                propel(target.position().add(0,10,0),true);aim(target.getEyePosition(),20);
-                if(airAge%CROSSBOW_INTERVAL==0)boss.actions.arrow(target,true);
-                if(airAge>=30){air=Air.APPROACH;airAge=0;}
+                Vec3 point=setupPoint(target);
+                if(!boss.hasLineOfSight(target))point=point.add(Math.sin(airAge*.08)*8,3,Math.cos(airAge*.08)*8);
+                propel(point,boss.getY()<target.getY()+4);
+                if(airAge%CROSSBOW_INTERVAL==0) {
+                    // Shooting sets the facing; restore flight facing before vanilla glide physics runs.
+                    float yaw=boss.getYRot(),pitch=boss.getXRot();
+                    if(boss.actions.arrow(target,true))shotsLeft--;
+                    boss.setYRot(yaw);boss.setXRot(pitch);boss.setYHeadRot(yaw);boss.setYBodyRot(yaw);
+                }
+                if(shotsLeft<=0)enterAir(Air.APPROACH);
             }
             case CLIMB -> {
                 boss.actions.hold(VanillaCombat.MACE.get());propel(target.position().add(0,MACE_HEIGHT+3,0),true);
                 if(boss.getY()>=target.getY()+MACE_HEIGHT) {
-                    boss.setGliding(false);boss.setNoGravity(true);boss.setDeltaMovement(Vec3.ZERO);interrupt=0;air=Air.WINDUP;airAge=0;boss.setMaceWindup(true);
-                } else if(airAge>100){boss.stopUsingItem();air=Air.LAND;airAge=0;}
+                    enterAir(Air.WINDUP);boss.setGliding(false);boss.setNoGravity(true);boss.setDeltaMovement(Vec3.ZERO);interrupt=0;boss.setMaceWindup(true);
+                } else if(airAge>100)enterAir(Air.LAND);
             }
-            case LAND -> {
-                if(boss.onGround()||boss.isInWater())finishMace();
-                else propel(target.position(),false);
-            }
+            case LAND, WIND_LAND -> land();
             case WINDUP -> {
                 aim(target.position(),12);boss.setDeltaMovement(Vec3.ZERO);
                 if(airAge>=WINDUP_TICKS) {
@@ -259,15 +335,82 @@ public final class FourthCalamityAI {
             }
             case DROP -> {
                 aim(lockedLanding,12);
-                if(boss.fallDistance>1.5&&boss.distanceToSqr(target)<9&&boss.hasLineOfSight(target)&&boss.actions.melee(target))finishMace();
-                else if(boss.onGround()||boss.isInWater()||airAge>100)finishMace();
+                if(boss.fallDistance>1.5&&boss.distanceToSqr(target)<9&&boss.hasLineOfSight(target)&&boss.actions.melee(target))enterAir(Air.FALL);
+                else if(boss.onGround())finishLanding();
+                else if(boss.isInWater()||airAge>100)enterAir(Air.FALL);
             }
+            case FALL -> {
+                boss.setGliding(false);boss.setNoGravity(false);
+                if(boss.onGround())finishLanding();
+                else if(boss.isInWater())enterAir(Air.LAND);
+            }
+            case GROUND -> { }
         }
     }
-    private void finishMace() {
-        boss.setNoGravity(false);boss.setGliding(false);boss.setMaceWindup(false);air=Air.APPROACH;airAge=0;lockedLanding=null;recover();
+    private boolean safeLanding(Vec3 point) {
+        if(!safeTeleport(point))return false;
+        AABB standing=new AABB(point.x-.3,point.y,point.z-.3,point.x+.3,point.y+1.8,point.z+.3);
+        if(standing.maxY>boss.level().getMaxBuildHeight()||!boss.level().noCollision(boss,standing)||boss.level().containsAnyLiquid(standing))return false;
+        BlockPos support=BlockPos.containing(point.add(0,-.05,0));
+        var state=boss.level().getBlockState(support);
+        return !state.getCollisionShape(boss.level(),support).isEmpty()&&state.getFluidState().isEmpty()
+            &&!state.is(Blocks.MAGMA_BLOCK)&&!state.is(Blocks.CAMPFIRE)&&!state.is(Blocks.SOUL_CAMPFIRE)
+            &&!state.is(Blocks.CACTUS)&&!boss.level().getBlockState(BlockPos.containing(point)).is(Blocks.FIRE);
     }
-    public void damaged(float amount) { if(air==Air.WINDUP||air==Air.DROP){interrupt+=amount;if(interrupt>=INTERRUPT_DAMAGE)finishMace();} }
+    private Vec3 findLanding() {
+        Vec3 best=null;double score=Double.MAX_VALUE;
+        BlockPos center=boss.blockPosition();
+        for(int x=-8;x<=8;x+=2)for(int z=-8;z<=8;z+=2) {
+            for(int y=Math.min(center.getY()+1,boss.level().getMaxBuildHeight()-3);y>=Math.max(center.getY()-64,boss.level().getMinBuildHeight());y--) {
+                BlockPos support=new BlockPos(center.getX()+x,y,center.getZ()+z);
+                if(!boss.level().hasChunkAt(support))break;
+                var shape=boss.level().getBlockState(support).getCollisionShape(boss.level(),support);
+                if(shape.isEmpty())continue;
+                Vec3 point=new Vec3(support.getX()+.5,y+shape.max(net.minecraft.core.Direction.Axis.Y),support.getZ()+.5);
+                if(safeLanding(point)&&!blocked(point.add(0,1,0))) {
+                    double candidate=boss.position().distanceToSqr(point);
+                    if(candidate<score){score=candidate;best=point;}
+                    break;
+                }
+            }
+        }
+        return best;
+    }
+    private void land() {
+        if(boss.onGround()){finishLanding();return;}
+        if(landing==null||!safeLanding(landing)||airAge%20==0&&!windFired)landing=findLanding();
+        if(landing==null) { propel(boss.position().add(boss.getLookAngle().multiply(1,0,1).scale(6)).add(0,1,0),false);return; }
+        double height=boss.getY()-landing.y;
+        Vec3 horizontal=landing.subtract(boss.position()).multiply(1,0,1);
+        if(air==Air.WIND_LAND&&height<=4&&height>1&&horizontal.length()<.25&&!windFired) {
+            if(boss.actions.windCharge(landing)) {
+                windFired=true;windWait=0;boss.setGliding(false);
+                // Brake the pass so its owner remains inside the real blast instead of outrunning it.
+                boss.setDeltaMovement(horizontal.scale(.18).add(0,-.2,0));VanillaCombat.syncMotion(boss);
+            }
+        }
+        if(windFired) {
+            boss.setGliding(false);boss.setNoGravity(false);windWait++;
+            // Only a real blast near the owner records impulse protection. Never manufacture it here.
+            boolean buffered=ImpulseFall.hasProtection(boss);
+            if(!buffered&&windWait>6) { boss.setGliding(true);windFired=false;landing=null; }
+            return;
+        }
+        boolean windApproach=air==Air.WIND_LAND;
+        boss.setGliding(true);boss.setNoGravity(false);aim(windApproach?landing.add(0,3,0):landing,12);
+        // Glide down slowly; normal collision performs the final touchdown.
+        Vec3 motion=horizontal.scale(.18);double cap=.6*flightFactor();
+        if(motion.length()>cap)motion=motion.normalize().scale(cap);
+        double vertical=windApproach?Mth.clamp((3-height)*.2,-.45,.35):-Math.min(.45,Math.max(.12,height*.12));
+        boss.setDeltaMovement(motion.add(0,vertical,0));VanillaCombat.syncMotion(boss);
+    }
+    private void finishLanding() {
+        boss.setGliding(false);enterAir(Air.GROUND);aerial=false;groundCharge=false;chargeHit=false;
+        landing=lockedLanding=chargePoint=chargeDirection=null;shotsLeft=airborne=grounded=0;recover();
+    }
+    public void damaged(float amount) {
+        if(air==Air.WINDUP||air==Air.DROP) { interrupt+=amount;if(interrupt>=INTERRUPT_DAMAGE)enterAir(Air.FALL); }
+    }
     private void teleport(LivingEntity target) {
         if(air==Air.WINDUP||air==Air.DROP)return;
         ServerLevel level=(ServerLevel)boss.level();
@@ -299,6 +442,6 @@ public final class FourthCalamityAI {
     }
     public void stop() {
         boss.getNavigation().stop();boss.stopUsingItem();boss.setGliding(false);boss.setMaceWindup(false);boss.setNoGravity(false);boss.setSprinting(false);boss.setJumping(false);
-        crystalAura.clear();swordAttempted=false;crystalStall=crystalRetryAt=0;pearlOpening=false;lastTargetId=-1;targetWasGrounded=false;ground=Ground.ARROW;air=Air.APPROACH;age=airAge=airborne=grounded=0;aerial=false;base=explosive=shield=null;lockedLanding=placementPosition=null;
+        crystalAura.clear();swordAttempted=false;crystalStall=crystalRetryAt=0;pearlOpening=false;lastTargetId=-1;targetWasGrounded=false;ground=Ground.ARROW;air=Air.GROUND;age=airAge=airborne=grounded=0;aerial=false;base=explosive=shield=null;lockedLanding=placementPosition=landing=chargePoint=chargeDirection=null;shotsLeft=windWait=0;chargeTarget=-1;groundCharge=chargeHit=windFired=false;
     }
 }

@@ -47,6 +47,7 @@ public final class PlayerWindCharge extends Projectile implements ItemSupplier {
     @Override protected void onHitBlock(BlockHitResult hit) { burst(hit.getLocation().add(Vec3.atLowerCornerOf(hit.getDirection().getNormal()).scale(.25))); }
     private void burst(Vec3 at) { WindBurst.explode(level(),this,at,1.2f,1.22f,true);discardAttack(); }
     public void discardAttack() { ended=true;super.remove(RemovalReason.DISCARDED); }
+    public boolean ending() { return ended; }
     @Override public void remove(RemovalReason reason) {
         if(!level().isClientSide&&reason==RemovalReason.DISCARDED&&!ended&&(getOwner()==null||!getOwner().isRemoved()))return;
         super.remove(reason);

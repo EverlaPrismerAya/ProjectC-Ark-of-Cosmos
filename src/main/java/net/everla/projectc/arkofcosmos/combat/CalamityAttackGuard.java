@@ -14,8 +14,37 @@ import net.minecraftforge.fml.common.Mod;
 public final class CalamityAttackGuard {
     public static final String OWNER="ArkFourthOwner";
     public static final ThreadLocal<FourthCalamityEntity> PLACING=new ThreadLocal<>();
+    public static final ThreadLocal<FourthCalamityEntity> DETONATING=new ThreadLocal<>();
     private static final StackWalker WALKER=StackWalker.getInstance();
     private CalamityAttackGuard() {}
+    private static FourthCalamityEntity crystalOwner(net.minecraftforge.event.level.ExplosionEvent event) {
+        Entity source=event.getExplosion().getDirectSourceEntity();
+        if(source instanceof EndCrystal&&DETONATING.get()!=null)return DETONATING.get();
+        if(source instanceof EndCrystal&&source.getPersistentData().hasUUID(OWNER)&&event.getLevel() instanceof ServerLevel level
+            &&level.getEntity(source.getPersistentData().getUUID(OWNER)) instanceof FourthCalamityEntity boss)return boss;
+        return null;
+    }
+    @SubscribeEvent(priority=net.minecraftforge.eventbus.api.EventPriority.LOWEST,receiveCanceled=true)
+    public static void explosionStart(net.minecraftforge.event.level.ExplosionEvent.Start event) {
+        FourthCalamityEntity boss=crystalOwner(event);
+        if(boss!=null&&event.isCanceled())boss.actions.crystalExplosion((EndCrystal)event.getExplosion().getDirectSourceEntity(),true);
+    }
+    @SubscribeEvent(priority=net.minecraftforge.eventbus.api.EventPriority.LOWEST)
+    public static void explosionDetonated(net.minecraftforge.event.level.ExplosionEvent.Detonate event) {
+        FourthCalamityEntity boss=crystalOwner(event);
+        if(boss!=null)boss.actions.crystalExplosion((EndCrystal)event.getExplosion().getDirectSourceEntity(),false);
+    }
+    @SubscribeEvent(priority=net.minecraftforge.eventbus.api.EventPriority.LOWEST,receiveCanceled=true)
+    public static void interaction(net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock event) {
+        FourthCalamityEntity boss=PLACING.get();
+        if(boss!=null&&(event.isCanceled()||event.getUseItem()==net.minecraftforge.eventbus.api.Event.Result.DENY))
+            boss.actions.interactionDenied("PROTECTION_DENIED");
+    }
+    @SubscribeEvent(priority=net.minecraftforge.eventbus.api.EventPriority.LOWEST,receiveCanceled=true)
+    public static void placed(net.minecraftforge.event.level.BlockEvent.EntityPlaceEvent event) {
+        FourthCalamityEntity boss=PLACING.get();
+        if(boss!=null&&event.isCanceled())boss.actions.interactionDenied("PROTECTION_DENIED");
+    }
     @SubscribeEvent public static void joined(EntityJoinLevelEvent event) {
         if(event.getLevel().isClientSide)return;
         Entity entity=event.getEntity();
@@ -27,6 +56,7 @@ public final class CalamityAttackGuard {
         return entity.getPersistentData().hasUUID(OWNER)&&entity.getPersistentData().getUUID(OWNER).equals(boss.getUUID());
     }
     public static boolean blockRemoval(Entity entity,Entity.RemovalReason reason) {
+        if(entity instanceof net.everla.projectc.arkofcosmos.entity.PlayerWindCharge charge&&charge.ending())return false;
         if(reason!=Entity.RemovalReason.DISCARDED||!(entity.level() instanceof ServerLevel level)||!entity.getPersistentData().hasUUID(OWNER)
             ||!(entity instanceof Projectile||entity instanceof EndCrystal))return false;
         Entity owner=level.getEntity(entity.getPersistentData().getUUID(OWNER));

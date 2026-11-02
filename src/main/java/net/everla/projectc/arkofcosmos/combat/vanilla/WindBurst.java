@@ -30,7 +30,10 @@ public final class WindBurst {
                 power*=1-Math.min(1,.15f*protection);
             }
             entity.push(direction.x*power,direction.y*power,direction.z*power);VanillaCombat.syncMotion(entity);
-            if(entity instanceof Player player) { if(playerCharge)ImpulseFall.mark(player,false);else ImpulseFall.endGrace(player); }
+            if(entity instanceof LivingEntity living&&(entity instanceof Player
+                ||source instanceof net.minecraft.world.entity.projectile.Projectile projectile&&projectile.getOwner()==entity)) {
+                if(playerCharge&&(entity instanceof Player||power>0))ImpulseFall.mark(living,false);else ImpulseFall.endGrace(living);
+            }
         }
         for(BlockPos pos:blocks(server,center,radius))trigger(server,pos);
         server.sendParticles(radius>=2?VanillaParticles.LARGE_EMITTER.get():VanillaParticles.EMITTER.get(),center.x,center.y,center.z,1,0,0,0,0);

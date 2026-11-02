@@ -16,7 +16,7 @@ import net.minecraft.world.phys.*;
 public final class SpearCombat {
     private static final Map<LivingEntity,State> STATES=new WeakHashMap<>();
     private static final class State {
-        Vec3 position,motion=Vec3.ZERO;int tick;long lastJab=Long.MIN_VALUE;
+        Vec3 position,motion=Vec3.ZERO;int tick,sequence;long lastJab=Long.MIN_VALUE;
         final Map<Integer,Integer> contacts=new HashMap<>();
     }
     public static void track(LivingEntity e) {
@@ -37,9 +37,10 @@ public final class SpearCombat {
         State state=STATES.computeIfAbsent(e,k->new State());state.position=e.position();state.motion=Vec3.ZERO;
     }
     public static void start(LivingEntity e) {
-        STATES.computeIfAbsent(e,k->new State()).contacts.clear();
+        State state=STATES.computeIfAbsent(e,k->new State());state.contacts.clear();state.sequence++;
         sound(e,(SpearItem)e.getUseItem().getItem(),"use");
     }
+    public static int sequence(LivingEntity e) { State state=STATES.get(e);return state==null?0:state.sequence; }
     public static void stop(LivingEntity e) { State s=STATES.get(e);if(s!=null)s.contacts.clear(); }
     public static boolean condition(int used,int until,double speed,double threshold,float factor) { return used<=until&&speed>=threshold*factor; }
     public static float kineticDamage(float base,double attacker,double target,float multiplier) { return base+Mth.floor(Math.max(0,attacker-target)*multiplier); }
@@ -104,6 +105,8 @@ public final class SpearCombat {
             if(attacker instanceof Player player)stack.hurtEnemy(livingTarget,player);else stack.getItem().hurtEnemy(stack,livingTarget,attacker);
         }
         if(hit) {
+            if(!attacker.level().isClientSide&&attacker instanceof net.everla.projectc.arkofcosmos.entity.FourthCalamityEntity boss
+                &&attacker.isUsingItem()&&attacker.getUseItem()==stack)boss.combat.spearHit(target,sequence(attacker));
             if(target instanceof LivingEntity living) {
                 EnchantmentHelper.doPostHurtEffects(living,attacker);
                 int fire=EnchantmentHelper.getFireAspect(attacker);if(fire>0)living.setSecondsOnFire(fire*4);

@@ -22,6 +22,7 @@
     "VanillaLivingCombatMixin"
   ],
   "client": [
+    "client.BossBarProgressAccessor",
     "client.DomainBlockEntityMixin",
     "client.DomainWorldMixin",
     "client.DomainPostMixin",

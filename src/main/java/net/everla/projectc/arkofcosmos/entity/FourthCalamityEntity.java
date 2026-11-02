@@ -21,7 +21,7 @@ import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.network.NetworkHooks;
 
-/** Ordinary vanilla vitality; the 65 bars are a presentation of one health pool. */
+/** Ordinary vanilla vitality; the 33 bars are a presentation of one health pool. */
 public final class FourthCalamityEntity extends Monster {
     private static final EntityDataAccessor<Boolean> GLIDING=SynchedEntityData.defineId(FourthCalamityEntity.class,EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> MACE_WINDUP=SynchedEntityData.defineId(FourthCalamityEntity.class,EntityDataSerializers.BOOLEAN);
@@ -41,7 +41,7 @@ public final class FourthCalamityEntity extends Monster {
         xpReward=0;
     }
     public static AttributeSupplier.Builder createAttributes() {
-        return Monster.createMonsterAttributes().add(ArkOfCosmos.FOURTH_MAX_HEALTH.get(),1300).add(Attributes.ATTACK_DAMAGE,2)
+        return Monster.createMonsterAttributes().add(ArkOfCosmos.FOURTH_MAX_HEALTH.get(),660).add(Attributes.ATTACK_DAMAGE,2)
             .add(Attributes.MOVEMENT_SPEED,.36).add(Attributes.FOLLOW_RANGE,128).add(Attributes.ATTACK_KNOCKBACK,1);
     }
     // Vanilla's global max-health attribute is capped at 1024. Use a native, synced attribute only for this boss.
@@ -58,7 +58,7 @@ public final class FourthCalamityEntity extends Monster {
     public boolean maceWindup() { return entityData.get(MACE_WINDUP); }
     public void setMaceWindup(boolean value) { entityData.set(MACE_WINDUP,value); }
     public int bars() { return Math.max(0,(int)Math.ceil(getHealth()/20)); }
-    public int phase() { return getHealth()<=20?3:getHealth()<=660?2:1; }
+    public int phase() { return getHealth()<=20?3:getHealth()<=320?2:1; }
     public float barProgress() { int count=bars();return count==0?0:(getHealth()-(count-1)*20)/20; }
     public boolean gliding() { return entityData.get(GLIDING); }
     public void setGliding(boolean value) { entityData.set(GLIDING,value);updateGlidingFlag(); }

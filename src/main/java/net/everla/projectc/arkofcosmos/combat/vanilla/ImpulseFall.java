@@ -13,6 +13,7 @@ public final class ImpulseFall {
         d.putDouble(HEIGHT,y);d.putInt(GRACE,40);
     }
     public static void endGrace(LivingEntity e) { e.getPersistentData().putInt(GRACE,0); }
+    public static boolean hasProtection(LivingEntity e) { return e.getPersistentData().contains(HEIGHT); }
     public static void tick(LivingEntity e) {
         CompoundTag d=e.getPersistentData();int grace=d.getInt(GRACE);if(grace>0)d.putInt(GRACE,grace-1);
         if(d.contains(HEIGHT)&&(e.isInWater()||e.onClimbable()||e.isFallFlying()||e.onGround()&&grace==0))clear(e);

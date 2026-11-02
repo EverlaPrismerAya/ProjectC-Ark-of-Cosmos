@@ -62,6 +62,28 @@ public final class MahouBossBar {
                 DefaultVertexFormat.POSITION_TEX_COLOR), loaded -> shader = loaded);
     }
 
+    public static void cosmicOverlay(GuiGraphics graphics, int x, int y, int width) {
+        if (shader == null || width <= 0) return;
+        Minecraft mc = Minecraft.getInstance();
+        graphics.flush();
+        RenderSystem.disableDepthTest();
+        RenderSystem.depthMask(false);
+        RenderSystem.enableBlend();
+        RenderSystem.defaultBlendFunc();
+        RenderSystem.setShaderColor(1, 1, 1, 1);
+        shader.safeGetUniform("uTime").set((mc.level == null ? 0 : mc.level.getGameTime()) / 20f);
+        RenderSystem.setShaderTexture(0, BAR);
+        for (int i = 0; i < STARS.length; i++) {
+            shader.setSampler("Cosmic" + i, mc.getTextureManager().getTexture(STARS[i]).getId());
+            int[] frames = STAR_FRAMES[i];
+            if (frames.length > 0) shader.safeGetUniform("Frame" + i).set(frames[Math.floorMod(mc.level == null ? 0 : mc.level.getGameTime(), frames.length)]);
+        }
+        RenderSystem.setShader(() -> shader);
+        quad(graphics, x, y, width, 0, 1f);
+        RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
+        RenderSystem.disableBlend();
+    }
+
     @SubscribeEvent public static void render(CustomizeGuiOverlayEvent.BossEventProgress event) {
         Integer phase = PHASES.get(event.getBossEvent().getId());
         if (phase == null) return;
