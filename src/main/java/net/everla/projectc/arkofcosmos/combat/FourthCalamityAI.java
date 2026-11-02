@@ -20,6 +20,7 @@ public final class FourthCalamityAI {
     public static final int WINDUP_TICKS=20;
     public static final int CRYSTAL_STALL_TICKS=8,CRYSTAL_RETRY_TICKS=20;
     public static final double AIR_CLEARANCE=1.5;
+    private static final int LAND_TIMEOUT=200,WIND_LAND_TIMEOUT=60;
     public static final double MACE_HEIGHT=12,INTERRUPT_DAMAGE=20;
     private enum Ground { ARROW,PEARL,HIT,CHECK,CRYSTALS,RETREAT,PREPARE,SHIELD,PLACE,CHARGE,DETONATE,RECOVER }
     private enum Air { GROUND,APPROACH,READY,CHARGE,STRAFE,CLIMB,WINDUP,DROP,FALL,LAND,WIND_LAND }
@@ -52,6 +53,26 @@ public final class FourthCalamityAI {
     private int fluidTicks,riptideCharge,riptideCooldown;
     private boolean fluidCombat;
     private Vec3 riptideVelocity;
+    private boolean dangerousBlock() {
+        AABB box=boss.getBoundingBox();
+        for(BlockPos pos:BlockPos.betweenClosed(BlockPos.containing(box.minX,box.minY,box.minZ),BlockPos.containing(box.maxX,box.maxY,box.maxZ))) {
+            Block block=boss.level().getBlockState(pos).getBlock();
+            if(block==Blocks.FIRE||block==Blocks.SOUL_FIRE||block==Blocks.CAMPFIRE||block==Blocks.SOUL_CAMPFIRE)return true;
+        }
+        return false;
+    }
+    private boolean escapeDanger() {
+        Vec3 origin=boss.position();
+        for(int x=-2;x<=2;x++)for(int y=-1;y<=2;y++)for(int z=-2;z<=2;z++) {
+            if(x==0&&y==0&&z==0)continue;
+            Vec3 at=origin.add(x,y,z);
+            if(!safeTeleport(at))continue;
+            Block block=boss.level().getBlockState(BlockPos.containing(at)).getBlock();
+            if(block==Blocks.FIRE||block==Blocks.SOUL_FIRE||block==Blocks.CAMPFIRE||block==Blocks.SOUL_CAMPFIRE)continue;
+            boss.teleportTo(at.x,at.y,at.z);return true;
+        }
+        return false;
+    }
     public void crystalBlast(LivingEntity target) {
         if(target!=boss.getTarget()||air!=Air.GROUND)return;
         if(crystalLaunchTarget==target.getId()&&boss.tickCount-crystalLaunchTick<=20)return;
@@ -96,6 +117,12 @@ public final class FourthCalamityAI {
         return alwaysAirTarget(target)||target.onGround()&&target.getY()>(aerial&&!boss.onGround()?aerialGroundY:boss.getY())+AIR_CLEARANCE;
     }
     public void tick() {
+        if(dangerousBlock()) {
+            clearAttackState();
+            boss.setGliding(false);boss.setNoGravity(false);boss.setMaceWindup(false);
+            if(!escapeDanger())boss.setDeltaMovement(boss.getDeltaMovement().add(0,.2,0));
+            return;
+        }
         LivingEntity target=boss.getTarget();
         if(boss.getLastHurtByMobTimestamp()!=lastRetaliation&&valid(boss.getLastHurtByMob())) {
             lastRetaliation=boss.getLastHurtByMobTimestamp();
@@ -109,7 +136,7 @@ public final class FourthCalamityAI {
         if(!valid(target)) {
             if(hadTarget) {
                 boolean needsLanding=!boss.onGround()&&(air!=Air.GROUND||boss.gliding());
-                stop();boss.actions.cleanup();
+                clearAttackState();
                 if(needsLanding)enterAir(Air.LAND);
             }
             hadTarget=false;
@@ -119,6 +146,10 @@ public final class FourthCalamityAI {
             return;
         }
         if(!hadTarget)boss.getNavigation().stop();
+        if(previousTargetId!=-1&&previousTargetId!=target.getId()) {
+            clearAttackState();
+            previousTargetPosition=null;spacing=escaping=false;
+        }
         hadTarget=true;if(meleeDelay>0)meleeDelay--;
         if(alwaysAirTarget(target)) {
             if(fluidCombat)stop();
@@ -601,6 +632,9 @@ public final class FourthCalamityAI {
         return best;
     }
     private void land() {
+        if(airAge>=(air==Air.WIND_LAND?WIND_LAND_TIMEOUT:LAND_TIMEOUT)) {
+            finishLanding();return;
+        }
         if(boss.onGround()){finishLanding();return;}
         if(landing==null||!safeLanding(landing)||airAge%20==0&&!windFired)landing=findLanding();
         if(landing==null) { propel(boss.position().add(boss.getLookAngle().multiply(1,0,1).scale(6)).add(0,1,0),false);return; }
@@ -666,11 +700,16 @@ public final class FourthCalamityAI {
             &&boss.level().getWorldBorder().isWithinBounds(bounds)&&boss.level().noCollision(boss,bounds)&&!boss.level().containsAnyLiquid(bounds);
     }
     public void stop() {
+        clearAttackState();
+        boss.setGliding(false);boss.setMaceWindup(false);boss.setNoGravity(false);boss.setSprinting(false);boss.setJumping(false);
+        ground=Ground.ARROW;air=Air.GROUND;age=airAge=airborne=grounded=0;aerial=false;base=explosive=shield=null;lockedLanding=placementPosition=landing=chargePoint=chargeDirection=null;shotsLeft=windWait=0;chargeTarget=-1;groundCharge=chargeHit=windFired=false;
+    }
+    private void clearAttackState() {
         fluidTicks=riptideCharge=riptideCooldown=0;fluidCombat=false;riptideVelocity=null;boss.setRiptideTicks(0);
         tailGround=false;
         shortCrystalCharge=false;crystalLaunchTarget=-1;
         previousTargetPosition=null;previousTargetId=-1;spacing=escaping=false;
-        boss.getNavigation().stop();boss.stopUsingItem();boss.setGliding(false);boss.setMaceWindup(false);boss.setNoGravity(false);boss.setSprinting(false);boss.setJumping(false);
-        crystalAura.clear();swordAttempted=false;crystalStall=crystalRetryAt=0;pearlOpening=false;ground=Ground.ARROW;air=Air.GROUND;age=airAge=airborne=grounded=0;aerial=false;base=explosive=shield=null;lockedLanding=placementPosition=landing=chargePoint=chargeDirection=null;shotsLeft=windWait=0;chargeTarget=-1;groundCharge=chargeHit=windFired=false;
+        boss.getNavigation().stop();boss.stopUsingItem();boss.setSprinting(false);boss.setJumping(false);
+        crystalAura.clear();swordAttempted=false;crystalStall=crystalRetryAt=0;pearlOpening=false;
     }
 }
