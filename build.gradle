@@ -106,23 +106,57 @@ sourceSets.main.resources { srcDir 'src/generated/resources' }
 // Keep production Mixin targets mapped to the obfuscated 1.20.1 runtime names.
 def generatedMixinResourcesDir = layout.buildDirectory.dir('generated/mixin-resources')
 def generatedRefmapFile = generatedMixinResourcesDir.map { it.file('arkofcosmos.refmap.json') }
+def generatedMixinMappingsFile = layout.buildDirectory.file('tmp/mixin/mixin-output.tsrg')
 tasks.named('compileJava', JavaCompile).configure {
     dependsOn 'createMcpToSrg'
     options.incremental = false
     outputs.file(generatedRefmapFile)
+    outputs.file(generatedMixinMappingsFile)
     options.compilerArgs.addAll([
         '-AmappingTypes=tsrg',
         '-AreobfTsrgFile=' + layout.buildDirectory.file('createMcpToSrg/output.tsrg').get().asFile.absolutePath,
-        '-AoutTsrgFile=' + layout.buildDirectory.file('tmp/mixin/mixin-output.tsrg').get().asFile.absolutePath,
+        '-AoutTsrgFile=' + generatedMixinMappingsFile.get().asFile.absolutePath,
         '-AoutRefMapFile=' + generatedRefmapFile.get().asFile.absolutePath,
         '-AdefaultObfuscationEnv=searge',
     ])
+}
+// @Shadow members are renamed in bytecode, separately from injection/accessor refmaps.
+tasks.withType(net.minecraftforge.gradle.userdev.tasks.RenameJarInPlace).configureEach {
+    dependsOn tasks.named('compileJava')
+    extraMappings.from(generatedMixinMappingsFile)
 }
 tasks.named('processResources', ProcessResources).configure {
     dependsOn tasks.named('compileJava')
     from(generatedMixinResourcesDir) { into '' }
 }
 
+// Check the shipped bytecode: development runs cannot detect missing @Shadow remapping.
+tasks.register('verifyMixinSrg') {
+    dependsOn 'reobfJar'
+    doLast {
+        def jdk = javaToolchains.compilerFor { languageVersion = JavaLanguageVersion.of(17) }.get()
+        def javap = jdk.metadata.installationPath.file('bin/javap').asFile
+        def mappings = generatedMixinMappingsFile.get().asFile.readLines().findAll { !it.trim().isEmpty() }
+                .collect { it.trim().split(/\s+/) }
+        mappings.groupBy { it[0] }.each { owner, members ->
+            def output = new ByteArrayOutputStream()
+            project.exec {
+                commandLine javap, '-private', '-c', '-classpath', tasks.named('jar').get().archiveFile.get().asFile,
+                        owner.replace('/', '.')
+                standardOutput = output
+            }
+            def bytecode = output.toString('UTF-8')
+            members.each { member ->
+                if (!(bytecode =~ /\b${java.util.regex.Pattern.quote(member[-1])}\b/).find()
+                        || (bytecode =~ /\b${java.util.regex.Pattern.quote(member[1])}\b/).find()) {
+                    throw new GradleException("Unmapped Mixin declaration or reference in release JAR: ${member.join(' ')}")
+                }
+            }
+        }
+        logger.lifecycle("Verified ${mappings.size()} Mixin member mappings in release JAR")
+    }
+}
+tasks.named('check').configure { dependsOn 'verifyMixinSrg' }
 repositories {
     // Put repositories for dependencies here
     // ForgeGradle automatically adds the Forge maven and Maven Central for you
