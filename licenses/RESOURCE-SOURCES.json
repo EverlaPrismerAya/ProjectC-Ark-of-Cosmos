@@ -2,6 +2,13 @@
   "notice": "Provenance records do not grant redistribution rights. See THIRD_PARTY_NOTICES.md.",
   "files": [
     {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/fourth_calamity_death.ogg",
+      "sha256": "399e0a2cfa7dcfd5f1d9fa0b199b4c6f5ac8987ad2da17fbfa72c70f1de6a62f",
+      "project": "User-supplied Fourth Calamity disappearance sound",
+      "path": "D:/chara/桌面/fourth_calamity_death.ogg",
+      "license": "Original author / rights holders; not GPL-3.0-only; author and license not supplied"
+    },
+    {
       "file": "src/main/resources/assets/arkofcosmos/sounds/music/masquerade_waltz.ogg",
       "sha256": "4d893b57d3bc0d242b6cc3199fc145a9ff0804ebac8b028d352c84a17f16ddb4",
       "project": "User-supplied Fourth Calamity boss music",

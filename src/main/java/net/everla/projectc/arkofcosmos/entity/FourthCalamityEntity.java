@@ -40,6 +40,8 @@ public final class FourthCalamityEntity extends Monster {
     private long nonPlayerInvulnerableUntil;
     private DamageSource defeatSource;
     private boolean annihilationEmberDropped;
+    private boolean finishingDefeat,nativeDeath;
+    private int healthWriteDepth;
 
     /** One native hurt transaction, including event handlers which write health directly. */
     private final class Defense {
@@ -69,6 +71,7 @@ public final class FourthCalamityEntity extends Monster {
         void budget(float raw) { limit=Math.max(0,magic(armor(raw))-absorption); }
     }
     private boolean defend(DamageSource source) {
+        if(mahouAttack(source))return false;
         if(source.getEntity()!=null||source.getDirectEntity()!=null)return true;
         var key=source.typeHolder().unwrapKey();
         if(key.isEmpty()||!key.get().location().getNamespace().equals("minecraft"))return true;
@@ -79,10 +82,12 @@ public final class FourthCalamityEntity extends Monster {
         return false;
     }
     @Override protected float getDamageAfterArmorAbsorb(DamageSource source,float amount) {
+        if(mahouAttack(source))return amount;
         if(defense==null)return super.getDamageAfterArmorAbsorb(source,amount);
         defense.budget(amount);return defense.armor(amount);
     }
     @Override protected float getDamageAfterMagicAbsorb(DamageSource source,float amount) {
+        if(mahouAttack(source))return amount;
         if(defense==null) {
             if(!source.is(DamageTypeTags.BYPASSES_EFFECTS)&&!source.is(DamageTypeTags.BYPASSES_RESISTANCE)
                 &&!source.is(DamageTypeTags.BYPASSES_INVULNERABILITY))amount*=.8f;
@@ -106,33 +111,57 @@ public final class FourthCalamityEntity extends Monster {
         finally { defense=previous; }
     }
     @Override public void setHealth(float health) {
+        if(protectDeathHealthWrite(health))return;
         if(defeated()){super.setHealth(1);return;}
         // Event callbacks must not apply damage before cancellation, i-frames or totem checks.
         if(defense!=null&&health<getHealth())return;
         super.setHealth(health);
+        if(health>0)nativeDeath=false;
+    }
+    /** Only terminal external writes are redirected; ordinary damage still owns its original rules. */
+    public boolean protectDeathHealthWrite(float health) {
+        if(level().isClientSide||!entityData.hasItem(DEFEAT_TICKS)||healthWriteDepth>0||finishingDefeat)return false;
+        if(defeated())return health!=1;
+        if(defense!=null&&health<getHealth())return true;
+        if(health<=0||Float.isNaN(health)) { beginDefeat(deathSource());return true; }
+        return false;
+    }
+    private DamageSource deathSource() { return getLastDamageSource()!=null?getLastDamageSource():damageSources().generic(); }
+    public boolean protectingDefeat() { return defeated()&&!finishingDefeat; }
+    private void writeHealth(float health) {
+        healthWriteDepth++;
+        try { super.setHealth(health); }
+        finally { healthWriteDepth--; }
     }
     /** Called only from vanilla actuallyHurt's health commit, after Forge damage events. */
     public void commitDamageHealth(DamageSource source,float health) {
         if(defeated())return;
         if(defense!=null&&health<getHealth())health=getHealth()-Math.min(getHealth()-health,defense.limit);
         if(phase()==3&&health<=0){beginDefeat(source);return;}
-        super.setHealth(health);
+        nativeDeath=health<=0;
+        writeHealth(health);
     }
     public boolean defeated() { return entityData.hasItem(DEFEAT_TICKS)&&entityData.get(DEFEAT_TICKS)>=0; }
     public int defeatTicks() { return defeated()?entityData.get(DEFEAT_TICKS):0; }
     @Override public void onSyncedDataUpdated(EntityDataAccessor<?> key) {
+        if(key.equals(DATA_HEALTH_ID)&&healthWriteDepth==0&&entityData.hasItem(DEFEAT_TICKS)&&!level().isClientSide&&!finishingDefeat) {
+            if(protectDeathHealthWrite(entityData.get(DATA_HEALTH_ID))||defeated())writeHealth(1);
+        }
         super.onSyncedDataUpdated(key);
         if(key==DEFEAT_TICKS&&defeated()&&getBbHeight()>.4f)refreshDimensions();
     }
     private void beginDefeat(DamageSource source) {
         if(defeated())return;
-        super.setHealth(1);defeatSource=source;entityData.set(DEFEAT_TICKS,0);
+        nativeDeath=false;writeHealth(1);defeatSource=source;entityData.set(DEFEAT_TICKS,0);
+        // Mark death as already handled so external death adapters cannot repeat native loot/packets.
+        dead=true;deathTime=0;
         // Keep vanilla travel/gravity active; customServerAiStep gates all combat while defeated.
         clearCombat();setTarget(null);setNoAi(false);stopRiding();removeAllEffects();
         setXxa(0);setYya(0);setZza(0);getMoveControl().setWantedPosition(getX(),getY(),getZ(),0);
         setDeltaMovement(net.minecraft.world.phys.Vec3.ZERO);
         setItemSlot(EquipmentSlot.MAINHAND,ItemStack.EMPTY);setItemSlot(EquipmentSlot.OFFHAND,ItemStack.EMPTY);
         refreshDimensions();
+        if(!level().isClientSide&&source.getEntity() instanceof MahouTsukaiEntity mahou)mahou.discard();
     }
 
     public FourthCalamityEntity(EntityType<? extends FourthCalamityEntity> type,Level level) {
@@ -206,6 +235,8 @@ public final class FourthCalamityEntity extends Monster {
     }
     @Override protected void customServerAiStep() { if(isAlive()&&!defeated())combat.tick(); }
     @Override public void tick() {
+        if(!level().isClientSide&&!nativeDeath&&!defeated()&&getHealth()<=0)beginDefeat(deathSource());
+        if(!level().isClientSide&&protectingDefeat()) { writeHealth(1);dead=true;deathTime=0; }
         super.tick();
         if(!level().isClientSide) {
             if(defeated()) {
@@ -213,8 +244,11 @@ public final class FourthCalamityEntity extends Monster {
                 int elapsed=defeatTicks()+1;entityData.set(DEFEAT_TICKS,elapsed);
                 if(elapsed>=DEFEAT_DURATION) {
                     dropAnnihilationEmbers();
-                    super.setHealth(0);super.die(defeatSource!=null?defeatSource:damageSources().generic());
-                    remove(RemovalReason.KILLED);
+                    finishingDefeat=true;
+                    try {
+                        dead=false;writeHealth(0);super.die(defeatSource!=null?defeatSource:damageSources().generic());
+                        remove(RemovalReason.KILLED);
+                    } finally { finishingDefeat=false; }
                 }
                 return;
             }
@@ -231,20 +265,40 @@ public final class FourthCalamityEntity extends Monster {
     @Override public void startSeenByPlayer(ServerPlayer player) { super.startSeenByPlayer(player);if(!defeated()){syncBar(player,true);bar.addPlayer(player);} }
     @Override public void stopSeenByPlayer(ServerPlayer player) { super.stopSeenByPlayer(player);bar.removePlayer(player);syncBar(player,false); }
     public boolean blocksNonPlayerDamage(DamageSource source) {
-        return !net.everla.projectc.arkofcosmos.combat.WeaponUser.playerOwnedDamage(source)&&level().getGameTime()<nonPlayerInvulnerableUntil;
+        return !mahouAttack(source)&&!net.everla.projectc.arkofcosmos.combat.WeaponUser.playerOwnedDamage(source)&&level().getGameTime()<nonPlayerInvulnerableUntil;
     }
+    private static boolean mahouAttack(DamageSource source) { return source.getEntity() instanceof MahouTsukaiEntity; }
     @Override public boolean hurt(DamageSource source,float amount) {
         if(defeated()||amount>0&&blocksNonPlayerDamage(source))return false;
+        boolean mahou=mahouAttack(source);
+        int previousCooldown=invulnerableTime;
+        float previousAbsorption=getAbsorptionAmount();
+        if(mahou) {
+            // Preserve attribution and native hurt/death events while bypassing this Boss's defenses.
+            source=new DamageSource(source.typeHolder(),source.getDirectEntity(),source.getEntity(),source.getSourcePosition()) {
+                @Override public boolean is(TagKey<DamageType> tag) {
+                    return tag==DamageTypeTags.BYPASSES_ARMOR||tag==DamageTypeTags.BYPASSES_ENCHANTMENTS
+                        ||tag==DamageTypeTags.BYPASSES_EFFECTS||tag==DamageTypeTags.BYPASSES_RESISTANCE
+                        ||tag==DamageTypeTags.BYPASSES_INVULNERABILITY||tag==DamageTypeTags.BYPASSES_SHIELD||super.is(tag);
+                }
+            };
+            invulnerableTime=0;setAbsorptionAmount(0);
+        }
         Defense previous=defense;
         defense=defend(source)?new Defense(source,amount):null;
         try {
             float before=getHealth();boolean hit=super.hurt(source,amount);
             if(hit&&combat!=null&&!defeated())combat.damaged(Math.max(0,before-getHealth()));return hit;
-        } finally { defense=previous; }
+        } finally {
+            defense=previous;
+            if(mahou){invulnerableTime=Math.max(previousCooldown,invulnerableTime);setAbsorptionAmount(previousAbsorption);}
+        }
     }
     @Override public void die(DamageSource source) {
         if(defeated())return;
+        if(!level().isClientSide&&!nativeDeath&&!finishingDefeat) { beginDefeat(source);return; }
         super.die(source);clearCombat();
+        if(!level().isClientSide&&dead&&source.getEntity() instanceof MahouTsukaiEntity mahou)mahou.discard();
         if (!level().isClientSide) {
             dropAnnihilationEmbers();
         }
@@ -262,7 +316,20 @@ public final class FourthCalamityEntity extends Monster {
         if(actions!=null)actions.cleanup();
         if(bar!=null){for(ServerPlayer player:bar.getPlayers())syncBar(player,false);bar.removeAllPlayers();}
     }
-    @Override public void remove(RemovalReason reason) { if(!level().isClientSide)clearCombat();super.remove(reason); }
+    @Override public void remove(RemovalReason reason) {
+        if(protectRemoval(reason))return;
+        if(!level().isClientSide) {
+            if(!isRemoved()&&reason==RemovalReason.KILLED)ArkOfCosmos.sound(this,"fourth_calamity_death",1);
+            clearCombat();
+        }
+        super.remove(reason);
+    }
+    /** Destructive lifecycle calls must wait for this entity's own final death commit. */
+    public boolean protectRemoval(RemovalReason reason) {
+        if(level().isClientSide||isRemoved()||finishingDefeat||nativeDeath||!reason.shouldDestroy())return false;
+        if(!defeated())beginDefeat(deathSource());
+        return true;
+    }
     @Override public void addAdditionalSaveData(CompoundTag tag) {
         tag.putInt("NonPlayerInvulnerabilityTicks",(int)Math.max(0,nonPlayerInvulnerableUntil-level().getGameTime()));
         super.addAdditionalSaveData(tag);if(defeated())tag.putInt("FourthDefeatTicks",defeatTicks());

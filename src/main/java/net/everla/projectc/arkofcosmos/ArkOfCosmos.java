@@ -63,7 +63,7 @@ public final class ArkOfCosmos {
     private static final java.util.Map<String, RegistryObject<SoundEvent>> AUDIO = new java.util.HashMap<>();
     static {
         AUDIO.put("snap", SNAP);
-        for (String name : new String[]{"elements_item9", "phoenix", "meaty", "item4", "item35", "item63", "item64", "item65", "item71", "item84", "crystal", "needle_death", "mahou_defeat",
+        for (String name : new String[]{"elements_item9", "phoenix", "meaty", "item4", "item35", "item63", "item64", "item65", "item71", "item84", "crystal", "needle_death", "mahou_defeat", "fourth_calamity_death",
                 "galaxia_item60","galaxia_item71","galaxia_item76","galaxia_item77","galaxia_item78","galaxia_item79","galaxia_item80","galaxia_item90",
                 "galaxia_item101","galaxia_item109","galaxia_item120","galaxia_hit30","galaxia_hit43","galaxia_book","galaxia_impact","galaxia_eruption",
                 "galaxia_beacon","galaxia_lightning","galaxia_meaty"})

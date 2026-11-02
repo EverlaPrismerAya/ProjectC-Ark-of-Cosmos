@@ -172,6 +172,9 @@
       "arkofcosmos:elements_item9_0"
     ]
   },
+  "fourth_calamity_death": {
+    "sounds": ["arkofcosmos:fourth_calamity_death"]
+  },
   "fourth_calamity_music": {
     "sounds": [
       {

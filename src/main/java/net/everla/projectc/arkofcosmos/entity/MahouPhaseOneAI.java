@@ -33,6 +33,7 @@ final class MahouPhaseOneAI {
 
     static boolean valid(MahouTsukaiEntity boss, LivingEntity target) {
         return target != null && target != boss && target.isAlive() && !target.isRemoved()
+                && (!(target instanceof FourthCalamityEntity fourth) || !fourth.defeated())
                 && target.level() == boss.level() && !boss.isAlliedTo(target) && boss.distanceToSqr(target) <= 128 * 128
                 && (!(target instanceof Player p) || !p.isCreative() && !p.isSpectator());
     }
@@ -41,7 +42,7 @@ final class MahouPhaseOneAI {
         if(boss.phaseRecovering()||boss.phaseTransitionTicks()>0){orbitAttackTicks=-1;reset();phaseTwo.reset();boss.setNoGravity(true);return;}
         if(movementPhase!=boss.phase()){reset();phaseTwo.reset();phaseThree.reset();movementPhase=boss.phase();}
         boss.setNoGravity(true);
-        if(boss.distantOrbit()){
+        if(boss.distantOrbit()&&!(boss.getTarget() instanceof FourthCalamityEntity)){
             LivingEntity orbitTarget=boss.orbitTarget();
             if(orbitAttackTicks<0){reset();phaseTwo.reset();phaseThree.reset();orbitAttackTicks=0;}
             if(orbitTarget!=null){face(orbitTarget.getBoundingBox().getCenter());phaseTwo.distantOrbitAttack(orbitTarget,orbitAttackTicks++);}
@@ -50,14 +51,9 @@ final class MahouPhaseOneAI {
         Player player = boss.level().getNearestPlayer(boss.getX(), boss.getY(), boss.getZ(), 128,
                 p -> p instanceof Player candidate && valid(boss, candidate) && boss.hasLineOfSight(candidate));
         LivingEntity target = boss.getTarget();
-        if (player != null) { target = player; unseen = 0; }
+        if (target instanceof FourthCalamityEntity && valid(boss,target)) { unseen=0; }
+        else if (player != null) { target = player; unseen = 0; }
         else if (!valid(boss, target) || target instanceof Player && ++unseen > 100) target = null;
-        if(player==null&&!(target instanceof Player&&valid(boss,target))){
-            var warden=boss.level().getEntitiesOfClass(net.minecraft.world.entity.monster.warden.Warden.class,
-                    boss.getBoundingBox().inflate(128),w->valid(boss,w)&&boss.hasLineOfSight(w)).stream()
-                    .min(java.util.Comparator.comparingDouble(boss::distanceToSqr)).orElse(null);
-            if(warden!=null)target=warden;
-        }
         if (target == null && valid(boss, boss.getLastHurtByMob())) target = boss.getLastHurtByMob();
         boss.setTarget(target);
         if (target == null) {

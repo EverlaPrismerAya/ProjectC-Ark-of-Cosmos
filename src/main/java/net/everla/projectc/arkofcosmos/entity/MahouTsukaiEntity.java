@@ -360,6 +360,12 @@ public final class MahouTsukaiEntity extends PathfinderMob implements net.minecr
             return;
         }
         if (!level().isClientSide && isAlive()) {
+            if(!isNoAi()) {
+                var fourth=level().getEntitiesOfClass(FourthCalamityEntity.class,getBoundingBox().inflate(128),
+                        e->!e.defeated()&&MahouPhaseOneAI.valid(this,e)).stream()
+                        .min(java.util.Comparator.comparingDouble(this::distanceToSqr)).orElse(null);
+                if(fourth!=null)setTarget(fourth);
+            }
             if(phase()==3&&!isNoAi()){
                 var vortices=level().getEntitiesOfClass(MahouAttackEntity.class,getBoundingBox().inflate(160),e->e.kind()==MahouAttackEntity.VOID_VORTEX&&e.ownedBy(this));
                 if(vortices.isEmpty()){dialogue.vortex(this);MahouAttackEntity.voidVortex(this,position().add(0,6,16));}

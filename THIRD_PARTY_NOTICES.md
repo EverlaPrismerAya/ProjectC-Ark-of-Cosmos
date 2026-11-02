@@ -156,6 +156,7 @@ Java 移植、Minecraft 三维适配及项目维护：EverlaPrismerAya。
 
 | 资源 | 来源与权利说明 |
 | --- | --- |
+| `assets/arkofcosmos/sounds/fourth_calamity_death.ogg` | 用户提供的第四天灾消失音效，原文件未转码；来源路径与 SHA-256 见资源清单。作者及许可未随文件提供，权利归原作者／原权利人，不纳入 GPL-3.0-only 授权。 |
 | `assets/arkofcosmos/textures/entity/kira_official.png` | 正版玩家 `Kira_Official`，UUID `d150668b708846f8aa9d367bbd962d85` 的 slim 皮肤快照；来源为 Mojang Session Server 返回的 Minecraft Textures 地址，URL 与 SHA-256 见资源清单。皮肤权利归原作者／原权利人，不纳入 GPL-3.0-only 授权。 |
 
 第四天灾战术设计参考本地 sample 中 ProviPvP 与 Meteor Client 的操作节奏、触及、归属、自伤约束和水晶选点评分思路；不引入其客户端框架或训练假人的模拟受伤实现。真实交互使用 Minecraft／Forge 自身入口。

@@ -34,6 +34,7 @@ public final class FourthCalamityAI {
     private int age,airAge,airborne,grounded,crystals,remaining,meleeDelay;
     private int crystalStall,crystalRetryAt;
     private boolean aerial,hadTarget,pearlOpening,swordAttempted;
+    private int lastRetaliation=-1;
     private double aerialGroundY;
     private float interrupt;
     private BlockPos base,explosive,shield;
@@ -96,12 +97,27 @@ public final class FourthCalamityAI {
     }
     public void tick() {
         LivingEntity target=boss.getTarget();
+        if(boss.getLastHurtByMobTimestamp()!=lastRetaliation&&valid(boss.getLastHurtByMob())) {
+            lastRetaliation=boss.getLastHurtByMobTimestamp();
+            target=boss.getLastHurtByMob();boss.setTarget(target);
+        }
         if(!valid(target)) {
             target=boss.level().getEntitiesOfClass(LivingEntity.class,boss.getBoundingBox().inflate(128),this::proactiveTarget)
                 .stream().min(java.util.Comparator.comparingDouble(boss::distanceToSqr)).orElse(null);
             boss.setTarget(target);
         }
-        if(!valid(target)) { if(hadTarget){stop();boss.actions.cleanup();}hadTarget=false;return; }
+        if(!valid(target)) {
+            if(hadTarget) {
+                boolean needsLanding=!boss.onGround()&&(air!=Air.GROUND||boss.gliding());
+                stop();boss.actions.cleanup();
+                if(needsLanding)enterAir(Air.LAND);
+            }
+            hadTarget=false;
+            if(air==Air.LAND) {
+                boss.getNavigation().stop();airAge++;land();
+            }
+            return;
+        }
         if(!hadTarget)boss.getNavigation().stop();
         hadTarget=true;if(meleeDelay>0)meleeDelay--;
         if(alwaysAirTarget(target)) {

@@ -68,6 +68,7 @@ public final class ArkDamage {
     public static float health(Object object) {
         // Constructor callbacks may arrive before LivingEntity defines our health data.
         if (!(object instanceof LivingEntity entity) || !entity.getEntityData().hasItem(HEALTH)) return -1;
+        if(object instanceof net.everla.projectc.arkofcosmos.entity.FourthCalamityEntity boss&&boss.protectingDefeat()&&!boss.level().isClientSide)return 1;
         float locked=BossHealingLock.health(object);if(locked>=0)return locked;
         if(object instanceof net.everla.projectc.arkofcosmos.entity.MahouTsukaiEntity boss&&!boss.level().isClientSide)
             return boss.combatVitality();
@@ -87,6 +88,7 @@ public final class ArkDamage {
 
     public static boolean setHealth(Object object, float value) {
         if (!(object instanceof LivingEntity entity) || !entity.getEntityData().hasItem(HEALTH)) return false;
+        if(object instanceof net.everla.projectc.arkofcosmos.entity.FourthCalamityEntity boss)return boss.protectDeathHealthWrite(value);
         if(BossHealingLock.blockWrite(object,value))return true;
         if(object instanceof net.everla.projectc.arkofcosmos.entity.MahouTsukaiEntity boss)
             return boss.redirectHealthWrite(value)||boss.blocksHealthWrite(value);
@@ -114,6 +116,7 @@ public final class ArkDamage {
     private static boolean ordinaryTarget(LivingEntity target) {
         // Our boss owns staged health/recovery; keep its native callbacks instead of a second health authority.
         return target instanceof net.everla.projectc.arkofcosmos.entity.MahouTsukaiEntity
+                || target instanceof net.everla.projectc.arkofcosmos.entity.FourthCalamityEntity
                 || target instanceof net.everla.projectc.arkofcosmos.entity.MahoragaWardenEntity
                 || !seagull(target) && target.getType().is(IGNORE_SPECIAL_DAMAGE);
     }

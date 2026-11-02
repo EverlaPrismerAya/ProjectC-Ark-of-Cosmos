@@ -18,6 +18,9 @@ abstract class SynchedEntityDataMixin {
             "m_276349_(Lnet/minecraft/network/syncher/EntityDataAccessor;Ljava/lang/Object;Z)V"},
             at=@At("HEAD"),argsOnly=true,ordinal=0)
     private Object ark$healingWrite(Object value,EntityDataAccessor<?> key,Object original,boolean force){
+        if(entity instanceof net.everla.projectc.arkofcosmos.entity.FourthCalamityEntity boss
+                &&key.equals(LivingEntity.DATA_HEALTH_ID)&&value instanceof Float health&&boss.protectDeathHealthWrite(health))
+            return boss.protectingDefeat()?1f:boss.getHealth();
         return BossHealingLock.dataWrite(entity,key,value);
     }
 
