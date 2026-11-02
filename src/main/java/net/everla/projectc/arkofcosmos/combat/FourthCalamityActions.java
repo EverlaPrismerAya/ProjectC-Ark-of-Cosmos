@@ -316,8 +316,16 @@ public final class FourthCalamityActions {
     }
     public boolean pearl(LivingEntity target) {
         if(boss.distanceToSqr(target)<=REACH*REACH)return false;
-        Vec3 predicted=target.position().add(target.getDeltaMovement().scale(Math.min(8,boss.distanceTo(target)/1.5)));
+        Vec3 predicted=target.position().add(pearlTargetMotion(target).scale(Math.min(20,boss.distanceTo(target)/1.5)));
+        Vec3 away=boss.position().subtract(predicted).multiply(1,0,1).normalize();
+        predicted=predicted.add(away.scale(boss.phase()==1?2.4:3.5));
         return throwPearl(predicted,target,false);
+    }
+    private Vec3 pearlTargetMotion(LivingEntity target) {
+        Vec3 motion=target instanceof net.minecraft.server.level.ServerPlayer
+            ?net.everla.projectc.arkofcosmos.combat.vanilla.SpearCombat.motion(target):target.getDeltaMovement();
+        motion=motion.multiply(1,0,1);
+        return motion.lengthSqr()<=1?motion:Vec3.ZERO; // Teleports are not a chase velocity.
     }
     public boolean retreatPearl(Vec3 destination) { return throwPearl(destination,null,true); }
     public boolean retreatPearlFlying() { return retreatingPearl&&pursuingPearl!=null&&!pursuingPearl.isRemoved(); }
@@ -340,19 +348,28 @@ public final class FourthCalamityActions {
     }
     private Vec3 pearlDirection(Vec3 origin,Vec3 predicted,LivingEntity target) {
         // Bounded trajectory search: native drag/gravity and block rays, without a client module or world writes.
-        Vec3 best=null;double bestScore=9;
+        Vec3 best=null;double bestScore=target==null?9:4;
         Vec3 delta=predicted.subtract(origin);
-        for(double lift:new double[]{0,-.08,.08,.16,.3,.5}) {
+        Vec3 targetMotion=target==null?Vec3.ZERO:pearlTargetMotion(target);
+        for(double lift:new double[]{-.3,-.24,-.18,-.12,-.08,-.04,0,.04,.08,.12,.16,.2,.3,.5}) {
             Vec3 direction=delta.add(0,delta.horizontalDistance()*lift,0).normalize(),velocity=direction.scale(1.5),position=origin;
             for(int step=0;step<60;step++) {
                 Vec3 next=position.add(velocity);
                 if(!boss.level().hasChunkAt(BlockPos.containing(next)))break;
                 BlockHitResult hit=boss.level().clip(new ClipContext(position,next,ClipContext.Block.COLLIDER,ClipContext.Fluid.NONE,boss));
-                var entityHit=target==null?java.util.Optional.<Vec3>empty():target.getBoundingBox().inflate(.15).clip(position,next);
+                var entityHit=target==null?java.util.Optional.<Vec3>empty():target.getBoundingBox().move(targetMotion.scale(step+1)).inflate(.15).clip(position,next);
                 boolean collision=hit.getType()!=HitResult.Type.MISS||entityHit.isPresent();
                 if(collision) {
                     Vec3 impact=entityHit.isPresent()&&(hit.getType()==HitResult.Type.MISS||position.distanceToSqr(entityHit.get())<position.distanceToSqr(hit.getLocation()))?entityHit.get():hit.getLocation();
                     double score=impact.distanceToSqr(predicted);
+                    if(target!=null) {
+                        Vec3 expected=target.position().add(targetMotion.scale(step+1));
+                        Vec3 toward=expected.subtract(origin).multiply(1,0,1).normalize();
+                        double standOff=boss.phase()==1?2.4:3.5;
+                        // Land on our side of the moving target, not in its body or beyond it.
+                        if(impact.subtract(expected).dot(toward)>-1.5||!boss.combat.safeLanding(impact.add(0,.01,0)))break;
+                        score=impact.distanceToSqr(expected.subtract(toward.scale(standOff)));
+                    }
                     if(score<bestScore){bestScore=score;best=direction;}break;
                 }
                 position=next;velocity=velocity.scale(.99).add(0,-.03,0);

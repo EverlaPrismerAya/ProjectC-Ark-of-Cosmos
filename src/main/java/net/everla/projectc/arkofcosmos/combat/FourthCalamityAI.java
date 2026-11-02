@@ -41,7 +41,28 @@ public final class FourthCalamityAI {
     private Vec3 previousTargetPosition;
     private int previousTargetId=-1;
     private boolean spacing;
+    private boolean escaping;
     private boolean anchor;
+    private int crystalLaunchTarget=-1,crystalLaunchTick;
+    private double crystalLaunchY,crystalLaunchVelocity;
+    private boolean crystalLifted,shortCrystalCharge;
+    public void crystalBlast(LivingEntity target) {
+        if(target!=boss.getTarget()||air!=Air.GROUND)return;
+        if(crystalLaunchTarget==target.getId()&&boss.tickCount-crystalLaunchTick<=20)return;
+        crystalLaunchTarget=target.getId();crystalLaunchTick=boss.tickCount;
+        crystalLaunchY=target.getY();crystalLaunchVelocity=target.getDeltaMovement().y;crystalLifted=false;
+    }
+    private void followCrystalLaunch(LivingEntity target) {
+        if(crystalLaunchTarget!=target.getId()||boss.tickCount-crystalLaunchTick>20) {crystalLaunchTarget=-1;return;}
+        if(boss.tickCount-crystalLaunchTick<=2&&target.getDeltaMovement().y>.15
+            &&target.getDeltaMovement().y>crystalLaunchVelocity+.05)crystalLifted=true;
+        if(crystalLifted&&!target.onGround()&&target.getY()-crystalLaunchY>=3&&target.getDeltaMovement().y>0
+            &&air==Air.GROUND&&!explosivePending()) {
+            crystalLaunchTarget=-1;shortCrystalCharge=true;groundCharge=true;pearlOpening=false;base=null;
+            crystalAura.abandonPlan("CRYSTAL_LAUNCH_CHARGE");enterAir(Air.READY);
+            boss.setGliding(true);boss.setDeltaMovement(boss.getDeltaMovement().add(0,.5,0));
+        }
+    }
     public FourthCalamityAI(FourthCalamityEntity boss) { this.boss=boss;this.crystalAura=new FourthCalamityCrystalAura(boss); }
     private boolean valid(LivingEntity target) {
         return target!=null&&target.isAlive()&&!target.isRemoved()&&target.level()==boss.level()&&!boss.isAlliedTo(target)
@@ -59,6 +80,9 @@ public final class FourthCalamityAI {
         boolean approaching=target instanceof Player&&previousTargetId==target.getId()&&previousTargetPosition!=null
             &&target.position().subtract(previousTargetPosition).multiply(1,0,1)
                 .dot(boss.position().subtract(target.position()).multiply(1,0,1).normalize())>.02;
+        escaping=previousTargetId==target.getId()&&previousTargetPosition!=null
+            &&target.position().subtract(previousTargetPosition).multiply(1,0,1)
+                .dot(target.position().subtract(boss.position()).multiply(1,0,1).normalize())>.02;
         if(previousTargetId!=target.getId())spacing=false;
         previousTargetId=target.getId();previousTargetPosition=target.position();
         if(boss.phase()==2&&crystalAura.followTarget(target)) {
@@ -69,7 +93,8 @@ public final class FourthCalamityAI {
             crystalAura.abandonPlan("PEARL_ARRIVAL");base=null;
             pearlOpening=true;transition(Ground.ARROW);boss.getNavigation().stop();boss.stopUsingItem();
         }
-        if(!explosivePending())updateMode(target);
+        followCrystalLaunch(target);
+        if(!explosivePending()&&!shortCrystalCharge)updateMode(target);
         if(air==Air.GROUND&&!explosivePending()&&boss.actions.chasePearlFlying()) {
             crystalAura.abandonPlan("PEARL_CHASE");base=null;chase(target);return;
         }
@@ -143,7 +168,8 @@ public final class FourthCalamityAI {
     private void recover() { swordAttempted=false;pearlOpening=false;transition(Ground.RECOVER);boss.getNavigation().stop(); }
     private void ground(LivingEntity target) {
         boss.setGliding(false);boss.setNoGravity(false);aim(target.getEyePosition(),30);age++;
-        if(boss.distanceToSqr(target)>16*16&&boss.actions.pearl(target)) {
+        if(boss.actions.pendingCrystal()==null&&(boss.distanceToSqr(target)>16*16||escaping&&boss.distanceToSqr(target)>6*6)
+            &&boss.actions.pearl(target)) {
             crystalAura.abandonPlan("PEARL_CHASE");base=null;chase(target);return;
         }
         // A target already above the floor needs no second launch. Never restart an active combo.
@@ -374,7 +400,7 @@ public final class FourthCalamityAI {
                 boss.setGliding(true);boss.setNoGravity(false);brace();
                 boss.setDeltaMovement(boss.getDeltaMovement().scale(.7).add(0,.04,0));
                 Vec3 point=predictedChargePoint(target);
-                if(point==null) { enterAir(Air.APPROACH);break; }
+                if(point==null) { enterAir(shortCrystalCharge?Air.WIND_LAND:Air.APPROACH);break; }
                 aim(point,30);
                 if(airAge>=8&&boss.getTicksUsingItem()>=8) {
                     chargePoint=point;chargeDirection=point.subtract(boss.getEyePosition()).normalize();
@@ -439,7 +465,7 @@ public final class FourthCalamityAI {
             case GROUND -> { }
         }
     }
-    private boolean safeLanding(Vec3 point) {
+    boolean safeLanding(Vec3 point) {
         if(!safeTeleport(point))return false;
         AABB standing=new AABB(point.x-.3,point.y,point.z-.3,point.x+.3,point.y+1.8,point.z+.3);
         if(standing.maxY>boss.level().getMaxBuildHeight()||!boss.level().noCollision(boss,standing)||boss.level().containsAnyLiquid(standing))return false;
@@ -497,6 +523,7 @@ public final class FourthCalamityAI {
         boss.setDeltaMovement(motion.add(0,vertical,0));VanillaCombat.syncMotion(boss);
     }
     private void finishLanding() {
+        shortCrystalCharge=false;crystalLaunchTarget=-1;
         boss.setGliding(false);enterAir(Air.GROUND);aerial=false;groundCharge=false;chargeHit=false;
         landing=lockedLanding=chargePoint=chargeDirection=null;shotsLeft=airborne=grounded=0;recover();
     }
@@ -533,7 +560,8 @@ public final class FourthCalamityAI {
             &&boss.level().getWorldBorder().isWithinBounds(bounds)&&boss.level().noCollision(boss,bounds)&&!boss.level().containsAnyLiquid(bounds);
     }
     public void stop() {
-        previousTargetPosition=null;previousTargetId=-1;spacing=false;
+        shortCrystalCharge=false;crystalLaunchTarget=-1;
+        previousTargetPosition=null;previousTargetId=-1;spacing=escaping=false;
         boss.getNavigation().stop();boss.stopUsingItem();boss.setGliding(false);boss.setMaceWindup(false);boss.setNoGravity(false);boss.setSprinting(false);boss.setJumping(false);
         crystalAura.clear();swordAttempted=false;crystalStall=crystalRetryAt=0;pearlOpening=false;ground=Ground.ARROW;air=Air.GROUND;age=airAge=airborne=grounded=0;aerial=false;base=explosive=shield=null;lockedLanding=placementPosition=landing=chargePoint=chargeDirection=null;shotsLeft=windWait=0;chargeTarget=-1;groundCharge=chargeHit=windFired=false;
     }

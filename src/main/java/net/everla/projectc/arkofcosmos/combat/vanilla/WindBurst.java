@@ -20,6 +20,9 @@ public final class WindBurst {
         double diameter=2*radius;
         for(Entity entity:level.getEntities(source,new AABB(center,center).inflate(diameter+1))) {
             if(entity.isSpectator()||entity.ignoreExplosion()||entity instanceof Player p&&p.getAbilities().flying)continue;
+            boolean ownBossCharge=entity instanceof net.everla.projectc.arkofcosmos.entity.FourthCalamityEntity
+                &&source instanceof net.minecraft.world.entity.projectile.Projectile projectile&&projectile.getOwner()==entity;
+            if(entity instanceof net.everla.projectc.arkofcosmos.entity.FourthCalamityEntity&&!ownBossCharge)continue;
             double distance=entity.position().distanceTo(center)/diameter;if(distance>1)continue;
             Vec3 origin=entity instanceof net.minecraft.world.entity.item.PrimedTnt?entity.position():entity.getEyePosition();
             Vec3 direction=origin.subtract(center).normalize();
@@ -29,7 +32,9 @@ public final class WindBurst {
                 for(var armor:living.getArmorSlots())protection+=net.minecraft.world.item.enchantment.EnchantmentHelper.getItemEnchantmentLevel(net.minecraft.world.item.enchantment.Enchantments.BLAST_PROTECTION,armor);
                 power*=1-Math.min(1,.15f*protection);
             }
-            entity.push(direction.x*power,direction.y*power,direction.z*power);VanillaCombat.syncMotion(entity);
+            if(ownBossCharge)entity.setDeltaMovement(entity.getDeltaMovement().add(direction.scale(power)));
+            else entity.push(direction.x*power,direction.y*power,direction.z*power);
+            VanillaCombat.syncMotion(entity);
             if(entity instanceof LivingEntity living&&(entity instanceof Player
                 ||source instanceof net.minecraft.world.entity.projectile.Projectile projectile&&projectile.getOwner()==entity)) {
                 if(playerCharge&&(entity instanceof Player||power>0))ImpulseFall.mark(living,false);else ImpulseFall.endGrace(living);

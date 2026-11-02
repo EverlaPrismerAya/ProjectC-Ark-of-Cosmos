@@ -18,6 +18,8 @@
     "VanillaPlayerAttackMixin",
     "VanillaMobAttackMixin",
     "FourthCalamityGlidingMixin",
+    "FourthCalamityExplosionMixin",
+    "FourthCalamityDefenseMixin",
     "CalamityAttackRemovalMixin",
     "VanillaLivingCombatMixin"
   ],

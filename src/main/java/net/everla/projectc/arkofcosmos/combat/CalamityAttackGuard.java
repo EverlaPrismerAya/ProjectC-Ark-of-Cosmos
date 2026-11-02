@@ -32,7 +32,12 @@ public final class CalamityAttackGuard {
     @SubscribeEvent(priority=net.minecraftforge.eventbus.api.EventPriority.LOWEST)
     public static void explosionDetonated(net.minecraftforge.event.level.ExplosionEvent.Detonate event) {
         FourthCalamityEntity boss=crystalOwner(event);
-        if(boss!=null)boss.actions.crystalExplosion((EndCrystal)event.getExplosion().getDirectSourceEntity(),false);
+        if(boss!=null) {
+            boss.actions.crystalExplosion((EndCrystal)event.getExplosion().getDirectSourceEntity(),false);
+            var target=boss.getTarget();
+            if(target!=null&&event.getAffectedEntities().contains(target)
+                &&net.minecraft.world.level.Explosion.getSeenPercent(event.getExplosion().getPosition(),target)>0)boss.combat.crystalBlast(target);
+        }
     }
     @SubscribeEvent(priority=net.minecraftforge.eventbus.api.EventPriority.LOWEST,receiveCanceled=true)
     public static void interaction(net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock event) {

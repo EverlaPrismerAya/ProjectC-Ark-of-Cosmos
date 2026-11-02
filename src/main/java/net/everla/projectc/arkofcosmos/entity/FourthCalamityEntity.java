@@ -19,6 +19,11 @@ import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
+import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.damagesource.DamageType;
+import net.minecraft.util.Mth;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraftforge.network.NetworkHooks;
 
 /** Ordinary vanilla vitality; the 33 bars are a presentation of one health pool. */
@@ -29,6 +34,71 @@ public final class FourthCalamityEntity extends Monster {
     public final FourthCalamityAI combat=new FourthCalamityAI(this);
     public final FourthCalamityActions actions=new FourthCalamityActions(this);
     private int lastBars=-1,lastPhase=-1;
+    private Defense defense;
+
+    /** One native hurt transaction, including event handlers which write health directly. */
+    private final class Defense {
+        final float armor=getArmorValue(),toughness=(float)getAttributeValue(Attributes.ARMOR_TOUGHNESS);
+        final float resistance=hasEffect(MobEffects.DAMAGE_RESISTANCE)?Math.max(0,1-.2f*(getEffect(MobEffects.DAMAGE_RESISTANCE).getAmplifier()+1)):1;
+        final float absorption=getAbsorptionAmount();
+        final int protection;
+        float limit;
+        Defense(DamageSource source,float amount) {
+            DamageSource calculation=new DamageSource(source.typeHolder(),source.getDirectEntity(),source.getEntity(),source.getSourcePosition()) {
+                @Override public boolean is(TagKey<DamageType> tag) {
+                    if(tag==DamageTypeTags.BYPASSES_ARMOR||tag==DamageTypeTags.BYPASSES_ENCHANTMENTS
+                        ||tag==DamageTypeTags.BYPASSES_EFFECTS||tag==DamageTypeTags.BYPASSES_RESISTANCE
+                        ||tag==DamageTypeTags.BYPASSES_INVULNERABILITY)return false;
+                    return typeHolder().is(tag);
+                }
+            };
+            protection=Mth.clamp(EnchantmentHelper.getDamageProtection(getArmorSlots(),calculation),0,20);
+            budget(amount);
+        }
+        float armor(float amount) {
+            float effective=Mth.clamp(armor-amount/(2+toughness/4),armor*.2f,20);
+            return amount*(1-effective/25);
+        }
+        float magic(float amount) { return amount*resistance*(1-protection/25f); }
+        void budget(float raw) { limit=Math.max(0,magic(armor(raw))-absorption); }
+    }
+    private boolean defend(DamageSource source) {
+        if(source.getEntity()!=null||source.getDirectEntity()!=null)return true;
+        var key=source.typeHolder().unwrapKey();
+        if(key.isEmpty()||!key.get().location().getNamespace().equals("minecraft"))return true;
+        // Preserve native environmental damage; reject runtime flags added to an otherwise ordinary source.
+        for(var tag:java.util.List.of(DamageTypeTags.BYPASSES_ARMOR,DamageTypeTags.BYPASSES_ENCHANTMENTS,
+            DamageTypeTags.BYPASSES_EFFECTS,DamageTypeTags.BYPASSES_RESISTANCE,DamageTypeTags.BYPASSES_INVULNERABILITY))
+            if(source.is(tag)!=source.typeHolder().is(tag))return true;
+        return false;
+    }
+    @Override protected float getDamageAfterArmorAbsorb(DamageSource source,float amount) {
+        if(defense==null)return super.getDamageAfterArmorAbsorb(source,amount);
+        defense.budget(amount);return defense.armor(amount);
+    }
+    @Override protected float getDamageAfterMagicAbsorb(DamageSource source,float amount) {
+        if(defense==null)return super.getDamageAfterMagicAbsorb(source,amount);
+        float resisted=amount*(1-defense.resistance);
+        if(resisted>0&&resisted<Float.MAX_VALUE&&source.getEntity() instanceof ServerPlayer player)
+            player.awardStat(net.minecraft.stats.Stats.DAMAGE_DEALT_RESISTED,Math.round(resisted*10));
+        return defense.magic(amount);
+    }
+    @Override protected void actuallyHurt(DamageSource source,float amount) {
+        Defense previous=defense;
+        if(defense==null&&defend(source))defense=new Defense(source,amount);
+        try { super.actuallyHurt(source,amount); }
+        finally { defense=previous; }
+    }
+    @Override public void setHealth(float health) {
+        // Event callbacks must not apply damage before cancellation, i-frames or totem checks.
+        if(defense!=null&&health<getHealth())return;
+        super.setHealth(health);
+    }
+    /** Called only from vanilla actuallyHurt's health commit, after Forge damage events. */
+    public void commitDamageHealth(float health) {
+        if(defense!=null&&health<getHealth())health=getHealth()-Math.min(getHealth()-health,defense.limit);
+        super.setHealth(health);
+    }
 
     public FourthCalamityEntity(EntityType<? extends FourthCalamityEntity> type,Level level) {
         super(type,level);setPersistenceRequired();getNavigation().setCanFloat(true);
@@ -42,8 +112,11 @@ public final class FourthCalamityEntity extends Monster {
     }
     public static AttributeSupplier.Builder createAttributes() {
         return Monster.createMonsterAttributes().add(ArkOfCosmos.FOURTH_MAX_HEALTH.get(),660).add(Attributes.ATTACK_DAMAGE,2)
-            .add(Attributes.MOVEMENT_SPEED,.36).add(Attributes.FOLLOW_RANGE,128).add(Attributes.ATTACK_KNOCKBACK,1);
+            .add(Attributes.MOVEMENT_SPEED,.36).add(Attributes.FOLLOW_RANGE,128).add(Attributes.ATTACK_KNOCKBACK,1).add(Attributes.KNOCKBACK_RESISTANCE,1);
     }
+    @Override public void knockback(double strength,double x,double z) {}
+    @Override public void push(double x,double y,double z) {}
+    @Override public boolean isPushable() { return false; }
     // Vanilla's global max-health attribute is capped at 1024. Use a native, synced attribute only for this boss.
     @Override public double getAttributeValue(Attribute attribute) { return super.getAttributeValue(attribute==Attributes.MAX_HEALTH?ArkOfCosmos.FOURTH_MAX_HEALTH.get():attribute); }
     @Override public AttributeInstance getAttribute(Attribute attribute) { return super.getAttribute(attribute==Attributes.MAX_HEALTH?ArkOfCosmos.FOURTH_MAX_HEALTH.get():attribute); }
@@ -89,8 +162,12 @@ public final class FourthCalamityEntity extends Monster {
     @Override public void startSeenByPlayer(ServerPlayer player) { super.startSeenByPlayer(player);syncBar(player,true);bar.addPlayer(player); }
     @Override public void stopSeenByPlayer(ServerPlayer player) { super.stopSeenByPlayer(player);bar.removePlayer(player);syncBar(player,false); }
     @Override public boolean hurt(DamageSource source,float amount) {
-        float before=getHealth();boolean hit=super.hurt(source,amount);
-        if(hit&&combat!=null)combat.damaged(Math.max(0,before-getHealth()));return hit;
+        Defense previous=defense;
+        defense=defend(source)?new Defense(source,amount):null;
+        try {
+            float before=getHealth();boolean hit=super.hurt(source,amount);
+            if(hit&&combat!=null)combat.damaged(Math.max(0,before-getHealth()));return hit;
+        } finally { defense=previous; }
     }
     @Override public void die(DamageSource source) { super.die(source);clearCombat(); }
     private void clearCombat() {

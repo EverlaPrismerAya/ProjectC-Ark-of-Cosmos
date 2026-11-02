@@ -95,7 +95,7 @@ public final class FourthCalamityCrystalAura {
         if(!settings.place)return progressed?TickResult.PROGRESSED:TickResult.NO_OPPORTUNITY;
         if(tick<placeAt)return progressed?TickResult.PROGRESSED:TickResult.WAITING;
         if(boss.position().subtract(primary.position()).horizontalDistance()<3)return progressed?TickResult.PROGRESSED:TickResult.REPOSITION;
-        BlockPos selected=chooseBase();
+        BlockPos selected=chooseBase(primary);
         if(selected==null) {
             return progressed?TickResult.PROGRESSED:TickResult.NO_OPPORTUNITY;
         }
@@ -252,9 +252,10 @@ public final class FourthCalamityCrystalAura {
         if(settings.placement112&&!boss.level().isEmptyBlock(base.above(2)))return "LEGACY_SPACE_OCCUPIED";
         return foundation(boss.level().getBlockState(base))||settings.support!=Support.DISABLED?null:"SUPPORT_DISABLED";
     }
-    private BlockPos chooseBase() {
+    private BlockPos chooseBase(LivingEntity primary) {
         refreshCover();
         if(supportBase!=null&&boss.tickCount<=supportUntil&&validBase(supportBase)
+            &&nearTarget(supportBase,primary)
             &&damage(Vec3.atBottomCenterOf(supportBase.above()),supportBase,false,false)>0)return supportBase;
         supportBase=null;
         int radius=(int)Math.ceil(Math.min(FourthCalamityActions.REACH,settings.placeRange));
@@ -263,6 +264,7 @@ public final class FourthCalamityCrystalAura {
         for(var pos:BlockPos.betweenClosed(center.offset(-radius,-radius,-radius),center.offset(radius,radius,radius))) {
             String reason=baseRejection(pos);
             if(reason!=null){rejected.merge(reason,1,Integer::sum);continue;}
+            if(!nearTarget(pos,primary)){rejected.merge("TOO_FAR_FROM_TARGET",1,Integer::sum);continue;}
             boolean existing=foundation(boss.level().getBlockState(pos));
             // Once a wall exists, place on its protected side instead of creating crystals we cannot break.
             Vec3 explosion=Vec3.atBottomCenterOf(pos.above());
@@ -271,12 +273,16 @@ public final class FourthCalamityCrystalAura {
             }
             double value=damage(Vec3.atBottomCenterOf(pos.above()),pos,false,!existing&&settings.support==Support.FAST);
             if(value<=0)rejected.merge("DAMAGE_BELOW_THRESHOLD",1,Integer::sum);
-            if(value>0&&((existing&&!bestExisting)||(existing==bestExisting&&value>bestDamage))) {
+            if(value>0&&(value>bestDamage||value==bestDamage&&existing&&!bestExisting)) {
                 best=pos.immutable();bestDamage=value;bestExisting=existing;
             }
         }
         if(best==null)boss.actions.diagnostic("AURA_SELECT",null,FourthCalamityActions.CrystalResult.BLOCKED,"NO_LEGAL_CANDIDATE "+rejected);
         return best;
+    }
+    private boolean nearTarget(BlockPos base,LivingEntity target) {
+        Vec3 predicted=target.position().add(settings.predictMovement?target.getDeltaMovement():Vec3.ZERO);
+        return Vec3.atBottomCenterOf(base.above()).subtract(predicted).horizontalDistance()<=3;
     }
     private boolean rotate(Vec3 point) {
         if(!settings.rotate)return true;
