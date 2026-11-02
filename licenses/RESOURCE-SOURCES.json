@@ -2528,6 +2528,62 @@
       "path": "Content/Images/Extra_75.xnb",
       "license": "Re-Logic / original rights holders; not GPL-3.0-only",
       "conversion": "XNB Texture2D to PNG; retain original premultiplied RGBA bytes (no unpremultiplication)"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/old_one/astral_orange.png",
+      "sha256": "16cf25b8fe1962d6a834952915c7ec4caeebb9e07bbc448f619b07dab6745d03",
+      "source": "E:\\工具\\tModUnpacker\\CalamityModLegacy\\Dusts\\AstralOrange.png",
+      "source_sha256": "16cf25b8fe1962d6a834952915c7ec4caeebb9e07bbc448f619b07dab6745d03",
+      "project": "Calamity Mod Legacy",
+      "path": "Dusts/AstralOrange.png",
+      "license": "Calamity Team / original authors; All Rights Reserved",
+      "dimensions": [
+        10,
+        30
+      ],
+      "conversion": "Original PNG bytes; no edits"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/old_one/gore_61.png",
+      "sha256": "2cc75444852c049769f7b833727f4580b3ee3887560a101e63e1fc980895d609",
+      "source": "G:\\SteamLibrary\\steamapps\\common\\Terraria\\Content\\Images\\Gore_61.xnb",
+      "source_sha256": "491d35f4cacc251141aba59537ccc620a03aad02d12fbe774769dd3f5710a675",
+      "project": "Terraria 1.4.5 (user-approved texture substitution)",
+      "path": "Content/Images/Gore_61.xnb",
+      "license": "Re-Logic / original rights holders; not GPL-3.0-only",
+      "dimensions": [
+        34,
+        36
+      ],
+      "conversion": "XNB LZX Texture2D to PNG; preserve original premultiplied RGBA bytes without unpremultiplication"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/old_one/gore_62.png",
+      "sha256": "b6069507acd48a8a5fee28dc1ce3dc3f9d46c8944f1b39ae3065fb9b3b5f56e7",
+      "source": "G:\\SteamLibrary\\steamapps\\common\\Terraria\\Content\\Images\\Gore_62.xnb",
+      "source_sha256": "2bb3002c4ee18b3d649116c1c50c0f1e931cab5a6cda891ad36c7d5d27d17dc6",
+      "project": "Terraria 1.4.5 (user-approved texture substitution)",
+      "path": "Content/Images/Gore_62.xnb",
+      "license": "Re-Logic / original rights holders; not GPL-3.0-only",
+      "dimensions": [
+        36,
+        32
+      ],
+      "conversion": "XNB LZX Texture2D to PNG; preserve original premultiplied RGBA bytes without unpremultiplication"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/old_one/gore_63.png",
+      "sha256": "f89e4d60f97b0b2df100d8daf6ac1368f98660af49957cc4dd0c214549c96d7e",
+      "source": "G:\\SteamLibrary\\steamapps\\common\\Terraria\\Content\\Images\\Gore_63.xnb",
+      "source_sha256": "34017b41b6bf614f7de634edaf3ddb72bd622c9d631590f94f343b4d7edd35d9",
+      "project": "Terraria 1.4.5 (user-approved texture substitution)",
+      "path": "Content/Images/Gore_63.xnb",
+      "license": "Re-Logic / original rights holders; not GPL-3.0-only",
+      "dimensions": [
+        38,
+        36
+      ],
+      "conversion": "XNB LZX Texture2D to PNG; preserve original premultiplied RGBA bytes without unpremultiplication"
     }
   ]
 }

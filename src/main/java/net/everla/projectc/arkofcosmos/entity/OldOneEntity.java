@@ -38,7 +38,8 @@ public final class OldOneEntity extends Entity {
     private long startTick;
     private int ownerId,age,updates,left,penetrate,alpha,animationFrame,tileDelay=120,targetId=-1,parentId=-1,solarWidth=8,sourceStep;
     private Kind kind=Kind.SWORD;
-    private boolean ended,tileCollide,friendly=true,pulse,waterWet,lavaWet,blockEnd;
+    private boolean ended,finishing,nebulaSpiral,tileCollide,friendly=true,pulse,waterWet,lavaWet,blockEnd;
+    private long eventSequence;
     private float rotation,scale=1,ai0,ai1,local0,local1;
     private Vec3 velocity=Vec3.ZERO,spawn=Vec3.ZERO;
     private AttackFrame frame=new AttackFrame(new Vec3(0,0,1),new Vec3(-1,0,0));
@@ -115,7 +116,7 @@ public final class OldOneEntity extends Entity {
         for(int step=0;step<3&&!ended;step++){
             sourceStep=step;age++;
             for(int sub=0;sub<updatesPerFrame()&&!ended;sub++){
-                updates++;hitUntil.replaceAll((id,time)->time<0?time:Math.max(0,time-1));remember();ai(p);if(ended)break;emit(false);
+                updates++;hitUntil.replaceAll((id,time)->time<0?time:Math.max(0,time-1));remember();ai(p);if(ended)break;if(kind!=Kind.CURSED_FLAME&&kind!=Kind.WATER_BOLT&&kind!=Kind.FIREBALL)emit(false);
                 Vec3 from=position();
                 if(kind==Kind.SWORD){setPos(swordHilt(p));swordHit(p);}
                 else{blockEnd=false;travel();if(!ended)hit(p,from,position(),kind==Kind.SOLAR_EXPLOSION,solarWidth/32d);if(blockEnd&&!ended)finish(true);}
@@ -140,26 +141,27 @@ public final class OldOneEntity extends Entity {
                 local0++;if(local0>3)alpha=Math.max(0,alpha-50);animationFrame=(updates/3)%5;
                 velocity=velocity.add(frame.forward().scale(ai0/16)).add(frame.right().scale(ai1/16));
                 if(++local1==50){local1=51;ai0=(random.nextInt(201)-100)*.00006f;ai1=(random.nextInt(201)-100)*.00006f;}
-                double total=Math.abs(vx())+Math.abs(vy());if(total>16)velocity=velocity.scale(.95);if(total<12)velocity=velocity.scale(1.05);rotateWithVelocity(3.14);
+                double total=Math.abs(vx())+Math.abs(vy());if(total>16)velocity=velocity.scale(.95);if(Math.abs(vx())+Math.abs(vy())<12)velocity=velocity.scale(1.05);rotateWithVelocity(3.14);
             }
             case ICE_BLADE->{} // aiStyle 28 contains only sound and Dust; its velocity is constant.
             case CURSED_FLAME,WATER_BOLT,FIREBALL->{
-                if(ai0==0){Vec3 delta=OldOneCombat.aim(p).subtract(position());if(delta.lengthSqr()<1e-12)delta=position().subtract(p.getBoundingBox().getCenter());velocity=delta.normalize().scale(12d/16);ai0=1;}
-                rotateWithVelocity(-2.355);capFall();
+                emit(false); // aiStyle 8 emits Dust before gravity changes velocity.
+                if(kind!=Kind.WATER_BOLT&&++ai1>=20)velocity=velocity.add(0,-.2/16,0);
+                rotation+=.3f*(vx()<0?-1:1);capFall();
             }
             case ICHOR->{scale-=.002f;if(scale<=0){finish(true);return;}if(ai0>3)velocity=velocity.add(0,-.075/16,0);else ai0++;}
             case MUSHROOM->{velocity=velocity.scale(.8);rotation+=.2f;alpha+=4;if(alpha>=255)finish(true);}
             case FLAIRON_BUBBLE->{
                 if(ai0==0){LivingEntity t=nearest(p,500,true,false);targetId=t==null?-1:t.getId();ai0=t==null?-15:1;
                     if(t!=null){Vec3 jitter=frame.forward().scale((random.nextInt(201)-100)/16d).add(frame.right().scale((random.nextInt(201)-100)/16d));velocity=velocity.scale(20).add(t.getBoundingBox().getCenter().subtract(position()).add(jitter).normalize().scale((35+random.nextInt(40))/30d/16)).scale(1d/21);}}
-                else if(ai0>0)steer(target(),12,40);else{ai0++;alpha=Math.max(50,alpha-25);velocity=velocity.scale(.95);}
+                else if(ai0>0){Entity locked=level().getEntity(targetId);if(locked!=null)velocity=velocity.scale(40).add(locked.getBoundingBox().getCenter().subtract(position()).normalize().scale(12d/16)).scale(1d/41);}else{ai0++;alpha=Math.max(50,alpha-25);velocity=velocity.scale(.95);}
                 if(ai1==0)ai1=(80+random.nextInt(41))/100f;scale=ai1;
             }
             case RAINBOW_CRYSTAL->{
                 if(local0==0){local0=random.nextFloat()*.8f+.8f;ai0=random.nextBoolean()?1:-1;}
-                rotation=local1/40*(float)(Math.PI*2)*ai0;alpha=Math.max(0,alpha-8);scale=(1-alpha/255f)/2*local0;velocity=Vec3.ZERO;if(++local1>=60)finish(true);
+                rotation=local1/40*(float)(Math.PI*2)*ai0;alpha=Math.max(0,alpha-8);scale=(1-alpha/255f)/2*local0;velocity=Vec3.ZERO;if(++local1>=60){emit(false);finish(true);}
             }
-            case STARDUST_CELL->{alpha=Math.max(0,alpha-63);LivingEntity t=target();if(t==null||!canHit(p,t)){finish(true);return;}steer(t,14,4);}
+            case STARDUST_CELL->{alpha=Math.max(0,alpha-63);LivingEntity t=target();if(t==null||!canHit(p,t)||!ArkCombat.enemy(p,t)){finish(true);return;}steer(t,14,4);}
             case TERRARIAN->{velocity=velocity.scale(.985);rotation+=(float)(vx()*.2+(vx()>0?.08:-.08));if(++ai1>30){alpha+=10;if(alpha>=255)finish(true);}}
             case SOLAR_EXPLOSION->{ai1+=.01f;scale=ai1;ai0++;animationFrame=updates/3;alpha=Math.max(0,alpha-63);if(ai0>=15){finish(true);return;}if(ai0==1){solarWidth=(int)(52*scale);hit(p,position(),position(),true,solarWidth/32d);}}
             case NEBULA->nebula(p);
@@ -167,7 +169,7 @@ public final class OldOneEntity extends Entity {
             case VORTEX_ROCKET->{
                 if(local0==0)local0=(float)velocity.length()*16;alpha=Math.max(0,alpha-25);
                 if(++ai0>20){ai0=20;LivingEntity t=target();if(targetId<0){t=nearest(p,800,true,false);if(t!=null)targetId=t.getId();}
-                    if(t!=null&&canHit(p,t)&&manhattan(t.getBoundingBox().getCenter(),position())<1000d/16)steer(t,local0,7);}
+                    if(t!=null&&canHit(p,t)&&ArkCombat.enemy(p,t)&&manhattan(t.getBoundingBox().getCenter(),position())<1000d/16)steer(t,local0,7);}
                 rotateWithVelocity(Math.PI/2);
             }
             default->throw new IllegalStateException("Unhandled legacy projectile "+kind);
@@ -178,8 +180,8 @@ public final class OldOneEntity extends Entity {
     private void nebula(Player p){
         if(ai1==0){ai1=1;local0=-random.nextInt(48);}
         else if(ai1==1){LivingEntity t=nearest(p,250,true,false);if(t!=null){if(t.getBoundingBox().getCenter().distanceTo(position())<20d/16){finish(true);return;}targetId=t.getId();ai1=6;}}
-        else if(ai1>5){ai1++;LivingEntity t=target();if(t==null||!canHit(p,t)){ai1=1;targetId=-1;}else if(t.getBoundingBox().getCenter().distanceTo(position())<20d/16){finish(true);return;}else steer(t,6,29);}
-        if(ai1>=1&&ai1<5){ai1++;if(ai1==5)ai1=1;}alpha=Math.max(0,alpha-40);animationFrame=(updates/12)%4;rotateWithVelocity(0);if(++local0==48)local0=0;
+        else if(ai1>5){ai1++;LivingEntity t=target();if(t==null||!canHit(p,t)||!ArkCombat.enemy(p,t)){ai1=1;targetId=-1;}else if(t.getBoundingBox().getCenter().distanceTo(position())<20d/16){finish(true);return;}else steer(t,6,29);}
+        if(ai1>=1&&ai1<5){ai1++;if(ai1==5)ai1=1;}alpha=Math.max(0,alpha-40);animationFrame=(updates/12)%4;rotateWithVelocity(0);if(++local0==48){local0=0;nebulaSpiral=false;}else nebulaSpiral=alpha==0;
     }
     private boolean ignoreWater(){return kind==Kind.ORB||kind==Kind.ICHOR||kind==Kind.RAINBOW_CRYSTAL||kind==Kind.NEBULA||kind==Kind.HOLY_ARROW||kind==Kind.SOLAR_EXPLOSION;}
     private boolean fluid(net.minecraft.tags.TagKey<net.minecraft.world.level.material.Fluid> tag){
@@ -193,9 +195,9 @@ public final class OldOneEntity extends Entity {
             waterWet=fluid(net.minecraft.tags.FluidTags.WATER);lavaWet=fluid(net.minecraft.tags.FluidTags.LAVA);
         }
         boolean wet=!ignoreWater()&&(waterWet||lavaWet);Vec3 start=position(),motion=wet?velocity.scale(.5):velocity;if(tileCollide){
-            refreshDimensions();noPhysics=false;setDeltaMovement(velocity);move(MoverType.SELF,motion);noPhysics=true;Vec3 actual=position().subtract(start);
+            refreshDimensions();if(kind==Kind.NEBULA||kind==Kind.ICHOR)setBoundingBox(new AABB(start,start).inflate((kind==Kind.NEBULA?8:10)/32d));noPhysics=false;setDeltaMovement(velocity);move(MoverType.SELF,motion);noPhysics=true;Vec3 center=getBoundingBox().getCenter();setPos(center);refreshDimensions();Vec3 actual=position().subtract(start);
             if(actual.distanceToSqr(motion)>1e-10){
-                if(kind==Kind.WATER_BOLT||kind==Kind.CURSED_FLAME||kind==Kind.FIREBALL||kind==Kind.TERRARIAN){double bounce=kind==Kind.FIREBALL&&actual.y<-.25?.8:1;velocity=new Vec3(Math.abs(actual.x-motion.x)>1e-6?-velocity.x:velocity.x,Math.abs(actual.y-motion.y)>1e-6?-velocity.y*bounce:velocity.y,Math.abs(actual.z-motion.z)>1e-6?-velocity.z:velocity.z);if(kind!=Kind.TERRARIAN&&++ai0>=5)finish(true);}
+                if(kind==Kind.WATER_BOLT||kind==Kind.CURSED_FLAME||kind==Kind.FIREBALL||kind==Kind.TERRARIAN){double bounce=kind==Kind.FIREBALL&&actual.y<-.25?.8:1;velocity=new Vec3(Math.abs(actual.x-motion.x)>1e-6?-velocity.x:velocity.x,Math.abs(actual.y-motion.y)>1e-6?-velocity.y*bounce:velocity.y,Math.abs(actual.z-motion.z)>1e-6?-velocity.z:velocity.z);if(kind!=Kind.TERRARIAN&&++ai0>=5)finish(true);else emit("bounce");}
                 else blockEnd=true;
             }
         }else setPos(start.add(motion));setDeltaMovement(velocity);
@@ -235,7 +237,7 @@ public final class OldOneEntity extends Entity {
         t.knockback(knockback,-direction.x,-direction.z);
         net.minecraft.world.item.enchantment.EnchantmentHelper.doPostHurtEffects(t,p);
         weapon.getAllEnchantments().forEach((enchantment,level)->enchantment.doPostAttack(p,t,level));
-        if(cooldown!=0)hitUntil.put(t.getId(),cooldown);if(kind==Kind.SOLAR_EXPLOSION||cooldown==0&&(penetrate!=1||explosion))OWNER_IMMUNITY.computeIfAbsent(t,k->new HashMap<>()).put(ownerUuid,now+(kind==Kind.NEBULA?5:kind==Kind.SOLAR_EXPLOSION?4:10));
+        if(cooldown!=0)hitUntil.put(t.getId(),cooldown);if(kind==Kind.NEBULA||kind==Kind.SOLAR_EXPLOSION||cooldown==0&&(penetrate!=1||explosion))OWNER_IMMUNITY.computeIfAbsent(t,k->new HashMap<>()).put(ownerUuid,now+(kind==Kind.NEBULA?5:kind==Kind.SOLAR_EXPLOSION?4:10));
         if(kind==Kind.SWORD)OldOneEffects.grant(p,OldOneEnvironment.zone(p));
         else if(beam()){for(var s:new OldOneEffects.Status[]{OldOneEffects.Status.BRIMSTONE,OldOneEffects.Status.GLACIAL,OldOneEffects.Status.PLAGUE,OldOneEffects.Status.HOLY_FIRE})OldOneEffects.apply(t,s,40);}
         else if(kind==Kind.ORB){var z=OldOneEnvironment.zone(p);OldOneEffects.orb(t,z);OldOneEffects.grant(p,z);derive(p,t,z);}
@@ -248,20 +250,25 @@ public final class OldOneEntity extends Entity {
     }
     public void discardAttack(){finish(false);}
     private void finish(boolean natural){
-        if(ended)return;
+        if(ended||finishing)return;
+        finishing=true;
         if(natural&&(kind==Kind.NEBULA||kind==Kind.VORTEX_ROCKET||kind==Kind.RAINBOW_CRYSTAL||kind==Kind.HOLY_ARROW)){Player p=owner();if(p!=null)hit(p,position(),position(),true,(kind==Kind.NEBULA?50:kind==Kind.RAINBOW_CRYSTAL?60:kind==Kind.HOLY_ARROW?160:80)/32d);}
         if(natural)emit(true);ended=true;super.discard();
     }
     private void emit(boolean death){
-        if(kind!=Kind.ICE_BLADE&&kind!=Kind.WATER_BOLT&&kind!=Kind.ICHOR)return;
-        CompoundTag event=snapshot();event.putInt("SourceStep",sourceStep);event.putString("Event",death?"old_one_death":"old_one_update");
+        emit(death?"death":"update");
+    }
+    private void emit(String eventType){
+        if(kind.ordinal()<Kind.ASTRAL_STAR.ordinal())return;
+        CompoundTag event=snapshot();event.putInt("SourceStep",sourceStep);event.putString("Event","old_one_"+eventType);
+        event.putUUID("Attack",getUUID());event.putLong("Sequence",++eventSequence);
         net.everla.projectc.arkofcosmos.network.ArkNetwork.nearbyEffect(this,event);
     }
     @Override public void remove(RemovalReason reason){Player p=owner();if(!level().isClientSide&&reason==RemovalReason.DISCARDED&&!ended&&left>0&&p!=null&&p.isAlive())return;super.remove(reason);}
     private void remember(){if(kind!=Kind.ORB&&kind!=Kind.ASTRAL_STAR)return;trail.add(0,snapshotPosition());int max=kind==Kind.ORB?6:10;while(trail.size()>max)trail.remove(trail.size()-1);}
     private CompoundTag snapshotPosition(){CompoundTag s=new CompoundTag();ElementsEntity.vector(s,"Position",position());s.putFloat("Rotation",rotation);return s;}
     private CompoundTag snapshot(){
-        CompoundTag s=snapshotPosition();s.putLong("StartTick",startTick);s.putInt("Kind",kind.ordinal());s.putInt("Owner",ownerId);s.putInt("Age",age);s.putInt("Updates",updates);s.putInt("Left",left);s.putInt("Alpha",alpha);s.putInt("Frame",animationFrame);s.putFloat("Scale",scale);s.putInt("Target",targetId);s.putInt("Parent",parentId);
+        CompoundTag s=snapshotPosition();s.putLong("StartTick",startTick);s.putInt("Kind",kind.ordinal());s.putInt("Owner",ownerId);s.putInt("Age",age);s.putInt("Updates",updates);s.putInt("Left",left);s.putInt("Alpha",alpha);s.putInt("Frame",animationFrame);s.putFloat("Scale",scale);s.putInt("Target",targetId);s.putInt("Parent",parentId);s.putFloat("AI0",ai0);s.putFloat("AI1",ai1);s.putFloat("Local0",local0);s.putFloat("Local1",local1);s.putBoolean("NebulaSpiral",nebulaSpiral);s.putInt("Size",(int)sizePixels());
         ElementsEntity.vector(s,"Velocity",velocity);ElementsEntity.vector(s,"F",frame.forward());ElementsEntity.vector(s,"R",frame.right());s.put("Trail",trail.copy());return s;
     }
     private void publish(){CompoundTag s=snapshot();s.put("Samples",samples.copy());entityData.set(VIEW,s);refreshDimensions();}

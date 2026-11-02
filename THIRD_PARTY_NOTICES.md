@@ -22,7 +22,7 @@ GPL 声明不授予第三方内容的额外权利，也不证明现有第三方�
 
 | 文件 | Calamity 来源／派生内容 |
 | --- | --- |
-| `combat/OldOneCombat.java`、`combat/OldOneEffects.java`、`entity/OldOneEntity.java`、`client/OldOneRenderer.java`、`client/OldOneParticles.java` | 旧版 Calamity `ArkoftheCosmos`、`Galaxia2`、四种 `EonBeam`、`AstralStar` 以及 Terraria 1.3.5.3 `Projectile`、`Dust`、`Main` 的攻击、派生、AI、状态和绘制规则；Calamity 部分为 Calamity Team ARR，Terraria 部分归 Re-Logic／原权利人，不作 GPL-3.0-only 重新授权；包含用户确认的三维转换及 Minecraft／Forge 接口适配 |
+| `combat/OldOneCombat.java`、`combat/OldOneEffects.java`、`entity/OldOneEntity.java`、`client/OldOneRenderer.java`、`client/OldOneParticles.java` | 旧版 Calamity `ArkoftheCosmos`、`Galaxia2`、四种 `EonBeam`、`AstralStar` 以及 Terraria 1.3.5.3 `Projectile`、`Dust`、`Gore`、`Main` 及旧版 `AstralOrange` 的攻击、派生、AI、状态和绘制规则；Calamity 部分为 Calamity Team ARR，Terraria 部分归 Re-Logic／原权利人，不作 GPL-3.0-only 重新授权；包含用户确认的三维转换及 Minecraft／Forge 接口适配 |
 | `calamity/combat/GalaxiaRules.java`、`entity/GalaxiaEntity.java`、`calamity/client/GalaxiaRenderer.java` | `FourSeasonsGalaxia`、四种 Attunement、`PhoenixsPride`、`AriesWrath`、`AriesWrathConstellation`、`PolarisGaze`、`PolarisGazeStar`、`PolarisGazeDash`、`AndromedasStride`、`AndromedasStrideBoltSpawner`、`GalaxiaBolt` 和 `GalaxiaTropicRing` 的规则、阶段、曲线、参数与原图绘制；含用户确认的三维攻击平面、地表环形扩散和玩家碰撞适配 |
 | `calamity/entity/CalamityAttackEntity.java` | `ArkoftheCosmosSwungBlade`、`RendingNeedle`、`EonBolt`、`ArkoftheCosmosConstellation`、`ArkoftheCosmosParryHoldout`、`ArkoftheCosmosBlast` 的攻击阶段、运动、时序与命中规则；包含必要的 Minecraft 单位及实体接口适配 |
 | `calamity/combat/ArkWeaponRules.java` | 原武器的连段模式、伤害换算、充能上限及工具提示配色；保留本项目已有的机制修改 |
@@ -68,8 +68,8 @@ Calamity 来源的代码须保留 Calamity Team 署名及原条款。本项目�
 
 | 文件 | 来源与许可范围 |
 | --- | --- |
-| `item/ark_of_the_old_one.png`、`old_one/eon*.png`、`old_one/orb.png`、`old_one/astral_star.png` | 旧版 Calamity 解包原图，剑身为旧版 `Items/Weapons/Melee/ArkoftheCosmos.png`，不使用新版同名武器图；Calamity Team／原作者 ARR，不适用 GPL-3.0-only |
-| `old_one/projectile_*.png`、`old_one/dust.png`、`old_one/glow_190.png`、`old_one/extra_75.png` | 本机 Terraria 1.4.5 XNB 的 Texture2D 原像素转换，保留预乘 RGBA；用户明确允许替代缺失的 1.3.5.3 原生素材，不能称为旧版原图；Re-Logic／原权利人所有，不适用 GPL-3.0-only |
+| `item/ark_of_the_old_one.png`、`old_one/eon*.png`、`old_one/orb.png`、`old_one/astral_star.png`、`old_one/astral_orange.png` | 旧版 Calamity 解包原图，剑身为旧版 `Items/Weapons/Melee/ArkoftheCosmos.png`，不使用新版同名武器图；Calamity Team／原作者 ARR，不适用 GPL-3.0-only |
+| `old_one/projectile_*.png`、`old_one/dust.png`、`old_one/glow_190.png`、`old_one/extra_75.png`、`old_one/gore_*.png` | 本机 Terraria 1.4.5 XNB 的 Texture2D 原像素转换，保留预乘 RGBA；用户明确允许替代缺失的 1.3.5.3 原生素材，不能称为旧版原图；Re-Logic／原权利人所有，不适用 GPL-3.0-only |
 | `mob_effect/old_one_*.png` | 灾厄专属状态为旧版 Calamity Buffs 原图（Calamity Team ARR）；原生状态为用户允许的 Terraria 1.4.5 Buff XNB 转换（Re-Logic／原权利人）；逐文件来源及散列见资源清单，均不适用 GPL-3.0-only |
 | `src/main/resources/assets/arkofcosmos/textures/item/auric_bar.png` | Calamity Mod `Items/Materials/AuricBar.png`；第三方素材，不适用本项目 GPL-3.0-only，来源与 SHA-256 见 `licenses/RESOURCE-SOURCES.json` |
 
