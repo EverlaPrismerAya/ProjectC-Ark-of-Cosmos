@@ -28,7 +28,7 @@ public final class FourthCalamityAI {
     private Air air=Air.APPROACH;
     private int age,airAge,airborne,grounded,crystals,remaining,meleeDelay;
     private int crystalStall,crystalRetryAt;
-    private boolean aerial,hadTarget,pearlOpening;
+    private boolean aerial,hadTarget,pearlOpening,swordAttempted;
     private boolean targetWasGrounded;
     private int lastTargetId=-1;
     private float interrupt;
@@ -54,16 +54,19 @@ public final class FourthCalamityAI {
         boolean jumped=lastTargetId==target.getId()&&targetWasGrounded&&!target.onGround()
             &&target.getDeltaMovement().y>0&&!target.isInWater()&&!target.isFallFlying();
         lastTargetId=target.getId();targetWasGrounded=target.onGround();
-        if(jumped&&!aerial&&(air==Air.APPROACH||air==Air.STRAFE)) {
+        if(jumped&&!explosivePending()&&!aerial&&(air==Air.APPROACH||air==Air.STRAFE)) {
             boss.actions.pearl(target);boss.stopUsingItem();boss.getNavigation().stop();
             base=null;crystals=0;remaining=1+boss.getRandom().nextInt(3);transition(Ground.CRYSTALS);
         }
-        if(boss.actions.consumePearlArrival()&&boss.phase()==2&&!aerial) {
+        if(boss.actions.consumePearlArrival()&&boss.phase()==2&&!aerial&&!explosivePending()) {
             pearlOpening=true;transition(Ground.ARROW);boss.getNavigation().stop();boss.stopUsingItem();
         }
-        updateMode(target);
+        if(!explosivePending())updateMode(target);
         if(aerial||air==Air.CLIMB||air==Air.WINDUP||air==Air.DROP||air==Air.LAND)flight(target);
         else ground(target);
+    }
+    private boolean explosivePending() {
+        return ground==Ground.SHIELD||ground==Ground.CHARGE||ground==Ground.DETONATE;
     }
     private void updateMode(LivingEntity target) {
         Vec3 feet=target.position();
@@ -92,7 +95,7 @@ public final class FourthCalamityAI {
         if(boss.horizontalCollision&&boss.onGround())boss.setJumping(true);else boss.setJumping(false);
     }
     private void transition(Ground next) { ground=next;age=0;if(next==Ground.CRYSTALS)crystalStall=0; }
-    private void recover() { pearlOpening=false;transition(Ground.RECOVER);boss.getNavigation().stop(); }
+    private void recover() { swordAttempted=false;pearlOpening=false;transition(Ground.RECOVER);boss.getNavigation().stop(); }
     private void ground(LivingEntity target) {
         boss.setGliding(false);boss.setNoGravity(false);aim(target.getEyePosition(),30);age++;
         if(boss.distanceToSqr(target)>16*16)boss.actions.pearl(target);
@@ -126,7 +129,7 @@ public final class FourthCalamityAI {
             case PEARL -> { boss.actions.pearl(target);chase(target);if(boss.distanceToSqr(target)<9)transition(Ground.HIT);else if(age>60)recover(); }
             case HIT -> {
                 chase(target);boss.actions.hold(Items.NETHERITE_SWORD);
-                if(meleeDelay==0&&boss.actions.melee(target)){meleeDelay=13;transition(Ground.CHECK);}
+                if(meleeDelay==0&&boss.actions.melee(target)){swordAttempted=true;meleeDelay=13;transition(Ground.CHECK);}
                 else if(age>30)recover();
             }
             case CHECK -> {
@@ -147,13 +150,13 @@ public final class FourthCalamityAI {
                         boolean hadBase=boss.level().getBlockState(base).is(Blocks.OBSIDIAN)||boss.level().getBlockState(base).is(Blocks.BEDROCK);
                         progressed=boss.actions.crystal(base);
                         if(!hadBase&&boss.level().getBlockState(base).is(Blocks.OBSIDIAN))progressed=true;
-                    } else chase(target);
+                    } else positionForCrystals(target);
                 }
                 crystalStall=progressed?0:crystalStall+1;
                 if(crystals>=remaining)recover();
                 else if(crystalStall>=CRYSTAL_STALL_TICKS) {
                     crystalRetryAt=boss.tickCount+CRYSTAL_RETRY_TICKS;base=null;
-                    if(crystals==0)transition(Ground.HIT);else recover();
+                    if(crystals==0&&!swordAttempted)transition(Ground.HIT);else recover();
                 } else if(age>30)recover();
             }
             case RETREAT -> {
@@ -174,20 +177,20 @@ public final class FourthCalamityAI {
                 else { moveToPoint(placementPosition);if(age>20)recover(); }
             }
             case SHIELD -> {
-                // Cover is best effort; never abandon an armed explosive to walk back.
-                if(boss.level().getBlockState(shield).is(Blocks.OBSIDIAN)||boss.actions.place(Items.OBSIDIAN,shield)||age>=2)
-                    transition(anchor?Ground.CHARGE:Ground.DETONATE);
+                // Cover is best effort; detonation needs reach, not an unobstructed interaction ray.
+                if(!boss.level().getBlockState(shield).is(Blocks.OBSIDIAN)&&boss.actions.canPlace(shield))boss.actions.place(Items.OBSIDIAN,shield);
+                transition(anchor?Ground.CHARGE:Ground.DETONATE);
             }
             case CHARGE -> {
                 if(!boss.level().getBlockState(explosive).is(Blocks.RESPAWN_ANCHOR)){recover();break;}
                 if(boss.level().getBlockState(explosive).getValue(RespawnAnchorBlock.CHARGE)>0)transition(Ground.DETONATE);
-                else if(boss.actions.useBlock(Items.GLOWSTONE,explosive)&&boss.level().getBlockState(explosive).is(Blocks.RESPAWN_ANCHOR)
+                else if(boss.actions.chargeAnchor(explosive)&&boss.level().getBlockState(explosive).is(Blocks.RESPAWN_ANCHOR)
                     &&boss.level().getBlockState(explosive).getValue(RespawnAnchorBlock.CHARGE)>0)transition(Ground.DETONATE);else if(age>12)recover();
             }
             case DETONATE -> {
                 var state=boss.level().getBlockState(explosive);
                 boolean usable=anchor?state.is(Blocks.RESPAWN_ANCHOR)&&state.getValue(RespawnAnchorBlock.CHARGE)>0&&!boss.level().dimensionType().respawnAnchorWorks():state.getBlock() instanceof BedBlock&&!boss.level().dimensionType().bedWorks();
-                if(!usable||boss.actions.useBlock(Items.OBSIDIAN,explosive)||age>12)recover();
+                if(!usable||boss.actions.detonate(explosive)||age>12)recover();
             }
             case RECOVER -> { if(age>=RECOVER_TICKS)transition(Ground.ARROW); }
         }
@@ -296,6 +299,6 @@ public final class FourthCalamityAI {
     }
     public void stop() {
         boss.getNavigation().stop();boss.stopUsingItem();boss.setGliding(false);boss.setMaceWindup(false);boss.setNoGravity(false);boss.setSprinting(false);boss.setJumping(false);
-        crystalAura.clear();crystalStall=crystalRetryAt=0;pearlOpening=false;lastTargetId=-1;targetWasGrounded=false;ground=Ground.ARROW;air=Air.APPROACH;age=airAge=airborne=grounded=0;aerial=false;base=explosive=shield=null;lockedLanding=placementPosition=null;
+        crystalAura.clear();swordAttempted=false;crystalStall=crystalRetryAt=0;pearlOpening=false;lastTargetId=-1;targetWasGrounded=false;ground=Ground.ARROW;air=Air.APPROACH;age=airAge=airborne=grounded=0;aerial=false;base=explosive=shield=null;lockedLanding=placementPosition=null;
     }
 }

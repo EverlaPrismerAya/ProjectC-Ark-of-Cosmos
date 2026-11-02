@@ -5,6 +5,7 @@ import java.util.*;
 import net.everla.projectc.arkofcosmos.entity.FourthCalamityEntity;
 import net.everla.projectc.arkofcosmos.combat.vanilla.*;
 import net.minecraft.core.*;
+import net.minecraft.util.Mth;
 import net.minecraft.nbt.*;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.*;
@@ -86,8 +87,11 @@ public final class FourthCalamityActions {
         }
         return false;
     }
-    private boolean interact(Item item,BlockHitResult hit) {
-        if(!terrainAllowed()||!validHit(hit))return false;
+    private boolean interact(Item item,BlockHitResult hit) { return interact(item,hit,false); }
+    private boolean interact(Item item,BlockHitResult hit,boolean detonate) {
+        BlockPos pos=hit.getBlockPos();
+        if(!terrainAllowed()||!boss.level().hasChunkAt(pos)||!boss.level().getWorldBorder().isWithinBounds(pos)
+            ||boss.getEyePosition().distanceToSqr(hit.getLocation())>REACH*REACH||!detonate&&!validHit(hit))return false;
         FakePlayer player=operator(item);
         if(!boss.level().mayInteract(player,hit.getBlockPos())||!useBudget())return false;
         hold(item);boss.swing(InteractionHand.MAIN_HAND,true);
@@ -105,19 +109,35 @@ public final class FourthCalamityActions {
         }
         return false;
     }
-    public boolean useBlock(Item item,BlockPos position) {
-        if(!boss.level().hasChunkAt(position))return false;
+    private List<BlockHitResult> blockHits(BlockPos position) {
+        List<BlockHitResult> hits=new ArrayList<>();
+        if(!boss.level().hasChunkAt(position))return hits;
         var shape=boss.level().getBlockState(position).getShape(boss.level(),position);
-        if(shape.isEmpty())return false;
+        if(shape.isEmpty())return hits;
         AABB bounds=shape.bounds().move(position);
-        for(Direction face:Direction.values()) {
-            Vec3 center=bounds.getCenter();
-            Vec3 point=new Vec3(face==Direction.WEST?bounds.minX:face==Direction.EAST?bounds.maxX:center.x,
-                face==Direction.DOWN?bounds.minY:face==Direction.UP?bounds.maxY:center.y,
-                face==Direction.NORTH?bounds.minZ:face==Direction.SOUTH?bounds.maxZ:center.z);
-            if(reachable(point,position)&&interact(item,new BlockHitResult(point,face,position,false)))return true;
+        for(Direction face:Direction.values())for(double u:new double[]{.5,.15,.85})for(double v:new double[]{.5,.15,.85}) {
+            double x=Mth.lerp(u,bounds.minX,bounds.maxX),y=Mth.lerp(v,bounds.minY,bounds.maxY),z=Mth.lerp(v,bounds.minZ,bounds.maxZ);
+            Vec3 point=switch(face) {
+                case WEST->new Vec3(bounds.minX,y,z);case EAST->new Vec3(bounds.maxX,y,z);
+                case DOWN->new Vec3(x,bounds.minY,z);case UP->new Vec3(x,bounds.maxY,z);
+                case NORTH->new Vec3(x,y,bounds.minZ);case SOUTH->new Vec3(x,y,bounds.maxZ);
+            };
+            BlockHitResult hit=new BlockHitResult(point,face,position,false);if(validHit(hit))hits.add(hit);
         }
+        return hits;
+    }
+    public boolean useBlock(Item item,BlockPos position) {
+        for(var hit:blockHits(position))if(interact(item,hit))return true;
         return false;
+    }
+    public boolean detonate(BlockPos position) {
+        if(!boss.level().hasChunkAt(position))return false;
+        var state=boss.level().getBlockState(position);
+        if(!(state.getBlock() instanceof net.minecraft.world.level.block.BedBlock)&&!state.is(Blocks.RESPAWN_ANCHOR))return false;
+        return interact(Items.OBSIDIAN,new BlockHitResult(Vec3.atCenterOf(position),Direction.UP,position,false),true);
+    }
+    public boolean chargeAnchor(BlockPos position) {
+        return interact(Items.GLOWSTONE,new BlockHitResult(Vec3.atCenterOf(position),Direction.UP,position,false),true);
     }
     public boolean crystalSpace(BlockPos base) {
         Level level=boss.level();BlockPos above=base.above();
@@ -141,15 +161,15 @@ public final class FourthCalamityActions {
     }
     public boolean canAttack(Entity target) {
         return target.isAlive()&&boss.getEyePosition().distanceToSqr(target.getBoundingBox().getCenter())<=REACH*REACH
-            &&boss.level().clip(new ClipContext(boss.getEyePosition(),target.getBoundingBox().getCenter(),ClipContext.Block.COLLIDER,ClipContext.Fluid.NONE,boss)).getType()==HitResult.Type.MISS;
+            &&(target instanceof EndCrystal||boss.level().clip(new ClipContext(boss.getEyePosition(),target.getBoundingBox().getCenter(),ClipContext.Block.COLLIDER,ClipContext.Fluid.NONE,boss)).getType()==HitResult.Type.MISS);
     }
     public boolean breakCrystal(EndCrystal crystal) {
         if(!terrainAllowed()||!canAttack(crystal)||!attackBudget())return false;
         boss.swing(InteractionHand.MAIN_HAND,true);return crystal.hurt(boss.damageSources().mobAttack(boss),1);
     }
     public BlockPos bestBase(LivingEntity target) {
-        BlockPos best=null;double bestScore=Double.NEGATIVE_INFINITY;BlockPos center=BlockPos.containing(target.position().add(target.getDeltaMovement().scale(4)));
-        for(BlockPos pos:BlockPos.betweenClosed(center.offset(-2,-2,-2),center.offset(2,0,2))) {
+        BlockPos best=null;double bestScore=Double.NEGATIVE_INFINITY;BlockPos center=boss.blockPosition();
+        for(BlockPos pos:BlockPos.betweenClosed(center.offset(-5,-5,-5),center.offset(5,4,5))) {
             if(!boss.level().hasChunkAt(pos)||!crystalSpace(pos)||boss.getEyePosition().distanceToSqr(Vec3.atCenterOf(pos))>REACH*REACH)continue;
             var state=boss.level().getBlockState(pos);
             if(state.is(Blocks.OBSIDIAN)||state.is(Blocks.BEDROCK)) { if(!canUse(pos))continue; }
