@@ -17,6 +17,28 @@ public final class CalamityAttackGuard {
     public static final ThreadLocal<FourthCalamityEntity> DETONATING=new ThreadLocal<>();
     private static final StackWalker WALKER=StackWalker.getInstance();
     private CalamityAttackGuard() {}
+    public static FourthCalamityEntity damageOwner(net.minecraft.world.damagesource.DamageSource source) {
+        for(Entity entity:new Entity[]{source.getEntity(),source.getDirectEntity()}) {
+            if(entity instanceof FourthCalamityEntity boss)return boss;
+            if(entity instanceof Projectile projectile&&projectile.getOwner() instanceof FourthCalamityEntity boss)return boss;
+            if(entity!=null&&entity.getPersistentData().hasUUID(OWNER)&&entity.level() instanceof ServerLevel level
+                &&level.getEntity(entity.getPersistentData().getUUID(OWNER)) instanceof FourthCalamityEntity boss)return boss;
+        }
+        if(source.is(net.minecraft.tags.DamageTypeTags.IS_EXPLOSION))return DETONATING.get()!=null?DETONATING.get():PLACING.get();
+        return null;
+    }
+    public static boolean hurt(Entity target,net.minecraft.world.damagesource.DamageSource source,float amount) {
+        FourthCalamityEntity boss=damageOwner(source);
+        return boss!=null&&target!=boss&&target instanceof net.minecraft.world.entity.LivingEntity living
+            ?WeaponDamage.hurt(living,source,amount):target.hurt(source,amount);
+    }
+    public static final ThreadLocal<Boolean> FULL_KNOCKBACK=new ThreadLocal<>();
+    public static void knockback(net.minecraft.world.entity.LivingEntity victim,double strength,double x,double z,Entity attacker) {
+        Boolean previous=FULL_KNOCKBACK.get();
+        if(attacker instanceof FourthCalamityEntity)FULL_KNOCKBACK.set(true);
+        try { victim.knockback(strength,x,z);if(attacker instanceof FourthCalamityEntity)net.everla.projectc.arkofcosmos.combat.vanilla.VanillaCombat.syncMotion(victim); }
+        finally { if(previous==null)FULL_KNOCKBACK.remove();else FULL_KNOCKBACK.set(previous); }
+    }
     private static FourthCalamityEntity crystalOwner(net.minecraftforge.event.level.ExplosionEvent event) {
         Entity source=event.getExplosion().getDirectSourceEntity();
         if(source instanceof EndCrystal&&DETONATING.get()!=null)return DETONATING.get();

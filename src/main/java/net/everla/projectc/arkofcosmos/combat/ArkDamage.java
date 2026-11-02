@@ -123,12 +123,12 @@ public final class ArkDamage {
     }
 
 
-    private static float reducedDamage(LivingEntity target, float amount) {
+    private static float reducedDamage(LivingEntity target, float amount, boolean floor) {
         float reduced = CombatRules.getDamageAfterAbsorb(amount, target.getArmorValue(),
                 (float)target.getAttributeValue(Attributes.ARMOR_TOUGHNESS));
         var resistance = target.getEffect(MobEffects.DAMAGE_RESISTANCE);
         if (resistance != null) reduced *= Math.max(0, 1 - (resistance.getAmplifier() + 1) * .2f);
-        return Math.max(amount * .35f, reduced);
+        return floor ? Math.max(amount * .35f, reduced) : reduced;
     }
 
     /** Vanilla totem semantics, without calling the extensible mod revival dispatcher. */
@@ -179,7 +179,13 @@ public final class ArkDamage {
         return hurt;
     }
 
+    public static boolean hurtFourthCalamity(LivingEntity target, DamageSource source, float amount) {
+        return hurtTarget(target,source,amount,false,false);
+    }
     private static boolean hurtTarget(LivingEntity target, DamageSource source, float amount, boolean unmitigated) {
+        return hurtTarget(target,source,amount,unmitigated,true);
+    }
+    private static boolean hurtTarget(LivingEntity target, DamageSource source, float amount, boolean unmitigated, boolean floor) {
         if (target.level().isClientSide || protectedPlayer(target) || target.isRemoved()
                 || !Float.isFinite(amount) || amount <= 0 || !target.isAlive()) return false;
         if (ordinaryTarget(target)) return WeaponDamage.handling(target,source)
@@ -189,7 +195,7 @@ public final class ArkDamage {
         float before = target.getHealth();
         if (!Float.isFinite(before) || before <= 0) return false;
         boolean seagull = seagull(target);
-        amount = seagull ? Float.MAX_VALUE : unmitigated ? amount : reducedDamage(target, amount);
+        amount = seagull ? Float.MAX_VALUE : unmitigated ? amount : reducedDamage(target, amount, floor);
         float after = Math.max(0, before - amount);
         target.getEntityData().set(HEALTH, after);
         target.getCombatTracker().recordDamage(source, Math.min(before, amount));
@@ -206,7 +212,7 @@ public final class ArkDamage {
             var deathSound = target.getDeathSound();
             if (deathSound != null) target.playSound(deathSound, target.getSoundVolume(), target.getVoicePitch());
             // Let animated bosses dispatch their own death, delayed loot and eventual removal.
-            boolean bossDamage=source.getEntity() instanceof net.everla.projectc.arkofcosmos.entity.MahouTsukaiEntity;
+            boolean bossDamage=source.getEntity() instanceof net.everla.projectc.arkofcosmos.entity.MahouTsukaiEntity||CalamityAttackGuard.damageOwner(source)!=null;
             if (bossDamage ? !(target instanceof Player) : target.getType().is(IGNORE_DEATH_REMOVE)) {
                 target.die(source);
                 return true;

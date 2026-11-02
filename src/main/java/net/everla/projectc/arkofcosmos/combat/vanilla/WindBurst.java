@@ -16,6 +16,10 @@ import net.minecraft.world.phys.*;
 /** Non-destructive TRIGGER explosion. No damage, fire, drops, or block destruction calls. */
 public final class WindBurst {
     public static void explode(Level level,Entity source,Vec3 center,float radius,float multiplier,boolean playerCharge) {
+        explode(level,source,center,radius,multiplier,playerCharge,
+            source instanceof net.minecraft.world.entity.projectile.Projectile projectile&&projectile.getOwner() instanceof net.everla.projectc.arkofcosmos.entity.FourthCalamityEntity);
+    }
+    public static void explode(Level level,Entity source,Vec3 center,float radius,float multiplier,boolean playerCharge,boolean fullKnockback) {
         if(!(level instanceof ServerLevel server))return;
         double diameter=2*radius;
         for(Entity entity:level.getEntities(source,new AABB(center,center).inflate(diameter+1))) {
@@ -27,7 +31,7 @@ public final class WindBurst {
             Vec3 origin=entity instanceof net.minecraft.world.entity.item.PrimedTnt?entity.position():entity.getEyePosition();
             Vec3 direction=origin.subtract(center).normalize();
             double power=(1-distance)*Explosion.getSeenPercent(center,entity)*multiplier;
-            if(entity instanceof LivingEntity living) {
+            if(entity instanceof LivingEntity living&&!fullKnockback) {
                 int protection=0;
                 for(var armor:living.getArmorSlots())protection+=net.minecraft.world.item.enchantment.EnchantmentHelper.getItemEnchantmentLevel(net.minecraft.world.item.enchantment.Enchantments.BLAST_PROTECTION,armor);
                 power*=1-Math.min(1,.15f*protection);

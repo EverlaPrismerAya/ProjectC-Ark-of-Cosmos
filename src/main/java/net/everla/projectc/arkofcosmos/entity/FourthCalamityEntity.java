@@ -37,6 +37,7 @@ public final class FourthCalamityEntity extends Monster {
     public final FourthCalamityActions actions=new FourthCalamityActions(this);
     private int lastBars=-1,lastPhase=-1;
     private Defense defense;
+    private long nonPlayerInvulnerableUntil;
     private DamageSource defeatSource;
     private boolean annihilationEmberDropped;
 
@@ -89,9 +90,15 @@ public final class FourthCalamityEntity extends Monster {
         return defense.magic(amount);
     }
     @Override protected void actuallyHurt(DamageSource source,float amount) {
+        if(amount>0&&blocksNonPlayerDamage(source))return;
+        float before=getHealth();
         Defense previous=defense;
         if(defense==null&&defend(source))defense=new Defense(source,amount);
-        try { super.actuallyHurt(source,amount); }
+        try {
+            super.actuallyHurt(source,amount);
+            if(getHealth()<before&&!net.everla.projectc.arkofcosmos.combat.WeaponUser.playerOwnedDamage(source))
+                nonPlayerInvulnerableUntil=level().getGameTime()+10;
+        }
         finally { defense=previous; }
     }
     @Override public void setHealth(float health) {
@@ -205,8 +212,11 @@ public final class FourthCalamityEntity extends Monster {
     private void syncBar(ServerPlayer player,boolean present) { ArkNetwork.fourthBossBar(player,bar.getId(),present?phase():0,present?bars():0); }
     @Override public void startSeenByPlayer(ServerPlayer player) { super.startSeenByPlayer(player);if(!defeated()){syncBar(player,true);bar.addPlayer(player);} }
     @Override public void stopSeenByPlayer(ServerPlayer player) { super.stopSeenByPlayer(player);bar.removePlayer(player);syncBar(player,false); }
+    public boolean blocksNonPlayerDamage(DamageSource source) {
+        return !net.everla.projectc.arkofcosmos.combat.WeaponUser.playerOwnedDamage(source)&&level().getGameTime()<nonPlayerInvulnerableUntil;
+    }
     @Override public boolean hurt(DamageSource source,float amount) {
-        if(defeated())return false;
+        if(defeated()||amount>0&&blocksNonPlayerDamage(source))return false;
         Defense previous=defense;
         defense=defend(source)?new Defense(source,amount):null;
         try {
@@ -236,10 +246,12 @@ public final class FourthCalamityEntity extends Monster {
     }
     @Override public void remove(RemovalReason reason) { if(!level().isClientSide)clearCombat();super.remove(reason); }
     @Override public void addAdditionalSaveData(CompoundTag tag) {
+        tag.putInt("NonPlayerInvulnerabilityTicks",(int)Math.max(0,nonPlayerInvulnerableUntil-level().getGameTime()));
         super.addAdditionalSaveData(tag);if(defeated())tag.putInt("FourthDefeatTicks",defeatTicks());
     }
     @Override public void readAdditionalSaveData(CompoundTag tag) {
         super.readAdditionalSaveData(tag);setGliding(false);combat.stop();
+        nonPlayerInvulnerableUntil=level().getGameTime()+Mth.clamp(tag.getInt("NonPlayerInvulnerabilityTicks"),0,10);
         if(tag.contains("FourthDefeatTicks")) {
             beginDefeat(damageSources().generic());
             entityData.set(DEFEAT_TICKS,Mth.clamp(tag.getInt("FourthDefeatTicks"),0,DEFEAT_DURATION-1));

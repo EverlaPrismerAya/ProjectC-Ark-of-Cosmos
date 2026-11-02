@@ -4,7 +4,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 
-/** Native weapon damage with a 35% floor; Mahou attacks share Ark authority and a five-tick victim cooldown. */
+/** Native weapon damage with a 35% floor; Boss attacks share Ark authority and a five-tick victim cooldown; Fourth Calamity has no floor. */
 public final class WeaponDamage {
     private record Hit(LivingEntity target, DamageSource source, float minimum) {}
     private static final ThreadLocal<Hit> CURRENT = new ThreadLocal<>();
@@ -21,7 +21,9 @@ public final class WeaponDamage {
                 || !Float.isFinite(amount) || amount <= 0
                 || target instanceof Player player && (player.isCreative() || player.isSpectator())) return false;
         boolean mahouHit=source.getEntity() instanceof net.everla.projectc.arkofcosmos.entity.MahouTsukaiEntity;
-        boolean bossHit = mahouHit || target instanceof Player
+        var fourth=CalamityAttackGuard.damageOwner(source);
+        boolean fourthHit=fourth!=null&&target!=fourth;
+        boolean bossHit = mahouHit || fourthHit || target instanceof Player
                 && source.getEntity() instanceof net.everla.projectc.arkofcosmos.entity.MahoragaWardenEntity;
         long now = target.level().getGameTime();
         Long previousUntil = bossHit ? BOSS_HIT_UNTIL.get(target) : null;
@@ -31,10 +33,13 @@ public final class WeaponDamage {
         boolean success = false;
         Hit previous = CURRENT.get();
         int cooldown = target.invulnerableTime;
-        CURRENT.set(new Hit(target, source, amount * .35f));
+        CURRENT.set(new Hit(target, source, fourthHit ? 0 : amount * .35f));
         try {
             target.invulnerableTime = 0;
-            success = mahouHit ? ArkDamage.hurt(target,source,amount) : target.hurt(source, amount);
+            success = fourthHit ? ArkDamage.hurtFourthCalamity(target,source,amount) : mahouHit ? ArkDamage.hurt(target,source,amount) : target.hurt(source, amount);
+            if(success&&fourthHit&&!source.is(net.minecraft.tags.DamageTypeTags.IS_EXPLOSION)
+                &&source.getDirectEntity()==fourth&&!source.is(net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.DAMAGE_TYPE,net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("arkofcosmos","spear"))))
+                CalamityAttackGuard.knockback(target,.4,fourth.getX()-target.getX(),fourth.getZ()-target.getZ(),fourth);
             if(success&&mahouHit&&!ElementsCombat.isResonanceDamage(target))BossHealingLock.apply(target,(LivingEntity)source.getEntity());
             return success;
         } finally {

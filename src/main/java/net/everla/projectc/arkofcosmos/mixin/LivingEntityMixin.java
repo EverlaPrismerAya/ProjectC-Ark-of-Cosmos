@@ -22,7 +22,8 @@ abstract class LivingEntityMixin {
             org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable<Boolean> cir){
         LivingEntity target=(LivingEntity)(Object)this;
           if(target instanceof net.everla.projectc.arkofcosmos.entity.FourthCalamityEntity)return;
-        if(source.getEntity() instanceof net.everla.projectc.arkofcosmos.entity.MahouTsukaiEntity
+        if((source.getEntity() instanceof net.everla.projectc.arkofcosmos.entity.MahouTsukaiEntity
+                ||net.everla.projectc.arkofcosmos.combat.CalamityAttackGuard.damageOwner(source)!=null)
                 &&!net.everla.projectc.arkofcosmos.combat.WeaponDamage.handling(target,source)){
             cir.setReturnValue(net.everla.projectc.arkofcosmos.combat.WeaponDamage.hurt(target,source,amount));return;
         }

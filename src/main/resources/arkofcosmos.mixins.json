@@ -19,6 +19,7 @@
     "VanillaMobAttackMixin",
     "FourthCalamityGlidingMixin",
     "FourthCalamityExplosionMixin",
+    "FourthCalamityArrowMixin",
     "FourthCalamityDefenseMixin",
     "CalamityAttackRemovalMixin",
     "VanillaLivingCombatMixin"

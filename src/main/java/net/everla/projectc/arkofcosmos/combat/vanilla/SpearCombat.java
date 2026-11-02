@@ -88,11 +88,11 @@ public final class SpearCombat {
         var source=VanillaCombat.source(attacker,"spear");
         float magic=target instanceof LivingEntity living?EnchantmentHelper.getDamageBonus(stack,living.getMobType()):0;
         float oldHealth=target instanceof LivingEntity living?living.getHealth():0;
-        boolean hit=damage&&target.hurt(source,base+magic);
+        boolean hit=damage&&net.everla.projectc.arkofcosmos.combat.CalamityAttackGuard.hurt(target,source,base+magic);
         Vec3 oldMovement=target.getDeltaMovement();
         if(knockback) {
             double power=.4f+attacker.getAttributeValue(Attributes.ATTACK_KNOCKBACK)+EnchantmentHelper.getKnockbackBonus(attacker);double yaw=attacker.getYRot()*Math.PI/180;
-            if(target instanceof LivingEntity living)living.knockback(power,Math.sin(yaw),-Math.cos(yaw));
+            if(target instanceof LivingEntity living)net.everla.projectc.arkofcosmos.combat.CalamityAttackGuard.knockback(living,power,Math.sin(yaw),-Math.cos(yaw),attacker);
             else target.push(-Math.sin(yaw)*power,.1,Math.cos(yaw)*power);
             // Player movement is client-owned; forcing the server velocity back resets sprint jumps.
             if(!attacker.isFallFlying())attacker.setDeltaMovement(attacker.getDeltaMovement().multiply(.6,1,.6));

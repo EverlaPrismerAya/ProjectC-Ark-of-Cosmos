@@ -41,7 +41,7 @@ public final class PlayerWindCharge extends Projectile implements ItemSupplier {
         Entity owner=getOwner();Entity target=hit.getEntity();
         if(owner instanceof LivingEntity living)living.setLastHurtMob(target);
         var source=new DamageSource(level().registryAccess().registryOrThrow(net.minecraft.core.registries.Registries.DAMAGE_TYPE).getHolderOrThrow(net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.DAMAGE_TYPE,new net.minecraft.resources.ResourceLocation("arkofcosmos","wind_charge"))),this,owner);
-        if(target.hurt(source,1)&&owner instanceof LivingEntity living)net.minecraft.world.item.enchantment.EnchantmentHelper.doPostDamageEffects(living,target);
+        if(net.everla.projectc.arkofcosmos.combat.CalamityAttackGuard.hurt(target,source,1)&&owner instanceof LivingEntity living)net.minecraft.world.item.enchantment.EnchantmentHelper.doPostDamageEffects(living,target);
         burst(position());
     }
     @Override protected void onHitBlock(BlockHitResult hit) { burst(hit.getLocation().add(Vec3.atLowerCornerOf(hit.getDirection().getNormal()).scale(.25))); }

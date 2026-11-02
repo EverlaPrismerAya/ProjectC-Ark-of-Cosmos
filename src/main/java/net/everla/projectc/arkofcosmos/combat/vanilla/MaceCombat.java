@@ -20,7 +20,7 @@ public final class MaceCombat {
                 ||other instanceof TamableAnimal animal&&animal.isTame()&&animal.isOwnedBy(target)
                 ||other instanceof Player p&&p.isCreative()&&p.getAbilities().flying)continue;
             Vec3 direction=other.position().subtract(target.position());
-            double power=(3.5-direction.length())*.7f*(fall>5?2:1)*(1-other.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE));
+            double power=(3.5-direction.length())*.7f*(fall>5?2:1)*(attacker instanceof net.everla.projectc.arkofcosmos.entity.FourthCalamityEntity?1:1-other.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE));
             if(power>0){Vec3 push=direction.normalize().scale(power);other.push(push.x,.7f,push.z);VanillaCombat.syncMotion(other);}
         }
         wind(attacker,stack);
@@ -28,6 +28,6 @@ public final class MaceCombat {
     }
     public static void wind(LivingEntity attacker,ItemStack stack) {
         int wind=VanillaCombat.enchant(stack,VanillaCombat.WIND_BURST);
-        if(wind>0&&attacker.fallDistance>=1.5f&&!attacker.isFallFlying())WindBurst.explode(attacker.level(),null,attacker.position(),3.5f,wind==1?1.2f:wind==2?1.75f:2.2f,false);
+        if(wind>0&&attacker.fallDistance>=1.5f&&!attacker.isFallFlying())WindBurst.explode(attacker.level(),null,attacker.position(),3.5f,wind==1?1.2f:wind==2?1.75f:2.2f,false,attacker instanceof net.everla.projectc.arkofcosmos.entity.FourthCalamityEntity);
     }
 }
