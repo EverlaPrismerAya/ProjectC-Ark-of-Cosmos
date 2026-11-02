@@ -36,6 +36,7 @@ public final class OldOneEntity extends Entity {
     public net.minecraft.world.item.ItemStack weapon(){return weapon;}
     private UUID ownerUuid;
     private long startTick;
+    private long expiresAt=Long.MIN_VALUE;
     private int ownerId,age,updates,left,penetrate,alpha,animationFrame,tileDelay=120,targetId=-1,parentId=-1,solarWidth=8,sourceStep;
     private Kind kind=Kind.SWORD;
     private boolean ended,finishing,nebulaSpiral,tileCollide,friendly=true,pulse,waterWet,lavaWet,blockEnd;
@@ -75,10 +76,20 @@ public final class OldOneEntity extends Entity {
             case VORTEX_ROCKET->{left=270;alpha=255;}
             case TERRARIAN->scale=1.2f;
         }
+        int updatesPerTick=3*updatesPerFrame();
+        if(left>=200*updatesPerTick){
+            left=100*updatesPerTick;
+            // The level sweep runs every 20 ticks: round down so even non-ticking attacks end within 5s.
+            expiresAt=Math.floorDiv(startTick+100,20)*20;
+        }else{
+            // Keep short source lifetimes; allow two ticks for the sword's final network samples.
+            expiresAt=startTick+(left+updatesPerTick-1)/updatesPerTick+2;
+        }
     }
     @Override protected void defineSynchedData(){entityData.define(VIEW,new CompoundTag());}
     @Override protected void readAdditionalSaveData(CompoundTag t){}
     @Override protected void addAdditionalSaveData(CompoundTag t){}
+    @Override public boolean shouldBeSaved(){return false;}
     @Override public Packet<ClientGamePacketListener> getAddEntityPacket(){return NetworkHooks.getEntitySpawningPacket(this);}
     public Kind kind(){return level().isClientSide?Kind.values()[entityData.get(VIEW).getInt("Kind")]:kind;}
     public int ownerId(){return level().isClientSide?entityData.get(VIEW).getInt("Owner"):ownerId;}
@@ -86,6 +97,7 @@ public final class OldOneEntity extends Entity {
     public static Vec3 swordHilt(Player p){return p.position().add(0,p.getBbHeight()*.6,0);}
     public static double swordAngle(double sourceAge){return Math.toRadians(-60+120*Math.max(0,Math.min(15,sourceAge))/15);}
     public int remaining(){return left;}
+    public boolean lifetimeExpired(){return level().getGameTime()>=expiresAt;}
     public Player owner(){return ownerUuid==null?null:level().getPlayerByUUID(ownerUuid);}
     public int updatesPerFrame(){return switch(kind){case ICHOR,NEBULA,VORTEX_ROCKET->3;case HOLY_ARROW->2;default->1;};}
     public boolean beam(){return kind.ordinal()>=Kind.EON.ordinal()&&kind.ordinal()<=Kind.EON_V4.ordinal();}
@@ -109,6 +121,7 @@ public final class OldOneEntity extends Entity {
     private void capFall(){if(velocity.y< -1)velocity=new Vec3(velocity.x,-1,velocity.z);}
     @Override public void tick(){
         super.tick();if(level().isClientSide){clientView.tick(entityData.get(VIEW),"Updates");return;}
+        if(lifetimeExpired()){discardAttack();return;}
         Player p=owner();if(p==null||!p.isAlive()||p.isSpectator()){discardAttack();return;}
         // Allow the final trajectory to arrive and interpolate before removal. No extra damage step.
         if(kind==Kind.SWORD&&left<=0){if(left==0){left=-1;publish();}else discardAttack();return;}

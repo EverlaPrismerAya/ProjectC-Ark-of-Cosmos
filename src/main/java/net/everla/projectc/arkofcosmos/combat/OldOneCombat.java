@@ -37,6 +37,15 @@ public final class OldOneCombat {
         if(!holding(p)||!p.isAlive()||p.isSpectator()||++s.idle>40){s.left=false;return;}
         if(s.left&&s.cooldown==0)attack(p,s);
     }
+    @SubscribeEvent public static void expireAttacks(TickEvent.LevelTickEvent e) {
+        if(e.phase!=TickEvent.Phase.END||!(e.level instanceof net.minecraft.server.level.ServerLevel level)
+            ||level.getGameTime()%20!=0)return;
+        // FULL chunks retain and track entities without ticking them. Their own tick cannot expire them.
+        List<OldOneEntity> expired=new ArrayList<>();
+        for(var entity:level.getAllEntities())
+            if(entity instanceof OldOneEntity attack&&attack.lifetimeExpired())expired.add(attack);
+        for(var attack:expired)attack.discardAttack();
+    }
     @SubscribeEvent public static void loot(net.minecraftforge.event.entity.living.LootingLevelEvent e){if(e.getDamageSource()!=null&&e.getDamageSource().getDirectEntity() instanceof OldOneEntity a)e.setLootingLevel(a.weapon().getEnchantmentLevel(net.minecraft.world.item.enchantment.Enchantments.MOB_LOOTING));}
     @SubscribeEvent public static void logout(PlayerEvent.PlayerLoggedOutEvent e){STATES.remove(e.getEntity().getUUID());}
     @SubscribeEvent public static void dimension(PlayerEvent.PlayerChangedDimensionEvent e){STATES.remove(e.getEntity().getUUID());}

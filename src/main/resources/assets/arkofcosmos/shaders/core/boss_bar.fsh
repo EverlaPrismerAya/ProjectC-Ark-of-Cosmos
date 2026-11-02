@@ -28,7 +28,10 @@ vec4 star(int n, vec2 uv) {
 }
 void main() {
     vec4 mask = texture(Sampler0, texCoord);
-    vec3 col = vertexColor.rgb;
+    vec3 col = vec3(0.1, 0.0, 0.0);
+    float pulse = mod(uTime, 400.0) / 400.0;
+    col.g = sin(pulse*M_PI*2.0)*0.075+0.225;
+    col.b = cos(pulse*M_PI*2.0)*0.05+0.3;
     for (int i=0;i<16;i++) {
         int j=i+7; float r1=(j*j*4321+j*8)*2.0, r2=(j+1)*(j+1)*(j+1)*239.0+(j+1)*37.0;
         float r3=r1*347.4+r2*63.4;
@@ -43,5 +46,5 @@ void main() {
             col += icon.rgb * icon.a * 0.035 * 3.0;
         }
     }
-    fragColor = vec4(clamp(col,0.0,1.0), mask.r * mask.a * vertexColor.a);
+    fragColor = vec4(clamp(col * vertexColor.rgb,0.0,1.0), mask.r * mask.a * vertexColor.a);
 }
