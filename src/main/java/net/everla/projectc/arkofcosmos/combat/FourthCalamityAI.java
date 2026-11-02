@@ -47,6 +47,8 @@ public final class FourthCalamityAI {
     private double crystalLaunchY,crystalLaunchVelocity;
     private boolean crystalLifted,shortCrystalCharge;
     private boolean tailGround;
+    private int fluidTicks,riptideCharge,riptideCooldown;
+    private boolean fluidCombat;
     public void crystalBlast(LivingEntity target) {
         if(target!=boss.getTarget()||air!=Air.GROUND)return;
         if(crystalLaunchTarget==target.getId()&&boss.tickCount-crystalLaunchTick<=20)return;
@@ -78,6 +80,7 @@ public final class FourthCalamityAI {
         }
         if(!valid(target)) { if(hadTarget){stop();boss.actions.cleanup();}hadTarget=false;return; }
         hadTarget=true;if(meleeDelay>0)meleeDelay--;
+        if(fluidAttack(target))return;
         boolean approaching=target instanceof Player&&previousTargetId==target.getId()&&previousTargetPosition!=null
             &&target.position().subtract(previousTargetPosition).multiply(1,0,1)
                 .dot(boss.position().subtract(target.position()).multiply(1,0,1).normalize())>.02;
@@ -129,6 +132,45 @@ public final class FourthCalamityAI {
     }
     private boolean explosivePending() {
         return ground==Ground.SHIELD||ground==Ground.CHARGE||ground==Ground.DETONATE;
+    }
+    private boolean fluidAttack(LivingEntity target) {
+        boolean immersed=boss.isInWaterOrBubble()||boss.isInLava()
+            ||!boss.level().getFluidState(boss.blockPosition()).isEmpty();
+        fluidTicks=immersed?fluidTicks+1:0;
+        if(!fluidCombat&&fluidTicks<20)return false;
+        if(!fluidCombat) {
+            // Fluid recovery takes ownership even during a crystal combo or a failed landing.
+            stop();boss.actions.cleanup();fluidCombat=true;
+        }
+        if(boss.isAutoSpinAttack())return true;
+        if(!immersed) {
+            fluidCombat=false;riptideCharge=riptideCooldown=0;boss.stopUsingItem();
+            recover();return false;
+        }
+        boss.getNavigation().stop();boss.setGliding(false);boss.setNoGravity(false);
+        boss.setSprinting(false);boss.setJumping(false);
+        boss.actions.hold(Items.TRIDENT);
+        if(net.minecraft.world.item.enchantment.EnchantmentHelper.getRiptide(boss.getMainHandItem())==0)
+            boss.getMainHandItem().enchant(net.minecraft.world.item.enchantment.Enchantments.RIPTIDE,3);
+        if(riptideCooldown>0){riptideCooldown--;return true;}
+        Vec3 velocity=target instanceof net.minecraft.server.level.ServerPlayer?SpearCombat.motion(target):target.getDeltaMovement();
+        Vec3 offset=target.getBoundingBox().getCenter().subtract(boss.getEyePosition());
+        double intercept=interceptTime(offset,velocity,3);
+        double lead=intercept>=0?Math.min(20,intercept):Math.min(20,offset.length()/3);
+        Vec3 point=target.getBoundingBox().getCenter().add(velocity.scale(lead));
+        aim(point,30);
+        if(!boss.isUsingItem())boss.startUsingItem(net.minecraft.world.InteractionHand.MAIN_HAND);
+        if(++riptideCharge<10)return true;
+        Vec3 direction=point.subtract(boss.getEyePosition()).normalize();
+        if(direction.lengthSqr()<.01)direction=new Vec3(0,1,0);
+        aim(boss.getEyePosition().add(direction),180);boss.stopUsingItem();
+        // Vanilla Riptide III adds a 3-block/tick impulse and spins for 20 ticks.
+        boss.push(direction.x*3,direction.y*3,direction.z*3);
+        boss.setRiptideTicks(20);boss.resetFallDistance();
+        if(boss.onGround())boss.move(MoverType.SELF,new Vec3(0,1.1999999,0));
+        boss.playSound(net.minecraft.sounds.SoundEvents.TRIDENT_RIPTIDE_3,1,1);
+        VanillaCombat.syncMotion(boss);riptideCharge=0;riptideCooldown=20;
+        return true;
     }
     private boolean retreat(LivingEntity target) {
         Vec3 away=boss.position().subtract(target.position()).multiply(1,0,1).normalize();
@@ -568,6 +610,7 @@ public final class FourthCalamityAI {
             &&boss.level().getWorldBorder().isWithinBounds(bounds)&&boss.level().noCollision(boss,bounds)&&!boss.level().containsAnyLiquid(bounds);
     }
     public void stop() {
+        fluidTicks=riptideCharge=riptideCooldown=0;fluidCombat=false;boss.setRiptideTicks(0);
         tailGround=false;
         shortCrystalCharge=false;crystalLaunchTarget=-1;
         previousTargetPosition=null;previousTargetId=-1;spacing=escaping=false;

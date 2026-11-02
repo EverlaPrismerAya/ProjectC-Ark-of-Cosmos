@@ -140,6 +140,16 @@ public final class FourthCalamityEntity extends Monster {
     @Override public void knockback(double strength,double x,double z) {}
     @Override public void push(double x,double y,double z) {}
     @Override public boolean isPushable() { return false; }
+    public void setRiptideTicks(int ticks) {
+        autoSpinAttackTicks=ticks;
+        if(!level().isClientSide)setLivingEntityFlag(4,ticks>0);
+    }
+    @Override protected void doAutoAttackOnTouch(LivingEntity target) {
+        if(!level().isClientSide&&!defeated()&&target.isAlive()&&!isAlliedTo(target)
+            &&!(target instanceof FourthCalamityEntity)
+            &&(!(target instanceof net.minecraft.world.entity.player.Player player)||!player.isCreative()&&!player.isSpectator())
+            &&actions.attackBudget())doHurtTarget(target);
+    }
     // Vanilla's global max-health attribute is capped at 1024. Use a native, synced attribute only for this boss.
     @Override public double getAttributeValue(Attribute attribute) { return super.getAttributeValue(attribute==Attributes.MAX_HEALTH?ArkOfCosmos.FOURTH_MAX_HEALTH.get():attribute); }
     @Override public AttributeInstance getAttribute(Attribute attribute) { return super.getAttribute(attribute==Attributes.MAX_HEALTH?ArkOfCosmos.FOURTH_MAX_HEALTH.get():attribute); }
