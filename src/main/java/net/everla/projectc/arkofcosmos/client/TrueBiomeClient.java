@@ -65,7 +65,7 @@ public final class TrueBiomeClient {
         @Override public void render(GuiGraphics g,int mouseX,int mouseY,float partial) {
             int x=width/2,y=height/2,dx=mouseX-x,dy=mouseY-y;
             double outer=Math.max(24,Math.min(130,Math.min(width/2d-8,height/2d-25))),inner=outer*.22,mid=outer*.58;
-            double radiusCursor=Math.sqrt(dx*dx+dy*dy);slot=radiusCursor<inner||radiusCursor>outer?-1:radiusCursor<mid?0:1;
+            double radiusCursor=Math.sqrt(dx*dx+dy*dy);slot=radiusCursor<inner||radiusCursor>outer?-1:radiusCursor<mid?1:0;
             selected=slot<0?-1:Math.abs(dx)>Math.abs(dy)?(dx>0?1:3):(dy>0?2:0);
             g.flush();
             RenderSystem.enableBlend();RenderSystem.defaultBlendFunc();RenderSystem.disableCull();
@@ -73,7 +73,7 @@ public final class TrueBiomeClient {
             BufferBuilder out=Tesselator.getInstance().getBuilder();out.begin(VertexFormat.Mode.QUADS,DefaultVertexFormat.POSITION_COLOR);
             for(int ring=0;ring<2;ring++)for(int i=0;i<4;i++) {
                 double angle=-Math.PI/2+i*Math.PI/2;
-                int color=TrueBiomeRules.COLOR[i],alpha=i==selected&&ring==slot?230:110;
+                int color=TrueBiomeRules.COLOR[i],alpha=i==selected&&(1-ring)==slot?230:110;
                 double lo=ring==0?inner:mid+3,hi=ring==0?mid-3:outer;
                 arc(out,g,x,y,lo,hi,angle,color,alpha);
                 arc(out,g,x,y,lo,lo+1.5,angle,color,255);
@@ -87,7 +87,7 @@ public final class TrueBiomeClient {
                 var label=font.split(Component.translatable("true_biome.mode."+i),Math.max(20,(int)(outer*.72)));
                 for(int line=0;line<label.size();line++)
                     g.drawCenteredString(font,label.get(line),cx,cy-label.size()*font.lineHeight/2+line*font.lineHeight,
-                            i==selected&&ring==slot?0xFFFFFF:0xD0D0DD);
+                            i==selected&&(1-ring)==slot?0xFFFFFF:0xD0D0DD);
             }
             g.drawCenteredString(font,title,x,y-(int)outer-16,0xFFFFFF);
             var held=minecraft.player.getMainHandItem();

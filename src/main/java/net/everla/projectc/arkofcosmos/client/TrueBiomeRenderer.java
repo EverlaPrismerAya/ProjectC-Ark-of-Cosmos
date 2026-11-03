@@ -38,18 +38,22 @@ public final class TrueBiomeRenderer extends EntityRenderer<TrueBiomeEntity> {
                 if(s.getInt("Charge")>=450&&s.getInt("State")==0)draw.centered(TrueBiomeAssets.texture("circular_smear"),center,f,r+Math.PI/2,scale*1.9,scale*1.9,color(0xDC69C5,(s.getInt("Charge")/600d-.75)/.25*.8),true);
             }
             if(mode==FURY)for(int i=0;i<4;i++){
-                double wobble=Math.sin(time*5+i*Math.PI/2),angle=r+Math.PI/4+wobble*Math.PI/10-wobble*Math.PI/9*shred(s.getDouble("Shred"));
-                Vec3 extraAt=center.add(dir.scale(Math.sin(time*7)*10/16d)).add(f.normal().cross(dir).scale(Math.sin(wobble)*(20+40*shred(s.getDouble("Shred")))/16)).add(dir.scale(clamp(s.getInt("Bounce")/20d)*20/16));
-                String extra=TrueBiomeAssets.texture("fury_extra");draw.sprite(extra,extraAt,f,angle,scale,scale,0,NativeSprites.height(extra),alpha(.8),true,false,15728880);
+                double wobble=Math.sin(time*5+i*Math.PI/2);
+                Vec3 axis=dir.normalize(),across=f.normal().cross(axis).normalize();double orbit=time*5+i*Math.PI/2;
+                Vec3 radial=across.scale(Math.cos(orbit)).add(f.normal().scale(Math.sin(orbit)));
+                AttackFrame phantom=net.everla.projectc.arkofcosmos.entity.GalaxiaEntity.aimFrame(axis,radial);
+                Vec3 extraAt=center.add(axis.scale(Math.sin(time*7)*10/16d)).add(radial.scale(Math.abs(Math.sin(wobble))*(20+40*shred(s.getDouble("Shred")))/16)).add(axis.scale(clamp(s.getInt("Bounce")/20d)*20/16));
+                String extra=TrueBiomeAssets.texture("fury_extra");draw.sprite(extra,extraAt,phantom,Math.PI/4+wobble*Math.PI/10-wobble*Math.PI/9*shred(s.getDouble("Shred")),scale,scale,0,NativeSprites.height(extra),alpha(.8),true,true,15728880);
             }
             if(mode==CHAINED){ListTag curves=s.getList("Chains",10);for(int k=0;k<curves.size();k++){
                 Vec3[] c=new Vec3[5];for(int i=0;i<5;i++)c[i]=vector(curves.getCompound(k),"P"+i);
+                AttackFrame chainFrame=new AttackFrame(vector(curves.getCompound(k),"F"),vector(curves.getCompound(k),"R"));
                 Vec3 prev=c[0];String tex=TrueBiomeAssets.texture("flail");
                 for(int i=1;i<40;i++){
-                    Vec3 point=bezier(c,i/39d),delta=point.subtract(prev);var lf=lineFrame(delta,f);double taper=i<30?i/30d:1-(i-30)/10d;
-                    draw.region(tex,point,lf,0,1+.75*Math.sin(taper*Math.PI/2),delta.length()*16/14,12,14,alpha(clamp(i/40d*3)),0,70,24,14,false,light);
-                    if(i==38)draw.region(tex,point,lf,0,1,12,48,WHITE,0,0,24,48,true,15728880);
-                    if(i==39)draw.region(tex,point,lf,0,1,12,18,WHITE,0,50,24,18,false,light);
+                    Vec3 point=bezier(c,i/39d),delta=point.subtract(prev);var lf=lineFrame(delta,chainFrame);double taper=i<30?i/30d:1-(i-30)/10d;
+                    draw.thickRegion(tex,point,lf,0,1+.75*Math.sin(taper*Math.PI/2),delta.length()*16/14,12,14,alpha(clamp(i/40d*3)),0,70,24,14,false,light);
+                    if(i==38)draw.thickRegion(tex,point,lf,0,1,12,48,WHITE,0,0,24,48,true,15728880);
+                    if(i==39)draw.thickRegion(tex,point,lf,0,1,12,18,WHITE,0,50,24,18,false,light);
                     prev=point;
                 }
             }}

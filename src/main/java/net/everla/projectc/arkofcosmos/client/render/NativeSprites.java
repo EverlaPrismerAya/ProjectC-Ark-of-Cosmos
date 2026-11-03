@@ -72,6 +72,23 @@ public final class NativeSprites extends RenderType {
             double[][] corners={{0,0},{0,height},{width,height},{width,0}};
             for(double[] c:corners)vertex(out,at.add(x.scale(c[0]-ox)).add(y.scale(c[1]-oy)),(float)((left+c[0])/image.width()),(float)((top+c[1])/image.height()),n,color,light,additive);
         }
+        public void thickRegion(String name,Vec3 at,AttackFrame frame,double angle,double scale,double ox,double oy,float[] color,int left,int top,int width,int height,boolean additive,int light){
+            thickRegion(name,at,frame,angle,scale,scale,ox,oy,color,left,top,width,height,additive,light);
+        }
+        /** Original atlas region, closed along its alpha contour at three source pixels thick. */
+        public void thickRegion(String name,Vec3 at,AttackFrame frame,double angle,double sx,double sy,double ox,double oy,float[] color,int left,int top,int width,int height,boolean additive,int light){
+            SpriteImages.Image img=image(name);Vec3 x=frame.direction(angle).scale(sx/16),y=frame.direction(angle+Math.PI/2).scale(sy/16),n=frame.normal();double depth=1.5*sx/16;
+            region(name,at.add(n.scale(depth)),frame,angle,sx,sy,ox,oy,color,left,top,width,height,additive,light);
+            region(name,at.subtract(n.scale(depth)),frame,angle,sx,sy,ox,oy,color,left,top,width,height,additive,light);
+            VertexConsumer out=buffers.getBuffer(additive?additive(texture(name)):RenderType.entityTranslucent(texture(name)));
+            for(int[] edge:img.contour()){int px=edge[0],py=edge[1],side=edge[2];if(px<left||px>=left+width||py<top||py>=top+height)continue;
+                double ax=px-left,ay=py-top,bx=ax,by=ay;if(side<2){ax+=side;bx=ax;by++;}else{ay+=side-2;by=ay;bx++;}
+                Vec3 a=at.add(x.scale(ax-ox)).add(y.scale(ay-oy)),b=at.add(x.scale(bx-ox)).add(y.scale(by-oy));Vec3 normal=side<2?x.normalize().scale(side==0?-1:1):y.normalize().scale(side==2?-1:1);
+                float u=(px+.5f)/img.width(),v=(py+.5f)/img.height();
+                vertex(out,a.add(n.scale(depth)),u,v,normal,color,light,additive);vertex(out,b.add(n.scale(depth)),u,v,normal,color,light,additive);
+                vertex(out,b.subtract(n.scale(depth)),u,v,normal,color,light,additive);vertex(out,a.subtract(n.scale(depth)),u,v,normal,color,light,additive);
+            }
+        }
         private boolean ownerView(){Minecraft mc=Minecraft.getInstance();return mc.player!=null&&mc.getCameraEntity()==mc.player&&mc.player.getId()==owner&&mc.options.getCameraType().isFirstPerson();}
         private void vertex(VertexConsumer out,Vec3 at,float u,float v,Vec3 normal,float[] color,int light,boolean additive){
             double fade=1;if(ownerView()){

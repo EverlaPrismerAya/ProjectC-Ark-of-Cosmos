@@ -149,7 +149,7 @@
   "effect.arkofcosmos.glacial_state": "Glacial State",
   "true_biome.main": "Primary attunement: %s",
   "true_biome.secondary": "Secondary attunement: %s",
-  "true_biome.select": "Hold %s: inner ring primary / outer ring secondary",
+  "true_biome.select": "Hold %s: outer ring primary / inner ring secondary",
   "true_biome.selection_state": "Primary: %s   Secondary: %s",
   "true_biome.controls": "Hold %s to attack; release to unleash. Hold %s to attune.",
   "true_biome.mode.0": "Swordsmith's Pride",

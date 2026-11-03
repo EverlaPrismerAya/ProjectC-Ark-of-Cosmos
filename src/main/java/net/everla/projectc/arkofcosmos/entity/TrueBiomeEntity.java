@@ -129,13 +129,16 @@ public final class TrueBiomeEntity extends Entity {
             rotation=(float)frame.angle(direction);
             hitLine(p,position(),position().add(direction.scale(140/16d*scale)),25/16d*scale,20,(float)(damage*(state==1?lerp(1,3.3,charge/600d):.3+.9*charge/600d)),state==1?1:.24,false);
         }else if(mode==CHAINED){
-            if(!held){finish(p);return;}left=2;direction=aim(p);setPos(c.add(direction.scale(60/16d)));rotation=(float)frame.angle(direction);
+            if(!held){finish(p);return;}left=2;direction=WeaponUser.aim(p).subtract(c).normalize();frame=GalaxiaEntity.aimFrame(direction,AttackFrame.capture(p).right());setPos(c.add(direction.scale(60/16d)));rotation=(float)frame.angle(direction);
             updateChains(p);chainTimer++;
             if(chainTimer>=30)for(LivingEntity t:level().getEntitiesOfClass(LivingEntity.class,p.getBoundingBox().inflate(40),v->WeaponUser.canHit(p,v))){
                 boolean tip=false,body=false;
                 for(Vec3[] curve:chains)if(new AABB(curve[4],curve[4]).inflate(25/16d).intersects(t.getBoundingBox()))tip=true;
-                // Source Colliding repeats the first chain three times; retain that collision rule.
-                if(!chains.isEmpty())body=ArkGeometry.line(t.getBoundingBox(),c,chains.get(0)[4],20/16d,frame);
+                // The confirmed spatial adaptation follows each rendered curve, not a chord to its tip.
+                for(int k=0;k<chains.size()&&!body;k++){
+                    Vec3[] curve=chains.get(k);Vec3 previous=curve[0];AttackFrame chainFrame=chainFrame(k);
+                    for(int j=1;j<40&&!body;j++){Vec3 point=bezier(curve,j/39d);body=ArkGeometry.line(t.getBoundingBox(),previous,point,20/16d,chainFrame);previous=point;}
+                }
                 if(tip||body){float before=t.getHealth()+t.getAbsorptionAmount();
                     if(hit(p,t,30,tip?damage*2:damage*.5f,tip?.1:.05,tip)&&tip){
                         float dealt=Math.max(0,before-t.getHealth()-t.getAbsorptionAmount());ghostChains(p,t,dealt*.5f);
@@ -176,7 +179,11 @@ public final class TrueBiomeEntity extends Entity {
     private void updateChains(Player p){
         for(int i=0;i<3;i++)if((chainTimer-i*2)%6==0||seeds[i]==0){angles[i]=frame.angle(direction)+(random.nextDouble()-.5)*(i==0?Math.PI/32:Math.PI/8);seeds[i]=.2+random.nextDouble()*99.8;chainTimer++;}
         if(chainTimer%10==1)sound(p,"true_biome_flail");
-        chains.clear();for(int i=0;i<3;i++)chains.add(chain(center(p),frame,angles[i],seeds[i],((chainTimer-i*10d/3)%10)/10,i==0?1:-1));
+        chains.clear();for(int i=0;i<3;i++)chains.add(chain(center(p),chainFrame(i),angles[i],seeds[i],((chainTimer-i*10d/3)%10)/10,i==0?1:-1));
+    }
+    private AttackFrame chainFrame(int index){
+        double angle=index*Math.PI*2/3;
+        return new AttackFrame(frame.forward(),frame.right().scale(Math.cos(angle)).add(frame.normal().scale(Math.sin(angle))));
     }
     private void ghostChains(Player p,LivingEntity t,float amount){
         sound(p,"true_biome_slice");Set<UUID> excluded=new HashSet<>();excluded.add(t.getUUID());
@@ -322,7 +329,7 @@ public final class TrueBiomeEntity extends Entity {
         for(int i=0;i<3;i++)s.putDouble("Whip"+i,angles[i]);
         vector(s,"F",frame.forward());vector(s,"R",frame.right());vector(s,"Direction",direction);vector(s,"Velocity",velocity);vector(s,"Start",start);vector(s,"End",end);
         Player p=owner();vector(s,"Aim",p==null?direction:aim(p));vector(s,"Center",p==null?position():center(p));vector(s,"OwnerVelocity",p==null?Vec3.ZERO:p.getDeltaMovement().scale(1/3d));s.put("Trail",trail.copy());
-        if(kind==BLADE&&mode==CHAINED){ListTag curves=new ListTag();for(Vec3[] curve:chains){CompoundTag c=new CompoundTag();for(int i=0;i<curve.length;i++)vector(c,"P"+i,curve[i]);curves.add(c);}s.put("Chains",curves);}
+        if(kind==BLADE&&mode==CHAINED){ListTag curves=new ListTag();for(Vec3[] curve:chains){CompoundTag c=new CompoundTag();for(int i=0;i<curve.length;i++)vector(c,"P"+i,curve[i]);AttackFrame cf=chainFrame(curves.size());vector(c,"F",cf.forward());vector(c,"R",cf.right());curves.add(c);}s.put("Chains",curves);}
         return s;
     }
     private void publish(){CompoundTag s=snapshot();s.put("Samples",samples.copy());entityData.set(VIEW,s);}
@@ -332,6 +339,12 @@ public final class TrueBiomeEntity extends Entity {
         CompoundTag state=clientSnapshot.state().isEmpty()?view():clientSnapshot.state();ListTag list=state.getList("Samples",10);if(list.isEmpty())return state;
         double index=clamp(partial)*(list.size()-1);int i=(int)index;CompoundTag a=list.getCompound(i),b=list.getCompound(Math.min(i+1,list.size()-1)),s=a.copy();double t=index-i;
         for(String key:new String[]{"Position","Center","Start","End"})vector(s,key,vector(a,key).lerp(vector(b,key),t));
-        for(String key:new String[]{"Age","Rotation","Scale"})s.putDouble(key,lerp(a.getDouble(key),b.getDouble(key),t));return s;
+        for(String key:new String[]{"Age","Rotation","Scale"})s.putDouble(key,lerp(a.getDouble(key),b.getDouble(key),t));
+        if(s.getInt("Kind")==BLADE&&s.getInt("Mode")==CHAINED){
+            AttackFrame view=AttackFrame.interpolateView(new AttackFrame(vector(a,"F"),vector(a,"R")),new AttackFrame(vector(b,"F"),vector(b,"R")),t);
+            Vec3 dir=vector(a,"Direction").lerp(vector(b,"Direction"),t).normalize();AttackFrame aimed=GalaxiaEntity.aimFrame(dir,view.right());vector(s,"F",aimed.forward());vector(s,"R",aimed.right());vector(s,"Direction",dir);s.putFloat("Rotation",0);
+            ListTag ca=a.getList("Chains",10),cb=b.getList("Chains",10),curves=new ListTag();
+            for(int k=0;k<Math.min(ca.size(),cb.size());k++){CompoundTag curve=ca.getCompound(k).copy();for(int j=0;j<5;j++)vector(curve,"P"+j,vector(ca.getCompound(k),"P"+j).lerp(vector(cb.getCompound(k),"P"+j),t));curves.add(curve);}s.put("Chains",curves);
+        }return s;
     }
 }

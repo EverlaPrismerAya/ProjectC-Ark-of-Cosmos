@@ -149,7 +149,7 @@
   "effect.arkofcosmos.glacial_state": "冰河时代",
   "true_biome.main": "主环境调谐：%s",
   "true_biome.secondary": "副环境调谐：%s",
-  "true_biome.select": "按住 %s 选择调谐（内环主调谐／外环副调谐）",
+  "true_biome.select": "按住 %s 选择调谐（外环主调谐／内环副调谐）",
   "true_biome.selection_state": "主：%s　副：%s",
   "true_biome.controls": "按住 %s 攻击，松开释放；按住 %s 打开调谐盘",
   "true_biome.mode.0": "兵匠之傲",
