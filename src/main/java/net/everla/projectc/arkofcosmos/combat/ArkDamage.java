@@ -38,7 +38,6 @@ public final class ArkDamage {
     private static final MethodHandle BASE_LOOT = method(LivingEntity.class, "m_6668_", DamageSource.class, true);
     private static final MethodHandle NORMAL_LOOT = method(LivingEntity.class, "m_6668_", DamageSource.class, false);
     private static final ThreadLocal<LivingEntity> FINISHING = new ThreadLocal<>();
-    private static final ThreadLocal<LivingEntity> APOLLYON_HIT = new ThreadLocal<>();
     private static final TagKey<EntityType<?>> IGNORE_DEATH_REMOVE = TagKey.create(Registries.ENTITY_TYPE,
             new ResourceLocation(ArkOfCosmos.MOD_ID, "ignore_death_remove"));
     private static final TagKey<EntityType<?>> IGNORE_SPECIAL_DAMAGE = TagKey.create(Registries.ENTITY_TYPE,
@@ -138,7 +137,6 @@ public final class ArkDamage {
                 ? ArkCombat.BASE_DAMAGE : 20f;
     }
 
-    public static boolean apollyonHit(Object target) { return APOLLYON_HIT.get() == target; }
 
     private static boolean seagull(LivingEntity target) {
         return SEAGULL.equals(net.minecraftforge.registries.ForgeRegistries.ENTITY_TYPES.getKey(target.getType()));
@@ -224,14 +222,8 @@ public final class ArkDamage {
         if (target.level().isClientSide || protectedPlayer(target) || target.isRemoved()
                 || !Float.isFinite(amount) || amount <= 0 || !target.isAlive()) return false;
         if (apollyonProjectile(target, source)) {
-            LivingEntity previous = APOLLYON_HIT.get();
-            APOLLYON_HIT.set(target);
-            try {
-                return WeaponDamage.hurt(target, source, apollyonPanel(source));
-            } finally {
-                if (previous == null) APOLLYON_HIT.remove();
-                else APOLLYON_HIT.set(previous);
-            }
+            ((ApollyonCompatTarget) target).arkofcosmos$clearWeaponFrames();
+            return WeaponDamage.hurt(target, source, apollyonPanel(source));
         }
         if (ordinaryTarget(target)) return WeaponDamage.handling(target,source)
                 ? target.hurt(source,amount) : WeaponDamage.hurt(target, source, amount);

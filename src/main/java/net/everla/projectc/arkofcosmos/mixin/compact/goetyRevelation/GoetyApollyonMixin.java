@@ -11,13 +11,23 @@ import org.spongepowered.asm.mixin.Pseudo;
 @Mixin(targets = "com.Polarice3.Goety.common.entities.boss.Apostle", remap = false)
 @Pseudo
 public abstract class GoetyApollyonMixin implements ApollyonCompatTarget {
-    // Both native cooldowns must be exempted before hurt() can reach the weapon callbacks.
-    @org.spongepowered.asm.mixin.injection.Inject(
-            method={"allTitlesApostle_1_20_1$getHitCooldown", "revelaionfix$getHitCooldown"},
-            at=@org.spongepowered.asm.mixin.injection.At("HEAD"), cancellable=true, require=0)
-    private void arkofcosmos$weaponFrames(
-            org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable<Integer> cir) {
-        if (net.everla.projectc.arkofcosmos.combat.ArkDamage.apollyonHit(this)) cir.setReturnValue(0);
+    @Unique
+    @Override
+    public void arkofcosmos$clearWeaponFrames() {
+        var self = (net.minecraft.world.entity.LivingEntity) (Object) this;
+        self.invulnerableTime = 0;
+        try {
+            // The same public invulnerability API used by Valettein's native onAttack.
+            // Run before Apostle.hurt(), whose early gates precede LivingAttackEvent.
+            try {
+                self.getClass().getMethod("revelationfix$setCustomInvulTicks", int.class).invoke(self, 0);
+                self.getClass().getMethod("revelationfix$setCustomHurtTicks", int.class).invoke(self, 0);
+            } catch (NoSuchMethodException absentFix) {
+                self.getClass().getMethod("allTitlesApostle_1_20_1$setHitCooldown", int.class).invoke(self, 0);
+            }
+        } catch (ReflectiveOperationException failure) {
+            throw new IllegalStateException("Could not apply Valettein's native frame exemption", failure);
+        }
     }
 
     @Unique
