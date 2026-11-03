@@ -24,8 +24,9 @@
     "FourthCalamityEffectMixin",
     "CalamityAttackRemovalMixin",
     "VanillaLivingCombatMixin"
-    ,"GoetyApollyonMixin",
-    "RevelationWeaponMixin"
+    ,
+    "compact.goetyRevelation.GoetyApollyonMixin",
+    "compact.goetyRevelation.RevelationWeaponMixin"
   ],
   "client": [
     "client.BossBarProgressAccessor",
