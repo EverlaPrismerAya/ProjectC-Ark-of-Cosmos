@@ -133,6 +133,12 @@ public final class FourthCalamityActions {
         }
         return crystalFailure(pos,"COVER");
     }
+    public boolean scaffold(BlockPos pos) {
+        if(!net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(boss.level(),boss)
+            ||!boss.level().getFluidState(pos).isEmpty()||!canPlace(pos))return false;
+        place(Items.COBBLESTONE,pos);
+        return boss.level().getBlockState(pos).is(Blocks.COBBLESTONE);
+    }
     private BlockHitResult placementHit(BlockPos position) {
         for(Direction direction:Direction.values()) {
             BlockPos support=position.relative(direction);

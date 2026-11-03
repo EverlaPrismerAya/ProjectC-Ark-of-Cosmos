@@ -49,11 +49,11 @@ public final class FourthCalamityEntity extends Monster {
         final float resistance=.8f;
         final float absorption=getAbsorptionAmount();
         final float phaseMultiplier=phase()==3?.25f:1;
-        final float explosionMultiplier;
+        final float typeMultiplier;
         final int protection;
         float limit;
         Defense(DamageSource source,float amount) {
-            explosionMultiplier=source.is(DamageTypeTags.IS_EXPLOSION)?.5f:1;
+            typeMultiplier=typeMultiplier(source);
             DamageSource calculation=new DamageSource(source.typeHolder(),source.getDirectEntity(),source.getEntity(),source.getSourcePosition()) {
                 @Override public boolean is(TagKey<DamageType> tag) {
                     if(tag==DamageTypeTags.BYPASSES_ARMOR||tag==DamageTypeTags.BYPASSES_ENCHANTMENTS
@@ -69,8 +69,11 @@ public final class FourthCalamityEntity extends Monster {
             float effective=Mth.clamp(armor-amount/(2+toughness/4),armor*.2f,20);
             return amount*(1-effective/25);
         }
-        float magic(float amount) { return amount*resistance*(1-protection/25f)*phaseMultiplier*explosionMultiplier; }
+        float magic(float amount) { return amount*resistance*(1-protection/25f)*phaseMultiplier*typeMultiplier; }
         void budget(float raw) { limit=Math.max(0,magic(armor(raw))-absorption); }
+    }
+    private static float typeMultiplier(DamageSource source) {
+        return (source.is(DamageTypeTags.IS_EXPLOSION)?.5f:1)*(source.is(DamageTypeTags.IS_FALL)?.05f:1);
     }
     private boolean defend(DamageSource source) {
         if(mahouAttack(source))return false;
@@ -93,7 +96,7 @@ public final class FourthCalamityEntity extends Monster {
         if(defense==null) {
             if(!source.is(DamageTypeTags.BYPASSES_EFFECTS)&&!source.is(DamageTypeTags.BYPASSES_RESISTANCE)
                 &&!source.is(DamageTypeTags.BYPASSES_INVULNERABILITY))amount*=.8f;
-            return super.getDamageAfterMagicAbsorb(source,amount)*(phase()==3?.25f:1)*(source.is(DamageTypeTags.IS_EXPLOSION)?.5f:1);
+            return super.getDamageAfterMagicAbsorb(source,amount)*(phase()==3?.25f:1)*typeMultiplier(source);
         }
         float resisted=amount*(1-defense.resistance);
         if(resisted>0&&resisted<Float.MAX_VALUE&&source.getEntity() instanceof ServerPlayer player)

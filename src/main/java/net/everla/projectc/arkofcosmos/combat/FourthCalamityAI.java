@@ -36,7 +36,6 @@ public final class FourthCalamityAI {
     private int crystalStall,crystalRetryAt;
     private boolean aerial,hadTarget,pearlOpening,swordAttempted;
     private int lastRetaliation=-1;
-    private double aerialGroundY;
     private float interrupt;
     private BlockPos base,explosive,shield;
     private Vec3 lockedLanding;
@@ -56,7 +55,9 @@ public final class FourthCalamityAI {
     private boolean groundMace;
     private int obstructedTicks,chorusRetryAt,repositionStall;
     private Vec3 repositionLast;
-    private BlockPos digStep;
+    private BlockPos digStep,scaffoldStep;
+    private int scaffoldAge,scaffoldRetryAt;
+    private boolean scaffolding;
     private Vec3 maceDirection;
     private double maceDiveY;
     private Vec3 riptideVelocity;
@@ -99,9 +100,6 @@ public final class FourthCalamityAI {
     private boolean alwaysAirTarget(LivingEntity target) {
         return target instanceof net.minecraft.world.entity.boss.wither.WitherBoss
             ||target instanceof net.minecraft.world.entity.animal.allay.Allay;
-    }
-    private boolean requiresAir(LivingEntity target) {
-        return alwaysAirTarget(target)||target.onGround()&&target.getY()>(aerial&&!boss.onGround()?aerialGroundY:boss.getY())+AIR_CLEARANCE;
     }
     public void tick() {
         if(lastPhase!=boss.phase()) {
@@ -161,7 +159,7 @@ public final class FourthCalamityAI {
             pearlOpening=true;transition(Ground.ARROW);boss.getNavigation().stop();boss.stopUsingItem();
         }
         if(boss.phase()!=3)followCrystalLaunch(target);
-        boolean requiresAir=requiresAir(target);
+        boolean requiresAir=alwaysAirTarget(target);
         if(requiresAir)shortCrystalCharge=false;
         if((boss.phase()==3||!explosivePending()||requiresAir)&&!shortCrystalCharge&&!groundMace)updateMode(target);
         if(boss.phase()!=3)tailGround=false;
@@ -177,6 +175,7 @@ public final class FourthCalamityAI {
             if(meleeDelay==0&&boss.actions.melee(target))meleeDelay=13;
             return;
         }
+        if(air==Air.GROUND&&boss.phase()!=3&&!explosivePending()&&scaffoldToward(target))return;
         if(air==Air.GROUND&&boss.phase()!=3&&!explosivePending()&&repositionObstructed(target))return;
         if(air==Air.GROUND&&!explosivePending()&&boss.actions.chasePearlFlying()) {
             crystalAura.abandonPlan("PEARL_CHASE");base=null;chase(target);return;
@@ -268,11 +267,10 @@ public final class FourthCalamityAI {
         boolean gliding=!nearGround&&target.isFallFlying();
         boolean flying=!nearGround&&target instanceof Player p&&p.getAbilities().flying;
         boolean hovering=!nearGround&&!target.isInWater()&&Math.abs(target.getDeltaMovement().y)<.12;
-        boolean required=requiresAir(target);
+        boolean required=alwaysAirTarget(target);
         airborne=required||gliding?20:flying||hovering?airborne+1:0;grounded=nearGround&&!required?grounded+1:0;
         boolean mace=air==Air.CLIMB||air==Air.WINDUP||air==Air.DROP||air==Air.FALL;
         if(!aerial&&airborne>=20&&(!mace||required)) {
-            aerialGroundY=boss.getY();
             crystalAura.abandonPlan("AERIAL_TARGET");base=explosive=shield=null;
             aerial=true;groundCharge=false;pearlOpening=false;landing=null;enterAir(Air.APPROACH);ground=Ground.ARROW;age=0;
         } else if(aerial&&grounded>=10) {
@@ -297,6 +295,53 @@ public final class FourthCalamityAI {
         }
         boss.getNavigation().moveTo(target,1.2);boss.setSprinting(true);
         if(boss.horizontalCollision&&boss.onGround())boss.setJumping(true);else boss.setJumping(false);
+    }
+    private boolean scaffoldToward(LivingEntity target) {
+        if((scaffoldStep==null&&!target.onGround())||boss.actions.chasePearlFlying()||boss.actions.retreatPearlFlying()
+            ||boss.actions.pendingCrystal()!=null||boss.phase()==2&&!crystalAura.canPause()) {
+            scaffoldStep=null;scaffoldAge=0;scaffolding=false;return false;
+        }
+        if(scaffoldStep==null) {
+            if(scaffolding&&(target.getY()<boss.getY()-AIR_CLEARANCE||boss.distanceToSqr(target)<9&&boss.hasLineOfSight(target))) {scaffolding=false;return false;}
+            if(!boss.onGround()||(!scaffolding&&target.getY()<=boss.getY()+AIR_CLEARANCE)||boss.tickCount<scaffoldRetryAt
+                ||boss.distanceToSqr(target)>16*16)return false;
+            var path=boss.getNavigation().createPath(target,0);
+            if(path!=null&&path.canReach()&&path.getEndNode()!=null&&path.getEndNode().y>=target.getBlockY()-1){scaffolding=false;boss.getNavigation().moveTo(path,1.2);return true;}
+            Vec3 toward=target.position().subtract(boss.position());
+            BlockPos ahead=boss.blockPosition().relative(net.minecraft.core.Direction.getNearest(toward.x,0,toward.z));
+            // Prefer stairs toward the target; a solid wall instead needs a jump-and-place tower.
+            BlockPos forward=target.getY()>boss.getY()+.5?ahead:ahead.below();
+            scaffoldStep=toward.horizontalDistance()>1.5&&safeTeleport(Vec3.atBottomCenterOf(forward.above()))?forward:boss.blockPosition();
+            if(!safeTeleport(Vec3.atBottomCenterOf(scaffoldStep.above()))) { scaffoldStep=null;scaffolding=false;scaffoldRetryAt=boss.tickCount+40;return false; }
+            scaffolding=true;scaffoldAge=0;boss.actions.stopMining();digStep=null;spacing=false;boss.stopUsingItem();
+            crystalAura.abandonPlan("SCAFFOLD_APPROACH");base=null;
+        }
+        if(++scaffoldAge>40) { scaffoldStep=null;scaffolding=false;boss.setJumping(false);scaffoldRetryAt=boss.tickCount+40;return false; }
+        boss.setGliding(false);boss.setSprinting(false);
+        if(!boss.level().getBlockState(scaffoldStep).canBeReplaced()) {
+            Vec3 stand=Vec3.atBottomCenterOf(scaffoldStep.above());
+            if(!safeLanding(stand)){scaffoldStep=null;scaffolding=false;scaffoldRetryAt=boss.tickCount+40;return false;}
+            if(boss.onGround()&&boss.position().distanceToSqr(stand)<.8) { scaffoldStep=null;scaffoldAge=0;boss.setJumping(false);return true; }
+            moveToPoint(stand);return true;
+        }
+        boss.actions.hold(Items.COBBLESTONE);
+        // Jump before filling any block overlapping the body, including forward scaffold steps.
+        if(boss.getBoundingBox().inflate(0,.03,0).intersects(new AABB(scaffoldStep))) {
+            Vec3 stepCenter=Vec3.atBottomCenterOf(scaffoldStep);
+            boss.getNavigation().stop();boss.getJumpControl().jump();
+            boss.getMoveControl().setWantedPosition(stepCenter.x,boss.getY(),stepCenter.z,.8);return true;
+        }
+        if(boss.level().getBlockState(scaffoldStep.below()).canBeReplaced()) {
+            if(!boss.level().getFluidState(scaffoldStep.below()).isEmpty()) {scaffoldStep=null;scaffolding=false;return false;}
+            if(!boss.actions.canPlace(scaffoldStep.below())) {
+                // The supporting side face becomes visible just beyond the old edge, like normal scaffold bridging.
+                Vec3 edge=Vec3.atBottomCenterOf(scaffoldStep);
+                boss.getNavigation().stop();boss.getMoveControl().setWantedPosition(edge.x,boss.getY(),edge.z,.4);return true;
+            }
+            if(boss.actions.scaffold(scaffoldStep.below()))return true;
+        } else if(boss.actions.scaffold(scaffoldStep)) {boss.setJumping(false);return true;}
+        // Native placement or protection rejection yields to pearl/path/mining recovery.
+        scaffoldStep=null;scaffolding=false;boss.setJumping(false);scaffoldRetryAt=boss.tickCount+40;return false;
     }
     private boolean repositionObstructed(LivingEntity target) {
         if(boss.isUsingItem()&&boss.getUseItem().is(Items.CHORUS_FRUIT))return true;
@@ -585,6 +630,7 @@ public final class FourthCalamityAI {
     private void enterAir(Air next) {
         boss.stopUsingItem();boss.getNavigation().stop();boss.setSprinting(false);boss.setJumping(false);
         boss.setMaceWindup(false);boss.setNoGravity(false);air=next;airAge=0;
+        if(next!=Air.GROUND){scaffoldStep=null;scaffoldAge=0;scaffolding=false;}
         if(next==Air.APPROACH||next==Air.READY) { chargeHit=false;chargeTarget=-1; }
         if(next==Air.LAND||next==Air.WIND_LAND) { landing=null;windFired=false;windWait=0; }
     }
@@ -876,6 +922,7 @@ public final class FourthCalamityAI {
         ground=Ground.ARROW;air=Air.GROUND;age=airAge=airborne=grounded=0;aerial=false;base=explosive=shield=null;lockedLanding=placementPosition=landing=chargePoint=chargeDirection=null;shotsLeft=windWait=0;chargeTarget=-1;groundCharge=chargeHit=windFired=false;
     }
     private void clearAttackState() {
+        scaffoldStep=null;scaffoldAge=0;scaffolding=false;
         groundMace=false;auraRoundTicks=0;obstructedTicks=0;repositionStall=0;repositionLast=null;digStep=null;boss.actions.stopMining();maceDirection=null;maceDiveY=0;
         fluidTicks=riptideCharge=riptideCooldown=0;fluidCombat=false;riptideVelocity=null;boss.setRiptideTicks(0);
         tailGround=false;
