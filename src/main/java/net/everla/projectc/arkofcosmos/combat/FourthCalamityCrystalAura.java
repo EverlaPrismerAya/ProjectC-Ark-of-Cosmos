@@ -52,6 +52,7 @@ public final class FourthCalamityCrystalAura {
     private final Map<UUID,Integer> deferred=new HashMap<>();
     private int placeAt,breakAt,switchAt,supportUntil;
     public FourthCalamityCrystalAura(FourthCalamityEntity boss){this.boss=boss;}
+    boolean canPause() { return supportBase==null&&boss.actions.pendingCrystal()==null; }
     public void clear(){targets.clear();attempts.clear();waiting.clear();attacks.clear();deferred.clear();supportBase=coverColumn=null;planTarget=planBoss=null;planTargetId=-1;stalled=0;placeAt=breakAt=switchAt=supportUntil=0;}
     boolean followTarget(LivingEntity primary) {
         boolean changed=planTarget!=null&&(primary.getId()!=planTargetId||primary.position().distanceToSqr(planTarget)>16
@@ -305,7 +306,7 @@ public final class FourthCalamityCrystalAura {
         amount=CombatRules.getDamageAfterAbsorb(amount,target.getArmorValue(),(float)target.getAttributeValue(Attributes.ARMOR_TOUGHNESS));
         var resistance=target.getEffect(MobEffects.DAMAGE_RESISTANCE);
         if(resistance!=null)amount*=Math.max(0,1-.2f*(resistance.getAmplifier()+1));
-        return CombatRules.getDamageAfterMagicAbsorb(amount,EnchantmentHelper.getDamageProtection(target.getArmorSlots(),boss.damageSources().explosion(null,boss)));
+        return CombatRules.getDamageAfterMagicAbsorb(amount,EnchantmentHelper.getDamageProtection(target.getArmorSlots(),boss.damageSources().explosion(null,boss)))*(target==boss?.5f:1);
     }
     private double exposure(LivingEntity target,Vec3 explosion,AABB bounds,BlockPos support,BlockPos cover,boolean predictTerrain) {
         return exposure(target,explosion,bounds,support,cover,predictTerrain,false);

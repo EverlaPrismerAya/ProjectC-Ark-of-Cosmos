@@ -39,6 +39,9 @@ public final class FourthCalamityActions {
     private Vec3 pearlOrigin;
     private boolean retreatingPearl;
     private long useTick=Long.MIN_VALUE,attackTick=Long.MIN_VALUE,nextPearl;
+    private BlockPos miningBlock;
+    private float miningProgress;
+    private final Map<BlockPos,Integer> deniedMining=new HashMap<>();
     private UUID pendingCrystal;
     private UUID explodedCrystal;
     private String failure="NONE",nativeResult="NONE";
@@ -46,11 +49,30 @@ public final class FourthCalamityActions {
     private final Map<String,Integer> diagnosticTicks=new HashMap<>();
     public FourthCalamityActions(FourthCalamityEntity boss) { this.boss=boss; }
     public void hold(Item item) {
-        if(boss.getMainHandItem().is(item))return;
+        if(boss.getMainHandItem().is(item)){enchantWeapon(boss.getMainHandItem());return;}
         boss.stopUsingItem();boss.getAttributes().removeAttributeModifiers(boss.getMainHandItem().getAttributeModifiers(EquipmentSlot.MAINHAND));
         ItemStack stack=new ItemStack(item);stack.getOrCreateTag().putBoolean("Unbreakable",true);
+        enchantWeapon(stack);
         boss.setItemSlot(EquipmentSlot.MAINHAND,stack);
         boss.getAttributes().addTransientAttributeModifiers(stack.getAttributeModifiers(EquipmentSlot.MAINHAND));
+    }
+    private static void enchantWeapon(ItemStack stack) {
+        Item item=stack.getItem();
+        if(item instanceof net.everla.projectc.arkofcosmos.item.SpearItem) {
+            enchant(stack,Enchantments.SHARPNESS,5);enchant(stack,Enchantments.FIRE_ASPECT,2);
+        } else if(item==VanillaCombat.MACE.get())enchant(stack,VanillaCombat.DENSITY.get(),5);
+        else if(item==Items.NETHERITE_SWORD) {
+            enchant(stack,Enchantments.SHARPNESS,5);enchant(stack,Enchantments.KNOCKBACK,2);enchant(stack,Enchantments.FIRE_ASPECT,2);
+        } else if(item==Items.CROSSBOW) {
+            enchant(stack,Enchantments.QUICK_CHARGE,3);enchant(stack,Enchantments.MULTISHOT,1);
+        } else if(item==Items.BOW) {
+            enchant(stack,Enchantments.POWER_ARROWS,5);enchant(stack,Enchantments.FLAMING_ARROWS,1);enchant(stack,Enchantments.PUNCH_ARROWS,2);
+        }
+    }
+    private static void enchant(ItemStack stack,net.minecraft.world.item.enchantment.Enchantment enchantment,int level) {
+        if(EnchantmentHelper.getItemEnchantmentLevel(enchantment,stack)==level)return;
+        var enchantments=EnchantmentHelper.getEnchantments(stack);enchantments.put(enchantment,level);
+        EnchantmentHelper.setEnchantments(enchantments,stack);
     }
     private boolean useBudget() {
         long now=boss.level().getServer().getTickCount();if(useTick==now)return false;useTick=now;return true;
@@ -312,7 +334,46 @@ public final class FourthCalamityActions {
         damage=CombatRules.getDamageAfterAbsorb(damage,target.getArmorValue(),(float)target.getAttributeValue(Attributes.ARMOR_TOUGHNESS));
         var resistance=target.getEffect(MobEffects.DAMAGE_RESISTANCE);
         if(resistance!=null)damage*=Math.max(0,1-.2f*(resistance.getAmplifier()+1));
-        return CombatRules.getDamageAfterMagicAbsorb(damage,EnchantmentHelper.getDamageProtection(target.getArmorSlots(),boss.damageSources().explosion(null,boss)));
+        return CombatRules.getDamageAfterMagicAbsorb(damage,EnchantmentHelper.getDamageProtection(target.getArmorSlots(),boss.damageSources().explosion(null,boss)))*(target==boss?.5f:1);
+    }
+    private Item miningTool(net.minecraft.world.level.block.state.BlockState state) {
+        Item best=Items.NETHERITE_PICKAXE;float speed=0;
+        for(Item tool:new Item[]{Items.NETHERITE_PICKAXE,Items.NETHERITE_AXE,Items.NETHERITE_SHOVEL,Items.NETHERITE_HOE}) {
+            float value=new ItemStack(tool).getDestroySpeed(state);
+            if(value>speed){speed=value;best=tool;}
+        }
+        return best;
+    }
+    public double miningCost(BlockPos pos) {
+        if(!boss.level().hasChunkAt(pos)||!boss.level().getWorldBorder().isWithinBounds(pos)||boss.level().isOutsideBuildHeight(pos))return Double.POSITIVE_INFINITY;
+        var state=boss.level().getBlockState(pos);
+        if(!state.getFluidState().isEmpty())return Double.POSITIVE_INFINITY;
+        if(state.getCollisionShape(boss.level(),pos).isEmpty())return 0;
+        float hardness=state.getDestroySpeed(boss.level(),pos);
+        if(hardness<0||boss.tickCount<deniedMining.getOrDefault(pos,0))return Double.POSITIVE_INFINITY;
+        ItemStack tool=new ItemStack(miningTool(state));
+        return 1+hardness*30/(tool.getDestroySpeed(state)+26);
+    }
+    public void stopMining() {
+        if(miningBlock!=null)boss.level().destroyBlockProgress(boss.getId(),miningBlock,-1);
+        miningBlock=null;miningProgress=0;
+    }
+    public boolean mine(BlockPos pos) {
+        if(!Double.isFinite(miningCost(pos))||!net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(boss.level(),boss))return false;
+        Vec3 center=Vec3.atCenterOf(pos);
+        if(!reachable(center,pos))return false;
+        var state=boss.level().getBlockState(pos);
+        if(state.getCollisionShape(boss.level(),pos).isEmpty())return false;
+        if(!pos.equals(miningBlock)){stopMining();miningBlock=pos.immutable();}
+        Item tool=miningTool(state);hold(tool);enchant(boss.getMainHandItem(),Enchantments.BLOCK_EFFICIENCY,5);
+        FakePlayer player=operator(tool);player.setItemInHand(InteractionHand.MAIN_HAND,boss.getMainHandItem().copy());player.setOnGround(boss.onGround());
+        miningProgress+=state.getDestroyProgress(player,boss.level(),pos);
+        boss.swing(InteractionHand.MAIN_HAND,true);boss.level().destroyBlockProgress(boss.getId(),pos,Math.min(9,(int)(miningProgress*10)));
+        if(miningProgress>=1&&useBudget()) {
+            if(!player.gameMode.destroyBlock(pos))deniedMining.put(pos.immutable(),boss.tickCount+200);
+            stopMining();
+        }
+        return true;
     }
     public boolean pearl(LivingEntity target) {
         if(boss.distanceToSqr(target)<=REACH*REACH)return false;
@@ -327,6 +388,7 @@ public final class FourthCalamityActions {
         motion=motion.multiply(1,0,1);
         return motion.lengthSqr()<=1?motion:Vec3.ZERO; // Teleports are not a chase velocity.
     }
+    public boolean repositionPearl(Vec3 destination) { return boss.combat.safeLanding(destination)&&throwPearl(destination,null,false); }
     public boolean retreatPearl(Vec3 destination) { return throwPearl(destination,null,true); }
     public boolean retreatPearlFlying() { return retreatingPearl&&pursuingPearl!=null&&!pursuingPearl.isRemoved(); }
     public boolean chasePearlFlying() { return !retreatingPearl&&pursuingPearl!=null&&!pursuingPearl.isRemoved()&&pursuingPearl.tickCount<=60; }
@@ -351,9 +413,9 @@ public final class FourthCalamityActions {
         Vec3 best=null;double bestScore=target==null?9:4;
         Vec3 delta=predicted.subtract(origin);
         Vec3 targetMotion=target==null?Vec3.ZERO:pearlTargetMotion(target);
-        for(double lift:new double[]{-.3,-.24,-.18,-.12,-.08,-.04,0,.04,.08,.12,.16,.2,.3,.5}) {
+        for(double lift:new double[]{-.3,-.24,-.18,-.12,-.08,-.04,0,.04,.08,.12,.16,.2,.3,.5,.8,1.2,2,4,8,12,16,24,32}) {
             Vec3 direction=delta.add(0,delta.horizontalDistance()*lift,0).normalize(),velocity=direction.scale(1.5),position=origin;
-            for(int step=0;step<60;step++) {
+            for(int step=0;step<120;step++) {
                 Vec3 next=position.add(velocity);
                 if(!boss.level().hasChunkAt(BlockPos.containing(next)))break;
                 BlockHitResult hit=boss.level().clip(new ClipContext(position,next,ClipContext.Block.COLLIDER,ClipContext.Fluid.NONE,boss));
@@ -361,6 +423,7 @@ public final class FourthCalamityActions {
                 boolean collision=hit.getType()!=HitResult.Type.MISS||entityHit.isPresent();
                 if(collision) {
                     Vec3 impact=entityHit.isPresent()&&(hit.getType()==HitResult.Type.MISS||position.distanceToSqr(entityHit.get())<position.distanceToSqr(hit.getLocation()))?entityHit.get():hit.getLocation();
+                    if(!boss.combat.safeLanding(impact.add(0,.01,0)))break;
                     double score=impact.distanceToSqr(predicted);
                     if(target!=null) {
                         Vec3 expected=target.position().add(targetMotion.scale(step+1));
@@ -380,20 +443,43 @@ public final class FourthCalamityActions {
     public boolean arrow(LivingEntity target,boolean harming) {
         if(!boss.hasLineOfSight(target)){boss.stopUsingItem();return false;}
         hold(Items.CROSSBOW);ItemStack bow=boss.getMainHandItem();
-        if(EnchantmentHelper.getItemEnchantmentLevel(Enchantments.QUICK_CHARGE,bow)!=3)bow.enchant(Enchantments.QUICK_CHARGE,3);
         if(!boss.isUsingItem()){boss.startUsingItem(InteractionHand.MAIN_HAND);return false;}
         if(boss.getTicksUsingItem()<CrossbowItem.getChargeDuration(bow)||!attackBudget())return false;
-        double flight=boss.distanceTo(target)/3.15;
+        aimArrow(target,3.15);
+        boss.stopUsingItem();
+        ItemStack ammo=PotionUtils.setPotion(new ItemStack(Items.TIPPED_ARROW),harming?Potions.STRONG_HARMING:Potions.SLOW_FALLING);
+        ListTag loaded=new ListTag();
+        int arrows=EnchantmentHelper.getItemEnchantmentLevel(Enchantments.MULTISHOT,bow)>0?3:1;
+        for(int i=0;i<arrows;i++)loaded.add(ammo.save(new CompoundTag()));
+        bow.getOrCreateTag().put("ChargedProjectiles",loaded);CrossbowItem.setCharged(bow,true);
+        CrossbowItem.performShooting(boss.level(),boss,InteractionHand.MAIN_HAND,bow,3.15f,1);
+        CrossbowItem.setCharged(bow,false);boss.swing(InteractionHand.MAIN_HAND,true);return true;
+    }
+    private Vec3 aimArrow(LivingEntity target,double speed) {
+        double flight=boss.distanceTo(target)/speed;
         Vec3 delta=target.position().add(0,target.getBbHeight()*.5,0).add(target.getDeltaMovement().scale(flight))
             .subtract(boss.getEyePosition().add(0,-.1,0)).add(0,.025*flight*flight,0);
         boss.setYRot((float)(Math.atan2(delta.z,delta.x)*180/Math.PI)-90);
         boss.setXRot((float)(-Math.atan2(delta.y,delta.horizontalDistance())*180/Math.PI));boss.setYHeadRot(boss.getYRot());
-        boss.stopUsingItem();
-        ItemStack ammo=PotionUtils.setPotion(new ItemStack(Items.TIPPED_ARROW),harming?Potions.STRONG_HARMING:Potions.SLOW_FALLING);
-        ListTag loaded=new ListTag();loaded.add(ammo.save(new CompoundTag()));
-        bow.getOrCreateTag().put("ChargedProjectiles",loaded);CrossbowItem.setCharged(bow,true);
-        CrossbowItem.performShooting(boss.level(),boss,InteractionHand.MAIN_HAND,bow,3.15f,1);
-        CrossbowItem.setCharged(bow,false);boss.swing(InteractionHand.MAIN_HAND,true);return true;
+        return delta;
+    }
+    public boolean bowArrow(LivingEntity target) {
+        if(!boss.hasLineOfSight(target)){boss.stopUsingItem();return false;}
+        hold(Items.BOW);ItemStack bow=boss.getMainHandItem();
+        if(!boss.isUsingItem()){boss.startUsingItem(InteractionHand.MAIN_HAND);return false;}
+        if(boss.getTicksUsingItem()<20||!attackBudget())return false;
+        Vec3 delta=aimArrow(target,3);boss.stopUsingItem();
+        ItemStack ammo=PotionUtils.setPotion(new ItemStack(Items.TIPPED_ARROW),Potions.STRONG_HARMING);
+        AbstractArrow arrow=((ArrowItem)ammo.getItem()).createArrow(boss.level(),ammo,boss);
+        arrow.shoot(delta.x,delta.y,delta.z,3,1);arrow.setCritArrow(true);
+        int power=EnchantmentHelper.getItemEnchantmentLevel(Enchantments.POWER_ARROWS,bow);
+        if(power>0)arrow.setBaseDamage(arrow.getBaseDamage()+power*.5+.5);
+        arrow.setKnockback(EnchantmentHelper.getItemEnchantmentLevel(Enchantments.PUNCH_ARROWS,bow));
+        if(EnchantmentHelper.getItemEnchantmentLevel(Enchantments.FLAMING_ARROWS,bow)>0)arrow.setSecondsOnFire(100);
+        arrow.pickup=AbstractArrow.Pickup.DISALLOWED;
+        if(!boss.level().addFreshEntity(arrow))return false;
+        boss.playSound(net.minecraft.sounds.SoundEvents.ARROW_SHOOT,1,1/(boss.getRandom().nextFloat()*.4f+1.2f)+.5f);
+        boss.swing(InteractionHand.MAIN_HAND,true);return true;
     }
     public boolean windCharge(Vec3 landing) {
         if(!useBudget())return false;
@@ -403,12 +489,16 @@ public final class FourthCalamityActions {
         Vec3 direction=landing.subtract(charge.position());charge.shoot(direction.x,direction.y,direction.z,1.5f,0);
         return boss.level().addFreshEntity(charge);
     }
+    public boolean maceMelee(LivingEntity target) {
+        if(!target.isAlive()||boss.distanceToSqr(target)>9||!attackBudget())return false;
+        boss.swing(InteractionHand.MAIN_HAND,true);return boss.doHurtTarget(target);
+    }
     public boolean melee(LivingEntity target) {
         if(boss.distanceToSqr(target)>9||!boss.hasLineOfSight(target)||!attackBudget())return false;
         boss.swing(InteractionHand.MAIN_HAND,true);return boss.doHurtTarget(target);
     }
     public void cleanup() {
-        operator=null;pursuingPearl=null;pearlOrigin=null;retreatingPearl=false;pendingCrystal=null;rejectedBases.clear();diagnosticTicks.clear();
+        stopMining();deniedMining.clear();operator=null;pursuingPearl=null;pearlOrigin=null;retreatingPearl=false;pendingCrystal=null;rejectedBases.clear();diagnosticTicks.clear();
         if(boss.level() instanceof ServerLevel level) {
             List<Entity> attacks=new ArrayList<>();for(Entity entity:level.getAllEntities())if(CalamityAttackGuard.owned(entity,boss))attacks.add(entity);
             for(Entity entity:attacks){entity.getPersistentData().remove(CalamityAttackGuard.OWNER);if(entity instanceof net.everla.projectc.arkofcosmos.entity.PlayerWindCharge charge)charge.discardAttack();else entity.discard();}

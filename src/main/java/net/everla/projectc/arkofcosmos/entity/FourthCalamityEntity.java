@@ -49,9 +49,11 @@ public final class FourthCalamityEntity extends Monster {
         final float resistance=.8f;
         final float absorption=getAbsorptionAmount();
         final float phaseMultiplier=phase()==3?.25f:1;
+        final float explosionMultiplier;
         final int protection;
         float limit;
         Defense(DamageSource source,float amount) {
+            explosionMultiplier=source.is(DamageTypeTags.IS_EXPLOSION)?.5f:1;
             DamageSource calculation=new DamageSource(source.typeHolder(),source.getDirectEntity(),source.getEntity(),source.getSourcePosition()) {
                 @Override public boolean is(TagKey<DamageType> tag) {
                     if(tag==DamageTypeTags.BYPASSES_ARMOR||tag==DamageTypeTags.BYPASSES_ENCHANTMENTS
@@ -67,7 +69,7 @@ public final class FourthCalamityEntity extends Monster {
             float effective=Mth.clamp(armor-amount/(2+toughness/4),armor*.2f,20);
             return amount*(1-effective/25);
         }
-        float magic(float amount) { return amount*resistance*(1-protection/25f)*phaseMultiplier; }
+        float magic(float amount) { return amount*resistance*(1-protection/25f)*phaseMultiplier*explosionMultiplier; }
         void budget(float raw) { limit=Math.max(0,magic(armor(raw))-absorption); }
     }
     private boolean defend(DamageSource source) {
@@ -91,7 +93,7 @@ public final class FourthCalamityEntity extends Monster {
         if(defense==null) {
             if(!source.is(DamageTypeTags.BYPASSES_EFFECTS)&&!source.is(DamageTypeTags.BYPASSES_RESISTANCE)
                 &&!source.is(DamageTypeTags.BYPASSES_INVULNERABILITY))amount*=.8f;
-            return super.getDamageAfterMagicAbsorb(source,amount)*(phase()==3?.25f:1);
+            return super.getDamageAfterMagicAbsorb(source,amount)*(phase()==3?.25f:1)*(source.is(DamageTypeTags.IS_EXPLOSION)?.5f:1);
         }
         float resisted=amount*(1-defense.resistance);
         if(resisted>0&&resisted<Float.MAX_VALUE&&source.getEntity() instanceof ServerPlayer player)
@@ -170,6 +172,7 @@ public final class FourthCalamityEntity extends Monster {
         equip(EquipmentSlot.CHEST,Items.NETHERITE_CHESTPLATE);
         equip(EquipmentSlot.LEGS,Items.NETHERITE_LEGGINGS);
         equip(EquipmentSlot.FEET,Items.NETHERITE_BOOTS);
+        actions.hold(net.everla.projectc.arkofcosmos.combat.vanilla.VanillaCombat.SPEARS.get("netherite").get());
         for(EquipmentSlot slot:EquipmentSlot.values())setDropChance(slot,0);
         xpReward=0;
     }
@@ -200,6 +203,7 @@ public final class FourthCalamityEntity extends Monster {
         getAttributes().addTransientAttributeModifiers(stack.getAttributeModifiers(slot));
     }
     @Override public boolean canBeAffected(MobEffectInstance effect) { return false; }
+    @Override public boolean fireImmune() { return true; }
     private void clearStatusEffects() {
         for(MobEffectInstance effect:java.util.List.copyOf(getActiveEffects())) {
             removeEffectNoUpdate(effect.getEffect());
@@ -269,6 +273,7 @@ public final class FourthCalamityEntity extends Monster {
     }
     private static boolean mahouAttack(DamageSource source) { return source.getEntity() instanceof MahouTsukaiEntity; }
     @Override public boolean hurt(DamageSource source,float amount) {
+        if(source.is(DamageTypeTags.IS_FIRE))return false;
         if(defeated()||amount>0&&blocksNonPlayerDamage(source))return false;
         boolean mahou=mahouAttack(source);
         int previousCooldown=invulnerableTime;
