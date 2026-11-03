@@ -136,9 +136,9 @@ public final class MahouAttackRenderer extends EntityRenderer<MahouAttackEntity>
                 Vec3 at=p.add(plane.direction(angle).scale(radius*.79));
                 Vec3 next=p.add(plane.direction(angle+Math.PI/2).scale(radius*.79));
                 line(at,next,.08,blue);
-                ArkFxDraw.centered("galaxia/sparkle",at,plane,time,1,1,blue,ArkFxDraw.Blend.ADDITIVE);
+                ArkFxDraw.centered("sparkle",at,plane,time,1,1,blue,ArkFxDraw.Blend.ADDITIVE);
             }
-            ArkFxDraw.centered("galaxia/sparkle",p,plane,-time,2+charge,2+charge,new float[]{.8f,.9f,1,.9f},ArkFxDraw.Blend.ADDITIVE);
+            ArkFxDraw.centered("sparkle",p,plane,-time,2+charge,2+charge,new float[]{.8f,.9f,1,.9f},ArkFxDraw.Blend.ADDITIVE);
             line(p,p.add(direction.scale(32)),.08,new float[]{.5f,.65f,1,.45f});
         }else if(kind==RAIN){
             float[] color=data.getInt("SwingMode")==0?new float[]{.35f,.6f,1,.85f}:new float[]{1,.4f,.08f,.85f};
@@ -171,15 +171,15 @@ public final class MahouAttackRenderer extends EntityRenderer<MahouAttackEntity>
         }else if(kind==WARNING){
             line(p,p.add(velocity),.32,new float[]{.25f,.65f,1,.75f});
             line(p,p.add(velocity),.10,new float[]{1,1,1,1});
-            ArkFxDraw.centered("galaxia/sparkle",p.add(velocity),NativeSprites.billboard(),time,1.3,1.3,new float[]{.65f,.65f,1,.85f},ArkFxDraw.Blend.ADDITIVE);
-            ArkFxDraw.centered("galaxia/sparkle",p.add(velocity),NativeSprites.billboard(),time+Math.PI/4,.8,.8,new float[]{1,1,1,1},ArkFxDraw.Blend.ADDITIVE);
+            ArkFxDraw.centered("sparkle",p.add(velocity),NativeSprites.billboard(),time,1.3,1.3,new float[]{.65f,.65f,1,.85f},ArkFxDraw.Blend.ADDITIVE);
+            ArkFxDraw.centered("sparkle",p.add(velocity),NativeSprites.billboard(),time+Math.PI/4,.8,.8,new float[]{1,1,1,1},ArkFxDraw.Blend.ADDITIVE);
         }
     }
 
     private static void line(Vec3 a,Vec3 b,double width,float[] color){
         Vec3 direction=b.subtract(a);if(direction.lengthSqr()<1e-8)return;
         Vec3 side=NativeSprites.billboard().normal().cross(direction).normalize();if(side.lengthSqr()<.1)side=NativeSprites.billboard().forward();
-        AttackFrame f=new AttackFrame(side,direction.normalize());int[] size=ArkFxDraw.size("galaxia/bloomline");
-        ArkFxDraw.sprite("galaxia/bloomline",a,f,0,width,direction.length()*16/size[1],size[0]/2d,0,color,ArkFxDraw.Blend.ADDITIVE);
+        AttackFrame f=new AttackFrame(side,direction.normalize());int[] size=ArkFxDraw.size("bloomline");
+        ArkFxDraw.sprite("bloomline",a,f,0,width,direction.length()*16/size[1],size[0]/2d,0,color,ArkFxDraw.Blend.ADDITIVE);
     }
 }
