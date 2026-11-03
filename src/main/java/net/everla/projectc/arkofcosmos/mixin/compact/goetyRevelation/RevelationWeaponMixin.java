@@ -1,6 +1,7 @@
 package net.everla.projectc.arkofcosmos.mixin.compact.goetyRevelation;
 
 import net.everla.projectc.arkofcosmos.combat.ArkDamage;
+import net.everla.projectc.arkofcosmos.combat.ApollyonCompatTarget;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.event.entity.living.*;
@@ -26,7 +27,12 @@ public abstract class RevelationWeaponMixin {
             if (event instanceof LivingAttackEvent)
                 source.getClass().getMethod("giveSpecialTag", byte.class).invoke(source, (byte) 2);
             if (event instanceof LivingHurtEvent e) e.setAmount(ArkDamage.apollyonPanel(source));
-            if (event instanceof LivingDamageEvent e) e.setAmount(ArkDamage.apollyonPanel(source));
+            if (event instanceof LivingDamageEvent e) {
+                e.setAmount(ArkDamage.apollyonPanel(source));
+                // actuallyHurt has already assigned new custom frames. Remove them before
+                // Apostle's native health setter checks that same cooldown for this hit.
+                ((ApollyonCompatTarget) event.getEntity()).arkofcosmos$clearWeaponFrames();
+            }
             weapon.getClass().getMethod(callback, ItemStack.class, eventType)
                     .invoke(weapon, new ItemStack(weapon), event);
             return true;
