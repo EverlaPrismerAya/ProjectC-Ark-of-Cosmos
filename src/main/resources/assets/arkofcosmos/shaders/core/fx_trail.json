@@ -4,7 +4,7 @@
     "Color",
     "UV0"
   ],
-  "vertex": "arkofcosmos:fx_trail",
+  "vertex": "arkofcosmos:fx_sprite",
   "samplers": [
     {
       "name": "Sampler0"
@@ -73,9 +73,6 @@
         0
       ]
     },
-    {"name": "AncientsCharge", "type": "float", "count": 1, "values": [0]},
-    {"name": "AncientsGlow", "type": "float", "count": 1, "values": [0]},
-    {"name": "AncientsTime", "type": "float", "count": 1, "values": [0]},
     {
       "name": "FadePremultiplied",
       "type": "float",

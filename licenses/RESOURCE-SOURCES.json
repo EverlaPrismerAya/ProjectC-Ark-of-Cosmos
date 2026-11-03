@@ -344,7 +344,7 @@
       "matches_recorded_output": true
     },
     {
-      "file": "src/main/resources/assets/arkofcosmos/textures/entity/galaxia_bolt.png",
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/galaxia_bolt.png",
       "sha256": "66a43925625f239b30cedb4d1b01767db57b8684a3354ef036783ff65dd3c3db",
       "project": "Calamity Mod",
       "path": "Projectiles/Melee/GalaxiaBolt.png",
@@ -371,7 +371,7 @@
       "matches_recorded_output": true
     },
     {
-      "file": "src/main/resources/assets/arkofcosmos/textures/entity/sundering_scissors_left.png",
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/sunderingscissorsleft.png",
       "sha256": "3320fa05193ead255cc5b273c4660d918bfaf4e7da81725029331e1affcc623f",
       "project": "Calamity Mod",
       "path": "Projectiles/Melee/SunderingScissorsLeft.png",
@@ -380,7 +380,7 @@
       "matches_recorded_output": true
     },
     {
-      "file": "src/main/resources/assets/arkofcosmos/textures/entity/sundering_scissors_left_glow.png",
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/sunderingscissorsleftglow.png",
       "sha256": "9d0de350cf30b6326deb0d4442597782c6623cc09c84dedd8f5108bb4e484410",
       "project": "Calamity Mod",
       "path": "Projectiles/Melee/SunderingScissorsLeftGlow.png",
@@ -389,7 +389,7 @@
       "matches_recorded_output": true
     },
     {
-      "file": "src/main/resources/assets/arkofcosmos/textures/entity/sundering_scissors_right.png",
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/sunderingscissorsright.png",
       "sha256": "34a21520384a2854ca4dd0c50208e98d63398e9ed890031039cdbf42ba606600",
       "project": "Calamity Mod",
       "path": "Projectiles/Melee/SunderingScissorsRight.png",
@@ -398,7 +398,7 @@
       "matches_recorded_output": true
     },
     {
-      "file": "src/main/resources/assets/arkofcosmos/textures/entity/sundering_scissors_right_glow.png",
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/sunderingscissorsrightglow.png",
       "sha256": "3022194e9468c0d011640a83b3861d7d6c02f4aee92e6166f506d643c8df5c6c",
       "project": "Calamity Mod",
       "path": "Projectiles/Melee/SunderingScissorsRightGlow.png",
@@ -536,42 +536,6 @@
       "matches_recorded_output": true
     },
     {
-      "file": "src/main/resources/assets/arkofcosmos/textures/fx/sunderingscissorsleft.png",
-      "sha256": "3320fa05193ead255cc5b273c4660d918bfaf4e7da81725029331e1affcc623f",
-      "project": "Calamity Mod",
-      "path": "Projectiles/Melee/SunderingScissorsLeft.png",
-      "license": "ARR (Calamity original terms)",
-      "recorded_output_sha256": "3320fa05193ead255cc5b273c4660d918bfaf4e7da81725029331e1affcc623f",
-      "matches_recorded_output": true
-    },
-    {
-      "file": "src/main/resources/assets/arkofcosmos/textures/fx/sunderingscissorsleftglow.png",
-      "sha256": "9d0de350cf30b6326deb0d4442597782c6623cc09c84dedd8f5108bb4e484410",
-      "project": "Calamity Mod",
-      "path": "Projectiles/Melee/SunderingScissorsLeftGlow.png",
-      "license": "ARR (Calamity original terms)",
-      "recorded_output_sha256": "9d0de350cf30b6326deb0d4442597782c6623cc09c84dedd8f5108bb4e484410",
-      "matches_recorded_output": true
-    },
-    {
-      "file": "src/main/resources/assets/arkofcosmos/textures/fx/sunderingscissorsright.png",
-      "sha256": "34a21520384a2854ca4dd0c50208e98d63398e9ed890031039cdbf42ba606600",
-      "project": "Calamity Mod",
-      "path": "Projectiles/Melee/SunderingScissorsRight.png",
-      "license": "ARR (Calamity original terms)",
-      "recorded_output_sha256": "34a21520384a2854ca4dd0c50208e98d63398e9ed890031039cdbf42ba606600",
-      "matches_recorded_output": true
-    },
-    {
-      "file": "src/main/resources/assets/arkofcosmos/textures/fx/sunderingscissorsrightglow.png",
-      "sha256": "3022194e9468c0d011640a83b3861d7d6c02f4aee92e6166f506d643c8df5c6c",
-      "project": "Calamity Mod",
-      "path": "Projectiles/Melee/SunderingScissorsRightGlow.png",
-      "license": "ARR (Calamity original terms)",
-      "recorded_output_sha256": "3022194e9468c0d011640a83b3861d7d6c02f4aee92e6166f506d643c8df5c6c",
-      "matches_recorded_output": true
-    },
-    {
       "file": "src/main/resources/assets/arkofcosmos/textures/fx/thickendedline.png",
       "sha256": "7dff3a305edaf2159484eb754ba3a28230985ff0e508dc6a20f75386ee421442",
       "project": "Calamity Mod",
@@ -672,7 +636,7 @@
     {
       "sha256": "58a088dd35f881210ca5a5b7a3cefdf0b6e432de0d83c314665e4ac51367be8b",
       "license": "Calamity Team / All Rights Reserved",
-      "file": "src/main/resources/assets/arkofcosmos/textures/galaxia/bloomline.png",
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/bloomline.png",
       "path": "Particles/BloomLine.png",
       "project": "Calamity Mod"
     },
@@ -686,7 +650,7 @@
     {
       "sha256": "dd3c647736a742a7d54278ae921f44e3130eb9b05bede40a4cd3d7dd67ab43fd",
       "license": "Calamity Team / All Rights Reserved",
-      "file": "src/main/resources/assets/arkofcosmos/textures/galaxia/thinendedline.png",
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/thinendedline.png",
       "path": "Particles/ThinEndedLine.png",
       "project": "Calamity Mod"
     },
@@ -700,7 +664,7 @@
     {
       "sha256": "48a5319f6d7e7432af6891c891bc22426392e0192111e189996cdec709572b38",
       "license": "Calamity Team / All Rights Reserved",
-      "file": "src/main/resources/assets/arkofcosmos/textures/galaxia/bloomcircle.png",
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/bloomcircle.png",
       "path": "Particles/BloomCircle.png",
       "project": "Calamity Mod"
     },
@@ -721,7 +685,7 @@
     {
       "sha256": "c373fe8df0ddd040154a9c288730210efb7ddb715de2d5d6e23c8d140a436d3c",
       "license": "Calamity Team / All Rights Reserved",
-      "file": "src/main/resources/assets/arkofcosmos/textures/galaxia/sparkle.png",
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/sparkle.png",
       "path": "Particles/Sparkle.png",
       "project": "Calamity Mod"
     },
@@ -749,14 +713,14 @@
     {
       "sha256": "66a43925625f239b30cedb4d1b01767db57b8684a3354ef036783ff65dd3c3db",
       "license": "Calamity Team / All Rights Reserved",
-      "file": "src/main/resources/assets/arkofcosmos/textures/galaxia/galaxiabolt.png",
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/galaxia_bolt.png",
       "path": "Projectiles/Melee/GalaxiaBolt.png",
       "project": "Calamity Mod"
     },
     {
       "sha256": "eda3d9485fc2f117931e668a0fbfa117341b04c13ceba418311443492e37a493",
       "license": "Calamity Team / All Rights Reserved",
-      "file": "src/main/resources/assets/arkofcosmos/textures/galaxia/thinsparkle.png",
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/thinsparkle.png",
       "path": "Particles/ThinSparkle.png",
       "project": "Calamity Mod"
     },
@@ -783,7 +747,7 @@
     },
     {
       "file": "src/main/resources/assets/arkofcosmos/shaders/core/galaxia_tint.fsh",
-      "sha256": "c4cd8a731598c394386bf858786221c12b7148d20c6ea4d831ae756136d49c29",
+      "sha256": "a9de3772b110e594e88811e893f2613c0b528d2f34a4e6283893ee32b3474174",
       "project": "Calamity Mod",
       "path": "Effects/BasicTint.fx",
       "license": "Calamity Team / All Rights Reserved",

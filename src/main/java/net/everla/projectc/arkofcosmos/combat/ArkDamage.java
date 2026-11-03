@@ -115,10 +115,21 @@ public final class ArkDamage {
 
     private static boolean ordinaryTarget(LivingEntity target) {
         // Our boss owns staged health/recovery; keep its native callbacks instead of a second health authority.
-        return target instanceof net.everla.projectc.arkofcosmos.entity.MahouTsukaiEntity
+        return target instanceof ApollyonCompatTarget apollyon && apollyon.arkofcosmos$isNetherApollyon()
+                || target instanceof net.everla.projectc.arkofcosmos.entity.MahouTsukaiEntity
                 || target instanceof net.everla.projectc.arkofcosmos.entity.FourthCalamityEntity
                 || target instanceof net.everla.projectc.arkofcosmos.entity.MahoragaWardenEntity
                 || !seagull(target) && target.getType().is(IGNORE_SPECIAL_DAMAGE);
+    }
+
+    public static boolean netherApollyon(LivingEntity target) {
+        return target instanceof ApollyonCompatTarget apollyon && apollyon.arkofcosmos$isNetherApollyon();
+    }
+
+    private static boolean apollyonProjectile(LivingEntity target, DamageSource source) {
+        return netherApollyon(target) && source.getEntity() instanceof Player
+                && (source.getDirectEntity() instanceof net.everla.projectc.arkofcosmos.entity.ArkAttackEntity
+                || source.getDirectEntity() instanceof net.everla.projectc.arkofcosmos.entity.OldOneEntity);
     }
 
     private static boolean seagull(LivingEntity target) {
@@ -204,6 +215,20 @@ public final class ArkDamage {
     private static boolean hurtTarget(LivingEntity target, DamageSource source, float amount, boolean unmitigated, boolean floor) {
         if (target.level().isClientSide || protectedPlayer(target) || target.isRemoved()
                 || !Float.isFinite(amount) || amount <= 0 || !target.isAlive()) return false;
+        if (apollyonProjectile(target, source)) {
+            float damage = source.getDirectEntity() instanceof net.everla.projectc.arkofcosmos.entity.ArkAttackEntity
+                    ? ArkCombat.BASE_DAMAGE : 20f;
+            float before = target.getHealth();
+            ((ApollyonCompatTarget) target).arkofcosmos$setProjectileHealth(Math.max(0, before - damage));
+            target.getCombatTracker().recordDamage(source, Math.min(before, damage));
+            target.setLastHurtByMob((Player) source.getEntity());
+            target.setLastHurtByPlayer((Player) source.getEntity());
+            target.lastHurtByPlayerTime = 100;
+            target.hurtTime = target.hurtDuration = 10;
+            target.level().broadcastDamageEvent(target, source);
+            if (target.getHealth() <= 0) target.die(source);
+            return true;
+        }
         if (ordinaryTarget(target)) return WeaponDamage.handling(target,source)
                 ? target.hurt(source,amount) : WeaponDamage.hurt(target, source, amount);
         // The authority bypasses LivingHurtEvent; its native fallback still receives this bonus there.

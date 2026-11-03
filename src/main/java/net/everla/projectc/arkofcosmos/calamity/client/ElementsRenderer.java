@@ -104,9 +104,9 @@ public final class ElementsRenderer extends EntityRenderer<ElementsEntity> {
         float[] tinted=hsl(1-hue,light);
         return mix(new float[]{(float)light,(float)light,(float)light,1},tinted,saturation);
     }
-    private record Draw(NativeSprites.Draw nativeDraw){
-        void centered(String name,Vec3 p,AttackFrame f,double r,double sx,double sy,float[] color,boolean add){sprite(name,p,f,r,sx,sy,NativeSprites.width(name)/2d,NativeSprites.height(name)/2d,color,add,false,15728880);}
-        void sprite(String name,Vec3 p,AttackFrame f,double r,double sx,double sy,double ox,double oy,float[] color,boolean add,boolean thick,int light){
+    public record Draw(NativeSprites.Draw nativeDraw){
+        public void centered(String name,Vec3 p,AttackFrame f,double r,double sx,double sy,float[] color,boolean add){sprite(name,p,f,r,sx,sy,NativeSprites.width(name)/2d,NativeSprites.height(name)/2d,color,add,false,15728880);}
+        public void sprite(String name,Vec3 p,AttackFrame f,double r,double sx,double sy,double ox,double oy,float[] color,boolean add,boolean thick,int light){
             if(thick&&!name.endsWith("_glow")){nativeDraw.sprite(name,p,f,r,sx,sy,ox,oy,color,false,true,light);if(nativeDraw.buffers() instanceof net.minecraft.client.renderer.MultiBufferSource.BufferSource source)source.endBatch();return;}
             String texture=name.startsWith("fx/")?name.substring(3):name;
             if(thick){

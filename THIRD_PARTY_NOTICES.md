@@ -87,7 +87,7 @@ Calamity 来源的代码须保留 Calamity Team 署名及原条款。本项目�
 | `fx_trail.fsh` | 对 Calamity `Effects/FadedUVMapStreak.fx` 中 `TrailPass` 的 GLSL 转换；保留原公式和常量，属于 Calamity 派生内容，**不作 GPL-3.0-only 重新授权** |
 | `galaxia_tint.fsh` | 对 Calamity `Effects/BasicTint.fx` 中 `Recolor`／`TintPass` 的 GLSL 150 转换，保留 `rbg` 顺序、插值和 Alpha 乘法；Calamity Team，ARR，不作 GPL-3.0-only 重新授权 |
 | `galaxia_tint.json` | 本项目编写的 Minecraft shader、sampler 和 uniform 接口配置；原创适配部分适用 GPL-3.0-only |
-| `fx_trail.vsh` | 本项目编写的 Minecraft 顶点格式／矩阵接口适配；该原创适配部分以 GPL-3.0-only 授权，不扩展到原拖尾算法 |
+| `fx_sprite.vsh`（`fx_trail` 共用） | 本项目编写的 Minecraft 顶点格式／矩阵接口适配；该原创适配部分以 GPL-3.0-only 授权，不扩展到原拖尾算法 |
 | `fx_trail.json` | 本项目编写的 Minecraft 着色器注册、采样器和 uniform 配置，以 GPL-3.0-only 授权 |
 | `fx_sprite.vsh`、`fx_sprite.fsh`、`fx_sprite.json` | 本项目编写的通用纹理／顶点颜色绘制及 Minecraft 接口配置，以 GPL-3.0-only 授权；采样到的第三方纹理仍遵循各自许可 |
 | `mahou_forcefield.fsh`、`mahou_forcefield.json` | Calamity `Effects/SupremeShieldShader.fx` 及 `NPCs/SupremeCalamitas/ForcefieldTexture.png`、`ExtraTextures/GreyscaleGradients/Perlin.png` 的派生 GLSL 与纹理；Calamity Team，ARR，不适用本项目 GPL-3.0-only，来源与 SHA-256 见 `licenses/RESOURCE-SOURCES.json` |

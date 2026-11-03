@@ -19,6 +19,7 @@ void main() {
     sourceColor.rgb *= mix(texture(Sampler2, PackedLight).rgb, vec3(1.0), WhiteMix);
     if (DustOverlay > 0.5) sourceColor = clamp(DustColor - (vec4(1.0) - sourceColor), 0.0, 1.0);
     fragColor = sampleColor * sourceColor;
+    // Keep this curve in sync with ArkFxDraw.nearOpacity and the other three sprite/trail fragments.
     float fade = mix(1.0, mix(0.12, 1.0, smoothstep(0.5, 3.0, length(viewPosition))), NearFade);
     fragColor.a *= fade;
     fragColor.rgb *= mix(1.0, fade, FadePremultiplied);

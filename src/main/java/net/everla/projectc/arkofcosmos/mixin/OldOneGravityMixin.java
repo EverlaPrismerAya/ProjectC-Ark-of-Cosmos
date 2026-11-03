@@ -13,10 +13,6 @@ abstract class OldOneGravityMixin {
     private static boolean active(LivingEntity e,MobEffect effect){
         return !(effect==MobEffects.SLOW_FALLING&&e.isShiftKeyDown()&&OldOneEffects.has(e,OldOneEffects.Status.GRAVITY))&&e.hasEffect(effect);
     }
-    @Group(name="oldOne$gravity",min=1)
-    @Redirect(method={"travel","m_7023_"},at=@At(value="INVOKE",target="Lnet/minecraft/world/entity/LivingEntity;hasEffect(Lnet/minecraft/world/effect/MobEffect;)Z"),require=0)
-    private boolean oldOne$gravityDev(LivingEntity e,MobEffect effect){return active(e,effect);}
-    @Group(name="oldOne$gravity",min=1)
-    @Redirect(method={"travel","m_7023_"},at=@At(value="INVOKE",target="Lnet/minecraft/world/entity/LivingEntity;m_21023_(Lnet/minecraft/world/effect/MobEffect;)Z"),require=0)
-    private boolean oldOne$gravitySrg(LivingEntity e,MobEffect effect){return active(e,effect);}
+    @Redirect(method="travel",remap=true,at=@At(value="INVOKE",target="Lnet/minecraft/world/entity/LivingEntity;hasEffect(Lnet/minecraft/world/effect/MobEffect;)Z"))
+    private boolean oldOne$gravity(LivingEntity e,MobEffect effect){return active(e,effect);}
 }

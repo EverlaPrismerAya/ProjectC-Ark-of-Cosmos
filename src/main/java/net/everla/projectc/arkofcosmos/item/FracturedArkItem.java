@@ -33,8 +33,8 @@ public final class FracturedArkItem extends SwordItem {
     }
     @Override public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) { return InteractionResultHolder.success(player.getItemInHand(hand)); }
     @Override public void inventoryTick(ItemStack stack, Level level, Entity entity, int slot, boolean selected) {
-        if (!level.isClientSide && entity instanceof Player player && cooldown(stack) != ArkCombat.parryCooldown(player))
-            stack.getOrCreateTag().putInt("ArkParryCooldown", ArkCombat.parryCooldown(player));
+        if (!level.isClientSide && entity instanceof Player player && cooldown(stack) != ArkCombat.parryCooldown(player, stack))
+            stack.getOrCreateTag().putInt("ArkParryCooldown", ArkCombat.parryCooldown(player, stack));
     }
     @Override public Component getName(ItemStack stack) { return Component.translatable(getDescriptionId()).withStyle(s -> s.withColor(0xFF8080)); }
     @Override public void appendHoverText(ItemStack stack, Level level, List<Component> lines, TooltipFlag flag) {

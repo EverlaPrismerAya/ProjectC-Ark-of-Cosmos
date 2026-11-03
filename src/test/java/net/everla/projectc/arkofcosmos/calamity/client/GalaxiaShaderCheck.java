@@ -18,8 +18,10 @@ public final class GalaxiaShaderCheck {
         try{
             GLFW.glfwMakeContextCurrent(window);GL.createCapabilities();
             System.out.println("Shader driver: "+glGetString(GL_RENDERER)+" / "+glGetString(GL_VERSION));
-            for(String name:new String[]{"fx_sprite","fx_trail","galaxia_tint","boss_bar","mahou_moon","mahou_forcefield","mahou_jujutsu"}){
-                int program=program(name.equals("galaxia_tint")||name.equals("mahou_moon")||name.equals("mahou_forcefield")||name.equals("mahou_jujutsu")?"fx_sprite":name,name);
+            for(String name:new String[]{"fx_sprite","fx_trail","fractured_sprite","galaxia_tint","boss_bar","mahou_moon","mahou_forcefield","mahou_jujutsu"}){
+                var json=com.google.gson.JsonParser.parseString(Files.readString(ROOT.resolve(name+".json"))).getAsJsonObject();
+                String vertex=json.get("vertex").getAsString(), fragment=json.get("fragment").getAsString();
+                int program=program(vertex.substring(vertex.indexOf(':')+1),fragment.substring(fragment.indexOf(':')+1));
                 if(name.equals("mahou_moon"))moonPixels(program);
                 if(name.equals("mahou_jujutsu"))jujutsuPixels(program);
                 if(name.equals("mahou_forcefield"))forcefieldPixels(program);

@@ -19,7 +19,7 @@ import static net.everla.projectc.arkofcosmos.entity.MahouAttackEntity.*;
 public final class MahouAttackRenderer extends EntityRenderer<MahouAttackEntity> {
     private static final AttackFrame GROUND=new AttackFrame(new Vec3(1,0,0),new Vec3(0,0,1));
     public MahouAttackRenderer(EntityRendererProvider.Context context){super(context);}
-    @Override public ResourceLocation getTextureLocation(MahouAttackEntity entity){return ArkFxDraw.texture("galaxia/galaxiabolt");}
+    @Override public ResourceLocation getTextureLocation(MahouAttackEntity entity){return ArkFxDraw.texture("galaxia_bolt");}
     @Override public boolean shouldRender(MahouAttackEntity e,Frustum f,double x,double y,double z){return e.shouldRenderAtSqrDistance(e.distanceToSqr(x,y,z));}
     @Override public void render(MahouAttackEntity e,float yaw,float partial,PoseStack pose,MultiBufferSource buffers,int light){
         var data=e.view();int kind=e.kind();

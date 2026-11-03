@@ -1,0 +1,31 @@
+{
+  "type": "goety:ritual",
+  "ritual_type": "goety:craft",
+  "activation_item": {
+    "item": "arkofcosmos:ark_of_the_cosmos"
+  },
+  "research": "lord",
+  "craftType": "master_forge",
+  "soulCost": 400,
+  "duration": 10,
+  "ingredients": [
+    {
+      "item": "goety_revelation:quietus_star"
+    },
+    {
+      "item": "goety_revelation:revelation"
+    },
+    {
+      "item": "goety_revelation:the_needle"
+    },
+    {
+      "item": "goety_revelation:apocalyptium_upgrade_smithing_template"
+    },
+    {
+      "item": "goety_revelation:apollyon_hat"
+    }
+  ],
+  "result": {
+    "item": "arkofcosmos:ark_of_the_old_one"
+  }
+}

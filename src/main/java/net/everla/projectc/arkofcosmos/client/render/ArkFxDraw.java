@@ -27,18 +27,10 @@ public final class ArkFxDraw {
     /** Immutable per-draw BasicTint parameters, also captured by deferred Oculus draws. */
     public record Tint(float red, float green, float blue, float opacity) {}
     public static final Map<String, int[]> sizes = new HashMap<>();
-    private static final Map<String, java.util.List<int[]>> contours = new HashMap<>();
     public static Matrix4f matrix;
     public static Vec3 camera;
     // Coordinates match the current draw call (world coordinates for particles, entity local otherwise).
     public static Vec3 fadeEye;
-    public static void ancientsFx(float charge, float glow, float time) {
-        for (ShaderInstance shader : new ShaderInstance[]{spriteShader, trailShader}) if (shader != null) {
-            shader.safeGetUniform("AncientsCharge").set(charge);
-            shader.safeGetUniform("AncientsGlow").set(glow);
-            shader.safeGetUniform("AncientsTime").set(time);
-        }
-    }
     public static void ownerView(int owner, Vec3 origin) {
         Minecraft mc = Minecraft.getInstance();
         fadeEye = mc.player != null && ownerFirstPerson(owner, mc.player.getId(),
@@ -52,6 +44,13 @@ public final class ArkFxDraw {
         double t = Math.max(0, Math.min(1, (distance - .5) / 2.5));
         return .12 + .88 * t * t * (3 - 2 * t);
     }
+    // This owner-only visibility cap is intentionally different from ordinary nearOpacity.
+    static double clearOwnerOpacity(double distance,double cosine){
+        double t=Math.max(0,Math.min(1,(distance-1.5)/2.5));
+        double outside=Math.max(0,Math.min(1,(Math.cos(Math.toRadians(12))-cosine)/(Math.cos(Math.toRadians(12))-Math.cos(Math.toRadians(28)))));
+        double fade=t*t*(3-2*t);
+        return .12+.23*fade*outside*outside*(3-2*outside);
+    }
     public static double opacityAt(Vec3 point) { return fadeEye == null ? 1 : nearOpacity(point.distanceTo(fadeEye)); }
     public enum Blend { ALPHA, NONPREMULTIPLIED, ADDITIVE }
     private static Blend activeBlend=Blend.ALPHA;
@@ -64,8 +63,7 @@ public final class ArkFxDraw {
         event.registerShader(shader(event,"mahou_jujutsu"), shader -> jujutsuShader = shader);
         event.registerShader(shader(event,"mahou_moon"), shader -> moonShader = shader);
         event.registerShader(shader(event,"mahou_forcefield"), shader -> forcefieldShader = shader);
-        sizes.clear();
-        contours.clear();
+        SpriteImages.clear();
     }
     private static ShaderInstance shader(RegisterShadersEvent event,String name)throws IOException{
         return new ShaderInstance(event.getResourceProvider(),id(name),FORMAT){
@@ -80,15 +78,11 @@ public final class ArkFxDraw {
         };
     }
     public static ResourceLocation id(String name) { return ResourceLocation.fromNamespaceAndPath(ArkOfCosmos.MOD_ID, name); }
-    public static ResourceLocation texture(String name) { return id("textures/" + ((name.startsWith("galaxia/") || name.startsWith("elements/") || name.startsWith("item/")) ? name : "fx/" + name) + ".png"); }
+    public static ResourceLocation texture(String name) { return id("textures/" + ((name.startsWith("galaxia/") || name.startsWith("elements/") || name.startsWith("item/") || name.startsWith("entity/")) ? name : "fx/" + name) + ".png"); }
     public static int[] size(String name) {
-        return sizes.computeIfAbsent(name, key -> {
-            try (var in = Minecraft.getInstance().getResourceManager().getResourceOrThrow(texture(key)).open();
-                 var image = com.mojang.blaze3d.platform.NativeImage.read(in)) {
-                return new int[]{image.getWidth(), image.getHeight()};
-            } catch (IOException error) { throw new java.io.UncheckedIOException(error); }
-        });
+        return sizes.computeIfAbsent(name, key -> SpriteImages.get(texture(key)).size());
     }
+
     public static void begin(String texture, Blend blend, boolean trail) {
         begin(texture, blend, trail, null);
     }
@@ -270,20 +264,7 @@ public final class ArkFxDraw {
         if (color[3] <= 0 || scale == 0) return;
         if (OculusShaderCompat.defer(() -> extrudedBlade(name, position, plane, angle, scale, ox, oy, color, tint,lighting))) return;
         int[] dimensions = size(name);
-        var edges = contours.computeIfAbsent(name, key -> {
-            java.util.List<int[]> result = new java.util.ArrayList<>();
-            try (var in = Minecraft.getInstance().getResourceManager().getResourceOrThrow(texture(key)).open();
-                 var image = com.mojang.blaze3d.platform.NativeImage.read(in)) {
-                for (int py = 0; py < image.getHeight(); py++) for (int px = 0; px < image.getWidth(); px++) {
-                    if ((image.getPixelRGBA(px, py) >>> 24) == 0) continue;
-                    if (px == 0 || (image.getPixelRGBA(px - 1, py) >>> 24) == 0) result.add(new int[]{px, py, 0});
-                    if (px == image.getWidth() - 1 || (image.getPixelRGBA(px + 1, py) >>> 24) == 0) result.add(new int[]{px, py, 1});
-                    if (py == 0 || (image.getPixelRGBA(px, py - 1) >>> 24) == 0) result.add(new int[]{px, py, 2});
-                    if (py == image.getHeight() - 1 || (image.getPixelRGBA(px, py + 1) >>> 24) == 0) result.add(new int[]{px, py, 3});
-                }
-            } catch (IOException error) { throw new java.io.UncheckedIOException(error); }
-            return result;
-        });
+        var edges = SpriteImages.get(texture(name)).contour();
         Vec3 x = plane.direction(angle).scale(scale / 16), y = plane.direction(angle + Math.PI / 2).scale(scale / 16);
         Vec3 depth = plane.normal().scale(1.5 * scale / 16);
         begin(name, Blend.ALPHA, false, tint);

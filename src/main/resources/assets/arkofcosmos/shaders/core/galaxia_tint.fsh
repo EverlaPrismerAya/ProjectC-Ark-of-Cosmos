@@ -16,6 +16,7 @@ void main() {
     float originalAlpha = color.a;
     color.rbg = mix(color.rbg, uColor, uOpacity);
     fragColor = color * originalAlpha;
+    // Keep this curve in sync with ArkFxDraw.nearOpacity and the other three sprite/trail fragments.
     float fade = mix(1.0, mix(0.12, 1.0, smoothstep(0.5, 3.0, length(viewPosition))), NearFade);
     fragColor.a *= fade;
     fragColor.rgb *= mix(1.0, fade, FadePremultiplied);

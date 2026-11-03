@@ -206,7 +206,7 @@ public final class ArkAttackEntity extends CalamityAttackEntity {
 
     /** Applies the ArcOfCosmos one-third chance for an additional half-damage hit. */
     private boolean applyArcOfCosmosDamage(LivingEntity target, DamageSource source, float amount) {
-        return !ArkDamage.protectedPlayer(target)
+        return !ArkDamage.netherApollyon(target) && !ArkDamage.protectedPlayer(target)
                 && target.getRandom().nextInt(3) == 0
                 && ArkDamage.hurt(target, source, amount * .5f);
     }

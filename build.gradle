@@ -61,8 +61,9 @@ minecraft {
         // applies to all the run configs below
         configureEach {
             args '--mixin', 'arkofcosmos.mixins.json'
-            // Gradle development runs use Mojang names; the packaged refmap targets SRG names.
-            property 'mixin.env.disableRefMap', 'true'
+            // Both our release refmap and third-party refmaps use SRG names.
+            property 'mixin.env.remapRefMap', 'true'
+            property 'mixin.env.refMapRemappingFile', layout.buildDirectory.file('createSrgToMcp/output.srg').get().asFile.absolutePath
             workingDirectory project.file('run')
 
             // Recommended logging data for a userdev environment
@@ -158,6 +159,18 @@ tasks.register('verifyMixinSrg') {
 }
 tasks.named('check').configure { dependsOn 'verifyMixinSrg' }
 repositories {
+    // Optional local mirror of verified downloads for unreliable/offline networks.
+    maven { url = uri('sample/runtime-maven') }
+    maven {
+        url = 'https://www.cursemaven.com'
+        content { includeGroup 'curse.maven' }
+    }
+    maven {
+        url = 'https://api.modrinth.com/maven'
+        content { includeGroup 'maven.modrinth' }
+    }
+    // RevelationFix 4.8 is supplied locally; give fg.deobf a module coordinate.
+    flatDir { dirs 'sample' }
     // Put repositories for dependencies here
     // ForgeGradle automatically adds the Forge maven and Maven Central for you
 
@@ -169,6 +182,13 @@ repositories {
 }
 
 dependencies {
+    runtimeOnly fg.deobf('maven.modrinth:jei:6E4ps2ER')
+    runtimeOnly fg.deobf('curse.maven:goety-586095:9153454') // 2.5.59.0; required by Goety Revelation 2.3.5.
+    runtimeOnly fg.deobf('maven.modrinth:goety-revelation:t59lWC8J')
+    runtimeOnly fg.deobf('maven.modrinth:endinglibrary:MHYrjSc5')
+    runtimeOnly fg.deobf('maven.modrinth:curios:IPQlZkz1')
+    runtimeOnly fg.deobf('maven.modrinth:oculus:iQ1SwGc3')
+    runtimeOnly fg.deobf('maven.modrinth:embeddium:UTbfe5d1')
     compileOnly 'org.spongepowered:mixin:0.8.5'
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
     // Specify the version of Minecraft to use.

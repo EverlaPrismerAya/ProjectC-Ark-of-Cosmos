@@ -19,6 +19,7 @@ import net.minecraft.world.entity.NeutralMob;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.TickEvent;
@@ -48,11 +49,12 @@ public final class ArkCombat {
         public boolean right, alt, parried;
         long invulnerableUntil;
         public long dashInvulnerableUntil;
-        int parryCooldown, useCooldown, idleTicks;
+        final Map<Item, Integer> parryCooldowns = new HashMap<>();
+        int useCooldown, idleTicks;
         ItemStack parryStack = ItemStack.EMPTY;
     }
     public static Controls controls(Player player) { return CONTROLS.computeIfAbsent(player.getUUID(), k -> new Controls()); }
-    public static int parryCooldown(Player player) { return controls(player).parryCooldown; }
+    public static int parryCooldown(Player player, ItemStack stack) { return controls(player).parryCooldowns.getOrDefault(stack.getItem(), 0); }
     public static boolean holding(Player player) { return player.getMainHandItem().is(ArkOfCosmos.ARK_OF_COSMOS.get()); }
     public static boolean channeling(Player player) { return holding(player) && controls(player).left && player.isAlive() && !player.isSpectator(); }
 
@@ -81,13 +83,13 @@ public final class ArkCombat {
         } else beginParry(player, stack, BASE_DAMAGE);
     }
 
-    /** Shared Ark parry authority: window, cooldown and successful-hit reward are player-owned. */
+    /** Shared parry window and rewards, with an independent cooldown for each Ark type. */
     public static boolean beginParry(ServerPlayer player, ItemStack stack, float damage) {
         Controls c = controls(player);
-        if (c.parryCooldown > 0 || c.useCooldown > 0 || !player.isAlive() || player.isSpectator()) return false;
+        if (parryCooldown(player, stack) > 0 || c.useCooldown > 0 || !player.isAlive() || player.isSpectator()) return false;
         c.parried = false; c.parryStack = stack;
         c.invulnerableUntil = player.level().getGameTime() + 7;
-        c.parryCooldown = 340; c.useCooldown = 15;
+        c.parryCooldowns.put(stack.getItem(), 340); c.useCooldown = 15;
         stack.getOrCreateTag().putInt("ArkParryCooldown", 340);
         if (stack.is(ArkOfCosmos.FRACTURED_ARK.get()))
             net.everla.projectc.arkofcosmos.entity.FracturedEntity.parry(player, damage, AttackFrame.capture(player));
@@ -115,12 +117,15 @@ public final class ArkCombat {
         if (event.phase != TickEvent.Phase.END || !(event.player instanceof ServerPlayer player)) return;
         Controls c = CONTROLS.get(player.getUUID());
         if (c == null) return;
-        int oldCooldown = c.parryCooldown;
-        c.parryCooldown = Math.max(0, c.parryCooldown - 3);
-        if (oldCooldown > 0 && c.parryCooldown == 0) {
-            if(c.parryStack.is(ArkOfCosmos.FRACTURED_ARK.get()) || c.parryStack.is(ArkOfCosmos.ARK_OF_THE_ANCIENTS.get())) FracturedCombat.sound(player,player,"item35",.75f,true,true);
-            else ArkOfCosmos.sound(player,"item35",2);
-        }
+        c.parryCooldowns.replaceAll((item, remaining) -> {
+            int cooldown = Math.max(0, remaining - 3);
+            if (remaining > 0 && cooldown == 0) {
+                if (item == ArkOfCosmos.FRACTURED_ARK.get() || item == ArkOfCosmos.ARK_OF_THE_ANCIENTS.get())
+                    FracturedCombat.sound(player,player,"item35",.75f,true,true);
+                else ArkOfCosmos.sound(player,"item35",2);
+            }
+            return cooldown;
+        });
         c.useCooldown = Math.max(0, c.useCooldown - 3);
         // Releases are sent on GUI/focus/slot changes; heartbeat expiry also handles interrupted clients.
         if (++c.idleTicks > 40 || !holding(player) || !player.isAlive() || player.isSpectator()) {

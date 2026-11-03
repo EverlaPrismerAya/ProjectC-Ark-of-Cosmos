@@ -63,9 +63,6 @@
         0
       ]
     },
-    {"name": "AncientsCharge", "type": "float", "count": 1, "values": [0]},
-    {"name": "AncientsGlow", "type": "float", "count": 1, "values": [0]},
-    {"name": "AncientsTime", "type": "float", "count": 1, "values": [0]},
     {
       "name": "FadeEye",
       "type": "float",

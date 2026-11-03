@@ -1,0 +1,31 @@
+{
+  "type": "goety:ritual",
+  "ritual_type": "goety:craft",
+  "activation_item": {
+    "item": "arkofcosmos:ark_of_the_elements"
+  },
+  "research": "lord",
+  "craftType": "master_forge",
+  "soulCost": 400,
+  "duration": 10,
+  "ingredients": [
+    {
+      "item": "goety_revelation:apocalyptium_ingot"
+    },
+    {
+      "item": "goety_revelation:apocalyptium_ingot"
+    },
+    {
+      "item": "goety_revelation:apocalyptium_upgrade_smithing_template"
+    },
+    {
+      "item": "goety:unholy_blood"
+    },
+    {
+      "item": "arkofcosmos:galaxia"
+    }
+  ],
+  "result": {
+    "item": "arkofcosmos:ark_of_cosmos"
+  }
+}

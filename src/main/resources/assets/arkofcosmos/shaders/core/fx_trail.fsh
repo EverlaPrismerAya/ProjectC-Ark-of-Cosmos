@@ -6,9 +6,6 @@ in vec3 texCoord;
 in vec3 viewPosition;
 uniform float NearFade;
 uniform float FadePremultiplied;
-uniform float AncientsCharge;
-uniform float AncientsGlow;
-uniform float AncientsTime;
 out vec4 fragColor;
 // Calamity Effects/FadedUVMapStreak.fx, TrailPass, without changing constants.
 void main() {
@@ -19,8 +16,8 @@ void main() {
     opacity = mix(pow(sin(coords.y * 3.141), power), opacity, coords.x);
     if (coords.x > 0.7)
         opacity *= pow(1.0 - (coords.x - 0.7) / 0.3, 6.0);
-    float pulse = 0.92 + 0.08 * sin((uTime + AncientsTime) * 6.2831);
-    fragColor = vertexColor * opacity * (1.5 + AncientsGlow * pulse * (0.5 + AncientsCharge));
+    fragColor = vertexColor * opacity * 1.5;
+    // Keep this curve in sync with ArkFxDraw.nearOpacity and the other three sprite/trail fragments.
     float fade = mix(1.0, mix(0.12, 1.0, smoothstep(0.5, 3.0, length(viewPosition))), NearFade);
     fragColor.a *= fade;
     fragColor.rgb *= mix(1.0, fade, FadePremultiplied);

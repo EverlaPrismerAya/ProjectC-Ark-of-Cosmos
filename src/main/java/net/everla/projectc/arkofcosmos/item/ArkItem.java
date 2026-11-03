@@ -41,7 +41,7 @@ public final class ArkItem extends SwordItem {
     public static int cooldown(ItemStack stack) { return stack.hasTag() ? stack.getTag().getInt("ArkParryCooldown") : 0; }
     @Override public void inventoryTick(ItemStack stack, Level level, net.minecraft.world.entity.Entity entity, int slot, boolean selected) {
         if (!level.isClientSide && entity instanceof Player player) {
-            int remaining = ArkCombat.parryCooldown(player);
+            int remaining = ArkCombat.parryCooldown(player, stack);
             if (cooldown(stack) != remaining) stack.getOrCreateTag().putInt("ArkParryCooldown", remaining);
         }
     }

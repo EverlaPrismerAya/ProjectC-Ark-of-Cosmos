@@ -130,21 +130,6 @@ public final class ElementsVanillaParticles {
             if(!player&&rng.nextInt(5)==0){int type=rng.nextBoolean()?66:247;dust(type,surface(e),f.forward().scale(range(-2,2)/16).add(f.right().scale(range(2,4)/16)),type==66?.9:1.4,35+rng.nextInt(55),COLORS[rng.nextInt(4)],true,true,f,e.getId());}
         }
     }
-    public static void renderAncients(double partial,com.mojang.blaze3d.vertex.PoseStack pose,net.minecraft.client.renderer.MultiBufferSource buffers,Vec3 camera){
-        AttackFrame face=NativeSprites.billboard();
-        for(Particle p:FRAME){
-            if(!p.ancient||partial<p.born||partial>=p.died)continue;
-            int n=Math.min(2,(int)(partial*3));double t=partial*3-n;State a=p.states[n],b=p.states[n+1];
-            Vec3 at=a.at.lerp(b.at,t);double scale=lerp(a.scale,b.scale,t),angle=lerp(a.rotation,b.rotation,t);
-            var draw=new NativeSprites.Draw(pose,buffers,camera,p.owner);
-            float alpha=(255-p.alpha)/255f;
-            if(p.type==16||p.type==17){String name="elements/gore_"+p.type;draw.centered(name,at,face,angle,scale,scale,new float[]{1,1,1,alpha},true);continue;}
-            int x=p.type%100*10,y=p.type/100*30+p.variant*10;
-            // Ancient Dust is an emissive additive pass. Do not retain the grayscale
-            // GetAlpha pass here: its source texture is intentionally dark in places.
-            draw.region("elements/dust",at,face,angle,scale,4,4,new float[]{1,1,1,alpha},x,y,8,8,true,15728880);
-        }
-    }
     public static void render(double partial,AttackFrame face){
         for(Particle p:FRAME){
             if(partial<p.born||partial>=p.died)continue;int n=Math.min(2,(int)(partial*3));double fraction=partial*3-n;
@@ -161,7 +146,7 @@ public final class ElementsVanillaParticles {
                 // Main.DrawDust: GetAlpha pass then optional GetColor pass, both premultiplied AlphaBlend.
                 float value=p.type==15||p.type==57||p.type==58?((255-p.alpha)/255f+3)/4:1;
                 float[] color={value,value,value,p.type==66||p.type==247?0:(255-p.alpha)/255f};
-                if(p.fractured) {
+                if(p.fractured && !p.ancient) {
                     int light=net.minecraft.client.renderer.LevelRenderer.getLightColor(Minecraft.getInstance().level,net.minecraft.core.BlockPos.containing(at));
                     ArkFxDraw.litDust(at,face,r,size,color,x,y,light,null);
                     if(p.color[0]!=0||p.color[1]!=0||p.color[2]!=0)ArkFxDraw.litDust(at,face,r,size,color,x,y,light,p.color);

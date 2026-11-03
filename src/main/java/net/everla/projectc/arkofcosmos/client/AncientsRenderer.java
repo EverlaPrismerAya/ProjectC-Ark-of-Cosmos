@@ -23,12 +23,14 @@ public final class AncientsRenderer extends EntityRenderer<AncientsEntity> {
     @Override public void render(AncientsEntity e,float yaw,float partial,PoseStack pose,MultiBufferSource buffers,int light){
         CompoundTag s=e.renderState(partial);if(s.isEmpty())return;
         int kind=s.getInt("Kind");double age=s.getDouble("Age"),scale=s.getDouble("Scale"),angle=s.getDouble("Rotation");
-        ArkFxDraw.ancientsFx(s.getInt("Charge") > 0 ? 1 : 0, kind == AncientsEntity.BLADE || kind == AncientsEntity.BEAM || kind == AncientsEntity.BLAST ? .85f : .55f, (float)((e.level().getGameTime()+partial)/20d));
         if(kind==AncientsEntity.BEAM&&age<5 || kind==AncientsEntity.BLADE&&age>=40)return;
         var f=new AttackFrame(vector(s,"F"),vector(s,"R"));
         Vec3 base=e.getPosition(partial),at=vector(s,"Position"),center=vector(s,"Center");
         var player=e.level().getEntity(e.ownerId());if(player!=null)center=player.getPosition(partial).add(0,player.getBbHeight()/2,0);
-        var draw=new NativeSprites.Draw(pose,buffers,base,e.ownerId());
+        ArkFxDraw.matrix=pose.last().pose(); ArkFxDraw.camera=base;
+        ArkFxDraw.ownerView(e.ownerId(),base);
+        try {
+        var draw=new net.everla.projectc.arkofcosmos.calamity.client.ElementsRenderer.Draw(new NativeSprites.Draw(pose,buffers,base,e.ownerId()));
         ListTag trail=s.getList("Trail",10);double height=NativeSprites.height(BLADE);
         double time=(e.level().getGameTime()+partial)/20;
         float[] rainbow=net.everla.projectc.arkofcosmos.client.render.ArkFxDraw.hsl((float)(time*.6%1),1,.85f,1);
@@ -67,11 +69,12 @@ public final class AncientsRenderer extends EntityRenderer<AncientsEntity> {
         if(kind==AncientsEntity.PARRY&&success>=0){
             double ratio=Math.max(1,age-success+1)/15;
             if(ratio<1){float[] color=net.everla.projectc.arkofcosmos.client.render.ArkFxDraw.hsl((float)(time%1),1,.8f,1);
-                draw.region(GLOW,hilt.add(f.forward().scale(34/16d)),f,angle+Math.PI/4,scale+ratio,0,48,mul(color,1-ratio),24,0,48,48,false,15728880);
+                ArkFxDraw.sprite(GLOW,hilt.add(f.forward().scale(34/16d)),f,angle+Math.PI/4,scale+ratio,scale+ratio,0,48,mul(color,1-ratio),ArkFxDraw.Blend.ALPHA,24,0,48,48);
             }
         }
+        } finally { ArkFxDraw.fadeEye=null; }
     }
-    private static void sparkle(NativeSprites.Draw d,Vec3 at,AttackFrame face,double time,double scale,float[] color){
+    private static void sparkle(net.everla.projectc.arkofcosmos.calamity.client.ElementsRenderer.Draw d,Vec3 at,AttackFrame face,double time,double scale,float[] color){
         double ratio=(double)NativeSprites.height("fx/sparkle")/NativeSprites.height("fx/bloomcircle");
         d.centered("fx/bloomcircle",at,face,0,2*scale*ratio,2*scale*ratio,mul(color,.5),true);
         d.centered("fx/sparkle",at,face,time*8+Math.PI/4,.75*scale,.75*scale,mul(color,.5),true);

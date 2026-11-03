@@ -22,34 +22,19 @@ import org.joml.Matrix4f;
 
 public final class ArkAttackRenderer extends EntityRenderer<ArkAttackEntity> {
     private static ArkAttackRenderer INSTANCE;
-    private record Sprite(String name, int width, int height, boolean item) {
-        private Sprite(String name, int width, int height) { this(name, width, height, false); }
-        ResourceLocation texture() { return ResourceLocation.fromNamespaceAndPath(ArkOfCosmos.MOD_ID, "textures/" + (item ? "item/" : "entity/") + name + ".png"); }
+    private record Sprite(String name, int width, int height) {
+        ResourceLocation texture() { return ResourceLocation.fromNamespaceAndPath(ArkOfCosmos.MOD_ID, "textures/" + name + ".png"); }
     }
-    private static final Sprite LEFT = new Sprite("sundering_scissors_left", 120, 132);
-    private static final Sprite RIGHT = new Sprite("sundering_scissors_right", 134, 132);
-    private static final Sprite LEFT_GLOW = new Sprite("sundering_scissors_left_glow", 120, 132);
-    private static final Sprite RIGHT_GLOW = new Sprite("sundering_scissors_right_glow", 134, 132);
-    private static final Sprite NEEDLE = new Sprite("rending_needle", 14, 88);
-    private static final Sprite BOLT = new Sprite("galaxia_bolt", 22, 34);
-    private static final Sprite ITEM = new Sprite("ark_of_cosmos", 126, 132, true);
+    private static final Sprite LEFT = new Sprite("fx/sunderingscissorsleft", 120, 132);
+    private static final Sprite RIGHT = new Sprite("fx/sunderingscissorsright", 134, 132);
+    private static final Sprite LEFT_GLOW = new Sprite("fx/sunderingscissorsleftglow", 120, 132);
+    private static final Sprite RIGHT_GLOW = new Sprite("fx/sunderingscissorsrightglow", 134, 132);
+    private static final Sprite NEEDLE = new Sprite("entity/rending_needle", 14, 88);
+    private static final Sprite BOLT = new Sprite("fx/galaxia_bolt", 22, 34);
+    private static final Sprite ITEM = new Sprite("item/ark_of_cosmos", 126, 132);
 
-    private final java.util.Map<Sprite, java.util.List<int[]>> contours = new java.util.HashMap<>();
     private java.util.List<int[]> contour(Sprite sprite) {
-        return contours.computeIfAbsent(sprite, key -> {
-            java.util.List<int[]> edges = new java.util.ArrayList<>();
-            try (var stream = net.minecraft.client.Minecraft.getInstance().getResourceManager().getResourceOrThrow(key.texture()).open();
-                 var image = com.mojang.blaze3d.platform.NativeImage.read(stream)) {
-                for (int y = 0; y < image.getHeight(); y++) for (int x = 0; x < image.getWidth(); x++) {
-                    if ((image.getPixelRGBA(x, y) >>> 24) == 0) continue;
-                    if (x == 0 || (image.getPixelRGBA(x - 1, y) >>> 24) == 0) edges.add(new int[]{x, y, 0});
-                    if (x == image.getWidth() - 1 || (image.getPixelRGBA(x + 1, y) >>> 24) == 0) edges.add(new int[]{x, y, 1});
-                    if (y == 0 || (image.getPixelRGBA(x, y - 1) >>> 24) == 0) edges.add(new int[]{x, y, 2});
-                    if (y == image.getHeight() - 1 || (image.getPixelRGBA(x, y + 1) >>> 24) == 0) edges.add(new int[]{x, y, 3});
-                }
-            } catch (java.io.IOException error) { throw new java.io.UncheckedIOException(error); }
-            return edges;
-        });
+        return net.everla.projectc.arkofcosmos.client.render.SpriteImages.get(sprite.texture()).contour();
     }
     public ArkAttackRenderer(EntityRendererProvider.Context context) { super(context); shadowRadius = 0; INSTANCE = this; }
     @Override public ResourceLocation getTextureLocation(ArkAttackEntity entity) { return RIGHT.texture(); }

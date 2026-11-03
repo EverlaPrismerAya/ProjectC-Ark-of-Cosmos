@@ -50,9 +50,9 @@ public final class GalaxiaRenderer extends EntityRenderer<GalaxiaEntity> {
                 double age=s.contains("RenderAge")?s.getDouble("RenderAge"):s.getInt("Age");
                 if(visual!=null && !visual.history.isEmpty())for(;i<2;i++){
                     Vec3 at=historyPosition(visual.history,age-1-i);
-                    ArkFxDraw.centered("galaxia/galaxiabolt",at,f,r+Math.PI/2,scale,scale,mul(WHITE,(2-i)/2d),ALPHA);
+                    ArkFxDraw.centered("galaxia_bolt",at,f,r+Math.PI/2,scale,scale,mul(WHITE,(2-i)/2d),ALPHA);
                 }
-                if(i==0)ArkFxDraw.centered("galaxia/galaxiabolt",p,f,r+Math.PI/2,scale,scale,WHITE,ALPHA);
+                if(i==0)ArkFxDraw.centered("galaxia_bolt",p,f,r+Math.PI/2,scale,scale,WHITE,ALPHA);
             }else if(kind==STAR){
                 double fade=s.getInt("Left")>15?1:s.getInt("Left")/15d;
                 centered("sparkle",p,f,time*10+Math.PI/4,scale*1.5,scale*1.5,mul(WHITE,.5*fade));
