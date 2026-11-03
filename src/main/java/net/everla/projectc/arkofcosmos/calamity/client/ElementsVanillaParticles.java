@@ -137,12 +137,12 @@ public final class ElementsVanillaParticles {
             int n=Math.min(2,(int)(partial*3));double t=partial*3-n;State a=p.states[n],b=p.states[n+1];
             Vec3 at=a.at.lerp(b.at,t);double scale=lerp(a.scale,b.scale,t),angle=lerp(a.rotation,b.rotation,t);
             var draw=new NativeSprites.Draw(pose,buffers,camera,p.owner);
-            if(p.type==16||p.type==17){String name="elements/gore_"+p.type;draw.centered(name,at,face,angle,scale,scale,new float[]{1,1,1,(255-p.alpha)/255f},true);continue;}
-            float value=p.type==15||p.type==57||p.type==58?((255-p.alpha)/255f+3)/4:1;
-            float[] color={value,value,value,(255-p.alpha)/255f};int x=p.type%100*10,y=p.type/100*30+p.variant*10;
-            int light=15728880;
-            draw.region("elements/dust",at,face,angle,scale,4,4,color,x,y,8,8,p.type==66,light);
-            if(p.color[0]!=0||p.color[1]!=0||p.color[2]!=0)draw.region("elements/dust",at,face,angle,scale,4,4,p.color,x,y,8,8,true,light);
+            float alpha=(255-p.alpha)/255f;
+            if(p.type==16||p.type==17){String name="elements/gore_"+p.type;draw.centered(name,at,face,angle,scale,scale,new float[]{1,1,1,alpha},true);continue;}
+            int x=p.type%100*10,y=p.type/100*30+p.variant*10;
+            // Ancient Dust is an emissive additive pass. Do not retain the grayscale
+            // GetAlpha pass here: its source texture is intentionally dark in places.
+            draw.region("elements/dust",at,face,angle,scale,4,4,new float[]{1,1,1,alpha},x,y,8,8,true,15728880);
         }
     }
     public static void render(double partial,AttackFrame face){
