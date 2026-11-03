@@ -115,7 +115,6 @@ public final class AncientsEffects {
     }
     public static void render(float partial, com.mojang.blaze3d.vertex.PoseStack pose, net.minecraft.client.renderer.MultiBufferSource buffers, Vec3 camera) {
         AttackFrame face=NativeSprites.billboard();
-        ElementsVanillaParticles.renderAncients(partial,pose,buffers,camera);
         for(ArkFxParticle p:FRAME)p.drawNative(partial,new NativeSprites.Draw(pose,buffers,camera,p.ownerId),face);
     }
 }

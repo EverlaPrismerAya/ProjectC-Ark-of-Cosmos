@@ -147,7 +147,6 @@ public final class ElementsVanillaParticles {
     }
     public static void render(double partial,AttackFrame face){
         for(Particle p:FRAME){
-            if(p.ancient)continue;
             if(partial<p.born||partial>=p.died)continue;int n=Math.min(2,(int)(partial*3));double fraction=partial*3-n;
             State a=p.states[n],b=p.states[n+1];Vec3 at=a.at.lerp(b.at,fraction);double size=lerp(a.scale,b.scale,fraction),r=lerp(a.rotation,b.rotation,fraction),opacity=lerp(a.opacity,b.opacity,fraction);
             ArkFxDraw.ownerView(p.owner,Vec3.ZERO);
