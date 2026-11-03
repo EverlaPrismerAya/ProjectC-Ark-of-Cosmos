@@ -22,6 +22,7 @@ public final class ArkFxDraw {
     public static final VertexFormatElement UV3 = new VertexFormatElement(0, VertexFormatElement.Type.FLOAT, VertexFormatElement.Usage.UV, 3);
     public static final VertexFormat FORMAT = new VertexFormat(ImmutableMap.of("Position", DefaultVertexFormat.ELEMENT_POSITION,
             "Color", DefaultVertexFormat.ELEMENT_COLOR, "UV0", UV3));
+    public static ShaderInstance fracturedShader;
     public static ShaderInstance spriteShader, trailShader, tintShader, moonShader, forcefieldShader, jujutsuShader;
     /** Immutable per-draw BasicTint parameters, also captured by deferred Oculus draws. */
     public record Tint(float red, float green, float blue, float opacity) {}
@@ -50,6 +51,7 @@ public final class ArkFxDraw {
 
     public static void register(RegisterShadersEvent event) throws IOException {
         event.registerShader(shader(event,"fx_sprite"), shader -> spriteShader = shader);
+        event.registerShader(shader(event,"fractured_sprite"), shader -> fracturedShader = shader);
         event.registerShader(shader(event,"fx_trail"), shader -> trailShader = shader);
         event.registerShader(shader(event,"galaxia_tint"), shader -> tintShader = shader);
         event.registerShader(shader(event,"mahou_jujutsu"), shader -> jujutsuShader = shader);
@@ -71,7 +73,7 @@ public final class ArkFxDraw {
         };
     }
     public static ResourceLocation id(String name) { return ResourceLocation.fromNamespaceAndPath(ArkOfCosmos.MOD_ID, name); }
-    public static ResourceLocation texture(String name) { return id("textures/" + ((name.startsWith("galaxia/") || name.startsWith("elements/")) ? name : "fx/" + name) + ".png"); }
+    public static ResourceLocation texture(String name) { return id("textures/" + ((name.startsWith("galaxia/") || name.startsWith("elements/") || name.startsWith("item/")) ? name : "fx/" + name) + ".png"); }
     public static int[] size(String name) {
         return sizes.computeIfAbsent(name, key -> {
             try (var in = Minecraft.getInstance().getResourceManager().getResourceOrThrow(texture(key)).open();
@@ -196,10 +198,24 @@ public final class ArkFxDraw {
     }
     public static void sprite(String name, Vec3 position, AttackFrame plane, double angle, double sx, double sy,
                        double ox, double oy, float[] color, Blend blend, int rx, int ry, int rw, int rh, Tint tint) {
+        sprite(name,position,plane,angle,sx,sy,ox,oy,color,blend,rx,ry,rw,rh,tint,null);
+    }
+    private record SpriteLight(int packed, float whiteMix, float[] overlay) {}
+    public static void litSprite(String name, Vec3 position, AttackFrame plane, double angle, double scale,
+                                 double ox, double oy, float[] color, int rx, int ry, int rw, int rh, int light, float whiteMix) {
+        sprite(name,position,plane,angle,scale,scale,ox,oy,color,Blend.ALPHA,rx,ry,rw,rh,null,new SpriteLight(light,whiteMix,null));
+    }
+    public static void litDust(Vec3 at, AttackFrame face, double rotation, double scale, float[] color,
+                               int x, int y, int light, float[] overlay) {
+        sprite("elements/dust",at,face,rotation,scale,scale,4,4,color,Blend.ALPHA,x,y,8,8,null,new SpriteLight(light,0,overlay));
+    }
+    private static void sprite(String name, Vec3 position, AttackFrame plane, double angle, double sx, double sy,
+                               double ox, double oy, float[] color, Blend blend, int rx, int ry, int rw, int rh, Tint tint, SpriteLight lighting) {
         if (color[3] <= 0 && color[0] <= 0 && color[1] <= 0 && color[2] <= 0 || sx == 0 || sy == 0) return;
         if (OculusShaderCompat.defer(() -> sprite(name, position, plane, angle, sx, sy,
-                ox, oy, color, blend, rx, ry, rw, rh,tint))) return;
+                ox, oy, color, blend, rx, ry, rw, rh,tint,lighting))) return;
         begin(name, blend, false,tint);
+        applySpriteLight(lighting);
         BufferBuilder buffer = Tesselator.getInstance().getBuilder();
         buffer.begin(VertexFormat.Mode.QUADS, FORMAT);
         Vec3 x = plane.direction(angle).scale(sx / 16), y = plane.direction(angle + Math.PI / 2).scale(sy / 16);
@@ -212,6 +228,22 @@ public final class ArkFxDraw {
         BufferUploader.drawWithShader(buffer.end());
         end();
     }
+    private static void applySpriteLight(SpriteLight lighting) {
+        if (lighting != null) {
+            var mc=Minecraft.getInstance();mc.gameRenderer.lightTexture().turnOnLightLayer();
+            fracturedShader.safeGetUniform("AlphaCutoff").set(0f);
+            fracturedShader.safeGetUniform("PackedLight").set((lighting.packed&65535)/256f+8/256f,(lighting.packed>>>16)/256f+8/256f);
+            fracturedShader.safeGetUniform("WhiteMix").set(lighting.whiteMix);
+            fracturedShader.safeGetUniform("DustOverlay").set(lighting.overlay==null?0f:1f);
+            float[] overlay=lighting.overlay==null?new float[4]:lighting.overlay;
+            fracturedShader.safeGetUniform("DustColor").set(overlay[0],overlay[1],overlay[2],overlay[3]);
+            fracturedShader.safeGetUniform("NearFade").set(fadeEye==null?0f:1f);
+            fracturedShader.safeGetUniform("FadePremultiplied").set(1f);
+            Vec3 eye=fadeEye==null?Vec3.ZERO:fadeEye.subtract(camera);
+            fracturedShader.safeGetUniform("FadeEye").set((float)eye.x,(float)eye.y,(float)eye.z);
+            RenderSystem.setShader(()->fracturedShader);
+        }
+    }
     public static void centered(String name, Vec3 position, AttackFrame plane, double rotation, double sx, double sy, float[] color, Blend blend) {
         int[] size = size(name);
         sprite(name, position, plane, rotation, sx, sy, size[0] / 2d, size[1] / 2d, color, blend);
@@ -220,8 +252,16 @@ public final class ArkFxDraw {
     /** Same three-pixel extrusion and alpha contour as the Ark blade, using the FX material. */
     public static void extrudedBlade(String name, Vec3 position, AttackFrame plane, double angle, double scale,
                                      double ox, double oy, float[] color, Tint tint) {
+        extrudedBlade(name,position,plane,angle,scale,ox,oy,color,tint,null);
+    }
+    public static void litExtrudedBlade(String name, Vec3 position, AttackFrame plane, double angle, double scale,
+                                        double ox, double oy, float[] color, int light, float whiteMix) {
+        extrudedBlade(name,position,plane,angle,scale,ox,oy,color,null,new SpriteLight(light,whiteMix,null));
+    }
+    private static void extrudedBlade(String name, Vec3 position, AttackFrame plane, double angle, double scale,
+                                     double ox, double oy, float[] color, Tint tint, SpriteLight lighting) {
         if (color[3] <= 0 || scale == 0) return;
-        if (OculusShaderCompat.defer(() -> extrudedBlade(name, position, plane, angle, scale, ox, oy, color, tint))) return;
+        if (OculusShaderCompat.defer(() -> extrudedBlade(name, position, plane, angle, scale, ox, oy, color, tint,lighting))) return;
         int[] dimensions = size(name);
         var edges = contours.computeIfAbsent(name, key -> {
             java.util.List<int[]> result = new java.util.ArrayList<>();
@@ -240,9 +280,10 @@ public final class ArkFxDraw {
         Vec3 x = plane.direction(angle).scale(scale / 16), y = plane.direction(angle + Math.PI / 2).scale(scale / 16);
         Vec3 depth = plane.normal().scale(1.5 * scale / 16);
         begin(name, Blend.ALPHA, false, tint);
+        applySpriteLight(lighting);
         // The solid blade must occlude later translucent terrain/cloud passes; transparent texels must not write depth.
         RenderSystem.depthMask(true);
-        ShaderInstance bladeShader=tint==null?spriteShader:tintShader;
+        ShaderInstance bladeShader=lighting!=null?fracturedShader:tint==null?spriteShader:tintShader;
         if(bladeShader!=null)bladeShader.safeGetUniform("AlphaCutoff").set(.1f);
         BufferBuilder buffer = Tesselator.getInstance().getBuilder();
         buffer.begin(VertexFormat.Mode.QUADS, FORMAT);

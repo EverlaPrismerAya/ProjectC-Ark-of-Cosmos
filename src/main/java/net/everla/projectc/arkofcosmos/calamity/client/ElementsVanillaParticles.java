@@ -28,7 +28,7 @@ public final class ElementsVanillaParticles {
     private record State(Vec3 at,double scale,double rotation,double opacity) {}
     static final class Particle {
         final int type,owner,variant;final AttackFrame plane;final float[] color;
-        Vec3 at,velocity;double scale,rotation,opacity=1,born,died=1;int age,life,alpha;boolean noGravity;
+        Vec3 at,velocity;double scale,rotation,opacity=1,born,died=1;int age,life,alpha;boolean noGravity, fractured;
         final State[] states=new State[4];
         Particle(int type,Vec3 at,Vec3 velocity,double scale,float[] color,AttackFrame plane,int owner){
             this.type=type;this.at=at;this.velocity=velocity;this.scale=scale;this.color=color;this.plane=plane;this.owner=owner;
@@ -81,6 +81,13 @@ public final class ElementsVanillaParticles {
         if(rng.nextInt(3)==0)dust(new int[]{15,57,58}[rng.nextInt(3)],at,speed.scale(.1),1.3,150,new float[]{0,0,0,0},false,false,f,owner);
         if(kind==STAR&&rng.nextInt(48)==0)gore(16,at,speed.scale(.2),f,owner,.66,speed.scale(.3));
     }
+    /** AncientBeam uses exactly the same four source Dust IDs as SolarNeedle. */
+    public static void fractured(CompoundTag s,int step){
+        phase=step-1;Vec3 at=vector(s,"Position"),speed=vector(s,"Velocity");
+        AttackFrame f=new AttackFrame(vector(s,"F"),vector(s,"R"));int owner=s.getInt("Owner");
+        if(rng.nextInt(3)==0)dust(66,at,speed.scale(.05),1.2,150,rgb(discoR,100,255),false,true,f,owner).fractured=true;
+        if(rng.nextInt(3)==0)dust(new int[]{15,57,58}[rng.nextInt(3)],at,speed.scale(.1),1.3,150,new float[]{0,0,0,0},false,false,f,owner).fractured=true;
+    }
     public static void death(CompoundTag s){
         AttackFrame f=new AttackFrame(vector(s,"F"),vector(s,"R"));
         Vec3 at=vector(s,"At").subtract(f.forward().add(f.right()).scale(10/16d));
@@ -129,6 +136,12 @@ public final class ElementsVanillaParticles {
                 // Main.DrawDust: GetAlpha pass then optional GetColor pass, both premultiplied AlphaBlend.
                 float value=p.type==15||p.type==57||p.type==58?((255-p.alpha)/255f+3)/4:1;
                 float[] color={value,value,value,p.type==66||p.type==247?0:(255-p.alpha)/255f};
+                if(p.fractured) {
+                    int light=net.minecraft.client.renderer.LevelRenderer.getLightColor(Minecraft.getInstance().level,net.minecraft.core.BlockPos.containing(at));
+                    ArkFxDraw.litDust(at,face,r,size,color,x,y,light,null);
+                    if(p.color[0]!=0||p.color[1]!=0||p.color[2]!=0)ArkFxDraw.litDust(at,face,r,size,color,x,y,light,p.color);
+                    continue;
+                }
                 ArkFxDraw.sprite("elements/dust",at,face,r,size,size,4,4,color,ArkFxDraw.Blend.ALPHA,x,y,8,8);
                 if(p.color[0]!=0||p.color[1]!=0||p.color[2]!=0){float[] overlay={Math.max(0,p.color[0]-(1-value)),Math.max(0,p.color[1]-(1-value)),Math.max(0,p.color[2]-(1-value)),Math.max(0,p.color[3]-(1-color[3]))};ArkFxDraw.sprite("elements/dust",at,face,r,size,size,4,4,overlay,ArkFxDraw.Blend.ALPHA,x,y,8,8);}
             }

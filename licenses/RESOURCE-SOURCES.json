@@ -2,6 +2,91 @@
   "notice": "Provenance records do not grant redistribution rights. See THIRD_PARTY_NOTICES.md.",
   "files": [
     {
+      "file": "src/main/resources/assets/arkofcosmos/textures/item/fractured_ark.png",
+      "sha256": "23c0a873f86587d8cacd7a3b3b961f72e6d2eb295b1d840f9206c35d2491f995",
+      "project": "Calamity Mod",
+      "path": "Items/Weapons/Melee/FracturedArk.png",
+      "license": "ARR (Calamity original terms)",
+      "source_sha256": "23c0a873f86587d8cacd7a3b3b961f72e6d2eb295b1d840f9206c35d2491f995",
+      "used_by": [
+        "Fractured Ark visuals"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/item/fractured_ark_glow.png",
+      "sha256": "8ef3699ffe9683d6737e039b69dd3ba32f663a2dbf3944f182ad57fb0a675d30",
+      "project": "Calamity Mod",
+      "path": "Items/Weapons/Melee/FracturedArkGlow.png",
+      "license": "ARR (Calamity original terms)",
+      "source_sha256": "8ef3699ffe9683d6737e039b69dd3ba32f663a2dbf3944f182ad57fb0a675d30",
+      "used_by": [
+        "Fractured Ark visuals"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/fractured_swing_0.ogg",
+      "sha256": "dfbe91ad6094fe045f61c26071ac8480f6122ce0f3a9f243d3a077029d9af610",
+      "project": "Terraria",
+      "path": "Content/Sounds/Custom/dd2_monk_staff_swing_0.xnb",
+      "license": "Re-Logic / original rights holders; not GPL-3.0-only",
+      "source_sha256": "fbde0d06df324f23a1b589d9cda34dfa1f2daddd6cf7faf8ebb37f4516f3a5a9",
+      "conversion": "XNB SoundEffectReader PCM -> WAV -> Vorbis quality 10; original sample rate and channels"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/fractured_swing_1.ogg",
+      "sha256": "1fa0261714a7552381c73da19cf7fad371453c21692989af1c2bc5831d186994",
+      "project": "Terraria",
+      "path": "Content/Sounds/Custom/dd2_monk_staff_swing_1.xnb",
+      "license": "Re-Logic / original rights holders; not GPL-3.0-only",
+      "source_sha256": "25a6ff56eeb39429aea1c1d4f0a12bf588b8e625953f9b73560fb992c3e3be9f",
+      "conversion": "XNB SoundEffectReader PCM -> WAV -> Vorbis quality 10; original sample rate and channels"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/fractured_swing_2.ogg",
+      "sha256": "a68a5163c6ffa720c1ac8ed6ad0cc4115ff6af620ddd12f77e55eb1469f42bc7",
+      "project": "Terraria",
+      "path": "Content/Sounds/Custom/dd2_monk_staff_swing_2.xnb",
+      "license": "Re-Logic / original rights holders; not GPL-3.0-only",
+      "source_sha256": "be92576eff34eb3c299e1ff60ba4bd83985ad92fe4f263590120d60f8a03612b",
+      "conversion": "XNB SoundEffectReader PCM -> WAV -> Vorbis quality 10; original sample rate and channels"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/fractured_swing_3.ogg",
+      "sha256": "d8b39b8b9556d13d76f4e9bf12dc1918934aac7bb7b05f8d63854299c25eddf0",
+      "project": "Terraria",
+      "path": "Content/Sounds/Custom/dd2_monk_staff_swing_3.xnb",
+      "license": "Re-Logic / original rights holders; not GPL-3.0-only",
+      "source_sha256": "ba63961c02af3e80db76d853fe48fec7d558db31720b70a50211e0462c4a8cb9",
+      "conversion": "XNB SoundEffectReader PCM -> WAV -> Vorbis quality 10; original sample rate and channels"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/fractured_beam_death_0.ogg",
+      "sha256": "1153c6fe7912bd6989aeba9dffef61daef970e7b5915a825b5dd909d80cf19dc",
+      "project": "Terraria",
+      "path": "Content/Sounds/Custom/dd2_wither_beast_death_0.xnb",
+      "license": "Re-Logic / original rights holders; not GPL-3.0-only",
+      "source_sha256": "7d3fdaa3164c83bed8c9725686aee2773974a17c7e79e96f23862a0c58dae469",
+      "conversion": "XNB SoundEffectReader PCM -> WAV -> Vorbis quality 10; original sample rate and channels"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/fractured_beam_death_1.ogg",
+      "sha256": "9ae61201dcea3ea75b8c989a3b4722698b141c820b40d3c11fdb4af72b970402",
+      "project": "Terraria",
+      "path": "Content/Sounds/Custom/dd2_wither_beast_death_1.xnb",
+      "license": "Re-Logic / original rights holders; not GPL-3.0-only",
+      "source_sha256": "ef534148e40f692abef3e619c30dd625b7ce7b204c63cf884fdf4942056d5a06",
+      "conversion": "XNB SoundEffectReader PCM -> WAV -> Vorbis quality 10; original sample rate and channels"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/fractured_beam_death_2.ogg",
+      "sha256": "ca9cc70053e42249e60edc88a9678da5a4d52c07325d85092666ff9c0d3682e6",
+      "project": "Terraria",
+      "path": "Content/Sounds/Custom/dd2_wither_beast_death_2.xnb",
+      "license": "Re-Logic / original rights holders; not GPL-3.0-only",
+      "source_sha256": "30d4d326ac7aeb01f06fed7882440cbe936ff0393a297242dea3dff9739c3e28",
+      "conversion": "XNB SoundEffectReader PCM -> WAV -> Vorbis quality 10; original sample rate and channels"
+    },
+    {
       "file": "src/main/resources/assets/arkofcosmos/sounds/fourth_calamity_death.ogg",
       "sha256": "399e0a2cfa7dcfd5f1d9fa0b199b4c6f5ac8987ad2da17fbfa72c70f1de6a62f",
       "project": "User-supplied Fourth Calamity disappearance sound",
@@ -301,7 +386,10 @@
       "path": "Particles/BloomCircle.png",
       "license": "ARR (Calamity original terms)",
       "recorded_output_sha256": "48a5319f6d7e7432af6891c891bc22426392e0192111e189996cdec709572b38",
-      "matches_recorded_output": true
+      "matches_recorded_output": true,
+      "used_by": [
+        "Fractured Ark visuals"
+      ]
     },
     {
       "file": "src/main/resources/assets/arkofcosmos/textures/fx/bloomline.png",
@@ -355,7 +443,10 @@
       "path": "Particles/Light.png",
       "license": "ARR (Calamity original terms)",
       "recorded_output_sha256": "c63c8daf47b899af3eadeadf1579af25133efb441379afca07f8b098b3382622",
-      "matches_recorded_output": true
+      "matches_recorded_output": true,
+      "used_by": [
+        "Fractured Ark visuals"
+      ]
     },
     {
       "file": "src/main/resources/assets/arkofcosmos/textures/fx/scarletdevilstreak.png",
@@ -373,7 +464,10 @@
       "path": "Particles/Sparkle.png",
       "license": "ARR (Calamity original terms)",
       "recorded_output_sha256": "c373fe8df0ddd040154a9c288730210efb7ddb715de2d5d6e23c8d140a436d3c",
-      "matches_recorded_output": true
+      "matches_recorded_output": true,
+      "used_by": [
+        "Fractured Ark visuals"
+      ]
     },
     {
       "file": "src/main/resources/assets/arkofcosmos/textures/fx/sunderingscissorsglow.png",
@@ -445,7 +539,10 @@
       "path": "Particles/ThinSparkle.png",
       "license": "ARR (Calamity original terms)",
       "recorded_output_sha256": "eda3d9485fc2f117931e668a0fbfa117341b04c13ceba418311443492e37a493",
-      "matches_recorded_output": true
+      "matches_recorded_output": true,
+      "used_by": [
+        "Fractured Ark visuals"
+      ]
     },
     {
       "file": "src/main/resources/assets/arkofcosmos/textures/fx/trientcircularsmear.png",
@@ -954,7 +1051,10 @@
       "path": "Content/Images/Dust.xnb",
       "license": "Re-Logic / original rights holders; not GPL-3.0-only",
       "conversion": "XNB LZX Texture2D RGBA decoded losslessly to PNG; premultiplied channel bytes unchanged",
-      "rgba_sha256": "d66069c16123c59b96e4bda53369fc963931478e5ac36a741a6e17abf9d0c5fe"
+      "rgba_sha256": "d66069c16123c59b96e4bda53369fc963931478e5ac36a741a6e17abf9d0c5fe",
+      "used_by": [
+        "Fractured Ark visuals"
+      ]
     },
     {
       "file": "src/main/resources/assets/arkofcosmos/textures/elements/gore_16.png",
@@ -2608,6 +2708,46 @@
       "profile_uuid": "d150668b708846f8aa9d367bbd962d85",
       "model": "slim",
       "license": "Original skin author / rights holders; not GPL-3.0-only"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/fractured_parry_start_0.ogg",
+      "sha256": "108ce4658c3d425caf238c8bd5a208f0659bc8f2f32a6dc4ae1f7a8e8befc8e2",
+      "source": "G:\\SteamLibrary\\steamapps\\common\\Terraria\\Content\\Sounds\\Custom\\dd2_sky_dragons_fury_shot_0.xnb",
+      "source_sha256": "8acf3bbde49860b745664f4d8b5b1c111aed2d1b935bd4771986e8ec3f8a45c2",
+      "project": "Terraria",
+      "path": "Content/Sounds/Custom/dd2_sky_dragons_fury_shot_0.xnb",
+      "license": "Re-Logic / original rights holders; not GPL-3.0-only",
+      "conversion": "XNB SoundEffectReader PCM -> WAV -> Vorbis quality 10; original sample rate and channels"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/fractured_parry_start_1.ogg",
+      "sha256": "c9787488fccc33207acb0bd72d5c371e9bd3358bbaec1544db2cf7176e1fbd65",
+      "source": "G:\\SteamLibrary\\steamapps\\common\\Terraria\\Content\\Sounds\\Custom\\dd2_sky_dragons_fury_shot_1.xnb",
+      "source_sha256": "1dbd50d762520a520ad836abc19f8e80af2dfc26499ad7c6ff5dc196a8de09c3",
+      "project": "Terraria",
+      "path": "Content/Sounds/Custom/dd2_sky_dragons_fury_shot_1.xnb",
+      "license": "Re-Logic / original rights holders; not GPL-3.0-only",
+      "conversion": "XNB SoundEffectReader PCM -> WAV -> Vorbis quality 10; original sample rate and channels"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/fractured_parry_start_2.ogg",
+      "sha256": "8feb0bf1d860b99b69030a8ad7f5b9c5a35d10d22b482b336463b2dd8e542bc7",
+      "source": "G:\\SteamLibrary\\steamapps\\common\\Terraria\\Content\\Sounds\\Custom\\dd2_sky_dragons_fury_shot_2.xnb",
+      "source_sha256": "eab759ca36b3d5b427da75617dc5cbc30ed8dcee9312f0e125c9884494ced863",
+      "project": "Terraria",
+      "path": "Content/Sounds/Custom/dd2_sky_dragons_fury_shot_2.xnb",
+      "license": "Re-Logic / original rights holders; not GPL-3.0-only",
+      "conversion": "XNB SoundEffectReader PCM -> WAV -> Vorbis quality 10; original sample rate and channels"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/item67_0.ogg",
+      "sha256": "abbc95b03f45ff9baa44deac8ff8ec8afc493e15883643fcbdc9cde6c7672386",
+      "source": "G:\\SteamLibrary\\steamapps\\common\\Terraria\\Content\\Sounds\\Item_67.xnb",
+      "source_sha256": "8143134d3b55bce3bb66dcd043a7a90764f704853cdca8b7ed486e13457845db",
+      "project": "Terraria",
+      "path": "Content/Sounds/Item_67.xnb",
+      "license": "Re-Logic / original rights holders; not GPL-3.0-only",
+      "conversion": "XNB SoundEffectReader PCM -> WAV -> Vorbis quality 10; original sample rate and channels"
     }
   ]
 }

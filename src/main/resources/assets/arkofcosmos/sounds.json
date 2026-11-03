@@ -173,7 +173,9 @@
     ]
   },
   "fourth_calamity_death": {
-    "sounds": ["arkofcosmos:fourth_calamity_death"]
+    "sounds": [
+      "arkofcosmos:fourth_calamity_death"
+    ]
   },
   "fourth_calamity_music": {
     "sounds": [
@@ -330,5 +332,32 @@
       "arkofcosmos:item/spear/wood/use"
     ],
     "subtitle": "subtitles.item.spear_wood.use"
+  },
+  "fractured_swing": {
+    "sounds": [
+      "arkofcosmos:fractured_swing_0",
+      "arkofcosmos:fractured_swing_1",
+      "arkofcosmos:fractured_swing_2",
+      "arkofcosmos:fractured_swing_3"
+    ]
+  },
+  "fractured_beam_death": {
+    "sounds": [
+      "arkofcosmos:fractured_beam_death_0",
+      "arkofcosmos:fractured_beam_death_1",
+      "arkofcosmos:fractured_beam_death_2"
+    ]
+  },
+  "fractured_parry_start": {
+    "sounds": [
+      "arkofcosmos:fractured_parry_start_0",
+      "arkofcosmos:fractured_parry_start_1",
+      "arkofcosmos:fractured_parry_start_2"
+    ]
+  },
+  "item67": {
+    "sounds": [
+      "arkofcosmos:item67_0"
+    ]
   }
 }

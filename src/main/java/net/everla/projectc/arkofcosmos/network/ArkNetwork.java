@@ -31,6 +31,7 @@ public final class ArkNetwork {
                     ArkCombat.input(context.getSender(), this);
                     net.everla.projectc.arkofcosmos.combat.OldOneCombat.input(context.getSender(), this.left());
                     net.everla.projectc.arkofcosmos.combat.ElementsCombat.input(context.getSender(), this);
+                    net.everla.projectc.arkofcosmos.combat.FracturedCombat.input(context.getSender(), this);
                 }
             });
             context.setPacketHandled(true);

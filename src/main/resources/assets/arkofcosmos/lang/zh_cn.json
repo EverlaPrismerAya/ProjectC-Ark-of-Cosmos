@@ -135,5 +135,10 @@
   "entity.arkofcosmos.the_player": "第四天灾",
   "boss.arkofcosmos.the_player": "愤怒的普通人 绮良欧菲手",
   "item.arkofcosmos.the_player_spawn_egg": "第四天灾刷怪蛋",
-  "item.arkofcosmos.annihilation_ember": "湮灭余烬"
+  "item.arkofcosmos.annihilation_ember": "湮灭余烬",
+  "item.arkofcosmos.fractured_ark": "破碎方舟",
+  "fractured.parry": "%s向前延展方舟",
+  "fractured.charge": "成功格挡后会获得10层充能，充能会强化普通攻击和伤害，并让剑刃能够发射弹幕",
+  "fractured.window": "招架会使你短暂无敌，期间剑刃击中敌人或挡下攻击均可成功格挡",
+  "fractured.flavor": "一把破旧生锈的剑，曾经对抗过这个世界的邪恶，现在它准备再一次发挥作用"
 }

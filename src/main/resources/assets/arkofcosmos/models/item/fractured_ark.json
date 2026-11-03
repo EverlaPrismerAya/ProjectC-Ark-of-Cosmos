@@ -1,0 +1,30 @@
+{
+  "parent": "minecraft:item/handheld",
+  "textures": {
+    "layer0": "arkofcosmos:item/fractured_ark"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "arkofcosmos:active": 1
+      },
+      "model": "arkofcosmos:item/fractured_ark_active"
+    }
+  ],
+  "display": {
+    "firstperson_righthand": {
+      "scale": [
+        0,
+        0,
+        0
+        ]
+      },
+    "firstperson_lefthand": {
+      "scale": [
+        0,
+        0,
+        0
+        ]
+      }
+    }
+  }

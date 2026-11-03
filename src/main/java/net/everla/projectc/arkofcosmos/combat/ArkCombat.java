@@ -78,16 +78,30 @@ public final class ArkCombat {
                     AttackFrame.capture(player));
             ArkItem.charge(stack, 0);
             c.useCooldown = 15;
-        } else if (c.parryCooldown == 0) {
-            c.parried = false;
-            c.parryStack = stack;
-            c.invulnerableUntil = player.level().getGameTime() + 7; // Exactly 0.35 s at 20 TPS.
-            c.parryCooldown = 340;
-            stack.getOrCreateTag().putInt("ArkParryCooldown", 340);
-            c.useCooldown = 15;
-            ArkAttackEntity.create(player, ArkAttackEntity.Kind.PARRY, 0, 0, BASE_DAMAGE,
-                    player.getBoundingBox().getCenter(), Vec3.ZERO, AttackFrame.capture(player));
-        }
+        } else beginParry(player, stack, BASE_DAMAGE);
+    }
+
+    /** Shared Ark parry authority: window, cooldown and successful-hit reward are player-owned. */
+    public static boolean beginParry(ServerPlayer player, ItemStack stack, float damage) {
+        Controls c = controls(player);
+        if (c.parryCooldown > 0 || c.useCooldown > 0 || !player.isAlive() || player.isSpectator()) return false;
+        c.parried = false; c.parryStack = stack;
+        c.invulnerableUntil = player.level().getGameTime() + 7;
+        c.parryCooldown = 340; c.useCooldown = 15;
+        stack.getOrCreateTag().putInt("ArkParryCooldown", 340);
+        if (stack.is(ArkOfCosmos.FRACTURED_ARK.get()))
+            net.everla.projectc.arkofcosmos.entity.FracturedEntity.parry(player, damage, AttackFrame.capture(player));
+        else ArkAttackEntity.create(player, ArkAttackEntity.Kind.PARRY, 0, 0, damage,
+            player.getBoundingBox().getCenter(), Vec3.ZERO, AttackFrame.capture(player));
+        return true;
+    }
+
+    public record ParryPose(Vec3 position, Vec3 aim, float scale) {}
+    public static ParryPose parryPose(Player owner, AttackFrame frame, float steps) {
+        float thrust = net.everla.projectc.arkofcosmos.calamity.util.ArkCurves.parryThrust(steps / 15f);
+        Vec3 center = owner.getBoundingBox().getCenter();
+        return new ParryPose(center.add(frame.forward().scale((10 + 10 * thrust) * PIXEL)),
+            center.add(frame.forward().scale((15 + 50 * thrust) * PIXEL)), 1.4f + thrust * .2f);
     }
 
     private static boolean activeBlade(Player player) {
@@ -101,7 +115,10 @@ public final class ArkCombat {
         if (c == null) return;
         int oldCooldown = c.parryCooldown;
         c.parryCooldown = Math.max(0, c.parryCooldown - 3);
-        if (oldCooldown > 0 && c.parryCooldown == 0) ArkOfCosmos.sound(player, "item35", 2);
+        if (oldCooldown > 0 && c.parryCooldown == 0) {
+            if(c.parryStack.is(ArkOfCosmos.FRACTURED_ARK.get())) FracturedCombat.sound(player,player,"item35",.75f,true,true);
+            else ArkOfCosmos.sound(player,"item35",2);
+        }
         c.useCooldown = Math.max(0, c.useCooldown - 3);
         // Releases are sent on GUI/focus/slot changes; heartbeat expiry also handles interrupted clients.
         if (++c.idleTicks > 40 || !holding(player) || !player.isAlive() || player.isSpectator()) {
@@ -149,13 +166,25 @@ public final class ArkCombat {
         AttackFrame effectFrame=AttackFrame.capture(player);
         for(ArkAttackEntity a:player.level().getEntitiesOfClass(ArkAttackEntity.class,player.getBoundingBox().inflate(20)))
             if(a.ownerId()==player.getId()&&a.kind()==ArkAttackEntity.Kind.PARRY){effectFrame=a.attackFrame();break;}
-        ArkNetwork.parryEffect(player,effectFrame);
         ItemStack stack = c.parryStack.isEmpty() ? player.getMainHandItem() : c.parryStack;
-        ArkItem.charge(stack, 16);
-        stack.getOrCreateTag().putInt("ArkCombo", 0);
+        if (!stack.is(ArkOfCosmos.FRACTURED_ARK.get())) ArkNetwork.parryEffect(player,effectFrame);
+        if (stack.is(ArkOfCosmos.FRACTURED_ARK.get())) {
+            net.everla.projectc.arkofcosmos.item.FracturedArkItem.charge(stack, 10);
+            for (var a : player.level().getEntitiesOfClass(net.everla.projectc.arkofcosmos.entity.FracturedEntity.class, player.getBoundingBox().inflate(20)))
+                if (a.ownerId() == player.getId() && a.kind() == net.everla.projectc.arkofcosmos.entity.FracturedEntity.PARRY) a.parrySucceeded();
+        }
+        else {
+            ArkItem.charge(stack, 16);
+            stack.getOrCreateTag().putInt("ArkCombo", 0);
+        }
         player.displayClientMessage(net.minecraft.network.chat.Component.translatable("message.arkofcosmos.parry"), true);
-        ArkOfCosmos.sound(player, "crystal", 1);
-        ArkOfCosmos.sound(player, "snap", 1.3f);
+        if(stack.is(ArkOfCosmos.FRACTURED_ARK.get())) {
+            FracturedCombat.sound(player,player,"crystal",1,true,false);
+            FracturedCombat.sound(player,player,"item67",1,true,false);
+        } else {
+            ArkOfCosmos.sound(player,"crystal",1);
+            ArkOfCosmos.sound(player,"snap",1.3f);
+        }
     }
 
     public static boolean canHit(Player owner, LivingEntity entity) {

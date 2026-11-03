@@ -36,7 +36,7 @@ public final class ArkClient {
         if (event.phase != TickEvent.Phase.END) return;
         Minecraft mc = Minecraft.getInstance();
         ArkEffects.tick();
-        boolean active = mc.player != null && mc.screen == null && mc.isWindowActive() && (ArkCombat.holding(mc.player) || net.everla.projectc.arkofcosmos.combat.ElementsCombat.holding(mc.player) || net.everla.projectc.arkofcosmos.combat.OldOneCombat.holding(mc.player));
+        boolean active = mc.player != null && mc.screen == null && mc.isWindowActive() && (ArkCombat.holding(mc.player) || net.everla.projectc.arkofcosmos.combat.ElementsCombat.holding(mc.player) || net.everla.projectc.arkofcosmos.combat.OldOneCombat.holding(mc.player) || net.everla.projectc.arkofcosmos.combat.FracturedCombat.holding(mc.player));
         boolean left = active && mc.options.keyAttack.isDown();
         boolean right = active && mc.options.keyUse.isDown();
         boolean alt = active && DASH.isDown();
@@ -58,7 +58,7 @@ public final class ArkClient {
 
     @SubscribeEvent public static void click(InputEvent.InteractionKeyMappingTriggered event) {
         Minecraft mc = Minecraft.getInstance();
-        if (mc.player != null && (ArkCombat.holding(mc.player) || net.everla.projectc.arkofcosmos.combat.ElementsCombat.holding(mc.player) || net.everla.projectc.arkofcosmos.combat.OldOneCombat.holding(mc.player)) && (event.isAttack() || event.isUseItem())) {
+        if (mc.player != null && (ArkCombat.holding(mc.player) || net.everla.projectc.arkofcosmos.combat.ElementsCombat.holding(mc.player) || net.everla.projectc.arkofcosmos.combat.OldOneCombat.holding(mc.player) || net.everla.projectc.arkofcosmos.combat.FracturedCombat.holding(mc.player)) && (event.isAttack() || event.isUseItem())) {
             event.setCanceled(true);
             event.setSwingHand(false);
         }
@@ -66,7 +66,7 @@ public final class ArkClient {
 
     @SubscribeEvent public static void mouse(InputEvent.MouseButton.Pre event) {
         Minecraft mc = Minecraft.getInstance();
-        if (mc.player == null || mc.screen != null || !(ArkCombat.holding(mc.player) || net.everla.projectc.arkofcosmos.combat.ElementsCombat.holding(mc.player) || net.everla.projectc.arkofcosmos.combat.OldOneCombat.holding(mc.player))) return;
+        if (mc.player == null || mc.screen != null || !(ArkCombat.holding(mc.player) || net.everla.projectc.arkofcosmos.combat.ElementsCombat.holding(mc.player) || net.everla.projectc.arkofcosmos.combat.OldOneCombat.holding(mc.player) || net.everla.projectc.arkofcosmos.combat.FracturedCombat.holding(mc.player))) return;
         boolean attack = mc.options.keyAttack.matchesMouse(event.getButton());
         boolean use = mc.options.keyUse.matchesMouse(event.getButton());
         boolean dash = DASH.matchesMouse(event.getButton());

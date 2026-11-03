@@ -15,8 +15,15 @@ public final class WeaponDamage {
     }
 
     public static boolean hurt(LivingEntity target, DamageSource source, float amount) {
-        // This PvP boss explicitly retains native mitigation and hurt frames, even for Ark tag fallback.
-        if(target instanceof net.everla.projectc.arkofcosmos.entity.FourthCalamityEntity)return target.hurt(source,amount);
+        // Keep native boss mitigation, but preserve player/servant weapons' hurt-frame bypass.
+        if(target instanceof net.everla.projectc.arkofcosmos.entity.FourthCalamityEntity) {
+            if(!WeaponUser.playerOwnedDamage(source))return target.hurt(source,amount);
+            int cooldown=target.invulnerableTime;
+            try {
+                target.invulnerableTime=0;
+                return target.hurt(source,amount);
+            } finally { target.invulnerableTime=Math.max(cooldown,target.invulnerableTime); }
+        }
         if (target.level().isClientSide || target.isRemoved() || !target.isAlive()
                 || !Float.isFinite(amount) || amount <= 0
                 || target instanceof Player player && (player.isCreative() || player.isSpectator())) return false;

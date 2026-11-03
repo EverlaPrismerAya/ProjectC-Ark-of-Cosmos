@@ -135,6 +135,10 @@
   "entity.arkofcosmos.the_player": "The Fourth Calamity",
   "boss.arkofcosmos.the_player": "'I’m Angry When I‘m Angry', Kira Official",
   "item.arkofcosmos.the_player_spawn_egg": "The Fourth Calamity Spawn Egg",
-  "item.arkofcosmos.annihilation_ember": "Ashes of Annihilation"
+  "item.arkofcosmos.annihilation_ember": "Ashes of Annihilation",
+  "item.arkofcosmos.fractured_ark": "Fractured Ark",
+  "fractured.parry": "%s to extend the Ark out in front of you",
+  "fractured.charge": "Successfully parrying empowers the next 10 swings of the sword, boosting damage and letting them throw projectiles",
+  "fractured.window": "Parrying grants a small window of invulnerability; hitting an enemy or blocking an attack during it counts as a successful parry",
+  "fractured.flavor": "A worn down and rusty blade once wielded against the evil of this world, ready to be of use once more"
 }
-

@@ -39,6 +39,10 @@ public final class ArkOfCosmos {
     public static final RegistryObject<net.minecraft.world.effect.MobEffect> ELEMENTAL_MIX = EFFECTS.register("elemental_mix",
             () -> new net.minecraft.world.effect.MobEffect(net.minecraft.world.effect.MobEffectCategory.HARMFUL, 0xFF6900) {});
     public static final RegistryObject<Item> ARK_OF_THE_ELEMENTS = ITEMS.register("ark_of_the_elements", net.everla.projectc.arkofcosmos.item.ElementsItem::new);
+    public static final RegistryObject<Item> FRACTURED_ARK = ITEMS.register("fractured_ark", net.everla.projectc.arkofcosmos.item.FracturedArkItem::new);
+    public static final RegistryObject<EntityType<net.everla.projectc.arkofcosmos.entity.FracturedEntity>> FRACTURED_ATTACK = ENTITIES.register("fractured_attack",
+        () -> EntityType.Builder.<net.everla.projectc.arkofcosmos.entity.FracturedEntity>of(net.everla.projectc.arkofcosmos.entity.FracturedEntity::new, MobCategory.MISC)
+            .sized(.5f,.5f).noSave().noSummon().clientTrackingRange(128).updateInterval(1).build("arkofcosmos:fractured_attack"));
     public static final RegistryObject<EntityType<net.everla.projectc.arkofcosmos.entity.ElementsEntity>> ELEMENTS_ATTACK = ENTITIES.register("elements_attack",
             () -> EntityType.Builder.<net.everla.projectc.arkofcosmos.entity.ElementsEntity>of(net.everla.projectc.arkofcosmos.entity.ElementsEntity::new, MobCategory.MISC)
                     .sized(.5f,.5f).noSave().noSummon().clientTrackingRange(128).updateInterval(1).build("arkofcosmos:elements_attack"));
@@ -63,7 +67,7 @@ public final class ArkOfCosmos {
     private static final java.util.Map<String, RegistryObject<SoundEvent>> AUDIO = new java.util.HashMap<>();
     static {
         AUDIO.put("snap", SNAP);
-        for (String name : new String[]{"elements_item9", "phoenix", "meaty", "item4", "item35", "item63", "item64", "item65", "item71", "item84", "crystal", "needle_death", "mahou_defeat", "fourth_calamity_death",
+        for (String name : new String[]{"fractured_parry_start", "item67", "fractured_swing", "fractured_beam_death", "elements_item9", "phoenix", "meaty", "item4", "item35", "item63", "item64", "item65", "item71", "item84", "crystal", "needle_death", "mahou_defeat", "fourth_calamity_death",
                 "galaxia_item60","galaxia_item71","galaxia_item76","galaxia_item77","galaxia_item78","galaxia_item79","galaxia_item80","galaxia_item90",
                 "galaxia_item101","galaxia_item109","galaxia_item120","galaxia_hit30","galaxia_hit43","galaxia_book","galaxia_impact","galaxia_eruption",
                 "galaxia_beacon","galaxia_lightning","galaxia_meaty"})
@@ -110,6 +114,7 @@ public final class ArkOfCosmos {
             event.accept(ARK_OF_THE_OLD_ONE);
             event.accept(GALAXIA);
             event.accept(ARK_OF_THE_ELEMENTS);
+            event.accept(FRACTURED_ARK);
         }
         if (event.getTabKey() == CreativeModeTabs.INGREDIENTS) event.accept(AURIC_BAR);
         if (event.getTabKey() == CreativeModeTabs.INGREDIENTS) event.accept(ANNIHILATION_EMBER);

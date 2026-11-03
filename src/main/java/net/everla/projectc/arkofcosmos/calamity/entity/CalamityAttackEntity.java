@@ -154,10 +154,8 @@ public abstract class CalamityAttackEntity extends Entity {
     }
 
     protected void parry(Player owner) {
-        float progress = steps / 15f;
-        setPos(owner.getBoundingBox().getCenter().add(frame.forward().scale((10 + 10 * ArkCurves.parryThrust(progress)) * ArkCombat.PIXEL)));
-        scale = 1.4f + ArkCurves.parryThrust(progress) * .2f;
-        aim = owner.getBoundingBox().getCenter().add(frame.forward().scale((15 + 50 * ArkCurves.parryThrust(progress)) * ArkCombat.PIXEL));
+        ArkCombat.ParryPose pose = ArkCombat.parryPose(owner, frame, steps);
+        setPos(pose.position()); scale = pose.scale(); aim = pose.aim();
     }
 
     protected void blast(Player owner) {

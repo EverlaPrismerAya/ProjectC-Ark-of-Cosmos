@@ -22,6 +22,8 @@ GPL 声明不授予第三方内容的额外权利，也不证明现有第三方�
 
 | 文件 | Calamity 来源／派生内容 |
 | --- | --- |
+| `lang/zh_cn.json`、`lang/en_us.json` 中 `fractured.*` | 破碎方舟描述来自 CalamityCN `zh-Hans/Mods.CalamityMod.Items.Weapons.Melee.hjson` 的完整汉化及 CalamityMod 对应英文原文；招架机制文字按本模组实际行为调整。原文及汉化归各自原作者，不作 GPL-3.0-only 重新授权 |
+| `calamity/combat/FracturedRules.java`、`entity/FracturedEntity.java`、`combat/FracturedCombat.java`、`item/FracturedArkItem.java`、`client/FracturedRenderer.java`、`client/FracturedClient.java`、`calamity/client/FracturedEffects.java` | 本机 CalamityMod.dll 中 `FracturedArk`、`ArkoftheAncientsSwungBlade`、`AncientBeam` 及 `DrawAfterimagesCentered` 的交替挥砍、充能、剑气、碰撞、时序和原图绘制规则；Calamity Team，ARR。含原创 Forge 输入与同步接口及用户确认的准星攻击平面映射、4点基础伤害、无暴击／击退和自定义配方；格挡判定复用本项目方舟共通实现，音效采用破碎方舟原版 SkyDragonsFuryShot／CrystalImpact／Item67／Item35；刀身按用户要求采用原图轮廓三像素厚度。视觉沿用原版 CritSpark、GenericSparkle、SquishyLightParticle、招架成功辉光及 Terraria Dust 66／15／57／58，复用通用粒子实现；圆周散射按确认转换为等速三维球面散射 |
 | `combat/OldOneCombat.java`、`combat/OldOneEffects.java`、`entity/OldOneEntity.java`、`client/OldOneRenderer.java`、`client/OldOneParticles.java` | 旧版 Calamity `ArkoftheCosmos`、`Galaxia2`、四种 `EonBeam`、`AstralStar` 以及 Terraria 1.3.5.3 `Projectile`、`Dust`、`Gore`、`Main` 及旧版 `AstralOrange` 的攻击、派生、AI、状态和绘制规则；Calamity 部分为 Calamity Team ARR，Terraria 部分归 Re-Logic／原权利人，不作 GPL-3.0-only 重新授权；包含用户确认的三维转换及 Minecraft／Forge 接口适配 |
 | `calamity/combat/GalaxiaRules.java`、`entity/GalaxiaEntity.java`、`calamity/client/GalaxiaRenderer.java` | `FourSeasonsGalaxia`、四种 Attunement、`PhoenixsPride`、`AriesWrath`、`AriesWrathConstellation`、`PolarisGaze`、`PolarisGazeStar`、`PolarisGazeDash`、`AndromedasStride`、`AndromedasStrideBoltSpawner`、`GalaxiaBolt` 和 `GalaxiaTropicRing` 的规则、阶段、曲线、参数与原图绘制；含用户确认的三维攻击平面、地表环形扩散和玩家碰撞适配 |
 | `calamity/entity/CalamityAttackEntity.java` | `ArkoftheCosmosSwungBlade`、`RendingNeedle`、`EonBolt`、`ArkoftheCosmosConstellation`、`ArkoftheCosmosParryHoldout`、`ArkoftheCosmosBlast` 的攻击阶段、运动、时序与命中规则；包含必要的 Minecraft 单位及实体接口适配 |
@@ -38,7 +40,7 @@ GPL 声明不授予第三方内容的额外权利，也不证明现有第三方�
 | `combat/ArkDamage.java` | 本项目的独立同步血量、伤害结算与死亡保护；其中原版不死图腾的检查、消耗、统计／进度触发和恢复效果流程参考并适配 Minecraft `LivingEntity.checkTotemDeathProtection`，该部分不纳入本项目 GPL-3.0-only 授权，详见下文 Minecraft 代码说明 |
 | `entity/ArkAttackEntity.java` | Minecraft 实体生命周期、同步、插值、附魔与冲刺碰撞接入；仍保留攻击寿命初始化、子步调度、派生效果触发与已有附加伤害行为，不能将整个混合文件理解为无例外的 GPL-3.0-only 代码 |
 | `client/ArkClient.java` | 原武器状态条配色及显示参数的客户端接入；震屏算法已移至 `calamity/client/ArkEffects.java` |
-| `client/render/ArkFxDraw.java` | 本项目的 OpenGL／Minecraft 绘制适配，保留 XNA 混合与绘制语义；原拖尾算法已移至 `calamity/client/CalamityTrail.java` |
+| `client/render/ArkFxDraw.java` | 本项目的 OpenGL／Minecraft 绘制适配，保留 XNA 混合与绘制语义；原拖尾算法已移至 `calamity/client/CalamityTrail.java`；`shaders/core/fractured_sprite.*` 为原创 Minecraft 光照贴图与原版辉光混合适配，不是灾厄专属 .fx 的移植 |
 
 `util/AttackFrame.java`、`util/ArkGeometry.java` 与 `network/ArkNetwork.java` 分别提供本项目的三维攻击平面、空间几何及 Forge 网络接入。来源分区便于维护与审阅，不应被用来将灾厄派生内容重新授权为 GPL-3.0-only，或把包含原创适配的派生文件整体视为第三方原文件。
 
@@ -68,6 +70,7 @@ Calamity 来源的代码须保留 Calamity Team 署名及原条款。本项目�
 
 | 文件 | 来源与许可范围 |
 | --- | --- |
+| `item/fractured_ark.png`、`item/fractured_ark_glow.png` | Calamity Mod `Items/Weapons/Melee/FracturedArk.png`、`FracturedArkGlow.png` 原图，逐字节复制；剑气引用同一辉光纹理，Calamity Team／原作者 ARR |
 | `item/ark_of_the_old_one.png`、`old_one/eon*.png`、`old_one/orb.png`、`old_one/astral_star.png`、`old_one/astral_orange.png` | 旧版 Calamity 解包原图，剑身为旧版 `Items/Weapons/Melee/ArkoftheCosmos.png`，不使用新版同名武器图；Calamity Team／原作者 ARR，不适用 GPL-3.0-only |
 | `old_one/projectile_*.png`、`old_one/dust.png`、`old_one/glow_190.png`、`old_one/extra_75.png`、`old_one/gore_*.png` | 本机 Terraria 1.4.5 XNB 的 Texture2D 原像素转换，保留预乘 RGBA；用户明确允许替代缺失的 1.3.5.3 原生素材，不能称为旧版原图；Re-Logic／原权利人所有，不适用 GPL-3.0-only |
 | `mob_effect/old_one_*.png` | 灾厄专属状态为旧版 Calamity Buffs 原图（Calamity Team ARR）；原生状态为用户允许的 Terraria 1.4.5 Buff XNB 转换（Re-Logic／原权利人）；逐文件来源及散列见资源清单，均不适用 GPL-3.0-only |
@@ -96,6 +99,8 @@ Calamity 来源的代码须保留 Calamity Team 署名及原条款。本项目�
 | --- | --- |
 | `sounds/item/spear/**/*.ogg`、`sounds/item/mace/*.ogg`、`sounds/entity/wind_charge/*.ogg` | Minecraft 26.1.2 官方资源索引 30 的原始 OGG，逐字节复制；Mojang／Microsoft 及音频原权利人，非 GPL-3.0-only；投掷声引用 Minecraft 既有 `random/bow`，不重复复制 |
 | `textures/item/*_spear*.png`、`textures/item/mace.png`、`textures/block/heavy_core.png`、`textures/particle/gust_*.png` | Minecraft 26.1.2 原始 PNG，逐字节复制；Mojang／Microsoft，非 GPL-3.0-only；逐文件来源与 SHA-256 见资源清单 |
+| `fractured_parry_start_0.ogg`～`fractured_parry_start_2.ogg`、`item67_0.ogg` | Terraria 原始 `dd2_sky_dragons_fury_shot_*` 和 `Item_67` XNB 的 SoundEffect PCM 提取及 Vorbis 转码，保持原采样率与声道；Re-Logic／原权利人所有，不适用 GPL-3.0-only |
+| `fractured_swing_0.ogg`～`fractured_swing_3.ogg`、`fractured_beam_death_0.ogg`～`fractured_beam_death_2.ogg` | Terraria 原始 XNB `dd2_monk_staff_swing_*`、`dd2_wither_beast_death_*` 的 SoundEffect PCM 提取及 Vorbis 转码，保持原采样率与声道；Re-Logic／原权利人所有，不适用 GPL-3.0-only |
 | `snap_0.ogg` | Calamity 的 `ScissorGuillotineSnap`；Calamity Team／原作者，ARR |
 | `phoenix_0.ogg`～`phoenix_2.ogg` | Calamity 的 `LouderPhantomPhoenix`；Calamity Team／原作者，ARR |
 | `meaty_0.ogg` | Calamity 的 `MeatySlash`；Calamity Team／原作者，ARR |
