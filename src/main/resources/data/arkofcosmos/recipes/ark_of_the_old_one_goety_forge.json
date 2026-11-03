@@ -2,7 +2,7 @@
   "type": "goety:ritual",
   "ritual_type": "goety:craft",
   "activation_item": {
-    "item": "arkofcosmos:ark_of_the_cosmos"
+    "item": "arkofcosmos:ark_of_cosmos"
   },
   "research": "lord",
   "craftType": "master_forge",
