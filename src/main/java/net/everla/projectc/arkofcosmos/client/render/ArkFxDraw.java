@@ -32,6 +32,13 @@ public final class ArkFxDraw {
     public static Vec3 camera;
     // Coordinates match the current draw call (world coordinates for particles, entity local otherwise).
     public static Vec3 fadeEye;
+    public static void ancientsFx(float charge, float glow, float time) {
+        for (ShaderInstance shader : new ShaderInstance[]{spriteShader, trailShader}) if (shader != null) {
+            shader.safeGetUniform("AncientsCharge").set(charge);
+            shader.safeGetUniform("AncientsGlow").set(glow);
+            shader.safeGetUniform("AncientsTime").set(time);
+        }
+    }
     public static void ownerView(int owner, Vec3 origin) {
         Minecraft mc = Minecraft.getInstance();
         fadeEye = mc.player != null && ownerFirstPerson(owner, mc.player.getId(),

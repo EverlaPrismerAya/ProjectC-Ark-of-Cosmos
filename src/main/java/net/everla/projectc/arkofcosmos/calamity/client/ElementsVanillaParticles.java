@@ -28,7 +28,7 @@ public final class ElementsVanillaParticles {
     private record State(Vec3 at,double scale,double rotation,double opacity) {}
     static final class Particle {
         final int type,owner,variant;final AttackFrame plane;final float[] color;
-        Vec3 at,velocity;double scale,rotation,opacity=1,born,died=1;int age,life,alpha;boolean noGravity, fractured;
+        Vec3 at,velocity;double scale,rotation,opacity=1,born,died=1;int age,life,alpha;boolean noGravity, fractured, ancient;
         final State[] states=new State[4];
         Particle(int type,Vec3 at,Vec3 velocity,double scale,float[] color,AttackFrame plane,int owner){
             this.type=type;this.at=at;this.velocity=velocity;this.scale=scale;this.color=color;this.plane=plane;this.owner=owner;
@@ -88,6 +88,16 @@ public final class ElementsVanillaParticles {
         if(rng.nextInt(3)==0)dust(66,at,speed.scale(.05),1.2,150,rgb(discoR,100,255),false,true,f,owner).fractured=true;
         if(rng.nextInt(3)==0)dust(new int[]{15,57,58}[rng.nextInt(3)],at,speed.scale(.1),1.3,150,new float[]{0,0,0,0},false,false,f,owner).fractured=true;
     }
+    public static void ancientBeam(CompoundTag s,int step){
+        int start=LIVE.size();fractured(s,step);for(int i=start;i<LIVE.size();i++)LIVE.get(i).ancient=true;
+    }
+    public static void ancientStar(CompoundTag s,int step){
+        phase=step-1;Vec3 at=vector(s,"Position"),speed=vector(s,"Velocity");
+        AttackFrame f=new AttackFrame(vector(s,"F"),vector(s,"R"));int owner=s.getInt("Owner");
+        dust(new int[]{15,57,58}[rng.nextInt(3)],at,speed.scale(.1),1.3,150,new float[]{0,0,0,0},false,false,f,owner).ancient=true;
+        if(rng.nextInt(48)==0)gore(16,at,speed.scale(.2),f,owner,.66,speed.scale(.3)).ancient=true;
+    }
+    public static void ancientDeath(CompoundTag s){int start=LIVE.size();death(s);for(int i=start;i<LIVE.size();i++)LIVE.get(i).ancient=true;}
     public static void death(CompoundTag s){
         AttackFrame f=new AttackFrame(vector(s,"F"),vector(s,"R"));
         Vec3 at=vector(s,"At").subtract(f.forward().add(f.right()).scale(10/16d));
@@ -120,8 +130,24 @@ public final class ElementsVanillaParticles {
             if(!player&&rng.nextInt(5)==0){int type=rng.nextBoolean()?66:247;dust(type,surface(e),f.forward().scale(range(-2,2)/16).add(f.right().scale(range(2,4)/16)),type==66?.9:1.4,35+rng.nextInt(55),COLORS[rng.nextInt(4)],true,true,f,e.getId());}
         }
     }
+    public static void renderAncients(double partial,com.mojang.blaze3d.vertex.PoseStack pose,net.minecraft.client.renderer.MultiBufferSource buffers,Vec3 camera){
+        AttackFrame face=NativeSprites.billboard();
+        for(Particle p:FRAME){
+            if(!p.ancient||partial<p.born||partial>=p.died)continue;
+            int n=Math.min(2,(int)(partial*3));double t=partial*3-n;State a=p.states[n],b=p.states[n+1];
+            Vec3 at=a.at.lerp(b.at,t);double scale=lerp(a.scale,b.scale,t),angle=lerp(a.rotation,b.rotation,t);
+            var draw=new NativeSprites.Draw(pose,buffers,camera,p.owner);
+            if(p.type==16||p.type==17){String name="elements/gore_"+p.type;draw.centered(name,at,face,angle,scale,scale,new float[]{1,1,1,(255-p.alpha)/255f},true);continue;}
+            float value=p.type==15||p.type==57||p.type==58?((255-p.alpha)/255f+3)/4:1;
+            float[] color={value,value,value,(255-p.alpha)/255f};int x=p.type%100*10,y=p.type/100*30+p.variant*10;
+            int light=15728880;
+            draw.region("elements/dust",at,face,angle,scale,4,4,color,x,y,8,8,p.type==66,light);
+            if(p.color[0]!=0||p.color[1]!=0||p.color[2]!=0)draw.region("elements/dust",at,face,angle,scale,4,4,p.color,x,y,8,8,true,light);
+        }
+    }
     public static void render(double partial,AttackFrame face){
         for(Particle p:FRAME){
+            if(p.ancient)continue;
             if(partial<p.born||partial>=p.died)continue;int n=Math.min(2,(int)(partial*3));double fraction=partial*3-n;
             State a=p.states[n],b=p.states[n+1];Vec3 at=a.at.lerp(b.at,fraction);double size=lerp(a.scale,b.scale,fraction),r=lerp(a.rotation,b.rotation,fraction),opacity=lerp(a.opacity,b.opacity,fraction);
             ArkFxDraw.ownerView(p.owner,Vec3.ZERO);

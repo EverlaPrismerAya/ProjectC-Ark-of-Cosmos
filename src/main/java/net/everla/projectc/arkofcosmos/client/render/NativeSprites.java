@@ -76,6 +76,12 @@ public final class NativeSprites extends RenderType {
                 vertex(out,b.add(n.scale(-depth)),u,v,normal,color,light,false);vertex(out,a.add(n.scale(-depth)),u,v,normal,color,light,false);
             }
         }
+        public void region(String name,Vec3 at,AttackFrame frame,double angle,double scale,double ox,double oy,float[] color,int left,int top,int width,int height,boolean additive,int light){
+            Image image=image(name);Vec3 x=frame.direction(angle).scale(scale/16),y=frame.direction(angle+Math.PI/2).scale(scale/16),n=frame.normal();
+            VertexConsumer out=buffers.getBuffer(additive?additive(texture(name)):RenderType.entityTranslucent(texture(name)));
+            double[][] corners={{0,0},{0,height},{width,height},{width,0}};
+            for(double[] c:corners)vertex(out,at.add(x.scale(c[0]-ox)).add(y.scale(c[1]-oy)),(float)((left+c[0])/image.width),(float)((top+c[1])/image.height),n,color,light,additive);
+        }
         private boolean ownerView(){Minecraft mc=Minecraft.getInstance();return mc.player!=null&&mc.getCameraEntity()==mc.player&&mc.player.getId()==owner&&mc.options.getCameraType().isFirstPerson();}
         private void vertex(VertexConsumer out,Vec3 at,float u,float v,Vec3 normal,float[] color,int light,boolean additive){
             double fade=1;if(ownerView()){

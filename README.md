@@ -7,6 +7,7 @@
 - Galaxia（银河），包含凤凰、白羊、北极星和仙女座四种攻击模式、星座选择盘及派生弹幕。
 - Ark of the Elements（元素方舟），包含五段连击、投掷剪合、太阳针与元素玻璃星、招架充能、裂缝剪击及元素谐鸣状态。
 - Fractured Ark（破碎方舟）：4 点基础伤害的交替挥砍、10 层招架充能及充能剑气。
+- Ark of the Ancients（远古方舟）：6 点基础伤害，交替挥砍、追踪星弹、充能剑气与能量爆发；使用共通格挡，物品防火。
 
 本项目由 EverlaPrismerAya 维护，与 Calamity Team、Re-Logic、Mojang 和 Minecraft Forge 项目没有官方隶属关系。原作品的代码、纹理和音效归各自权利人所有。
 
@@ -28,13 +29,14 @@
 | 安装位置 | 客户端与服务端均需安装 |
 | 模组 ID | `arkofcosmos` |
 
-将构建得到的模组 JAR 放入对应游戏实例的 `mods` 目录。方舟与银河系列当前没有合成配方，可在创造模式的战斗物品栏获取，或使用命令：
+将构建得到的模组 JAR 放入对应游戏实例的 `mods` 目录。远古方舟通过下界合金升级锻造模板、破碎方舟与下界合金锭在锻造台升级获得。武器也可在创造模式的战斗物品栏获取，或使用命令：
 
 ```mcfunction
 /give @s arkofcosmos:ark_of_cosmos
 /give @s arkofcosmos:galaxia
 /give @s arkofcosmos:ark_of_the_elements
 /give @s arkofcosmos:fractured_ark
+/give @s arkofcosmos:ark_of_the_ancients
 ```
 
 ### 代码目录

@@ -39,6 +39,10 @@ public final class ArkOfCosmos {
     public static final RegistryObject<net.minecraft.world.effect.MobEffect> ELEMENTAL_MIX = EFFECTS.register("elemental_mix",
             () -> new net.minecraft.world.effect.MobEffect(net.minecraft.world.effect.MobEffectCategory.HARMFUL, 0xFF6900) {});
     public static final RegistryObject<Item> ARK_OF_THE_ELEMENTS = ITEMS.register("ark_of_the_elements", net.everla.projectc.arkofcosmos.item.ElementsItem::new);
+    public static final RegistryObject<Item> ARK_OF_THE_ANCIENTS = ITEMS.register("ark_of_the_ancients", net.everla.projectc.arkofcosmos.item.AncientsArkItem::new);
+    public static final RegistryObject<EntityType<net.everla.projectc.arkofcosmos.entity.AncientsEntity>> ANCIENTS_ATTACK = ENTITIES.register("ancients_attack",
+        () -> EntityType.Builder.<net.everla.projectc.arkofcosmos.entity.AncientsEntity>of(net.everla.projectc.arkofcosmos.entity.AncientsEntity::new, MobCategory.MISC)
+            .sized(.5f,.5f).noSave().noSummon().clientTrackingRange(128).updateInterval(1).build("arkofcosmos:ancients_attack"));
     public static final RegistryObject<Item> FRACTURED_ARK = ITEMS.register("fractured_ark", net.everla.projectc.arkofcosmos.item.FracturedArkItem::new);
     public static final RegistryObject<EntityType<net.everla.projectc.arkofcosmos.entity.FracturedEntity>> FRACTURED_ATTACK = ENTITIES.register("fractured_attack",
         () -> EntityType.Builder.<net.everla.projectc.arkofcosmos.entity.FracturedEntity>of(net.everla.projectc.arkofcosmos.entity.FracturedEntity::new, MobCategory.MISC)
@@ -115,6 +119,7 @@ public final class ArkOfCosmos {
             event.accept(GALAXIA);
             event.accept(ARK_OF_THE_ELEMENTS);
             event.accept(FRACTURED_ARK);
+            event.accept(ARK_OF_THE_ANCIENTS);
         }
         if (event.getTabKey() == CreativeModeTabs.INGREDIENTS) event.accept(AURIC_BAR);
         if (event.getTabKey() == CreativeModeTabs.INGREDIENTS) event.accept(ANNIHILATION_EMBER);

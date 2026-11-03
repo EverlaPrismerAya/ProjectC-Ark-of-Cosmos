@@ -1,0 +1,14 @@
+{
+  "parent": "minecraft:item/handheld",
+  "textures": {
+    "layer0": "arkofcosmos:item/ark_of_the_ancients"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "arkofcosmos:active": 1
+      },
+      "model": "arkofcosmos:item/ark_of_the_ancients_active"
+    }
+  ]
+}

@@ -30,7 +30,10 @@
       "path": "Content/Sounds/Custom/dd2_monk_staff_swing_0.xnb",
       "license": "Re-Logic / original rights holders; not GPL-3.0-only",
       "source_sha256": "fbde0d06df324f23a1b589d9cda34dfa1f2daddd6cf7faf8ebb37f4516f3a5a9",
-      "conversion": "XNB SoundEffectReader PCM -> WAV -> Vorbis quality 10; original sample rate and channels"
+      "conversion": "XNB SoundEffectReader PCM -> WAV -> Vorbis quality 10; original sample rate and channels",
+      "used_by": [
+        "Ark of the Ancients"
+      ]
     },
     {
       "file": "src/main/resources/assets/arkofcosmos/sounds/fractured_swing_1.ogg",
@@ -39,7 +42,10 @@
       "path": "Content/Sounds/Custom/dd2_monk_staff_swing_1.xnb",
       "license": "Re-Logic / original rights holders; not GPL-3.0-only",
       "source_sha256": "25a6ff56eeb39429aea1c1d4f0a12bf588b8e625953f9b73560fb992c3e3be9f",
-      "conversion": "XNB SoundEffectReader PCM -> WAV -> Vorbis quality 10; original sample rate and channels"
+      "conversion": "XNB SoundEffectReader PCM -> WAV -> Vorbis quality 10; original sample rate and channels",
+      "used_by": [
+        "Ark of the Ancients"
+      ]
     },
     {
       "file": "src/main/resources/assets/arkofcosmos/sounds/fractured_swing_2.ogg",
@@ -48,7 +54,10 @@
       "path": "Content/Sounds/Custom/dd2_monk_staff_swing_2.xnb",
       "license": "Re-Logic / original rights holders; not GPL-3.0-only",
       "source_sha256": "be92576eff34eb3c299e1ff60ba4bd83985ad92fe4f263590120d60f8a03612b",
-      "conversion": "XNB SoundEffectReader PCM -> WAV -> Vorbis quality 10; original sample rate and channels"
+      "conversion": "XNB SoundEffectReader PCM -> WAV -> Vorbis quality 10; original sample rate and channels",
+      "used_by": [
+        "Ark of the Ancients"
+      ]
     },
     {
       "file": "src/main/resources/assets/arkofcosmos/sounds/fractured_swing_3.ogg",
@@ -57,7 +66,10 @@
       "path": "Content/Sounds/Custom/dd2_monk_staff_swing_3.xnb",
       "license": "Re-Logic / original rights holders; not GPL-3.0-only",
       "source_sha256": "ba63961c02af3e80db76d853fe48fec7d558db31720b70a50211e0462c4a8cb9",
-      "conversion": "XNB SoundEffectReader PCM -> WAV -> Vorbis quality 10; original sample rate and channels"
+      "conversion": "XNB SoundEffectReader PCM -> WAV -> Vorbis quality 10; original sample rate and channels",
+      "used_by": [
+        "Ark of the Ancients"
+      ]
     },
     {
       "file": "src/main/resources/assets/arkofcosmos/sounds/fractured_beam_death_0.ogg",
@@ -66,7 +78,10 @@
       "path": "Content/Sounds/Custom/dd2_wither_beast_death_0.xnb",
       "license": "Re-Logic / original rights holders; not GPL-3.0-only",
       "source_sha256": "7d3fdaa3164c83bed8c9725686aee2773974a17c7e79e96f23862a0c58dae469",
-      "conversion": "XNB SoundEffectReader PCM -> WAV -> Vorbis quality 10; original sample rate and channels"
+      "conversion": "XNB SoundEffectReader PCM -> WAV -> Vorbis quality 10; original sample rate and channels",
+      "used_by": [
+        "Ark of the Ancients"
+      ]
     },
     {
       "file": "src/main/resources/assets/arkofcosmos/sounds/fractured_beam_death_1.ogg",
@@ -75,7 +90,10 @@
       "path": "Content/Sounds/Custom/dd2_wither_beast_death_1.xnb",
       "license": "Re-Logic / original rights holders; not GPL-3.0-only",
       "source_sha256": "ef534148e40f692abef3e619c30dd625b7ce7b204c63cf884fdf4942056d5a06",
-      "conversion": "XNB SoundEffectReader PCM -> WAV -> Vorbis quality 10; original sample rate and channels"
+      "conversion": "XNB SoundEffectReader PCM -> WAV -> Vorbis quality 10; original sample rate and channels",
+      "used_by": [
+        "Ark of the Ancients"
+      ]
     },
     {
       "file": "src/main/resources/assets/arkofcosmos/sounds/fractured_beam_death_2.ogg",
@@ -84,7 +102,10 @@
       "path": "Content/Sounds/Custom/dd2_wither_beast_death_2.xnb",
       "license": "Re-Logic / original rights holders; not GPL-3.0-only",
       "source_sha256": "30d4d326ac7aeb01f06fed7882440cbe936ff0393a297242dea3dff9739c3e28",
-      "conversion": "XNB SoundEffectReader PCM -> WAV -> Vorbis quality 10; original sample rate and channels"
+      "conversion": "XNB SoundEffectReader PCM -> WAV -> Vorbis quality 10; original sample rate and channels",
+      "used_by": [
+        "Ark of the Ancients"
+      ]
     },
     {
       "file": "src/main/resources/assets/arkofcosmos/sounds/fourth_calamity_death.ogg",
@@ -108,7 +129,10 @@
       "license": "Re-Logic / original rights holders; not GPL-3.0-only",
       "recorded_output_sha256": "ef367bbcd7a5db6c670ecfd81e715e3b20f4f0abc92c473062dec92d1bedf6aa",
       "source_sha256": "1a26695cbbebf4a5ef4b0f45386c85c0f840f3f2192acedd5b67595574f07060",
-      "matches_recorded_output": true
+      "matches_recorded_output": true,
+      "used_by": [
+        "Ark of the Ancients"
+      ]
     },
     {
       "file": "src/main/resources/assets/arkofcosmos/sounds/crystal_1.ogg",
@@ -118,7 +142,10 @@
       "license": "Re-Logic / original rights holders; not GPL-3.0-only",
       "recorded_output_sha256": "f78e764686df8f23fd2c99973b5695e742de50b2a9c482f18cb88583dbe215be",
       "source_sha256": "2c7abbeb5c45af987232ddf242b1fa1526aeb46973e2f8a257b12784172c0b3e",
-      "matches_recorded_output": true
+      "matches_recorded_output": true,
+      "used_by": [
+        "Ark of the Ancients"
+      ]
     },
     {
       "file": "src/main/resources/assets/arkofcosmos/sounds/crystal_2.ogg",
@@ -128,7 +155,10 @@
       "license": "Re-Logic / original rights holders; not GPL-3.0-only",
       "recorded_output_sha256": "031dc92bf08bd85824d74b5edc035ab82352b7f0a197e684dbdb5b7c8f25b755",
       "source_sha256": "9214e08de160ca9a921fe77478d3ccf7f340af2f0ae318d6fbfee5e8285a1710",
-      "matches_recorded_output": true
+      "matches_recorded_output": true,
+      "used_by": [
+        "Ark of the Ancients"
+      ]
     },
     {
       "file": "src/main/resources/assets/arkofcosmos/sounds/item35_0.ogg",
@@ -138,7 +168,10 @@
       "license": "Re-Logic / original rights holders; not GPL-3.0-only",
       "recorded_output_sha256": "0c43b9d2fe107d6b4b95fe4be2fcb616dd334425fe2e280e0a404b8f18bfc212",
       "source_sha256": "0bd78b3b4db85396cc55669926dcbf3cc0002c9ca671aaa1db168b3fc2d903a7",
-      "matches_recorded_output": true
+      "matches_recorded_output": true,
+      "used_by": [
+        "Ark of the Ancients"
+      ]
     },
     {
       "file": "src/main/resources/assets/arkofcosmos/sounds/item4_0.ogg",
@@ -198,7 +231,10 @@
       "license": "Re-Logic / original rights holders; not GPL-3.0-only",
       "recorded_output_sha256": "d6ab62b7cec3255ecad3b875001bc3782c53ba2bf179429710a34f6c5bbd8d42",
       "source_sha256": "ab71e2b0fdeb73cbd03f8202cfc2d55e4c88faaf36b5a27ae358f884b49afc81",
-      "matches_recorded_output": true
+      "matches_recorded_output": true,
+      "used_by": [
+        "Ark of the Ancients"
+      ]
     },
     {
       "file": "src/main/resources/assets/arkofcosmos/sounds/meaty_0.ogg",
@@ -248,7 +284,10 @@
       "license": "ARR (Calamity original terms)",
       "recorded_output_sha256": "85cdf3c1ec58d5cc680df9dac5b3c7aa020433c78c53641e205d32472a0e3b6a",
       "source_sha256": "85cdf3c1ec58d5cc680df9dac5b3c7aa020433c78c53641e205d32472a0e3b6a",
-      "matches_recorded_output": true
+      "matches_recorded_output": true,
+      "used_by": [
+        "Ark of the Ancients"
+      ]
     },
     {
       "file": "src/main/resources/assets/arkofcosmos/sounds/phoenix_1.ogg",
@@ -258,7 +297,10 @@
       "license": "ARR (Calamity original terms)",
       "recorded_output_sha256": "6d2f5c09743e0cdadb9100cb5ff824debf08aa89ebd49919b0389cc3f07e1c2c",
       "source_sha256": "6d2f5c09743e0cdadb9100cb5ff824debf08aa89ebd49919b0389cc3f07e1c2c",
-      "matches_recorded_output": true
+      "matches_recorded_output": true,
+      "used_by": [
+        "Ark of the Ancients"
+      ]
     },
     {
       "file": "src/main/resources/assets/arkofcosmos/sounds/phoenix_2.ogg",
@@ -268,7 +310,10 @@
       "license": "ARR (Calamity original terms)",
       "recorded_output_sha256": "4ddedfebe19208de888eef3f3f4a82d90bf1c3d3618d50bad24e49bb1c5747ab",
       "source_sha256": "4ddedfebe19208de888eef3f3f4a82d90bf1c3d3618d50bad24e49bb1c5747ab",
-      "matches_recorded_output": true
+      "matches_recorded_output": true,
+      "used_by": [
+        "Ark of the Ancients"
+      ]
     },
     {
       "file": "src/main/resources/assets/arkofcosmos/sounds/snap_0.ogg",
@@ -388,7 +433,8 @@
       "recorded_output_sha256": "48a5319f6d7e7432af6891c891bc22426392e0192111e189996cdec709572b38",
       "matches_recorded_output": true,
       "used_by": [
-        "Fractured Ark visuals"
+        "Fractured Ark visuals",
+        "Ark of the Ancients"
       ]
     },
     {
@@ -398,7 +444,10 @@
       "path": "Particles/BloomLine.png",
       "license": "ARR (Calamity original terms)",
       "recorded_output_sha256": "58a088dd35f881210ca5a5b7a3cefdf0b6e432de0d83c314665e4ac51367be8b",
-      "matches_recorded_output": true
+      "matches_recorded_output": true,
+      "used_by": [
+        "Ark of the Ancients"
+      ]
     },
     {
       "file": "src/main/resources/assets/arkofcosmos/textures/fx/bloomlinecap.png",
@@ -407,7 +456,10 @@
       "path": "Particles/BloomLineCap.png",
       "license": "ARR (Calamity original terms)",
       "recorded_output_sha256": "43afece4decf84427f7e1ebcbdea03f6a81ebe7c4e077d91ca9ec5dbb47e294f",
-      "matches_recorded_output": true
+      "matches_recorded_output": true,
+      "used_by": [
+        "Ark of the Ancients"
+      ]
     },
     {
       "file": "src/main/resources/assets/arkofcosmos/textures/fx/circularsmearsmokey.png",
@@ -434,7 +486,10 @@
       "path": "Particles/HollowCircleHardEdge.png",
       "license": "ARR (Calamity original terms)",
       "recorded_output_sha256": "c0cbb361955d90e56ecd769ff1538b2f9ac291b75890badde8f0cdda6aacc8e6",
-      "matches_recorded_output": true
+      "matches_recorded_output": true,
+      "used_by": [
+        "Ark of the Ancients"
+      ]
     },
     {
       "file": "src/main/resources/assets/arkofcosmos/textures/fx/light.png",
@@ -445,7 +500,8 @@
       "recorded_output_sha256": "c63c8daf47b899af3eadeadf1579af25133efb441379afca07f8b098b3382622",
       "matches_recorded_output": true,
       "used_by": [
-        "Fractured Ark visuals"
+        "Fractured Ark visuals",
+        "Ark of the Ancients"
       ]
     },
     {
@@ -466,7 +522,8 @@
       "recorded_output_sha256": "c373fe8df0ddd040154a9c288730210efb7ddb715de2d5d6e23c8d140a436d3c",
       "matches_recorded_output": true,
       "used_by": [
-        "Fractured Ark visuals"
+        "Fractured Ark visuals",
+        "Ark of the Ancients"
       ]
     },
     {
@@ -541,7 +598,8 @@
       "recorded_output_sha256": "eda3d9485fc2f117931e668a0fbfa117341b04c13ceba418311443492e37a493",
       "matches_recorded_output": true,
       "used_by": [
-        "Fractured Ark visuals"
+        "Fractured Ark visuals",
+        "Ark of the Ancients"
       ]
     },
     {
@@ -551,7 +609,10 @@
       "path": "Particles/TrientCircularSmear.png",
       "license": "ARR (Calamity original terms)",
       "recorded_output_sha256": "3790c77817cac734f404aacc9059952587838b5c5545e66c9e643115b6feb852",
-      "matches_recorded_output": true
+      "matches_recorded_output": true,
+      "used_by": [
+        "Ark of the Ancients"
+      ]
     },
     {
       "file": "src/main/resources/assets/arkofcosmos/textures/item/ark_of_cosmos.png",
@@ -1040,7 +1101,10 @@
       "project": "Terraria",
       "path": "Content/Sounds/Item_9.xnb",
       "source_sha256": "6df74552651c5548fe0fcc61f81b3835a3cd2a6db1c47fd4dad15abb43a9f76d",
-      "license": "Re-Logic / original rights holders; not GPL-3.0-only"
+      "license": "Re-Logic / original rights holders; not GPL-3.0-only",
+      "used_by": [
+        "Ark of the Ancients"
+      ]
     },
     {
       "file": "src/main/resources/assets/arkofcosmos/textures/elements/dust.png",
@@ -1053,7 +1117,8 @@
       "conversion": "XNB LZX Texture2D RGBA decoded losslessly to PNG; premultiplied channel bytes unchanged",
       "rgba_sha256": "d66069c16123c59b96e4bda53369fc963931478e5ac36a741a6e17abf9d0c5fe",
       "used_by": [
-        "Fractured Ark visuals"
+        "Fractured Ark visuals",
+        "Ark of the Ancients"
       ]
     },
     {
@@ -1065,7 +1130,10 @@
       "path": "Content/Images/Gore_16.xnb",
       "license": "Re-Logic / original rights holders; not GPL-3.0-only",
       "conversion": "XNB LZX Texture2D RGBA decoded losslessly to PNG; premultiplied channel bytes unchanged",
-      "rgba_sha256": "625caf302714eeb43a36f4cce5be9dbd2008f0b91a61bc46cf21599d2e176fe5"
+      "rgba_sha256": "625caf302714eeb43a36f4cce5be9dbd2008f0b91a61bc46cf21599d2e176fe5",
+      "used_by": [
+        "Ark of the Ancients"
+      ]
     },
     {
       "file": "src/main/resources/assets/arkofcosmos/textures/elements/gore_17.png",
@@ -1076,7 +1144,10 @@
       "path": "Content/Images/Gore_17.xnb",
       "license": "Re-Logic / original rights holders; not GPL-3.0-only",
       "conversion": "XNB LZX Texture2D RGBA decoded losslessly to PNG; premultiplied channel bytes unchanged",
-      "rgba_sha256": "d65af3f1225535181b9f8a3b98a1e78e8cdd4776d4102c68ab5db772ac140d65"
+      "rgba_sha256": "d65af3f1225535181b9f8a3b98a1e78e8cdd4776d4102c68ab5db772ac140d65",
+      "used_by": [
+        "Ark of the Ancients"
+      ]
     },
     {
       "file": "src/main/resources/assets/arkofcosmos/textures/elements/techy_holosquare.png",
@@ -2717,7 +2788,10 @@
       "project": "Terraria",
       "path": "Content/Sounds/Custom/dd2_sky_dragons_fury_shot_0.xnb",
       "license": "Re-Logic / original rights holders; not GPL-3.0-only",
-      "conversion": "XNB SoundEffectReader PCM -> WAV -> Vorbis quality 10; original sample rate and channels"
+      "conversion": "XNB SoundEffectReader PCM -> WAV -> Vorbis quality 10; original sample rate and channels",
+      "used_by": [
+        "Ark of the Ancients"
+      ]
     },
     {
       "file": "src/main/resources/assets/arkofcosmos/sounds/fractured_parry_start_1.ogg",
@@ -2727,7 +2801,10 @@
       "project": "Terraria",
       "path": "Content/Sounds/Custom/dd2_sky_dragons_fury_shot_1.xnb",
       "license": "Re-Logic / original rights holders; not GPL-3.0-only",
-      "conversion": "XNB SoundEffectReader PCM -> WAV -> Vorbis quality 10; original sample rate and channels"
+      "conversion": "XNB SoundEffectReader PCM -> WAV -> Vorbis quality 10; original sample rate and channels",
+      "used_by": [
+        "Ark of the Ancients"
+      ]
     },
     {
       "file": "src/main/resources/assets/arkofcosmos/sounds/fractured_parry_start_2.ogg",
@@ -2737,7 +2814,10 @@
       "project": "Terraria",
       "path": "Content/Sounds/Custom/dd2_sky_dragons_fury_shot_2.xnb",
       "license": "Re-Logic / original rights holders; not GPL-3.0-only",
-      "conversion": "XNB SoundEffectReader PCM -> WAV -> Vorbis quality 10; original sample rate and channels"
+      "conversion": "XNB SoundEffectReader PCM -> WAV -> Vorbis quality 10; original sample rate and channels",
+      "used_by": [
+        "Ark of the Ancients"
+      ]
     },
     {
       "file": "src/main/resources/assets/arkofcosmos/sounds/item67_0.ogg",
@@ -2747,7 +2827,43 @@
       "project": "Terraria",
       "path": "Content/Sounds/Item_67.xnb",
       "license": "Re-Logic / original rights holders; not GPL-3.0-only",
-      "conversion": "XNB SoundEffectReader PCM -> WAV -> Vorbis quality 10; original sample rate and channels"
+      "conversion": "XNB SoundEffectReader PCM -> WAV -> Vorbis quality 10; original sample rate and channels",
+      "used_by": [
+        "Ark of the Ancients"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/item/ark_of_the_ancients.png",
+      "sha256": "47a02e051fba34e8280567b8a01014ba72fd84f0b0df023d14ed48fe6e192053",
+      "project": "Calamity Mod",
+      "path": "Items/Weapons/Melee/TrueArkoftheAncients.png",
+      "license": "ARR (Calamity original terms)",
+      "source_sha256": "47a02e051fba34e8280567b8a01014ba72fd84f0b0df023d14ed48fe6e192053",
+      "used_by": [
+        "Ark of the Ancients"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/item/ark_of_the_ancients_glow.png",
+      "sha256": "182e478f0e6ea38e157de0c2c769614450dd684b6516356523bab846345f4120",
+      "project": "Calamity Mod",
+      "path": "Items/Weapons/Melee/TrueArkoftheAncientsGlow.png",
+      "license": "ARR (Calamity original terms)",
+      "source_sha256": "182e478f0e6ea38e157de0c2c769614450dd684b6516356523bab846345f4120",
+      "used_by": [
+        "Ark of the Ancients"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/entity/ancient_star.png",
+      "sha256": "95287efad3896a15ac138441188f246f0a16465254564dd7597996a1f35baf09",
+      "project": "Calamity Mod",
+      "path": "Projectiles/Melee/AncientStar.png",
+      "license": "ARR (Calamity original terms)",
+      "source_sha256": "95287efad3896a15ac138441188f246f0a16465254564dd7597996a1f35baf09",
+      "used_by": [
+        "Ark of the Ancients"
+      ]
     }
   ]
 }

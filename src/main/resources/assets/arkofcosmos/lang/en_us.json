@@ -140,5 +140,9 @@
   "fractured.parry": "%s to extend the Ark out in front of you",
   "fractured.charge": "Successfully parrying empowers the next 10 swings of the sword, boosting damage and letting them throw projectiles",
   "fractured.window": "Parrying grants a small window of invulnerability; hitting an enemy or blocking an attack during it counts as a successful parry",
-  "fractured.flavor": "A worn down and rusty blade once wielded against the evil of this world, ready to be of use once more"
+  "fractured.flavor": "A worn down and rusty blade once wielded against the evil of this world, ready to be of use once more",
+  "item.arkofcosmos.ark_of_the_ancients": "Ark of the Ancients",
+  "entity.arkofcosmos.ancients_attack": "Ark of the Ancients attack",
+  "ancients.flavor": "A heavenly blade forged to vanquish all evil",
+  "ancients.blast": "Hold %s and %s to release all empowered charges in a powerful burst of energy"
 }

@@ -91,6 +91,8 @@ public final class ArkCombat {
         stack.getOrCreateTag().putInt("ArkParryCooldown", 340);
         if (stack.is(ArkOfCosmos.FRACTURED_ARK.get()))
             net.everla.projectc.arkofcosmos.entity.FracturedEntity.parry(player, damage, AttackFrame.capture(player));
+        else if (stack.is(ArkOfCosmos.ARK_OF_THE_ANCIENTS.get()))
+            net.everla.projectc.arkofcosmos.entity.AncientsEntity.parry(player, damage, AttackFrame.capture(player));
         else ArkAttackEntity.create(player, ArkAttackEntity.Kind.PARRY, 0, 0, damage,
             player.getBoundingBox().getCenter(), Vec3.ZERO, AttackFrame.capture(player));
         return true;
@@ -116,7 +118,7 @@ public final class ArkCombat {
         int oldCooldown = c.parryCooldown;
         c.parryCooldown = Math.max(0, c.parryCooldown - 3);
         if (oldCooldown > 0 && c.parryCooldown == 0) {
-            if(c.parryStack.is(ArkOfCosmos.FRACTURED_ARK.get())) FracturedCombat.sound(player,player,"item35",.75f,true,true);
+            if(c.parryStack.is(ArkOfCosmos.FRACTURED_ARK.get()) || c.parryStack.is(ArkOfCosmos.ARK_OF_THE_ANCIENTS.get())) FracturedCombat.sound(player,player,"item35",.75f,true,true);
             else ArkOfCosmos.sound(player,"item35",2);
         }
         c.useCooldown = Math.max(0, c.useCooldown - 3);
@@ -167,18 +169,23 @@ public final class ArkCombat {
         for(ArkAttackEntity a:player.level().getEntitiesOfClass(ArkAttackEntity.class,player.getBoundingBox().inflate(20)))
             if(a.ownerId()==player.getId()&&a.kind()==ArkAttackEntity.Kind.PARRY){effectFrame=a.attackFrame();break;}
         ItemStack stack = c.parryStack.isEmpty() ? player.getMainHandItem() : c.parryStack;
-        if (!stack.is(ArkOfCosmos.FRACTURED_ARK.get())) ArkNetwork.parryEffect(player,effectFrame);
+        if (!stack.is(ArkOfCosmos.FRACTURED_ARK.get()) && !stack.is(ArkOfCosmos.ARK_OF_THE_ANCIENTS.get())) ArkNetwork.parryEffect(player,effectFrame);
         if (stack.is(ArkOfCosmos.FRACTURED_ARK.get())) {
             net.everla.projectc.arkofcosmos.item.FracturedArkItem.charge(stack, 10);
             for (var a : player.level().getEntitiesOfClass(net.everla.projectc.arkofcosmos.entity.FracturedEntity.class, player.getBoundingBox().inflate(20)))
                 if (a.ownerId() == player.getId() && a.kind() == net.everla.projectc.arkofcosmos.entity.FracturedEntity.PARRY) a.parrySucceeded();
+        }
+        else if (stack.is(ArkOfCosmos.ARK_OF_THE_ANCIENTS.get())) {
+            net.everla.projectc.arkofcosmos.item.AncientsArkItem.charge(stack,10);
+            for(var a:player.level().getEntitiesOfClass(net.everla.projectc.arkofcosmos.entity.AncientsEntity.class,player.getBoundingBox().inflate(20)))
+                if(a.ownerId()==player.getId()&&a.kind()==net.everla.projectc.arkofcosmos.entity.AncientsEntity.PARRY)a.parrySucceeded();
         }
         else {
             ArkItem.charge(stack, 16);
             stack.getOrCreateTag().putInt("ArkCombo", 0);
         }
         player.displayClientMessage(net.minecraft.network.chat.Component.translatable("message.arkofcosmos.parry"), true);
-        if(stack.is(ArkOfCosmos.FRACTURED_ARK.get())) {
+        if(stack.is(ArkOfCosmos.FRACTURED_ARK.get()) || stack.is(ArkOfCosmos.ARK_OF_THE_ANCIENTS.get())) {
             FracturedCombat.sound(player,player,"crystal",1,true,false);
             FracturedCombat.sound(player,player,"item67",1,true,false);
         } else {
