@@ -4,6 +4,7 @@
 
 其他武器还有：
 - Ark of The Old One（旧神方舟），为旧版鸿蒙方舟，纯粹的数值怪。
+- True Biome Blade（真·环境之刃）：四种主调谐、四种副调谐被动与双层选择盘；[武器说明](docs/true-biome-blade.md)。
 - Galaxia（银河），包含凤凰、白羊、北极星和仙女座四种攻击模式、星座选择盘及派生弹幕。
 - Ark of the Elements（元素方舟），包含五段连击、投掷剪合、太阳针与元素玻璃星、招架充能、裂缝剪击及元素谐鸣状态。
 - Fractured Ark（破碎方舟）：4 点基础伤害的交替挥砍、10 层招架充能及充能剑气。
@@ -34,6 +35,7 @@
 ```mcfunction
 /give @s arkofcosmos:ark_of_cosmos
 /give @s arkofcosmos:galaxia
+/give @s arkofcosmos:true_biome_blade
 /give @s arkofcosmos:ark_of_the_elements
 /give @s arkofcosmos:fractured_ark
 /give @s arkofcosmos:ark_of_the_ancients

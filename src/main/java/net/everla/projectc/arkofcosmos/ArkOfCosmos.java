@@ -51,6 +51,12 @@ public final class ArkOfCosmos {
             () -> EntityType.Builder.<net.everla.projectc.arkofcosmos.entity.ElementsEntity>of(net.everla.projectc.arkofcosmos.entity.ElementsEntity::new, MobCategory.MISC)
                     .sized(.5f,.5f).noSave().noSummon().clientTrackingRange(128).updateInterval(1).build("arkofcosmos:elements_attack"));
     public static final RegistryObject<Item> GALAXIA = ITEMS.register("galaxia", net.everla.projectc.arkofcosmos.item.GalaxiaItem::new);
+    public static final RegistryObject<Item> TRUE_BIOME_BLADE = ITEMS.register("true_biome_blade", net.everla.projectc.arkofcosmos.item.TrueBiomeBladeItem::new);
+    public static final RegistryObject<EntityType<net.everla.projectc.arkofcosmos.entity.TrueBiomeEntity>> TRUE_BIOME_ATTACK = ENTITIES.register("true_biome_attack",
+            () -> EntityType.Builder.<net.everla.projectc.arkofcosmos.entity.TrueBiomeEntity>of(net.everla.projectc.arkofcosmos.entity.TrueBiomeEntity::new, MobCategory.MISC)
+                    .sized(.5f,.5f).noSave().noSummon().clientTrackingRange(128).updateInterval(1).build("arkofcosmos:true_biome_attack"));
+    public static final RegistryObject<net.minecraft.world.effect.MobEffect> GLACIAL_STATE = EFFECTS.register("glacial_state",
+            net.everla.projectc.arkofcosmos.combat.GlacialStateEffect::new);
     public static final RegistryObject<EntityType<net.everla.projectc.arkofcosmos.entity.GalaxiaEntity>> GALAXIA_ATTACK = ENTITIES.register("galaxia_attack",
             () -> EntityType.Builder.<net.everla.projectc.arkofcosmos.entity.GalaxiaEntity>of(net.everla.projectc.arkofcosmos.entity.GalaxiaEntity::new, MobCategory.MISC)
                     .sized(.5f,.5f).noSave().noSummon().clientTrackingRange(128).updateInterval(1).build("arkofcosmos:galaxia_attack"));
@@ -74,7 +80,8 @@ public final class ArkOfCosmos {
         for (String name : new String[]{"fractured_parry_start", "item67", "fractured_swing", "fractured_beam_death", "elements_item9", "phoenix", "meaty", "item4", "item35", "item63", "item64", "item65", "item71", "item84", "crystal", "needle_death", "mahou_defeat", "fourth_calamity_death",
                 "galaxia_item60","galaxia_item71","galaxia_item76","galaxia_item77","galaxia_item78","galaxia_item79","galaxia_item80","galaxia_item90",
                 "galaxia_item101","galaxia_item109","galaxia_item120","galaxia_hit30","galaxia_hit43","galaxia_book","galaxia_impact","galaxia_eruption",
-                "galaxia_beacon","galaxia_lightning","galaxia_meaty"})
+                "galaxia_beacon","galaxia_lightning","galaxia_meaty",
+                "true_biome_charge","true_biome_flail","true_biome_blast","true_biome_beam_end","true_biome_beam_start","true_biome_hook_end","true_biome_slice","true_biome_pulse"})
             AUDIO.put(name, SOUNDS.register(name, () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(MOD_ID, name))));
     }
     public static void sound(net.minecraft.world.entity.Entity entity, String name, float volume) {
@@ -117,6 +124,7 @@ public final class ArkOfCosmos {
             event.accept(ARK_OF_COSMOS);
             event.accept(ARK_OF_THE_OLD_ONE);
             event.accept(GALAXIA);
+            event.accept(TRUE_BIOME_BLADE);
             event.accept(ARK_OF_THE_ELEMENTS);
             event.accept(FRACTURED_ARK);
             event.accept(ARK_OF_THE_ANCIENTS);

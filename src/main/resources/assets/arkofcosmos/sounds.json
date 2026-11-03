@@ -359,5 +359,85 @@
     "sounds": [
       "arkofcosmos:item67_0"
     ]
+  },
+  "true_biome_charge": {
+    "sounds": [
+      {
+        "name": "arkofcosmos:true_biome_charge_0",
+        "stream": false
+      },
+      {
+        "name": "arkofcosmos:true_biome_charge_1",
+        "stream": false
+      },
+      {
+        "name": "arkofcosmos:true_biome_charge_2",
+        "stream": false
+      }
+    ]
+  },
+  "true_biome_flail": {
+    "sounds": [
+      {
+        "name": "arkofcosmos:true_biome_flail_0",
+        "stream": false
+      }
+    ]
+  },
+  "true_biome_blast": {
+    "sounds": [
+      {
+        "name": "arkofcosmos:true_biome_blast_0",
+        "stream": false
+      },
+      {
+        "name": "arkofcosmos:true_biome_blast_1",
+        "stream": false
+      },
+      {
+        "name": "arkofcosmos:true_biome_blast_2",
+        "stream": false
+      }
+    ]
+  },
+  "true_biome_beam_end": {
+    "sounds": [
+      {
+        "name": "arkofcosmos:true_biome_beam_end_0",
+        "stream": false
+      }
+    ]
+  },
+  "true_biome_beam_start": {
+    "sounds": [
+      {
+        "name": "arkofcosmos:true_biome_beam_start_0",
+        "stream": false
+      }
+    ]
+  },
+  "true_biome_hook_end": {
+    "sounds": [
+      {
+        "name": "arkofcosmos:true_biome_hook_end_0",
+        "stream": false
+      }
+    ]
+  },
+  "true_biome_slice": {
+    "sounds": [
+      {
+        "name": "arkofcosmos:true_biome_slice_0",
+        "stream": false
+      }
+    ]
+  },
+  "true_biome_pulse": {
+    "sounds": [
+      {
+        "name": "arkofcosmos:true_biome_pulse_0",
+        "stream": false
+      }
+    ]
   }
 }

@@ -434,7 +434,8 @@
       "matches_recorded_output": true,
       "used_by": [
         "Fractured Ark visuals",
-        "Ark of the Ancients"
+        "Ark of the Ancients",
+        "True Biome Blade"
       ]
     },
     {
@@ -468,7 +469,10 @@
       "path": "Particles/CircularSmearSmokey.png",
       "license": "ARR (Calamity original terms)",
       "recorded_output_sha256": "f7d2f0030bd70cd47677fc423800faac4516e7efff844dd669d6eee1bf8383ce",
-      "matches_recorded_output": true
+      "matches_recorded_output": true,
+      "used_by": [
+        "True Biome Blade"
+      ]
     },
     {
       "file": "src/main/resources/assets/arkofcosmos/textures/fx/heavysmoke.png",
@@ -523,7 +527,8 @@
       "matches_recorded_output": true,
       "used_by": [
         "Fractured Ark visuals",
-        "Ark of the Ancients"
+        "Ark of the Ancients",
+        "True Biome Blade"
       ]
     },
     {
@@ -551,7 +556,10 @@
       "path": "Particles/ThinEndedLine.png",
       "license": "ARR (Calamity original terms)",
       "recorded_output_sha256": "dd3c647736a742a7d54278ae921f44e3130eb9b05bede40a4cd3d7dd67ab43fd",
-      "matches_recorded_output": true
+      "matches_recorded_output": true,
+      "used_by": [
+        "True Biome Blade"
+      ]
     },
     {
       "file": "src/main/resources/assets/arkofcosmos/textures/fx/thinsparkle.png",
@@ -563,7 +571,8 @@
       "matches_recorded_output": true,
       "used_by": [
         "Fractured Ark visuals",
-        "Ark of the Ancients"
+        "Ark of the Ancients",
+        "True Biome Blade"
       ]
     },
     {
@@ -624,7 +633,10 @@
       "license": "Calamity Team / All Rights Reserved",
       "file": "src/main/resources/assets/arkofcosmos/textures/galaxia/bloomring.png",
       "path": "Particles/BloomRing.png",
-      "project": "Calamity Mod"
+      "project": "Calamity Mod",
+      "used_by": [
+        "True Biome Blade"
+      ]
     },
     {
       "sha256": "95f2cd790cf14fc3518423776ce0e94c0e531b8322c85fe365304bbdc056adcd",
@@ -743,7 +755,10 @@
       "sha256": "4407bbb116de7072cc69d08756b116c7b9845a4dc1fe4b048d2238ccb110d83c",
       "project": "Calamity Mod",
       "path": "Projectiles/Melee/MendedBiomeBlade_HeavensMightChain.png",
-      "license": "Calamity Team / All Rights Reserved"
+      "license": "Calamity Team / All Rights Reserved",
+      "used_by": [
+        "True Biome Blade"
+      ]
     },
     {
       "file": "src/main/resources/assets/arkofcosmos/shaders/core/galaxia_tint.fsh",
@@ -2827,6 +2842,358 @@
       "source_sha256": "95287efad3896a15ac138441188f246f0a16465254564dd7597996a1f35baf09",
       "used_by": [
         "Ark of the Ancients"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/item/true_biome_blade.png",
+      "sha256": "5306d456bf2e788194e4d4d61922a15bc787d610cc3a9a183a9f8b381177c010",
+      "project": "Calamity Mod",
+      "path": "Items/Weapons/Melee/OmegaBiomeBlade.png",
+      "license": "ARR (Calamity original terms)",
+      "source_sha256": "5306d456bf2e788194e4d4d61922a15bc787d610cc3a9a183a9f8b381177c010",
+      "used_by": [
+        "True Biome Blade"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/true_biome_pride.png",
+      "sha256": "049f19b12e2ba92348be69f781ecb547e61b090e1ec79a1bf48c5271d0de29d4",
+      "project": "Calamity Mod",
+      "path": "Projectiles/Melee/TrueBiomeBlade_SwordsmithsPride.png",
+      "license": "ARR (Calamity original terms)",
+      "source_sha256": "049f19b12e2ba92348be69f781ecb547e61b090e1ec79a1bf48c5271d0de29d4",
+      "used_by": [
+        "True Biome Blade"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/true_biome_chained.png",
+      "sha256": "136a4f2016df59aaec7564c94e49d7741e351f105e26a35a199ff71313981059",
+      "project": "Calamity Mod",
+      "path": "Projectiles/Melee/TrueBiomeBlade_LamentationsOfTheChained.png",
+      "license": "ARR (Calamity original terms)",
+      "source_sha256": "136a4f2016df59aaec7564c94e49d7741e351f105e26a35a199ff71313981059",
+      "used_by": [
+        "True Biome Blade"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/true_biome_fury.png",
+      "sha256": "5751cd9cec4e87ae7c91c69548cd8b7163a5cecfd87ff583a55e6cca6cb7d9ee",
+      "project": "Calamity Mod",
+      "path": "Projectiles/Melee/TrueBiomeBlade_SanguineFury.png",
+      "license": "ARR (Calamity original terms)",
+      "source_sha256": "5751cd9cec4e87ae7c91c69548cd8b7163a5cecfd87ff583a55e6cca6cb7d9ee",
+      "used_by": [
+        "True Biome Blade"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/true_biome_tides.png",
+      "sha256": "3268c1ec6b0d4f68d6b4660b0c4e1e8078ec7df002ddc0a637cc749b7a94b599",
+      "project": "Calamity Mod",
+      "path": "Projectiles/Melee/TrueBiomeBlade_MercurialTides.png",
+      "license": "ARR (Calamity original terms)",
+      "source_sha256": "3268c1ec6b0d4f68d6b4660b0c4e1e8078ec7df002ddc0a637cc749b7a94b599",
+      "used_by": [
+        "True Biome Blade"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/true_biome_beam.png",
+      "sha256": "401b8ce965249aec7d511f500b6b38e2a9c6fa965d5aec22e4f6657a064f80c6",
+      "project": "Calamity Mod",
+      "path": "Projectiles/Melee/TrueBiomeBlade_SwordsmithsPrideBeam.png",
+      "license": "ARR (Calamity original terms)",
+      "source_sha256": "401b8ce965249aec7d511f500b6b38e2a9c6fa965d5aec22e4f6657a064f80c6",
+      "used_by": [
+        "True Biome Blade"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/true_biome_fury_extra.png",
+      "sha256": "0f5112ae8dfd0047e8dd9fcd1e313bedde5887a7e37aeadbe625fe08873b0c62",
+      "project": "Calamity Mod",
+      "path": "Projectiles/Melee/TrueBiomeBlade_SanguineFuryExtra.png",
+      "license": "ARR (Calamity original terms)",
+      "source_sha256": "0f5112ae8dfd0047e8dd9fcd1e313bedde5887a7e37aeadbe625fe08873b0c62",
+      "used_by": [
+        "True Biome Blade"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/true_biome_flail.png",
+      "sha256": "614db9c57e95d70bb85422efe0749c519db18eb45546b828d1ae4c1ff52b05cf",
+      "project": "Calamity Mod",
+      "path": "Projectiles/Melee/TrueBiomeBlade_LamentationsOfTheChainedFlail.png",
+      "license": "ARR (Calamity original terms)",
+      "source_sha256": "614db9c57e95d70bb85422efe0749c519db18eb45546b828d1ae4c1ff52b05cf",
+      "used_by": [
+        "True Biome Blade"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/true_biome_ghost_chain.png",
+      "sha256": "348d70db22f301932a220776709d1776ad7b8a6b00c80eae9eef92517df76823",
+      "project": "Calamity Mod",
+      "path": "Projectiles/Melee/TrueBiomeBlade_LamentationsOfTheChainedChain.png",
+      "license": "ARR (Calamity original terms)",
+      "source_sha256": "348d70db22f301932a220776709d1776ad7b8a6b00c80eae9eef92517df76823",
+      "used_by": [
+        "True Biome Blade"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/true_biome_hook.png",
+      "sha256": "a2dd4a7244ae30ee28185f6ac58b7c3c10371ac48a937ac1ccf3207c88833bf4",
+      "project": "Calamity Mod",
+      "path": "Projectiles/Melee/TrueBiomeBlade_LamentationsOfTheChainedHook.png",
+      "license": "ARR (Calamity original terms)",
+      "source_sha256": "a2dd4a7244ae30ee28185f6ac58b7c3c10371ac48a937ac1ccf3207c88833bf4",
+      "used_by": [
+        "True Biome Blade"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/true_biome_hook_body.png",
+      "sha256": "796aecc8a50093650289ce3d294433b3ad4208db8198f210ea5ac674cb015c66",
+      "project": "Calamity Mod",
+      "path": "Projectiles/Melee/TrueBiomeBlade_LamentationsOfTheChainedHookBody.png",
+      "license": "ARR (Calamity original terms)",
+      "source_sha256": "796aecc8a50093650289ce3d294433b3ad4208db8198f210ea5ac674cb015c66",
+      "used_by": [
+        "True Biome Blade"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/true_biome_shockwave.png",
+      "sha256": "aaef8ab3fe65187f7f741d1e9bac07064ead8d2ff3d236bc9bbecb41d49cc78f",
+      "project": "Calamity Mod",
+      "path": "Projectiles/Melee/TrueBiomeBlade_MercurialTidesShockwave.png",
+      "license": "ARR (Calamity original terms)",
+      "source_sha256": "aaef8ab3fe65187f7f741d1e9bac07064ead8d2ff3d236bc9bbecb41d49cc78f",
+      "used_by": [
+        "True Biome Blade"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/true_biome_monolith.png",
+      "sha256": "4f34ae595f30ecfb79d274c9c2e7f7ba224cde7f23e25251d6b8d0ae216ae0b1",
+      "project": "Calamity Mod",
+      "path": "Projectiles/Melee/TrueBiomeBlade_MercurialTidesMonolith.png",
+      "license": "ARR (Calamity original terms)",
+      "source_sha256": "4f34ae595f30ecfb79d274c9c2e7f7ba224cde7f23e25251d6b8d0ae216ae0b1",
+      "used_by": [
+        "True Biome Blade"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/true_biome_sigil.png",
+      "sha256": "54f5ad65ae509522863db7c6790a564e572550103b43eacfbcac4802d6214474",
+      "project": "Calamity Mod",
+      "path": "Projectiles/Melee/MendedBiomeBlade_PurityProjectionSigil.png",
+      "license": "ARR (Calamity original terms)",
+      "source_sha256": "54f5ad65ae509522863db7c6790a564e572550103b43eacfbcac4802d6214474",
+      "used_by": [
+        "True Biome Blade"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/true_biome_smoke.png",
+      "sha256": "be1c5de8898da945f42b28cffdc055b017e0fcbfeed6a48012f393eceae7919d",
+      "project": "Calamity Mod",
+      "path": "Particles/SmallSmoke.png",
+      "license": "ARR (Calamity original terms)",
+      "source_sha256": "be1c5de8898da945f42b28cffdc055b017e0fcbfeed6a48012f393eceae7919d",
+      "used_by": [
+        "True Biome Blade"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/true_biome_stone.png",
+      "sha256": "c588f3cbbad79ce22e88200487aed698076aa01e0598d07a2cf5b2ba0975d9de",
+      "project": "Calamity Mod",
+      "path": "Particles/StoneDebris.png",
+      "license": "ARR (Calamity original terms)",
+      "source_sha256": "c588f3cbbad79ce22e88200487aed698076aa01e0598d07a2cf5b2ba0975d9de",
+      "used_by": [
+        "True Biome Blade"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/true_biome_charge_0.ogg",
+      "sha256": "602180d473e42aa5f374b85182a0f8ebd686deae5e7b61c01b5d6c641a18c3da",
+      "project": "Terraria",
+      "path": "Content/Sounds/Custom/dd2_sonic_boom_blade_slash_0.xnb",
+      "license": "Re-Logic original terms",
+      "source_sha256": "b9782c813d14018667c5a102a5b2f598afed6c11d1440f457467405c8185e0f0",
+      "used_by": [
+        "True Biome Blade"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/true_biome_charge_1.ogg",
+      "sha256": "ab72a98ec318388be7b42c9968486ad4b0c2db5c82c3750db2dfb42b1bfd0794",
+      "project": "Terraria",
+      "path": "Content/Sounds/Custom/dd2_sonic_boom_blade_slash_1.xnb",
+      "license": "Re-Logic original terms",
+      "source_sha256": "3e2295bbba9e3a61ac9d29915f7f781b78af91883bd702d521c2e5aec1456b37",
+      "used_by": [
+        "True Biome Blade"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/true_biome_charge_2.ogg",
+      "sha256": "01b27444fad72046f6f4411ea4c0a698ee94702dddb32117f7124280504b4ef3",
+      "project": "Terraria",
+      "path": "Content/Sounds/Custom/dd2_sonic_boom_blade_slash_2.xnb",
+      "license": "Re-Logic original terms",
+      "source_sha256": "47ab4d1dac83f12208e2121dffc304c6400506d6374ed30f0a8fc2029d60941b",
+      "used_by": [
+        "True Biome Blade"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/true_biome_flail_0.ogg",
+      "sha256": "766014bead48a162cb1cbb8315303130dfe2e31714395a8fdb016973c0dc29e0",
+      "project": "Terraria",
+      "path": "Content/Sounds/Custom/dd2_ogre_spit.xnb",
+      "license": "Re-Logic original terms",
+      "source_sha256": "b11068ee2920373fbe7712526a8701da91d23644e9f2cd50968582153ff4422f",
+      "used_by": [
+        "True Biome Blade"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/true_biome_blast_0.ogg",
+      "sha256": "3cbb2be12d7465f307f682c438638832677478cc82412689531623e1b38a6ade",
+      "project": "Terraria",
+      "path": "Content/Sounds/Custom/dd2_explosive_trap_explode_0.xnb",
+      "license": "Re-Logic original terms",
+      "source_sha256": "a10bb6cd891ed8fd3414ec52ba571493768f155d9d8497dfff29e6f67ed8d4b6",
+      "used_by": [
+        "True Biome Blade"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/true_biome_blast_1.ogg",
+      "sha256": "40a8a98fce52f330865e8ed02e5d147cdf8564f7a7e643e2d9d237cc566b0ae0",
+      "project": "Terraria",
+      "path": "Content/Sounds/Custom/dd2_explosive_trap_explode_1.xnb",
+      "license": "Re-Logic original terms",
+      "source_sha256": "1eaa7bc66ab106d895ac52e20d9a8619ddc46d6d88b1aaa5c6c407b6a786fb32",
+      "used_by": [
+        "True Biome Blade"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/true_biome_blast_2.ogg",
+      "sha256": "9477a997616e3a4507b8329b581c60c242f6827b0ae290ca0c8b8a3a9819e6bf",
+      "project": "Terraria",
+      "path": "Content/Sounds/Custom/dd2_explosive_trap_explode_2.xnb",
+      "license": "Re-Logic original terms",
+      "source_sha256": "522649b67c9e30f21a74d390fd57f6b396a400b7f756359e932ecf97d046677a",
+      "used_by": [
+        "True Biome Blade"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/true_biome_beam_end_0.ogg",
+      "sha256": "8830ff761f97f23684698805fed0df116fd02c73d1767a375b2c744ddc9cf380",
+      "project": "Terraria",
+      "path": "Content/Sounds/Item_43.xnb",
+      "license": "Re-Logic original terms",
+      "source_sha256": "07ac493a3d09d26834de1661db22af59a28d33f6849911bbfffece3dcbc3b6de",
+      "used_by": [
+        "True Biome Blade"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/true_biome_beam_start_0.ogg",
+      "sha256": "dbc4b5bd104c57323195c2527cae3c543f8b9047b807c8c244c8edaaf81a2fb1",
+      "project": "Terraria",
+      "path": "Content/Sounds/Item_8.xnb",
+      "license": "Re-Logic original terms",
+      "source_sha256": "aae1b13f9814f79249437e0d3363a6c1d656508f881bc8115e726512c80cb361",
+      "used_by": [
+        "True Biome Blade"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/true_biome_hook_end_0.ogg",
+      "sha256": "e1834a62d0435f176f7db97327621f078c9ca1a70de50d2978b6aa8cd6db1e0e",
+      "project": "Terraria",
+      "path": "Content/Sounds/Item_105.xnb",
+      "license": "Re-Logic original terms",
+      "source_sha256": "ead08149bce3b205bcab02104e51264a41b3963e1de9387667227ef5e6f9b16a",
+      "used_by": [
+        "True Biome Blade"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/true_biome_slice_0.ogg",
+      "sha256": "3a16cb91c0f5b69e00a131e0a91070b85878a039dee1fe5f500c7559e42c7f98",
+      "project": "Calamity Mod",
+      "path": "Sounds/Custom/SwiftSlice.ogg",
+      "license": "ARR (Calamity original terms)",
+      "source_sha256": "3a16cb91c0f5b69e00a131e0a91070b85878a039dee1fe5f500c7559e42c7f98",
+      "used_by": [
+        "True Biome Blade"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/true_biome_pulse_0.ogg",
+      "sha256": "7d5c4e4a99d59e08aa364b0aa68d31b825061c971b251a8abb15dc1ac34beb3b",
+      "project": "Calamity Mod",
+      "path": "Sounds/Custom/AstralBeaconOrbPulse.ogg",
+      "license": "ARR (Calamity original terms)",
+      "source_sha256": "7d5c4e4a99d59e08aa364b0aa68d31b825061c971b251a8abb15dc1ac34beb3b",
+      "used_by": [
+        "True Biome Blade"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/true_biome_snowflake.png",
+      "sha256": "da0fc70dab62c89a1d8a6fe7f83066714276bd2204d13c7579d4db9dc6291966",
+      "project": "Calamity Mod",
+      "path": "Particles/HalfIceStar.png",
+      "license": "ARR (Calamity original terms)",
+      "source_sha256": "da0fc70dab62c89a1d8a6fe7f83066714276bd2204d13c7579d4db9dc6291966",
+      "used_by": [
+        "True Biome Blade"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/mob_effect/glacial_state.png",
+      "sha256": "62fa3414d2a583c438d128ff87bd7c9e9f0743044bfd7a0c34b54a328fcd6eaa",
+      "project": "Calamity Mod",
+      "path": "Buffs/StatDebuffs/GlacialState.png",
+      "license": "ARR (Calamity original terms)",
+      "source_sha256": "62fa3414d2a583c438d128ff87bd7c9e9f0743044bfd7a0c34b54a328fcd6eaa",
+      "used_by": [
+        "True Biome Blade"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/true_biome_monolith_glow.png",
+      "sha256": "27d949f2644e857f3fcd803b6f7122bb118f0a57e11f72854721591444f9da49",
+      "project": "Calamity Mod",
+      "path": "Projectiles/Melee/MendedBiomeBlade_ExtantAbhorrenceMonolith_Glow.png",
+      "license": "ARR (Calamity original terms)",
+      "source_sha256": "27d949f2644e857f3fcd803b6f7122bb118f0a57e11f72854721591444f9da49",
+      "used_by": [
+        "True Biome Blade"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/true_biome_semi_smear.png",
+      "sha256": "2623dfa6c95d57dc3bb06929c87feb8674822c22e03a4a19ce44606693c81c77",
+      "project": "Calamity Mod",
+      "path": "Particles/SemiCircularSmear.png",
+      "license": "ARR (Calamity original terms)",
+      "source_sha256": "2623dfa6c95d57dc3bb06929c87feb8674822c22e03a4a19ce44606693c81c77",
+      "used_by": [
+        "True Biome Blade"
       ]
     }
   ]

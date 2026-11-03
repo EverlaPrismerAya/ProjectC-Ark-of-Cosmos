@@ -24,7 +24,7 @@ abstract class LivingEntityMixin {
         if((source.getEntity() instanceof net.everla.projectc.arkofcosmos.entity.MahouTsukaiEntity
                 ||net.everla.projectc.arkofcosmos.combat.CalamityAttackGuard.damageOwner(source)!=null)
                 &&!net.everla.projectc.arkofcosmos.combat.WeaponDamage.handling(target,source)){
-            cir.setReturnValue(net.everla.projectc.arkofcosmos.combat.WeaponDamage.hurt(target,source,amount));return;
+            cir.setReturnValue(net.everla.projectc.arkofcosmos.combat.BossDamage.hurt(target,source,amount));return;
         }
         if(source.getEntity() instanceof net.everla.projectc.arkofcosmos.entity.MahoragaWardenEntity warden){
             if(warden.attacksPaused())cir.setReturnValue(false);

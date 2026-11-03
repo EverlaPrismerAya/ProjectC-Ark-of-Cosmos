@@ -64,7 +64,10 @@ public final class NativeSprites extends RenderType {
             }
         }
         public void region(String name,Vec3 at,AttackFrame frame,double angle,double scale,double ox,double oy,float[] color,int left,int top,int width,int height,boolean additive,int light){
-            SpriteImages.Image image=image(name);Vec3 x=frame.direction(angle).scale(scale/16),y=frame.direction(angle+Math.PI/2).scale(scale/16),n=frame.normal();
+            region(name,at,frame,angle,scale,scale,ox,oy,color,left,top,width,height,additive,light);
+        }
+        public void region(String name,Vec3 at,AttackFrame frame,double angle,double sx,double sy,double ox,double oy,float[] color,int left,int top,int width,int height,boolean additive,int light){
+            SpriteImages.Image image=image(name);Vec3 x=frame.direction(angle).scale(sx/16),y=frame.direction(angle+Math.PI/2).scale(sy/16),n=frame.normal();
             VertexConsumer out=buffers.getBuffer(additive?additive(texture(name)):RenderType.entityTranslucent(texture(name)));
             double[][] corners={{0,0},{0,height},{width,height},{width,0}};
             for(double[] c:corners)vertex(out,at.add(x.scale(c[0]-ox)).add(y.scale(c[1]-oy)),(float)((left+c[0])/image.width()),(float)((top+c[1])/image.height()),n,color,light,additive);

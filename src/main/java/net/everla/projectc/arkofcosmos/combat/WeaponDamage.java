@@ -4,7 +4,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 
-/** Native weapon damage with a 35% floor; Boss attacks share Ark authority and a victim cooldown; Fourth Calamity uses ten ticks and has no floor. */
+/** Native weapon dispatch and hit context; BossDamage owns the two bosses' damage policy. */
 public final class WeaponDamage {
     private record Hit(LivingEntity target, DamageSource source, float minimum) {}
     private static final ThreadLocal<Hit> CURRENT = new ThreadLocal<>();
@@ -43,7 +43,7 @@ public final class WeaponDamage {
         CURRENT.set(new Hit(target, source, fourthHit ? 0 : amount * .35f));
         try {
             target.invulnerableTime = 0;
-            success = fourthHit ? ArkDamage.hurtFourthCalamity(target,source,amount) : mahouHit ? ArkDamage.hurt(target,source,amount) : target.hurt(source, amount);
+            success = fourthHit || mahouHit ? BossDamage.hurt(target,source,amount) : target.hurt(source, amount);
             if(success&&fourthHit&&!source.is(net.minecraft.tags.DamageTypeTags.IS_EXPLOSION)
                 &&source.getDirectEntity()==fourth&&!source.is(net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.DAMAGE_TYPE,net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("arkofcosmos","spear"))))
                 CalamityAttackGuard.knockback(target,.4,fourth.getX()-target.getX(),fourth.getZ()-target.getZ(),fourth);

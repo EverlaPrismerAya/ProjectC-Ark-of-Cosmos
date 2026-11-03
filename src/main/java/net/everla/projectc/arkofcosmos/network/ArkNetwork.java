@@ -20,7 +20,7 @@ import net.minecraftforge.api.distmarker.Dist;
 public final class ArkNetwork {
     private ArkNetwork() {}
     private static final SimpleChannel CHANNEL = NetworkRegistry.newSimpleChannel(
-            ResourceLocation.fromNamespaceAndPath(ArkOfCosmos.MOD_ID, "input"), () -> "2", "2"::equals, "2"::equals);
+            ResourceLocation.fromNamespaceAndPath(ArkOfCosmos.MOD_ID, "input"), () -> "3", "3"::equals, "3"::equals);
     public record Input(boolean left, boolean right, boolean alt) {
         static Input read(FriendlyByteBuf buffer) { return new Input(buffer.readBoolean(), buffer.readBoolean(), buffer.readBoolean()); }
         void write(FriendlyByteBuf buffer) { buffer.writeBoolean(left); buffer.writeBoolean(right); buffer.writeBoolean(alt); }
@@ -43,6 +43,10 @@ public final class ArkNetwork {
     private record SpearFeedback(int entity) {}
     public static void spearFeedback(Entity entity) { CHANNEL.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(()->entity),new SpearFeedback(entity.getId())); }
     public static void register() {
+        CHANNEL.messageBuilder(TrueBiomeInput.class,7,NetworkDirection.PLAY_TO_SERVER)
+            .encoder((p,b)->{b.writeBoolean(p.left());b.writeByte(p.slot());b.writeByte(p.mode());})
+            .decoder(b->new TrueBiomeInput(b.readBoolean(),b.readByte(),b.readByte()))
+            .consumerMainThread((p,c)->{if(c.get().getSender()!=null)net.everla.projectc.arkofcosmos.combat.TrueBiomeCombat.input(c.get().getSender(),p.left(),p.slot(),p.mode());}).add();
         CHANNEL.messageBuilder(FourthBossBar.class,6,NetworkDirection.PLAY_TO_CLIENT)
             .encoder((p,b)->{b.writeUUID(p.id());b.writeByte(p.phase());b.writeVarInt(p.bars());})
             .decoder(b->new FourthBossBar(b.readUUID(),b.readByte(),b.readVarInt()))
@@ -80,6 +84,8 @@ public final class ArkNetwork {
     }
     private record Effect(CompoundTag data) {}
     private record GalaxiaInput(boolean left, int selection) {}
+    private record TrueBiomeInput(boolean left,int slot,int mode) {}
+    public static void trueBiome(boolean left,int slot,int mode){CHANNEL.sendToServer(new TrueBiomeInput(left,slot,mode));}
     public static void galaxia(boolean left,int selection) { CHANNEL.sendToServer(new GalaxiaInput(left,selection)); }
     public static void effect(Entity entity, CompoundTag data) {
         CHANNEL.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> entity), new Effect(data));

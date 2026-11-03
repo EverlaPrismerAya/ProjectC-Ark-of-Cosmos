@@ -186,8 +186,7 @@ public final class ArkDamage {
     }
 
     private static boolean hurt(LivingEntity target, DamageSource source, float amount, boolean unmitigated) {
-        if(source.getEntity() instanceof net.everla.projectc.arkofcosmos.entity.MahouTsukaiEntity
-                &&!WeaponDamage.handling(target,source))return WeaponDamage.hurt(target,source,amount);
+        if (BossDamage.owns(source)) return BossDamage.hurt(target, source, amount);
         boolean hurt = hurtTarget(target, source, amount, unmitigated);
         if (hurt && !target.isAlive() && source.getEntity() instanceof ServerPlayer player
                 && ResourceLocation.fromNamespaceAndPath("alexsmobs", "fly").equals(
@@ -199,28 +198,15 @@ public final class ArkDamage {
         return hurt;
     }
 
-    /** Fourth Calamity keeps Ark authority, but uses vanilla source-specific mitigation without a floor. */
-    private static float fourthCalamityDamage(LivingEntity target, DamageSource source, float amount) {
-        if (!source.is(DamageTypeTags.BYPASSES_ARMOR))
-            amount = CombatRules.getDamageAfterAbsorb(amount, target.getArmorValue(),
-                    (float)target.getAttributeValue(Attributes.ARMOR_TOUGHNESS));
-        if (source.is(DamageTypeTags.BYPASSES_EFFECTS)) return amount;
-        var resistance = target.getEffect(MobEffects.DAMAGE_RESISTANCE);
-        if (resistance != null && !source.is(DamageTypeTags.BYPASSES_RESISTANCE))
-            amount = Math.max(amount * (25 - (resistance.getAmplifier() + 1) * 5) / 25f, 0);
-        if (amount <= 0 || source.is(DamageTypeTags.BYPASSES_ENCHANTMENTS)) return amount;
-        int protection = net.minecraft.world.item.enchantment.EnchantmentHelper.getDamageProtection(target.getArmorSlots(), source);
-        return protection > 0 ? CombatRules.getDamageAfterMagicAbsorb(amount, protection) : amount;
+    static boolean validHit(LivingEntity target, float amount) {
+        return !target.level().isClientSide && !protectedPlayer(target) && !target.isRemoved()
+                && Float.isFinite(amount) && amount > 0 && target.isAlive();
     }
-    public static boolean hurtFourthCalamity(LivingEntity target, DamageSource source, float amount) {
-        return hurtTarget(target,source,amount,false,false);
-    }
+
+    static boolean nativeTarget(LivingEntity target) { return ordinaryTarget(target); }
+
     private static boolean hurtTarget(LivingEntity target, DamageSource source, float amount, boolean unmitigated) {
-        return hurtTarget(target,source,amount,unmitigated,true);
-    }
-    private static boolean hurtTarget(LivingEntity target, DamageSource source, float amount, boolean unmitigated, boolean floor) {
-        if (target.level().isClientSide || protectedPlayer(target) || target.isRemoved()
-                || !Float.isFinite(amount) || amount <= 0 || !target.isAlive()) return false;
+        if (!validHit(target, amount)) return false;
         if (apollyonProjectile(target, source)) {
             // Native mitigation, events and hurt frames; no Ark floor or weapon impersonation.
             return target.hurt(source, apollyonPanel(source) * 2f);
@@ -229,10 +215,15 @@ public final class ArkDamage {
                 ? target.hurt(source,amount) : WeaponDamage.hurt(target, source, amount);
         // The authority bypasses LivingHurtEvent; its native fallback still receives this bonus there.
         if(unmitigated&&source.getEntity() instanceof LivingEntity attacker&&OldOneEffects.has(attacker,OldOneEffects.Status.WRATH))amount*=1.1f;
+        return applyDamage(target, source, unmitigated ? amount : reducedDamage(target, amount, true), false);
+    }
+
+    /** Shared health bookkeeping only; callers supply already-mitigated damage and death policy. */
+    static boolean applyDamage(LivingEntity target, DamageSource source, float amount, boolean bossDamage) {
         float before = target.getHealth();
         if (!Float.isFinite(before) || before <= 0) return false;
         boolean seagull = seagull(target);
-        amount = seagull ? Float.MAX_VALUE : unmitigated ? amount : floor ? reducedDamage(target, amount, true) : fourthCalamityDamage(target, source, amount);
+        if (seagull) amount = Float.MAX_VALUE;
         float after = Math.max(0, before - amount);
         target.getEntityData().set(HEALTH, after);
         target.getCombatTracker().recordDamage(source, Math.min(before, amount));
@@ -249,7 +240,7 @@ public final class ArkDamage {
             var deathSound = target.getDeathSound();
             if (deathSound != null) target.playSound(deathSound, target.getSoundVolume(), target.getVoicePitch());
             // Let animated bosses dispatch their own death, delayed loot and eventual removal.
-            boolean bossDamage=source.getEntity() instanceof net.everla.projectc.arkofcosmos.entity.MahouTsukaiEntity||CalamityAttackGuard.damageOwner(source)!=null;
+
             if (bossDamage ? !(target instanceof Player) : target.getType().is(IGNORE_DEATH_REMOVE)) {
                 target.die(source);
                 return true;
