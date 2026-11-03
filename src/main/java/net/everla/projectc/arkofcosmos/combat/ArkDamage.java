@@ -222,14 +222,8 @@ public final class ArkDamage {
         if (target.level().isClientSide || protectedPlayer(target) || target.isRemoved()
                 || !Float.isFinite(amount) || amount <= 0 || !target.isAlive()) return false;
         if (apollyonProjectile(target, source)) {
-            var apollyon = (ApollyonCompatTarget) target;
-            apollyon.arkofcosmos$clearWeaponFrames();
-            try {
-                return WeaponDamage.hurt(target, source, apollyonPanel(source));
-            } finally {
-                // Native hurt writes new frames; WeaponDamage also restores vanilla frames.
-                apollyon.arkofcosmos$clearWeaponFrames();
-            }
+            // Native mitigation, events and hurt frames; no Ark floor or weapon impersonation.
+            return target.hurt(source, apollyonPanel(source) * 2f);
         }
         if (ordinaryTarget(target)) return WeaponDamage.handling(target,source)
                 ? target.hurt(source,amount) : WeaponDamage.hurt(target, source, amount);
