@@ -2,6 +2,7 @@ package net.everla.projectc.arkofcosmos.calamity.client;
 
 import net.everla.projectc.arkofcosmos.ArkOfCosmos;
 import net.everla.projectc.arkofcosmos.client.TrueBiomeAssets;
+import net.everla.projectc.arkofcosmos.client.TrueBiomeDraw;
 import net.everla.projectc.arkofcosmos.client.render.NativeSprites;
 import net.everla.projectc.arkofcosmos.entity.TrueBiomeEntity;
 import net.everla.projectc.arkofcosmos.util.AttackFrame;
@@ -74,7 +75,8 @@ public final class TrueBiomeEffects {
         if(kind==TrueBiomeEntity.BEAM||kind==TrueBiomeEntity.SIGIL){Particle p=add(DUST,s,at.add(sphere(range(0,20))),sphere(range(0,2)).scale(.5).add(vector(s,"Velocity").scale(.1)),rgb(255,255,255),.9,100);p.variant=rng.nextInt(3);}
         if(kind==TrueBiomeEntity.BLADE&&mode==0&&s.getInt("Charge")>=450&&rng.nextBoolean()){
             Vec3 offset=f.direction(random()*Math.PI*2).scale(Math.sqrt(random())*scale*1.9*78/16);Vec3 velocity=f.normal().cross(offset).normalize().scale(2*(1+offset.length()*16/15)/16);
-            crit(s,center.add(offset),velocity,rgb(255,105,180),1+offset.length()*16/(scale*1.9*78),10,.05,3);
+            float[] energy=mul(mix(rgb(255,105,180),rgb(173,255,47),Math.sin(Minecraft.getInstance().level.getGameTime()/10d)),(s.getInt("Charge")/600d-.75)/.25*.8);
+            crit(s,center.add(offset),vector(s,"OwnerVelocity").add(velocity),energy,1+offset.length()*16/(scale*1.9*78),10,.05,3);
         }
         if(kind==TrueBiomeEntity.BLADE&&mode==3&&s.getInt("State")==1){double a=range(-Math.PI/4,Math.PI/4),factor=Math.sin(a*2+Math.PI/2);
             Vec3 v=dir.scale(30/16d).subtract(f.direction(f.angle(dir)+a).scale((1+factor)*2*range(7.5,20)/16));crit(s,at,v,rng.nextBoolean()?rgb(72,209,204):rgb(255,140,0),range(.1,1.6),20+rng.nextInt(30),1,3);
@@ -90,7 +92,7 @@ public final class TrueBiomeEffects {
         String event=s.getString("Fx");Vec3 at=vector(s,"At"),dir=vector(s,"Direction");AttackFrame f=frame(s);double scale=s.getDouble("Scale");
         if(event.equals("pride_direct")){Particle p=add(SPARKLE,s,at,vector(s,"OwnerVelocity"),WHITE,1.5,10);p.bloom=mul(mix(rgb(255,105,180),rgb(173,255,47),Math.sin(Minecraft.getInstance().level.getGameTime()/10d)),(s.getInt("Charge")/600d-.75)/.25*.8);p.spin=.1;p.bloomScale=3;}
         if(event.equals("pride_throw"))for(int color=0;color<2;color++)for(int i=0;i<9;i++){
-            double a=range(-Math.PI/4,Math.PI/4),factor=Math.sin(a*2+Math.PI/2);crit(s,at,f.direction(f.angle(dir)+a).scale((1+factor)*(color==0?2:1)*range(7.5,20)/16),color==0?rgb(255,105,180):rgb(173,255,47),range(2,3.5),20+rng.nextInt(30),1,2);
+            double a=range(-Math.PI/4,Math.PI/4),factor=Math.sin(a*2+Math.PI/2);crit(s,at,vector(s,"OwnerVelocity").add(f.direction(f.angle(dir)+a).scale((1+factor)*(color==0?2:1)*range(7.5,20)/16)),color==0?rgb(255,105,180):rgb(173,255,47),range(2,3.5),20+rng.nextInt(30),1,2);
         }
         if(event.equals("hook_start")||event.equals("hook_end")||event.equals("hook_death"))for(int i=0;i<(event.equals("hook_death")?10:4);i++)crit(s,at,sphere(Math.sqrt(random())*range(17.5,25)*scale),rng.nextBoolean()?CYAN:rgb(72,209,204),range(.4,event.equals("hook_death")?1.9:.9),20+rng.nextInt(30),1,3);
         if(event.equals("wheel_end"))for(int i=0;i<10;i++)crit(s,at,sphere(Math.sqrt(random())*range(17.5,25)*scale),rng.nextBoolean()?rgb(220,20,60):rgb(139,0,0),range(.4,3.9),20+rng.nextInt(30),1,3);
@@ -117,7 +119,7 @@ public final class TrueBiomeEffects {
         if(event.getStage()!=RenderLevelStageEvent.Stage.AFTER_PARTICLES||Minecraft.getInstance().level==null)return;
         var mc=Minecraft.getInstance();var buffers=mc.renderBuffers().bufferSource();double partial=event.getPartialTick();var face=NativeSprites.billboard();
         for(Particle p:DISPLAY){if(partial<p.born||partial>=p.died)continue;int i=Math.min(2,(int)(partial*3));double t=partial*3-i;State a=p.states[i],b=p.states[i+1];Vec3 at=a.at.lerp(b.at,t);double scale=lerp(a.scale,b.scale,t),r=lerp(a.rotation,b.rotation,t),alpha=lerp(a.opacity,b.opacity,t);
-            var draw=new NativeSprites.Draw(event.getPoseStack(),buffers,event.getCamera().getPosition(),p.owner);float[] color=mul(p.color,alpha);
+            var draw=new TrueBiomeDraw(new NativeSprites.Draw(event.getPoseStack(),buffers,event.getCamera().getPosition(),p.owner,true));float[] color=mul(p.color,alpha);
             if(p.type==CRIT||p.type==SPARKLE||p.type==SNOWFLAKE){String tex=TrueBiomeAssets.texture(p.type==CRIT?"thin_sparkle":p.type==SNOWFLAKE?"snowflake":"sparkle");double ratio=NativeSprites.height(tex)/(double)NativeSprites.height(TrueBiomeAssets.texture("bloom_circle"));draw.centered(TrueBiomeAssets.texture("bloom_circle"),at,face,0,scale*p.bloomScale*ratio,scale*p.bloomScale*ratio,mul(p.bloom,alpha*.5),true);if(p.type==SPARKLE)draw.centered(tex,at,face,r+Math.PI/4,scale*.75,scale*.75,mul(color,.5),true);if(p.type==SNOWFLAKE){for(int spoke=0;spoke<3;spoke++)draw.centered(tex,at,face,2*r+Math.PI*spoke/3,scale,scale,mul(color,.5),true);}else draw.centered(tex,at,face,r,scale,scale,color,true);}
             else if(p.type==LINE){Vec3 along=p.line.normalize(),side=p.f.normal().cross(along).normalize();var lf=new AttackFrame(side,along);String tex=TrueBiomeAssets.texture("thin_line");draw.sprite(tex,at,lf,Math.PI,scale,p.line.length()*16/NativeSprites.height(tex),NativeSprites.width(tex)/2d,NativeSprites.height(tex),color,true,false,15728880);}
             else if(p.type==SMEAR)draw.centered(TrueBiomeAssets.texture("semi_smear"),at,p.f,r,scale*p.sx,scale*p.sy,color,true);

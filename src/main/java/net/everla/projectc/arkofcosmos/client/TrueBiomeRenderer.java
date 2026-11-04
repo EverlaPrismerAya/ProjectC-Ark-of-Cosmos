@@ -2,6 +2,7 @@ package net.everla.projectc.arkofcosmos.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.everla.projectc.arkofcosmos.client.render.NativeSprites;
+import net.everla.projectc.arkofcosmos.client.render.ArkFxDraw;
 import net.everla.projectc.arkofcosmos.entity.TrueBiomeEntity;
 import net.everla.projectc.arkofcosmos.util.AttackFrame;
 import net.minecraft.client.renderer.*;
@@ -14,7 +15,7 @@ import static net.everla.projectc.arkofcosmos.entity.TrueBiomeEntity.*;
 import static net.everla.projectc.arkofcosmos.entity.ElementsEntity.vector;
 import static net.everla.projectc.arkofcosmos.calamity.combat.TrueBiomeRules.*;
 
-/** Source PreDraw sprites using the native pipeline; intentionally no weapon-specific shaders. */
+/** Source PreDraw sprites and the shared Calamity BasicTint shader. */
 public final class TrueBiomeRenderer extends EntityRenderer<TrueBiomeEntity> {
     private static final String ITEM="item/true_biome_blade";
     private static final float[] WHITE={1,1,1,1};
@@ -24,18 +25,25 @@ public final class TrueBiomeRenderer extends EntityRenderer<TrueBiomeEntity> {
     @Override public boolean shouldRender(TrueBiomeEntity e,Frustum f,double x,double y,double z){return e.shouldRenderAtSqrDistance(e.distanceToSqr(x,y,z));}
     @Override public void render(TrueBiomeEntity e,float yaw,float partial,PoseStack pose,MultiBufferSource buffers,int light){
         CompoundTag s=e.renderState(partial);if(s.isEmpty())return;
-        var draw=new NativeSprites.Draw(pose,buffers,e.getPosition(partial),e.ownerId());
+        var draw=new TrueBiomeDraw(new NativeSprites.Draw(pose,buffers,e.getPosition(partial),e.ownerId(),true));
         var f=new AttackFrame(vector(s,"F"),vector(s,"R"));Vec3 at=vector(s,"Position"),center=vector(s,"Center"),dir=vector(s,"Direction");
         int kind=s.getInt("Kind"),mode=s.getInt("Mode"),left=s.getInt("Left");double scale=s.getDouble("Scale"),r=s.getDouble("Rotation"),time=(e.level().getGameTime()+partial)/20d;
         if(kind==BLADE){
             String glow=TrueBiomeAssets.texture(MODE[mode]);Vec3 hilt=mode==FURY?center.add(dir.scale(10/16d)):mode==CHAINED?at.subtract(dir.scale(55/16d)):at;
             draw.sprite(ITEM,hilt,f,r+Math.PI/4,scale,scale,0,NativeSprites.height(ITEM),WHITE,false,true,light);
-            draw.sprite(glow,hilt,f,r+Math.PI/4,scale,scale,0,NativeSprites.height(glow),alpha(.9),true,true,15728880);
+            double throwTime=(90-left)/90d,snap=clamp((throwTime-.45)/.55),retract=clamp((throwTime-.6)/.4);
+            ArkFxDraw.Tint tint=mode==FURY?new ArkFxDraw.Tint(207/255f,248/255f,1,(float)clamp(s.getInt("Bounce")/20d))
+                    :mode==TIDES?new ArkFxDraw.Tint(154/255f,244/255f,240/255f,(float)clamp(s.getInt("OverCharge")/20d))
+                    :mode==PRIDE&&s.getInt("State")==1&&snap>0&&retract<=0?new ArkFxDraw.Tint(1,1,1,(float)clamp(.8-snap)):null;
+            float[] glowColor=alpha(.9*(mode==PRIDE&&s.getInt("State")==1?1-retract:1));
+            if(tint==null)draw.sprite(glow,hilt,f,r+Math.PI/4,scale,scale,0,NativeSprites.height(glow),glowColor,true,true,15728880);
+            else draw.tinted(glow,hilt,f,r+Math.PI/4,scale,0,NativeSprites.height(glow),glowColor,tint);
             if(mode==PRIDE){
                 if(s.getInt("State")==0&&s.getInt("Charge")>240){ListTag trail=s.getList("Trail",10);for(int i=0;i<trail.size();i++)draw.sprite(glow,hilt,f,trail.getCompound(i).getDouble("Rotation")+Math.PI/4,scale-.2*i/10,scale-.2*i/10,0,NativeSprites.height(glow),alpha((1-i/10d)*.5*clamp((s.getInt("Charge")/600d-.4)/.1)),true,false,15728880);}
                 if(s.getInt("State")==1&&(90-left)/90d>.45)chain(draw,TrueBiomeAssets.texture("pride_chain"),center,at,f,1,1);
-                if(s.getInt("Charge")>=450&&s.getInt("State")==0){Vec3 aim=vector(s,"Aim");String tex=TrueBiomeAssets.texture("thin_line");draw.sprite(tex,center.add(aim.scale(scale*1.88*40/16)),lineFrame(aim,f),Math.PI,.2,scale*1.88*38/NativeSprites.height(tex),NativeSprites.width(tex)/2d,NativeSprites.height(tex),color(0xDC69C5,(s.getInt("Charge")/600d-.75)/.25*.8*.7),true,false,15728880);}
-                if(s.getInt("Charge")>=450&&s.getInt("State")==0)draw.centered(TrueBiomeAssets.texture("circular_smear"),center,f,r+Math.PI/2,scale*1.9,scale*1.9,color(0xDC69C5,(s.getInt("Charge")/600d-.75)/.25*.8),true);
+                float[] energy=multiply(mix(0xFF69B4,0xADFF2F,Math.sin(time*2)),(s.getInt("Charge")/600d-.75)/.25*.8);
+                if(s.getInt("Charge")>=450&&s.getInt("State")==0){Vec3 aim=vector(s,"Aim");String tex=TrueBiomeAssets.texture("thin_line");draw.sprite(tex,center.add(aim.scale(scale*1.88*40/16)),lineFrame(aim,f),Math.PI,.2,scale*1.88*38/NativeSprites.height(tex),NativeSprites.width(tex)/2d,NativeSprites.height(tex),multiply(energy,.7),true,false,15728880);}
+                if(s.getInt("Charge")>=450&&s.getInt("State")==0)draw.centered(TrueBiomeAssets.texture("circular_smear"),center,f,r+Math.PI/2,scale*1.9,scale*1.9,energy,true);
             }
             if(mode==FURY)for(int i=0;i<4;i++){
                 double wobble=Math.sin(time*5+i*Math.PI/2);
@@ -43,7 +51,7 @@ public final class TrueBiomeRenderer extends EntityRenderer<TrueBiomeEntity> {
                 Vec3 radial=across.scale(Math.cos(orbit)).add(f.normal().scale(Math.sin(orbit)));
                 AttackFrame phantom=net.everla.projectc.arkofcosmos.entity.GalaxiaEntity.aimFrame(axis,radial);
                 Vec3 extraAt=center.add(axis.scale(Math.sin(time*7)*10/16d)).add(radial.scale(Math.abs(Math.sin(wobble))*(20+40*shred(s.getDouble("Shred")))/16)).add(axis.scale(clamp(s.getInt("Bounce")/20d)*20/16));
-                String extra=TrueBiomeAssets.texture("fury_extra");draw.sprite(extra,extraAt,phantom,Math.PI/4+wobble*Math.PI/10-wobble*Math.PI/9*shred(s.getDouble("Shred")),scale,scale,0,NativeSprites.height(extra),alpha(.8),true,true,15728880);
+                String extra=TrueBiomeAssets.texture("fury_extra");draw.tinted(extra,extraAt,phantom,Math.PI/4+wobble*Math.PI/10-wobble*Math.PI/9*shred(s.getDouble("Shred")),scale,0,NativeSprites.height(extra),alpha(.8),tint);
             }
             if(mode==CHAINED){ListTag curves=s.getList("Chains",10);for(int k=0;k<curves.size();k++){
                 Vec3[] c=new Vec3[5];for(int i=0;i<5;i++)c[i]=vector(curves.getCompound(k),"P"+i);
@@ -77,8 +85,9 @@ public final class TrueBiomeRenderer extends EntityRenderer<TrueBiomeEntity> {
             draw.sprite(body,at,f,angle,1,1,0,NativeSprites.height(body),WHITE,false,true,light);
             draw.sprite(glow,at,f,angle,1,1,0,NativeSprites.height(glow),alpha(.9),true,true,15728880);
             chain(draw,TrueBiomeAssets.texture("ghost_chain"),center,at,f,1,.5);
+            if(s.getInt("State")==1)draw.centered(TrueBiomeAssets.texture("circular_smear"),center,f,r+Math.PI/2,3.4,3.4,color(0x48D1CC,.9*Math.sin(left/30d*Math.PI)),true);
         }else if(kind==BLAST){
-            draw.region(TrueBiomeAssets.texture("shockwave"),at,f,0,scale,85,83,WHITE,0,Math.min(5,Math.max(0,6-(int)Math.ceil(left/10d)))*168,170,166,false,15728880);
+            draw.region(TrueBiomeAssets.texture("shockwave"),at,NativeSprites.billboard(),r,scale,85,83,WHITE,0,Math.min(5,Math.max(0,6-(int)Math.ceil(left/10d)))*168,170,166,false,15728880);
         }else if(kind==MONOLITH&&s.getDouble("Wait")<=0){
             double t=(100-left)/100d,size=s.getDouble("Size");var vertical=lineFrame(dir,f);
             draw.region(TrueBiomeAssets.texture("monolith"),at.subtract(dir.scale(26/16d)),vertical,Math.PI,monolithWidth(t)*size,monolithHeight(t)*size,47,420,alpha(clamp(1-(t-.85)/.15)),s.getInt("State")*94,0,94,420,false,light);
@@ -86,13 +95,13 @@ public final class TrueBiomeRenderer extends EntityRenderer<TrueBiomeEntity> {
         }else if(kind==SIGIL){var mc=net.minecraft.client.Minecraft.getInstance();if(mc.player!=null&&mc.player.getId()==e.ownerId())draw.centered(TrueBiomeAssets.texture("sigil"),at,NativeSprites.billboard(),0,1,1,WHITE,false);}
     }
     private static AttackFrame lineFrame(Vec3 direction,AttackFrame f){Vec3 along=direction.normalize(),side=f.normal().cross(along).normalize();if(side.lengthSqr()<1e-8)side=f.right();return new AttackFrame(side,along);}
-    private static void chain(NativeSprites.Draw draw,String tex,Vec3 a,Vec3 b,AttackFrame f,double width,double opacity){
+    private static void chain(TrueBiomeDraw draw,String tex,Vec3 a,Vec3 b,AttackFrame f,double width,double opacity){
         Vec3 delta=b.subtract(a);if(delta.lengthSqr()<1e-12)return;int n=Math.max(1,(int)(delta.length()*16/16));
         int textureWidth=NativeSprites.width(tex),textureHeight=NativeSprites.height(tex);int frames=tex.equals(TrueBiomeAssets.texture("pride_chain"))?2:1,frameHeight=textureHeight/frames;
         for(int i=1;i<=n;i++){Vec3 point=a.lerp(b,i/(double)n);draw.region(tex,point,lineFrame(delta,f),0,width,delta.length()*16/n/frameHeight,textureWidth/2d,frameHeight,alpha(opacity),0,frameHeight*(i%frames),textureWidth,frameHeight,false,15728880);}
     }
-    private static float[] alpha(double a){return new float[]{1,1,1,(float)clamp(a)};}
-    private static float[] color(int rgb,double a){return new float[]{(rgb>>16&255)/255f,(rgb>>8&255)/255f,(rgb&255)/255f,(float)clamp(a)};}
-    private static float[] multiply(float[] a,double value){return new float[]{a[0],a[1],a[2],(float)(a[3]*value)};}
+    private static float[] alpha(double a){float v=(float)clamp(a);return new float[]{v,v,v,v};}
+    private static float[] color(int rgb,double a){return multiply(new float[]{(rgb>>16&255)/255f,(rgb>>8&255)/255f,(rgb&255)/255f,1},clamp(a));}
+    private static float[] multiply(float[] a,double value){return new float[]{(float)(a[0]*value),(float)(a[1]*value),(float)(a[2]*value),(float)(a[3]*value)};}
     private static float[] mix(int a,int b,double t){t=clamp(t);return color(((int)lerp(a>>16&255,b>>16&255,t)<<16)|((int)lerp(a>>8&255,b>>8&255,t)<<8)|(int)lerp(a&255,b&255,t),1);}
 }

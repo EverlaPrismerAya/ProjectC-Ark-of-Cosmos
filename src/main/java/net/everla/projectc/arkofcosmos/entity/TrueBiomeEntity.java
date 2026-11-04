@@ -108,10 +108,11 @@ public final class TrueBiomeEntity extends Entity {
         if(!isRemoved())publish();
     }
     private Vec3 rotate(Vec3 v,double a){Vec3 n=frame.normal();return v.scale(Math.cos(a)).add(n.cross(v).scale(Math.sin(a))).add(n.scale(n.dot(v)*(1-Math.cos(a))));}
-    private Vec3 aim(Player p){Vec3 v=WeaponUser.aim(p).subtract(center(p));Vec3 flat=v.subtract(frame.normal().scale(v.dot(frame.normal()))).normalize();return flat.lengthSqr()<1e-8?frame.forward():flat;}
+    private Vec3 aim(Player p){Vec3 v=WeaponUser.aim(p).subtract(center(p)).normalize();return v.lengthSqr()<1e-8?p.getLookAngle():v;}
     private void bladeStep(Player p){
         boolean held=TrueBiomeCombat.channeling(p);Vec3 c=center(p);
         if(mode==PRIDE){
+            if(state==0){double phase=frame.angle(direction);frame=AttackFrame.capture(p);direction=frame.direction(phase);}
             if(!held&&state==0){if(charge<300){sound(p,"galaxia_item77");finish(p);return;}state=1;left=90;direction=aim(p);sound(p,"galaxia_item80");event("pride_throw",position());}
             if(state==0){
                 if(!chargeSound&&charge>=300){chargeSound=true;sound(p,"galaxia_item76");}
@@ -147,7 +148,7 @@ public final class TrueBiomeEntity extends Entity {
             }
         }else if(mode==FURY){
             if(!held){finish(p);return;}
-            shredCharge=Math.max(0,Math.min(500,shredCharge));direction=aim(p);rotation=(float)frame.angle(direction);scale=(float)(1+shred(shredCharge));setPos(c.add(direction.scale(60/16d)));
+            shredCharge=Math.max(0,Math.min(500,shredCharge));direction=aim(p);if(!dashing)frame=GalaxiaEntity.aimFrame(direction,AttackFrame.capture(p).right());rotation=(float)frame.angle(direction);scale=(float)(1+shred(shredCharge));setPos(c.add(direction.scale(60/16d)));
             if(dashing){
                 if(wheel==null||wheel.isRemoved()){endDash(p);}
                 else{Vec3 delta=wheel.position().subtract(c);if(delta.length()<60/16d){wheel.finish(p);endDash(p);}else if(!movePlayer(p,delta.normalize().scale(60/16d))){wheel.finish(p);endDash(p);}}
@@ -161,6 +162,7 @@ public final class TrueBiomeEntity extends Entity {
             bounceTime--;
             if(left<=2){left=2;hitLine(p,c,c.add(direction.scale(130/16d*scale)),86/16d*scale,furyCooldown(shredCharge),furyDamage(shredCharge),.1,false);}
         }else{
+            if(state==0){direction=aim(p);frame=GalaxiaEntity.aimFrame(direction,AttackFrame.capture(p).right());}
             if(!held&&state==0){if(charge<125){sound(p,"galaxia_item109");finish(p);return;}state=1;left=duration=lungeDuration(charge);start=position().subtract(c);sound(p,"galaxia_item120",.5f,0,false,false);}
             if(state==0){
                 direction=aim(p);setPos(c.add(direction.scale(70/16d*net.everla.projectc.arkofcosmos.calamity.combat.GalaxiaRules.chargeDisplacement(charge/500d))));charge=Math.min(500,charge+1);left=2;overCharge--;
@@ -340,9 +342,13 @@ public final class TrueBiomeEntity extends Entity {
         double index=clamp(partial)*(list.size()-1);int i=(int)index;CompoundTag a=list.getCompound(i),b=list.getCompound(Math.min(i+1,list.size()-1)),s=a.copy();double t=index-i;
         for(String key:new String[]{"Position","Center","Start","End"})vector(s,key,vector(a,key).lerp(vector(b,key),t));
         for(String key:new String[]{"Age","Rotation","Scale"})s.putDouble(key,lerp(a.getDouble(key),b.getDouble(key),t));
-        if(s.getInt("Kind")==BLADE&&s.getInt("Mode")==CHAINED){
+        if(s.getInt("Kind")==BLADE){
             AttackFrame view=AttackFrame.interpolateView(new AttackFrame(vector(a,"F"),vector(a,"R")),new AttackFrame(vector(b,"F"),vector(b,"R")),t);
-            Vec3 dir=vector(a,"Direction").lerp(vector(b,"Direction"),t).normalize();AttackFrame aimed=GalaxiaEntity.aimFrame(dir,view.right());vector(s,"F",aimed.forward());vector(s,"R",aimed.right());vector(s,"Direction",dir);s.putFloat("Rotation",0);
+            double phaseA=new AttackFrame(vector(a,"F"),vector(a,"R")).angle(vector(a,"Direction")),phaseB=new AttackFrame(vector(b,"F"),vector(b,"R")).angle(vector(b,"Direction"));
+            double angle=phaseA+Math.atan2(Math.sin(phaseB-phaseA),Math.cos(phaseB-phaseA))*t;
+            vector(s,"F",view.forward());vector(s,"R",view.right());vector(s,"Direction",view.direction(angle));s.putDouble("Rotation",angle);
+        }
+        if(s.getInt("Kind")==BLADE&&s.getInt("Mode")==CHAINED){
             ListTag ca=a.getList("Chains",10),cb=b.getList("Chains",10),curves=new ListTag();
             for(int k=0;k<Math.min(ca.size(),cb.size());k++){CompoundTag curve=ca.getCompound(k).copy();for(int j=0;j<5;j++)vector(curve,"P"+j,vector(ca.getCompound(k),"P"+j).lerp(vector(cb.getCompound(k),"P"+j),t));curves.add(curve);}s.put("Chains",curves);
         }return s;

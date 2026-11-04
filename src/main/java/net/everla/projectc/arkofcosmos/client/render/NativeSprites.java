@@ -68,9 +68,13 @@ public final class NativeSprites extends RenderType {
         }
         public void region(String name,Vec3 at,AttackFrame frame,double angle,double sx,double sy,double ox,double oy,float[] color,int left,int top,int width,int height,boolean additive,int light){
             SpriteImages.Image image=image(name);Vec3 x=frame.direction(angle).scale(sx/16),y=frame.direction(angle+Math.PI/2).scale(sy/16),n=frame.normal();
-            VertexConsumer out=buffers.getBuffer(additive?additive(texture(name)):RenderType.entityTranslucent(texture(name)));
-            double[][] corners={{0,0},{0,height},{width,height},{width,0}};
-            for(double[] c:corners)vertex(out,at.add(x.scale(c[0]-ox)).add(y.scale(c[1]-oy)),(float)((left+c[0])/image.width()),(float)((top+c[1])/image.height()),n,color,light,additive);
+            VertexConsumer out=buffers.getBuffer(clearOwnerView&&ownerView()?ownerFaded(texture(name)):additive?additive(texture(name)):RenderType.entityTranslucent(texture(name)));
+            int cols=ownerView()?Math.max(1,(int)Math.ceil(Math.abs(sx)*width/8)):1,rows=ownerView()?Math.max(1,(int)Math.ceil(Math.abs(sy)*height/8)):1;
+            for(int col=0;col<cols;col++)for(int row=0;row<rows;row++){
+                double x0=col*width/(double)cols,x1=(col+1)*width/(double)cols,y0=row*height/(double)rows,y1=(row+1)*height/(double)rows;
+                double[][] corners={{x0,y0},{x0,y1},{x1,y1},{x1,y0}};
+                for(double[] c:corners)vertex(out,at.add(x.scale(c[0]-ox)).add(y.scale(c[1]-oy)),(float)((left+c[0])/image.width()),(float)((top+c[1])/image.height()),n,color,light,additive);
+            }
         }
         public void thickRegion(String name,Vec3 at,AttackFrame frame,double angle,double scale,double ox,double oy,float[] color,int left,int top,int width,int height,boolean additive,int light){
             thickRegion(name,at,frame,angle,scale,scale,ox,oy,color,left,top,width,height,additive,light);
@@ -80,7 +84,7 @@ public final class NativeSprites extends RenderType {
             SpriteImages.Image img=image(name);Vec3 x=frame.direction(angle).scale(sx/16),y=frame.direction(angle+Math.PI/2).scale(sy/16),n=frame.normal();double depth=1.5*sx/16;
             region(name,at.add(n.scale(depth)),frame,angle,sx,sy,ox,oy,color,left,top,width,height,additive,light);
             region(name,at.subtract(n.scale(depth)),frame,angle,sx,sy,ox,oy,color,left,top,width,height,additive,light);
-            VertexConsumer out=buffers.getBuffer(additive?additive(texture(name)):RenderType.entityTranslucent(texture(name)));
+            VertexConsumer out=buffers.getBuffer(clearOwnerView&&ownerView()?ownerFaded(texture(name)):additive?additive(texture(name)):RenderType.entityTranslucent(texture(name)));
             for(int[] edge:img.contour()){int px=edge[0],py=edge[1],side=edge[2];if(px<left||px>=left+width||py<top||py>=top+height)continue;
                 double ax=px-left,ay=py-top,bx=ax,by=ay;if(side<2){ax+=side;bx=ax;by++;}else{ay+=side-2;by=ay;bx++;}
                 Vec3 a=at.add(x.scale(ax-ox)).add(y.scale(ay-oy)),b=at.add(x.scale(bx-ox)).add(y.scale(by-oy));Vec3 normal=side<2?x.normalize().scale(side==0?-1:1):y.normalize().scale(side==2?-1:1);

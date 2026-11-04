@@ -30,9 +30,9 @@ public final class TrueBiomeBladeItem extends SwordItem {
     @Override public void appendHoverText(ItemStack s,Level l,List<Component> lines,TooltipFlag flag){
         int a=main(s),b=secondary(s);
         lines.add(Component.translatable("true_biome.main",Component.translatable("true_biome.mode."+a)).withStyle(style->style.withColor(TrueBiomeRules.COLOR[a])));
-        for(String line:Component.translatable("true_biome.attack."+a).getString().split("\n"))lines.add(Component.literal(line).withStyle(style->style.withColor(TrueBiomeRules.COLOR[a])));
+        for(String line:Component.translatable("true_biome.attack."+a,Component.keybind("key.attack")).getString().split("\n"))lines.add(Component.literal(line).withStyle(style->style.withColor(TrueBiomeRules.COLOR[a])));
         lines.add(Component.translatable("true_biome.secondary",Component.translatable("true_biome.mode."+b)).withStyle(style->style.withColor(TrueBiomeRules.COLOR[b])));
-        lines.add(Component.translatable("true_biome.passive."+b).withStyle(style->style.withColor(TrueBiomeRules.COLOR[b])));
-        lines.add(Component.translatable("true_biome.controls",Component.keybind("key.attack"),Component.keybind("key.use")).withStyle(net.minecraft.ChatFormatting.GRAY));
+        for(String line:Component.translatable("true_biome.passive."+b).getString().split("\n"))lines.add(Component.literal(line).withStyle(style->style.withColor(TrueBiomeRules.COLOR[b])));
+        for(String line:Component.translatable("true_biome.controls",Component.keybind("key.attack"),Component.keybind("key.use")).getString().split("\n"))lines.add(Component.literal(line).withStyle(net.minecraft.ChatFormatting.GRAY));
     }
 }

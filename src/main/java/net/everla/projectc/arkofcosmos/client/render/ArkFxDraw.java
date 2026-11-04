@@ -78,7 +78,7 @@ public final class ArkFxDraw {
         };
     }
     public static ResourceLocation id(String name) { return ResourceLocation.fromNamespaceAndPath(ArkOfCosmos.MOD_ID, name); }
-    public static ResourceLocation texture(String name) { return id("textures/" + ((name.startsWith("galaxia/") || name.startsWith("elements/") || name.startsWith("item/") || name.startsWith("entity/")) ? name : "fx/" + name) + ".png"); }
+    public static ResourceLocation texture(String name) { return id("textures/" + ((name.startsWith("fx/") || name.startsWith("galaxia/") || name.startsWith("elements/") || name.startsWith("item/") || name.startsWith("entity/")) ? name : "fx/" + name) + ".png"); }
     public static int[] size(String name) {
         return sizes.computeIfAbsent(name, key -> SpriteImages.get(texture(key)).size());
     }
@@ -261,18 +261,27 @@ public final class ArkFxDraw {
     }
     private static void extrudedBlade(String name, Vec3 position, AttackFrame plane, double angle, double scale,
                                      double ox, double oy, float[] color, Tint tint, SpriteLight lighting) {
+        extrudedBlade(name,position,plane,angle,scale,ox,oy,color,tint,lighting,Blend.ALPHA);
+    }
+    /** Source additive glow with BasicTint, retaining the three-pixel alpha contour. */
+    public static void additiveBlade(String name, Vec3 position, AttackFrame plane, double angle, double scale,
+                                     double ox, double oy, float[] color, Tint tint) {
+        extrudedBlade(name,position,plane,angle,scale,ox,oy,color,tint,null,Blend.ADDITIVE);
+    }
+    private static void extrudedBlade(String name, Vec3 position, AttackFrame plane, double angle, double scale,
+                                     double ox, double oy, float[] color, Tint tint, SpriteLight lighting, Blend blend) {
         if (color[3] <= 0 || scale == 0) return;
-        if (OculusShaderCompat.defer(() -> extrudedBlade(name, position, plane, angle, scale, ox, oy, color, tint,lighting))) return;
+        if (OculusShaderCompat.defer(() -> extrudedBlade(name, position, plane, angle, scale, ox, oy, color, tint,lighting,blend))) return;
         int[] dimensions = size(name);
         var edges = SpriteImages.get(texture(name)).contour();
         Vec3 x = plane.direction(angle).scale(scale / 16), y = plane.direction(angle + Math.PI / 2).scale(scale / 16);
         Vec3 depth = plane.normal().scale(1.5 * scale / 16);
-        begin(name, Blend.ALPHA, false, tint);
+        begin(name, blend, false, tint);
         applySpriteLight(lighting);
         // The solid blade must occlude later translucent terrain/cloud passes; transparent texels must not write depth.
-        RenderSystem.depthMask(true);
+        RenderSystem.depthMask(blend==Blend.ALPHA);
         ShaderInstance bladeShader=lighting!=null?fracturedShader:tint==null?spriteShader:tintShader;
-        if(bladeShader!=null)bladeShader.safeGetUniform("AlphaCutoff").set(.1f);
+        if(bladeShader!=null)bladeShader.safeGetUniform("AlphaCutoff").set(blend==Blend.ALPHA?.1f:0f);
         BufferBuilder buffer = Tesselator.getInstance().getBuilder();
         buffer.begin(VertexFormat.Mode.QUADS, FORMAT);
         for (int face = 0; face < 2; face++) {
