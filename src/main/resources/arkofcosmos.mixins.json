@@ -29,6 +29,7 @@
   ],
   "client": [
     "client.BossBarProgressAccessor",
+    "client.BiomeItemRendererMixin",
     "client.DomainBlockEntityMixin",
     "client.DomainWorldMixin",
     "client.DomainPostMixin",

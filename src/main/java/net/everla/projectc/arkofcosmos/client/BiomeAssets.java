@@ -26,7 +26,8 @@ public final class BiomeAssets {
         case "wave" -> "fx/biome_wave";
         case "aqua" -> "fx/biome_aqua";
         case "mist" -> "fx/biome_mist";
-        case "smear" -> "fx/circularsmearsmokey";
+        case "smear" -> "fx/biome_smear";
+        case "light" -> "fx/light";
         case "spark" -> "fx/biome_spark";
         case "sparkle" -> "fx/sparkle";
         case "bloom" -> "fx/bloomcircle";

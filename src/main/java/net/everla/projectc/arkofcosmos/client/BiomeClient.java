@@ -22,7 +22,7 @@ public final class BiomeClient {
     public static int unlocks;
     private static boolean left,right,holding;private static int heartbeat;
     @SubscribeEvent public static void tick(TickEvent.ClientTickEvent e){
-        if(e.phase!=TickEvent.Phase.END)return;Minecraft mc=Minecraft.getInstance();BiomeEffects.tick();
+        if(e.phase!=TickEvent.Phase.END)return;Minecraft mc=Minecraft.getInstance();BiomeEffects.tick();BiomeItemEffects.tick();
         if(mc.player==null||mc.getConnection()==null){left=right=holding=false;unlocks=0;return;}
         boolean held=BiomeCombat.holding(mc.player),active=held&&mc.screen==null&&mc.isWindowActive();boolean l=active&&mc.options.keyAttack.isDown(),r=active&&mc.options.keyUse.isDown();
         if(l!=left||r!=right||held!=holding||held&&++heartbeat>=10){ArkNetwork.biome(l,r);heartbeat=0;}left=l;right=r;holding=held;
@@ -104,6 +104,6 @@ public final class BiomeClient {
     @Mod.EventBusSubscriber(modid=ArkOfCosmos.MOD_ID,value=Dist.CLIENT,bus=Mod.EventBusSubscriber.Bus.MOD)
     public static final class BiomeRegistration {
         @SubscribeEvent public static void renderers(EntityRenderersEvent.RegisterRenderers e){e.registerEntityRenderer(ArkOfCosmos.BIOME_ATTACK.get(),BiomeRenderer::new);}
-        @SubscribeEvent public static void setup(net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent e){e.enqueueWork(()->net.minecraft.client.renderer.item.ItemProperties.register(ArkOfCosmos.BIOME_BLADE.get(),net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(ArkOfCosmos.MOD_ID,"active"),(stack,level,entity,seed)->entity!=null&&!entity.level().getEntitiesOfClass(BiomeEntity.class,entity.getBoundingBox().inflate(128),a->a.ownerId()==entity.getId()&&a.kind()==BiomeEntity.BLADE).isEmpty()?1:0));}
+        @SubscribeEvent public static void setup(net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent e){e.enqueueWork(()->net.minecraft.client.renderer.item.ItemProperties.register(ArkOfCosmos.BIOME_BLADE.get(),net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(ArkOfCosmos.MOD_ID,"active"),(stack,level,entity,seed)->entity!=null&&!entity.level().getEntitiesOfClass(BiomeEntity.class,entity.getBoundingBox().inflate(128),a->a.ownerId()==entity.getId()&&a.kind()==BiomeEntity.BLADE&&(a.view().getInt("Mode")>0||a.level().getGameTime()-a.view().getLong("StartTick")<5)).isEmpty()?1:0));}
     }
 }

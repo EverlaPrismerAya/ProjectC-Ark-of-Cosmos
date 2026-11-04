@@ -30,6 +30,7 @@ public final class BiomeEntity extends Entity {
     private static final Map<LivingEntity,Long> MIST_IMMUNITY=new WeakHashMap<>();
     private final Map<UUID,Integer> immunity=new HashMap<>();
     private int subframe;
+    private long startTick;
     private long sourceClock(){return level().getGameTime()*18+subframe;}
     private UUID ownerUuid;private int ownerId,kind,mode,state,age,left,duration,combo,cooldown,charge,overCharge,indicator,hits,alpha,variant,landTime,dashTime,coyote;
     private boolean ended,charged,bounced,chargeSound,spinSound,moved,water;
@@ -42,15 +43,15 @@ public final class BiomeEntity extends Entity {
     private ListTag samples=new ListTag(),trail=new ListTag();
     public BiomeEntity(EntityType<? extends BiomeEntity> type,Level level){super(type,level);noPhysics=true;setNoGravity(true);}
     private static Vec3 center(LivingEntity p){return p instanceof Player player?OldOneEntity.swordHilt(player):p.getBoundingBox().getCenter();}
-    private static final SpriteBlade SHAPE=new SpriteBlade("item/biome_blade");
+
     private static BiomeEntity create(Player p,int kind,int mode,Vec3 at,AttackFrame f,float amount,int life){
-        BiomeEntity e=new BiomeEntity(ArkOfCosmos.BIOME_ATTACK.get(),p.level());e.ownerUuid=p.getUUID();e.ownerId=p.getId();e.kind=kind;e.mode=mode;e.frame=f;e.direction=f.forward();e.damage=amount;e.left=e.duration=life;e.heldStack=p.getMainHandItem();e.weapon=e.heldStack.copy();e.setPos(at);return e;
+        BiomeEntity e=new BiomeEntity(ArkOfCosmos.BIOME_ATTACK.get(),p.level());e.startTick=p.level().getGameTime();e.ownerUuid=p.getUUID();e.ownerId=p.getId();e.kind=kind;e.mode=mode;e.frame=f;e.direction=f.forward();e.damage=amount;e.left=e.duration=life;e.heldStack=p.getMainHandItem();e.weapon=e.heldStack.copy();e.setPos(at);return e;
     }
     private void spawn(){level().addFreshEntity(this);publish();}
     public static void attack(Player p){
         int mode=BiomeBladeItem.main(p.getMainHandItem());var c=BiomeCombat.control(p);
         if(mode!=COLD&&mode!=TROPICAL)c.combo=0;
-        int life=mode<=PURE?21:mode==COLD?new int[]{15,20,50}[c.combo]:mode==TROPICAL?90:mode==EVIL?26:mode==MARINE?40:mode==HOT?30:2;
+        int life=mode<=PURE?15:mode==COLD?new int[]{15,20,50}[c.combo]:mode==TROPICAL?90:mode==EVIL?26:mode==MARINE?40:mode==HOT?30:2;
         BiomeEntity e=create(p,BLADE,mode,center(p),AttackFrame.capture(p),base(mode),life);e.combo=c.combo;e.cp1=e.cp2=center(p);
         e.reach=Math.max(300/16d,Math.min(400/16d,WeaponUser.aim(p).distanceTo(center(p))));
         if(mode==COLD){c.combo=(c.combo+1)%3;if(e.combo==2)e.damage*=1.75f;e.sound(p,e.combo==0?"fractured_swing":e.combo==1?"true_biome_flail":"biome_cold_thrust");}
@@ -62,6 +63,7 @@ public final class BiomeEntity extends Entity {
         if(mode<=PURE){e.rotation=(float)(-Math.PI/3);e.direction=e.frame.direction(e.rotation);}
         e.spawn();
     }
+    public boolean activeBlade(){return kind()==BLADE&&(level().isClientSide?view().getInt("Left"):left)>0;}
     public int ownerId(){return level().isClientSide?view().getInt("Owner"):ownerId;}
     public int kind(){return level().isClientSide?view().getInt("Kind"):kind;}
     public ItemStack weapon(){return weapon;}
@@ -75,11 +77,13 @@ public final class BiomeEntity extends Entity {
     @Override public void tick(){
         super.tick();if(level().isClientSide){clientSnapshot.tick(view(),"Age");return;}
         Player p=owner();if(!valid(p)){discardAttack();return;}
+        // Match the legacy sword's network grace period without extending its hit window.
+        if(kind==BLADE&&mode<=PURE&&left<=0){if(left==0){left=-1;publish();}else discardAttack();return;}
         samples=new ListTag();samples.add(snapshot());int count=steps(kind,mode);
         for(int i=0;i<count&&!isRemoved();i++){
             subframe=i*18/count;immunity.replaceAll((id,t)->t-1);immunity.values().removeIf(t->t<=0);cooldown--;
             switch(kind){case BLADE->blade(p);case BEAM->beam(p);case HOT_SHOT->hotShot(p);case MIST->mist(p);case VINE->vine(p);case DASH->hitLine(p,start,end,0,60,damage,false);case MONOLITH->monolith(p);case ORB->orb(p);case SIGIL->{if(!WeaponUser.canHit(p,target))discardAttack();else setPos(center(target));}}
-            if(isRemoved())break;age++;remember();if(--left<=0)finish(p);samples.add(snapshot());
+            if(isRemoved())break;age++;remember();if(--left<=0&&!(kind==BLADE&&mode<=PURE))finish(p);samples.add(snapshot());
         }
         if(moved&&p instanceof ServerPlayer sp){if(sp.connection!=null)sp.connection.teleport(p.getX(),p.getY(),p.getZ(),p.getYRot(),p.getXRot());moved=false;}
         if(!isRemoved())publish();
@@ -87,9 +91,9 @@ public final class BiomeEntity extends Entity {
     private Vec3 aim(Player p){Vec3 v=WeaponUser.aim(p).subtract(center(p)).normalize();return v.lengthSqr()<1e-8?p.getLookAngle():v;}
     private void follow(Player p){frame=GalaxiaEntity.aimFrame(aim(p),AttackFrame.capture(p).right());direction=frame.forward();}
     private void blade(Player p){
-        if(mode<=PURE){double previous=lerp(-Math.PI/3,Math.PI/3,age/21d);rotation=(float)lerp(-Math.PI/3,Math.PI/3,(age+1)/21d);direction=frame.direction(rotation);setPos(center(p));
-            double reach=Math.hypot(SHAPE.WIDTH,SHAPE.HEIGHT)/16;
-            for(LivingEntity target:targets(new AABB(position(),position()).inflate(reach),p))if(SHAPE.sweeps(target.getBoundingBox(),position(),frame,previous,rotation))hit(p,target,21,damage,false);return;}
+        if(mode<=PURE){double previous=OldOneEntity.swordAngle(age);rotation=(float)OldOneEntity.swordAngle(age+1);direction=frame.direction(rotation);setPos(OldOneEntity.swordHilt(p));
+            double reach=Math.hypot(OldOneBlade.WIDTH,OldOneBlade.HEIGHT)/16;
+            for(LivingEntity target:targets(new AABB(position(),position()).inflate(reach),p))if(OldOneBlade.sweeps(target.getBoundingBox(),position(),frame,previous,rotation))hit(p,target,15,damage,false);return;}
         switch(mode){case HOT->hot(p);case COLD->cold(p);case TROPICAL->tropical(p);case EVIL->evil(p);case HOLY->holy(p);case ASTRAL->astral(p);case MARINE->marine(p);}
     }
     private void hot(Player p){
@@ -257,7 +261,8 @@ public final class BiomeEntity extends Entity {
             if(mode==EVIL&&!charged&&!bounced){p.heal(net.everla.projectc.arkofcosmos.calamity.combat.GalaxiaRules.damage(2));double speed=Math.min(22*3/16d,Math.max(8*3/16d,p.getDeltaMovement().length())*(p.onGround()?.2:1));impulse(p,direction.scale(-speed));bounced=true;invulnerable(p,10);if(++BiomeCombat.control(p).power==3)sound(p,"galaxia_item79");}
             if(mode==ASTRAL)invulnerable(p,20);
         }
-        if(critical)event("critical",center(t));return true;
+        if(critical)event("critical",center(t),center(t).subtract(center(p)).normalize());
+        if(kind==DASH)event("dash_hit",center(t),center(p).subtract(center(t)).normalize());return true;
     }
     private void invulnerable(Player p,int frames){ArkCombat.controls(p).dashInvulnerableUntil=Math.max(ArkCombat.controls(p).dashInvulnerableUntil,level().getGameTime()+(frames+2)/3);}
     private boolean touches(Vec3 at,double diameter){return level().getBlockCollisions(this,new AABB(at,at).inflate(diameter/2)).iterator().hasNext();}
@@ -278,10 +283,11 @@ public final class BiomeEntity extends Entity {
     @Override public void remove(RemovalReason reason){if(!level().isClientSide&&reason==RemovalReason.DISCARDED&&!ended&&left>0&&valid(owner()))return;super.remove(reason);}
     private void sound(Player p,String name){sound(p,name,1,0);}
     private void sound(Player p,String name,float volume,float pitch){TrueBiomeCombat.sound(this,p,name,volume,pitch,false,false);}
-    private void event(String name,Vec3 at){CompoundTag s=snapshot();s.putString("Event","biome_fx");s.putString("Fx",name);vector(s,"At",at);net.everla.projectc.arkofcosmos.network.ArkNetwork.nearbyEffect(this,s);}
+    private void event(String name,Vec3 at){event(name,at,direction);}
+    private void event(String name,Vec3 at,Vec3 fxDirection){CompoundTag s=snapshot();s.putString("Event","biome_fx");s.putString("Fx",name);vector(s,"At",at);vector(s,"Direction",fxDirection);net.everla.projectc.arkofcosmos.network.ArkNetwork.nearbyEffect(this,s);}
     private void remember(){CompoundTag s=new CompoundTag();vector(s,"Position",position());s.putFloat("Rotation",rotation);trail.add(0,s);while(trail.size()>(kind==BEAM?2:10))trail.remove(trail.size()-1);}
     private CompoundTag snapshot(){
-        CompoundTag s=new CompoundTag();s.putUUID("Attack",getUUID());s.putInt("Owner",ownerId);s.putInt("Kind",kind);s.putInt("Mode",mode);s.putInt("State",state);s.putInt("Age",age);s.putInt("Left",left);s.putInt("Duration",duration);s.putInt("Combo",combo);s.putInt("Charge",charge);s.putInt("OverCharge",overCharge);s.putInt("Coyote",coyote);s.putInt("DashTime",dashTime);s.putInt("Variant",variant);s.putInt("Alpha",alpha);s.putInt("LandTime",landTime);s.putBoolean("Water",water);s.putDouble("Shred",shred);s.putDouble("Size",size);s.putDouble("Wait",wait);s.putFloat("Scale",scale);s.putFloat("Rotation",rotation);
+        CompoundTag s=new CompoundTag();s.putUUID("Attack",getUUID());s.putLong("StartTick",startTick);s.putInt("Owner",ownerId);s.putInt("Kind",kind);s.putInt("Mode",mode);s.putInt("State",state);s.putInt("Age",age);s.putInt("Left",left);s.putInt("Duration",duration);s.putInt("Combo",combo);s.putInt("Charge",charge);s.putInt("OverCharge",overCharge);s.putInt("Coyote",coyote);s.putInt("DashTime",dashTime);s.putInt("Variant",variant);s.putInt("Alpha",alpha);s.putInt("LandTime",landTime);s.putBoolean("Water",water);s.putDouble("Shred",shred);s.putDouble("Size",size);s.putDouble("Wait",wait);s.putFloat("Scale",scale);s.putFloat("Rotation",rotation);
         vector(s,"Position",position());vector(s,"F",frame.forward());vector(s,"R",frame.right());vector(s,"Direction",direction);vector(s,"Velocity",velocity);vector(s,"Start",start);vector(s,"End",end);vector(s,"CP1",cp1);vector(s,"CP2",cp2);Player p=owner();vector(s,"Center",p==null?position():center(p));vector(s,"OwnerVelocity",p==null?Vec3.ZERO:p.getDeltaMovement().scale(1/3d));s.put("Trail",trail.copy());return s;
     }
     private void publish(){CompoundTag s=snapshot();s.put("Samples",samples.copy());entityData.set(VIEW,s);}

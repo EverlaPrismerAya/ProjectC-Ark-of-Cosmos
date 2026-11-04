@@ -31,7 +31,7 @@ public final class BiomeCombat {
         if(!holding(p)||!p.isAlive()||p.isSpectator()||slot<0||slot>1||mode<0||mode>7||(unlocked(p)&(1<<mode))==0)return;
         cancel(p);var stack=p.getMainHandItem();int a=BiomeBladeItem.main(stack),b=BiomeBladeItem.secondary(stack);
         if(slot==0){if(b==mode)b=a;a=mode;}else{if(a==mode)a=b;b=mode;}
-        BiomeBladeItem.set(stack,a,b);var c=control(p);c.left=c.right=false;c.combo=0;c.comboReset=0;c.cooldown=Math.max(c.cooldown,21);p.getInventory().setChanged();p.containerMenu.broadcastChanges();
+        BiomeBladeItem.set(stack,a,b);var c=control(p);c.left=c.right=false;c.combo=0;c.comboReset=0;c.cooldown=Math.max(c.cooldown,a<=0?15:21);p.getInventory().setChanged();p.containerMenu.broadcastChanges();
     }
     @SubscribeEvent public static void login(PlayerEvent.PlayerLoggedInEvent e){if(e.getEntity() instanceof ServerPlayer p){restoreVisits(p);unlock(p,environment(p));sync(p);}}
     @SubscribeEvent public static void respawn(PlayerEvent.PlayerRespawnEvent e){if(e.getEntity() instanceof ServerPlayer p)sync(p);}
@@ -46,7 +46,7 @@ public final class BiomeCombat {
     public static boolean holding(Player p){return p!=null&&p.getMainHandItem().is(ArkOfCosmos.BIOME_BLADE.get());}
     public static boolean channeling(Player p){return holding(p)&&control(p).left&&!control(p).right;}
     public static List<BiomeEntity> attacks(Player p){return p.level().getEntitiesOfClass(BiomeEntity.class,p.getBoundingBox().inflate(256),a->a.ownerId()==p.getId());}
-    public static boolean active(Player p){return attacks(p).stream().anyMatch(a->a.kind()==BiomeEntity.BLADE);}
+    public static boolean active(Player p){return attacks(p).stream().anyMatch(BiomeEntity::activeBlade);}
     public static void input(ServerPlayer p,boolean left,boolean right){
         if(!holding(p)||!p.isAlive()||p.isSpectator())return;
         Control c=control(p);if(c.stack!=p.getMainHandItem()){cancel(p);INPUT.remove(p.getUUID());c=control(p);c.stack=p.getMainHandItem();}
@@ -66,7 +66,7 @@ public final class BiomeCombat {
             if(c.cooldown>0)c.cooldown--;
             if(BiomeBladeItem.main(c.stack)==2&&!active(p)&&c.comboReset>0&&--c.comboReset==0)c.combo=0;
             if(c.cooldown<=0&&!active(p)){
-                if(c.left){BiomeEntity.attack(p);c.cooldown=21;c.comboReset=50;}
+                if(c.left){BiomeEntity.attack(p);c.cooldown=BiomeBladeItem.main(c.stack)<=0?15:21;c.comboReset=50;}
             }
         }
     }

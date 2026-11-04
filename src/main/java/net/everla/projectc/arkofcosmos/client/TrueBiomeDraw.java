@@ -26,6 +26,9 @@ public record TrueBiomeDraw(NativeSprites.Draw nativeDraw) {
     public void tinted(String name,Vec3 at,AttackFrame f,double angle,double scale,double ox,double oy,float[] color,ArkFxDraw.Tint tint){
         fx(()->ArkFxDraw.additiveBlade(name,at,f,angle,scale,ox,oy,color,tint));
     }
+    public void dust(Vec3 at,AttackFrame face,double rotation,double scale,float[] color,int type,int variant,int light,float[] overlay){
+        fx(()->ArkFxDraw.litDust(at,face,rotation,scale,color,type%100*10,variant*10+type/100*30,light,overlay));
+    }
     public void region(String name,Vec3 at,AttackFrame f,double angle,double scale,double ox,double oy,float[] color,int left,int top,int width,int height,boolean additive,int light){
         region(name,at,f,angle,scale,scale,ox,oy,color,left,top,width,height,additive,light);
     }

@@ -507,7 +507,8 @@
       "matches_recorded_output": true,
       "used_by": [
         "Fractured Ark visuals",
-        "Ark of the Ancients"
+        "Ark of the Ancients",
+        "Biome Blade"
       ]
     },
     {
@@ -772,7 +773,10 @@
       "path": "Effects/BasicTint.fx",
       "license": "Calamity Team / All Rights Reserved",
       "source_sha256": "366f10d4ed2e3caa6a05846e7c9a1a4da660a8b5f49ab08cb74d3a8e72916917",
-      "conversion": "HLSL Recolor -> GLSL 150, preserving rbg, unclamped lerp and alpha multiplication; Minecraft near fade appended"
+      "conversion": "HLSL Recolor -> GLSL 150, preserving rbg, unclamped lerp and alpha multiplication; Minecraft near fade appended",
+      "used_by": [
+        "Biome Blade"
+      ]
     },
     {
       "file": "src/main/resources/assets/arkofcosmos/sounds/galaxia_item60_0.ogg",
@@ -3668,6 +3672,17 @@
       "path": "Content/Sounds/Item_1.xnb",
       "source_sha256": "66083307fa38d8f473abd97b86b59d4e04099c64a82a9c7f855c4e083f4aa716",
       "license": "Re-Logic original terms",
+      "used_by": [
+        "Biome Blade"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/biome_smear.png",
+      "sha256": "a6e0718b081880200eeed150d9d14cc1308f67f7450a0b69e5919ce0af3b4156",
+      "project": "Calamity Mod",
+      "path": "Particles/CircularSmear.png",
+      "source_sha256": "a6e0718b081880200eeed150d9d14cc1308f67f7450a0b69e5919ce0af3b4156",
+      "license": "Calamity ARR",
       "used_by": [
         "Biome Blade"
       ]
