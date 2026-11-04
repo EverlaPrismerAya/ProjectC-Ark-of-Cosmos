@@ -44,9 +44,9 @@ public final class FracturedCombat {
         long now = p.level().getGameTime() * 3;
         if (now < c.nextUse || active(p)) return;
         var stack = p.getMainHandItem();
-        int sign = stack.getOrCreateTag().getInt("FracturedCombo") == -1 ? -1 : 1, charge = FracturedArkItem.charge(stack);
+        int sign = stack.getOrCreateTag().getInt("FracturedCombo") == -1 ? -1 : 1, charge = HaloCompat.charge(p, FracturedArkItem.charge(stack), 10);
         FracturedEntity.swing(p, sign, charge, AttackFrame.capture(p));
-        stack.getOrCreateTag().putInt("FracturedCombo", -sign); FracturedArkItem.charge(stack, charge - 1);
+        stack.getOrCreateTag().putInt("FracturedCombo", -sign); FracturedArkItem.charge(stack, HaloCompat.charge(p, charge - 1, 10));
         // Carry the 22/3 fractional tick remainder during held input; clicks after an idle restart at now.
         c.nextUse = continuous && now - c.nextUse < 3 ? c.nextUse + FracturedRules.USE_TIME : now + FracturedRules.USE_TIME;
     }

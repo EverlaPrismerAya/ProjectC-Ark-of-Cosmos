@@ -13,6 +13,7 @@ public final class OldOneItem extends SwordItem {
     @Override public boolean isEnchantable(ItemStack stack){return stack.getCount()==1;}
     @Override public boolean onEntitySwing(ItemStack stack, net.minecraft.world.entity.LivingEntity entity){return true;}
     @Override public void appendHoverText(ItemStack stack, net.minecraft.world.level.Level level, java.util.List<net.minecraft.network.chat.Component> lines, TooltipFlag flag) {
+        net.everla.projectc.arkofcosmos.combat.InnateEnchantment.appendTooltip(stack, lines);
         lines.add(net.minecraft.network.chat.Component.translatable("tooltip.arkofcosmos.old_one_attack"));
     }
 }

@@ -40,6 +40,8 @@ public final class ArkItem extends SwordItem {
     public static void charge(ItemStack stack, int amount) { stack.getOrCreateTag().putInt("ArkCharge", Math.max(0, Math.min(ArkWeaponRules.MAX_CHARGE, amount))); }
     public static int cooldown(ItemStack stack) { return stack.hasTag() ? stack.getTag().getInt("ArkParryCooldown") : 0; }
     @Override public void inventoryTick(ItemStack stack, Level level, net.minecraft.world.entity.Entity entity, int slot, boolean selected) {
+        if (!level.isClientSide && entity instanceof Player owner)
+            net.everla.projectc.arkofcosmos.combat.HaloCompat.refill(owner, stack);
         if (!level.isClientSide && entity instanceof Player player) {
             int remaining = ArkCombat.parryCooldown(player, stack);
             if (cooldown(stack) != remaining) stack.getOrCreateTag().putInt("ArkParryCooldown", remaining);
@@ -59,6 +61,7 @@ public final class ArkItem extends SwordItem {
         return InteractionResultHolder.success(player.getItemInHand(hand));
     }
     @Override public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> lines, TooltipFlag flag) {
+        net.everla.projectc.arkofcosmos.combat.InnateEnchantment.appendTooltip(stack, lines);
         float wave = (float)Math.sin((System.nanoTime() / 1_000_000_000d) % 3600);
         for (String key : new String[]{"controls", "parry", "blast", "flavor"}) {
             int color = ArkWeaponRules.tooltipColor(key, wave);

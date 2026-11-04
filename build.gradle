@@ -193,6 +193,7 @@ dependencies {
     runtimeOnly fg.deobf('maven.modrinth:goety-revelation:t59lWC8J')
     runtimeOnly fg.deobf('maven.modrinth:endinglibrary:MHYrjSc5')
     runtimeOnly fg.deobf('maven.modrinth:curios:IPQlZkz1')
+    compileOnly fg.deobf('maven.modrinth:curios:IPQlZkz1')
     compileOnly 'org.spongepowered:mixin:0.8.5'
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
     // Specify the version of Minecraft to use.

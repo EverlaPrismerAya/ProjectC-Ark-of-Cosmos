@@ -439,5 +439,121 @@
         "stream": false
       }
     ]
+  },
+  "biome_swap": {
+    "sounds": [
+      {
+        "name": "arkofcosmos:biome_swap_0",
+        "stream": false
+      },
+      {
+        "name": "arkofcosmos:biome_swap_1",
+        "stream": false
+      },
+      {
+        "name": "arkofcosmos:biome_swap_2",
+        "stream": false
+      }
+    ]
+  },
+  "biome_zap": {
+    "sounds": [
+      {
+        "name": "arkofcosmos:biome_zap_0",
+        "stream": false
+      },
+      {
+        "name": "arkofcosmos:biome_zap_1",
+        "stream": false
+      },
+      {
+        "name": "arkofcosmos:biome_zap_2",
+        "stream": false
+      }
+    ]
+  },
+  "biome_cold_thrust": {
+    "sounds": [
+      {
+        "name": "arkofcosmos:biome_cold_thrust_0",
+        "stream": false
+      },
+      {
+        "name": "arkofcosmos:biome_cold_thrust_1",
+        "stream": false
+      },
+      {
+        "name": "arkofcosmos:biome_cold_thrust_2",
+        "stream": false
+      }
+    ]
+  },
+  "biome_whip_snap": {
+    "sounds": [
+      {
+        "name": "arkofcosmos:biome_whip_snap_0",
+        "stream": false
+      }
+    ]
+  },
+  "biome_vines": {
+    "sounds": [
+      {
+        "name": "arkofcosmos:biome_vines_0",
+        "stream": false
+      }
+    ]
+  },
+  "biome_evil": {
+    "sounds": [
+      {
+        "name": "arkofcosmos:biome_evil_0",
+        "stream": false
+      }
+    ]
+  },
+  "biome_splash": {
+    "sounds": [
+      {
+        "name": "arkofcosmos:biome_splash_0",
+        "stream": false
+      },
+      {
+        "name": "arkofcosmos:biome_splash_1",
+        "stream": false
+      },
+      {
+        "name": "arkofcosmos:biome_splash_2",
+        "stream": false
+      },
+      {
+        "name": "arkofcosmos:biome_splash_3",
+        "stream": false
+      },
+      {
+        "name": "arkofcosmos:biome_splash_4",
+        "stream": false
+      },
+      {
+        "name": "arkofcosmos:biome_splash_5",
+        "stream": false
+      }
+    ]
+  },
+  "biome_eruption": {
+    "sounds": [
+      {
+        "name": "arkofcosmos:galaxia_eruption_0",
+        "stream": false
+      }
+    ]
+  },
+  "biome_swing": {
+    "sounds": [
+      {
+        "name": "arkofcosmos:biome_swing_0",
+        "stream": false
+      }
+    ]
   }
 }

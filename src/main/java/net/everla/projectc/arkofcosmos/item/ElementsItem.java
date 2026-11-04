@@ -33,6 +33,8 @@ public final class ElementsItem extends SwordItem {
     }
     @Override public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) { return InteractionResultHolder.success(player.getItemInHand(hand)); }
     @Override public void inventoryTick(ItemStack stack, Level level, Entity entity, int slot, boolean selected) {
+        if (!level.isClientSide && entity instanceof Player owner)
+            net.everla.projectc.arkofcosmos.combat.HaloCompat.refill(owner, stack);
         if (!level.isClientSide && entity instanceof Player player) {
             int remaining=ElementsCombat.cooldown(player);
             if(cooldown(stack)!=remaining)stack.getOrCreateTag().putInt("ElementsCooldown",remaining);

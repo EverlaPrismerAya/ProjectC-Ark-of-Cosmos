@@ -435,7 +435,8 @@
       "used_by": [
         "Fractured Ark visuals",
         "Ark of the Ancients",
-        "True Biome Blade"
+        "True Biome Blade",
+        "Biome Blade"
       ]
     },
     {
@@ -471,7 +472,8 @@
       "recorded_output_sha256": "f7d2f0030bd70cd47677fc423800faac4516e7efff844dd669d6eee1bf8383ce",
       "matches_recorded_output": true,
       "used_by": [
-        "True Biome Blade"
+        "True Biome Blade",
+        "Biome Blade"
       ]
     },
     {
@@ -528,7 +530,8 @@
       "used_by": [
         "Fractured Ark visuals",
         "Ark of the Ancients",
-        "True Biome Blade"
+        "True Biome Blade",
+        "Biome Blade"
       ]
     },
     {
@@ -572,7 +575,8 @@
       "used_by": [
         "Fractured Ark visuals",
         "Ark of the Ancients",
-        "True Biome Blade"
+        "True Biome Blade",
+        "Biome Blade"
       ]
     },
     {
@@ -757,7 +761,8 @@
       "path": "Projectiles/Melee/MendedBiomeBlade_HeavensMightChain.png",
       "license": "Calamity Team / All Rights Reserved",
       "used_by": [
-        "True Biome Blade"
+        "True Biome Blade",
+        "Biome Blade"
       ]
     },
     {
@@ -957,7 +962,10 @@
       "license": "Original rights holders; not GPL-3.0-only",
       "source_sha256": "f916088babe6e3f5aa7ca19d2fbc81159acc00ad03ea926fd52a6aab4de9850b",
       "recorded_output_sha256": "1baa6646b2b7fd6d6267cfeb0eca56741ec52ab975ca4a56510913699d2ac2a2",
-      "matches_recorded_output": true
+      "matches_recorded_output": true,
+      "used_by": [
+        "Biome Blade"
+      ]
     },
     {
       "file": "src/main/resources/assets/arkofcosmos/sounds/galaxia_beacon_0.ogg",
@@ -1097,7 +1105,8 @@
       "rgba_sha256": "d66069c16123c59b96e4bda53369fc963931478e5ac36a741a6e17abf9d0c5fe",
       "used_by": [
         "Fractured Ark visuals",
-        "Ark of the Ancients"
+        "Ark of the Ancients",
+        "Biome Blade"
       ]
     },
     {
@@ -2995,7 +3004,8 @@
       "license": "ARR (Calamity original terms)",
       "source_sha256": "54f5ad65ae509522863db7c6790a564e572550103b43eacfbcac4802d6214474",
       "used_by": [
-        "True Biome Blade"
+        "True Biome Blade",
+        "Biome Blade"
       ]
     },
     {
@@ -3006,7 +3016,8 @@
       "license": "ARR (Calamity original terms)",
       "source_sha256": "be1c5de8898da945f42b28cffdc055b017e0fcbfeed6a48012f393eceae7919d",
       "used_by": [
-        "True Biome Blade"
+        "True Biome Blade",
+        "Biome Blade"
       ]
     },
     {
@@ -3017,7 +3028,8 @@
       "license": "ARR (Calamity original terms)",
       "source_sha256": "c588f3cbbad79ce22e88200487aed698076aa01e0598d07a2cf5b2ba0975d9de",
       "used_by": [
-        "True Biome Blade"
+        "True Biome Blade",
+        "Biome Blade"
       ]
     },
     {
@@ -3160,7 +3172,8 @@
       "license": "ARR (Calamity original terms)",
       "source_sha256": "da0fc70dab62c89a1d8a6fe7f83066714276bd2204d13c7579d4db9dc6291966",
       "used_by": [
-        "True Biome Blade"
+        "True Biome Blade",
+        "Biome Blade"
       ]
     },
     {
@@ -3182,7 +3195,8 @@
       "license": "ARR (Calamity original terms)",
       "source_sha256": "27d949f2644e857f3fcd803b6f7122bb118f0a57e11f72854721591444f9da49",
       "used_by": [
-        "True Biome Blade"
+        "True Biome Blade",
+        "Biome Blade"
       ]
     },
     {
@@ -3194,6 +3208,468 @@
       "source_sha256": "2623dfa6c95d57dc3bb06929c87feb8674822c22e03a4a19ce44606693c81c77",
       "used_by": [
         "True Biome Blade"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/item/biome_blade.png",
+      "sha256": "3b9b749d4592e623a19044526f9fb5ec5a53c5eb93fd48e91fbbed955494034b",
+      "project": "Calamity Mod",
+      "path": "Projectiles/Melee/MendedBiomeBlade.png",
+      "source_sha256": "3b9b749d4592e623a19044526f9fb5ec5a53c5eb93fd48e91fbbed955494034b",
+      "license": "Calamity ARR",
+      "used_by": [
+        "Biome Blade"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/biome_attune.png",
+      "sha256": "abbd986ee0328f617e239f37a44a20e85812ba48eec83be6c59084a3e253bb72",
+      "project": "Calamity Mod",
+      "path": "Items/Weapons/Melee/TrueBiomeBlade.png",
+      "source_sha256": "abbd986ee0328f617e239f37a44a20e85812ba48eec83be6c59084a3e253bb72",
+      "license": "Calamity ARR",
+      "used_by": [
+        "Biome Blade"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/biome_pure.png",
+      "sha256": "704bba14d03911d2eba2eb0591193090b6d05e36ba5635593299ca57bafd29fa",
+      "project": "Calamity Mod",
+      "path": "Projectiles/Melee/BrokenBiomeBlade_PurityProjection.png",
+      "source_sha256": "704bba14d03911d2eba2eb0591193090b6d05e36ba5635593299ca57bafd29fa",
+      "license": "Calamity ARR",
+      "used_by": [
+        "Biome Blade"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/biome_hot.png",
+      "sha256": "a0c4e14b8a759e84abe5521afa06cd09f397c7505daac4758b402faacae4d8ed",
+      "project": "Calamity Mod",
+      "path": "Projectiles/Melee/MendedBiomeBlade_AridGrandeur.png",
+      "source_sha256": "a0c4e14b8a759e84abe5521afa06cd09f397c7505daac4758b402faacae4d8ed",
+      "license": "Calamity ARR",
+      "used_by": [
+        "Biome Blade"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/biome_hot_extra.png",
+      "sha256": "44b7e6eb16076f8f4062f6a95c1e5e95d12723a1c0a3ce0f67deddf0042ec7ef",
+      "project": "Calamity Mod",
+      "path": "Projectiles/Melee/MendedBiomeBlade_AridGrandeurExtra.png",
+      "source_sha256": "44b7e6eb16076f8f4062f6a95c1e5e95d12723a1c0a3ce0f67deddf0042ec7ef",
+      "license": "Calamity ARR",
+      "used_by": [
+        "Biome Blade"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/biome_cold.png",
+      "sha256": "cd2e47bcffb00431a759cc18e4661d5870f4024e2c4fdf63c8e7aeba26690609",
+      "project": "Calamity Mod",
+      "path": "Projectiles/Melee/MendedBiomeBlade_BitingEmbrace.png",
+      "source_sha256": "cd2e47bcffb00431a759cc18e4661d5870f4024e2c4fdf63c8e7aeba26690609",
+      "license": "Calamity ARR",
+      "used_by": [
+        "Biome Blade"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/biome_cold_thrust.png",
+      "sha256": "4b95b3d2afddec1aac64d066f243f86807b3f1f180ab4292726b80f34001fcae",
+      "project": "Calamity Mod",
+      "path": "Projectiles/Melee/MendedBiomeBlade_BitingEmbraceThrust.png",
+      "source_sha256": "4b95b3d2afddec1aac64d066f243f86807b3f1f180ab4292726b80f34001fcae",
+      "license": "Calamity ARR",
+      "used_by": [
+        "Biome Blade"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/biome_tropical.png",
+      "sha256": "7d60d8cc35571cabbbe60fbabdc3659aac3a7437ad9d93a474aae8f95fa214c9",
+      "project": "Calamity Mod",
+      "path": "Projectiles/Melee/MendedBiomeBlade_GrovetendersTouchBlade.png",
+      "source_sha256": "7d60d8cc35571cabbbe60fbabdc3659aac3a7437ad9d93a474aae8f95fa214c9",
+      "license": "Calamity ARR",
+      "used_by": [
+        "Biome Blade"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/biome_tropical_glow.png",
+      "sha256": "ff55b5d3d6bb9f98668861b0dfb17ddbefec656edb5006a0ed6243561bdd47ad",
+      "project": "Calamity Mod",
+      "path": "Projectiles/Melee/MendedBiomeBlade_GrovetendersTouchGlow.png",
+      "source_sha256": "ff55b5d3d6bb9f98668861b0dfb17ddbefec656edb5006a0ed6243561bdd47ad",
+      "license": "Calamity ARR",
+      "used_by": [
+        "Biome Blade"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/biome_vine.png",
+      "sha256": "1ee1cd3f01752e82c4b999d31635c6989ad1e4e5c257b1077cc0d4835530f3ae",
+      "project": "Calamity Mod",
+      "path": "Projectiles/Melee/BrokenBiomeBlade_GrovetendersTouchChain.png",
+      "source_sha256": "1ee1cd3f01752e82c4b999d31635c6989ad1e4e5c257b1077cc0d4835530f3ae",
+      "license": "Calamity ARR",
+      "used_by": [
+        "Biome Blade"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/biome_evil.png",
+      "sha256": "3c2d8fd6195fe248fb7651eeb0231e8f512ac1ab6a74fa8aad83d1971de8814e",
+      "project": "Calamity Mod",
+      "path": "Projectiles/Melee/MendedBiomeBlade_DecaysRetort.png",
+      "source_sha256": "3c2d8fd6195fe248fb7651eeb0231e8f512ac1ab6a74fa8aad83d1971de8814e",
+      "license": "Calamity ARR",
+      "used_by": [
+        "Biome Blade"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/biome_dash.png",
+      "sha256": "66d262dcbb45d1d61daff4b5d8c0afd7d37ff9da86c6381ee5f8eb1b8bf26c86",
+      "project": "Calamity Mod",
+      "path": "Projectiles/Melee/MendedBiomeBlade_DecaysRetortDash.png",
+      "source_sha256": "66d262dcbb45d1d61daff4b5d8c0afd7d37ff9da86c6381ee5f8eb1b8bf26c86",
+      "license": "Calamity ARR",
+      "used_by": [
+        "Biome Blade"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/biome_holy.png",
+      "sha256": "379c57f2b934e5e1dccf29851243d493be4903ae56e72d73be65d92eb777a00d",
+      "project": "Calamity Mod",
+      "path": "Projectiles/Melee/MendedBiomeBlade_HeavensMight.png",
+      "source_sha256": "379c57f2b934e5e1dccf29851243d493be4903ae56e72d73be65d92eb777a00d",
+      "license": "Calamity ARR",
+      "used_by": [
+        "Biome Blade"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/biome_astral.png",
+      "sha256": "d001e57cd28f2bb933b884f82857770cd100b4c4304f2d87bfc7a5453fac6fdc",
+      "project": "Calamity Mod",
+      "path": "Projectiles/Melee/MendedBiomeBlade_ExtantAbhorrence.png",
+      "source_sha256": "d001e57cd28f2bb933b884f82857770cd100b4c4304f2d87bfc7a5453fac6fdc",
+      "license": "Calamity ARR",
+      "used_by": [
+        "Biome Blade"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/biome_monolith.png",
+      "sha256": "393bceb0de1d072e0d4a1ac06ac47461290e20db886fc40482424efe425070b1",
+      "project": "Calamity Mod",
+      "path": "Projectiles/Melee/MendedBiomeBlade_ExtantAbhorrenceMonolith.png",
+      "source_sha256": "393bceb0de1d072e0d4a1ac06ac47461290e20db886fc40482424efe425070b1",
+      "license": "Calamity ARR",
+      "used_by": [
+        "Biome Blade"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/biome_orb.png",
+      "sha256": "a55eba03a08f698e33aefe337c0c933e9985b462f883e3075d1e2fbe0d8a4e7a",
+      "project": "Calamity Mod",
+      "path": "Projectiles/Melee/MendedBiomeBlade_GestureForTheDrowned.png",
+      "source_sha256": "a55eba03a08f698e33aefe337c0c933e9985b462f883e3075d1e2fbe0d8a4e7a",
+      "license": "Calamity ARR",
+      "used_by": [
+        "Biome Blade"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/biome_wave.png",
+      "sha256": "6492c2a25c3b5d94901ea1d992cfa39e0bbad965800752f9638b2cddbe489323",
+      "project": "Calamity Mod",
+      "path": "Projectiles/Melee/MendedBiomeBlade_GestureForTheDrownedWave.png",
+      "source_sha256": "6492c2a25c3b5d94901ea1d992cfa39e0bbad965800752f9638b2cddbe489323",
+      "license": "Calamity ARR",
+      "used_by": [
+        "Biome Blade"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/biome_aqua.png",
+      "sha256": "de95a48d18f9686dcf0bfd81d70d01cfc5f8ace848d4964e243a871abd678d40",
+      "project": "Calamity Mod",
+      "path": "Projectiles/Melee/MendedBiomeBlade_GestureForTheDrownedAquaWave.png",
+      "source_sha256": "de95a48d18f9686dcf0bfd81d70d01cfc5f8ace848d4964e243a871abd678d40",
+      "license": "Calamity ARR",
+      "used_by": [
+        "Biome Blade"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/biome_mist.png",
+      "sha256": "42fee3bbece3adfaa6fc670700fb1b4fb1435f74d93698f107aa7e061b54117d",
+      "project": "Calamity Mod",
+      "path": "Particles/MediumMist.png",
+      "source_sha256": "42fee3bbece3adfaa6fc670700fb1b4fb1435f74d93698f107aa7e061b54117d",
+      "license": "Calamity ARR",
+      "used_by": [
+        "Biome Blade"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/biome_spark.png",
+      "sha256": "c8d87a8c5e87b02a6ed7b590b72ee764c20cfe8242ea6620407b74af7cd39f9d",
+      "project": "Calamity Mod",
+      "path": "Particles/CritSpark.png",
+      "source_sha256": "c8d87a8c5e87b02a6ed7b590b72ee764c20cfe8242ea6620407b74af7cd39f9d",
+      "license": "Calamity ARR",
+      "used_by": [
+        "Biome Blade"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/biome_water.png",
+      "sha256": "635bd822f6c52c4fd211bb56516cf7f7b278473fbe269c6cdf93ed7aac41102d",
+      "project": "Calamity Mod",
+      "path": "Particles/WaterGlob.png",
+      "source_sha256": "635bd822f6c52c4fd211bb56516cf7f7b278473fbe269c6cdf93ed7aac41102d",
+      "license": "Calamity ARR",
+      "used_by": [
+        "Biome Blade"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/biome_dust.png",
+      "sha256": "a0d23a033be9acb72a35c5837eb22d42026c2be6d656934386340597e612e751",
+      "project": "Calamity Mod",
+      "path": "Particles/FakeDust.png",
+      "source_sha256": "a0d23a033be9acb72a35c5837eb22d42026c2be6d656934386340597e612e751",
+      "license": "Calamity ARR",
+      "used_by": [
+        "Biome Blade"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/biome_dust_big.png",
+      "sha256": "16ae5287fa6aec3df1daec94849c04607eb01ab7076709c400e391414c36b1f1",
+      "project": "Calamity Mod",
+      "path": "Particles/FakeDustBig.png",
+      "source_sha256": "16ae5287fa6aec3df1daec94849c04607eb01ab7076709c400e391414c36b1f1",
+      "license": "Calamity ARR",
+      "used_by": [
+        "Biome Blade"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/biome_swap_0.ogg",
+      "sha256": "fa330a71e1d80c297ab4823359b6bd74085f83cfd7231062cc69b1cbc45842fa",
+      "project": "Terraria",
+      "path": "Content/Sounds/Custom/dd2_dark_mage_heal_impact_0.xnb",
+      "source_sha256": "fce205289d2dddb66900186ef88e7fde02975a789f7733f52ff3763fbca941f7",
+      "license": "Re-Logic original terms",
+      "used_by": [
+        "Biome Blade"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/biome_swap_1.ogg",
+      "sha256": "fa0cad8ddf1ee8e327594e1c854fb391b10d8e36fcac75bddd63a27d8bd72953",
+      "project": "Terraria",
+      "path": "Content/Sounds/Custom/dd2_dark_mage_heal_impact_1.xnb",
+      "source_sha256": "b425221a5cc39033992dad455c6bb0577efa5f09179d99314d0430c646e1eb0c",
+      "license": "Re-Logic original terms",
+      "used_by": [
+        "Biome Blade"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/biome_swap_2.ogg",
+      "sha256": "35567900e0df09492f9d64dcffc00986657a3ca73fe516e6eec9efb79d456f2f",
+      "project": "Terraria",
+      "path": "Content/Sounds/Custom/dd2_dark_mage_heal_impact_2.xnb",
+      "source_sha256": "275385f4e9c278cd1dc038cb42fed0661a1265514ab095579897ddf3a8e2651f",
+      "license": "Re-Logic original terms",
+      "used_by": [
+        "Biome Blade"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/biome_zap_0.ogg",
+      "sha256": "90fd431d610664870e192cb07d992e6389780807b869d966fc529da4643a4555",
+      "project": "Terraria",
+      "path": "Content/Sounds/Custom/dd2_lightning_bug_zap_0.xnb",
+      "source_sha256": "ccd745274adec338a10468bf9fc73936b4aa2368eb745802ed3becc339680558",
+      "license": "Re-Logic original terms",
+      "used_by": [
+        "Biome Blade"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/biome_zap_1.ogg",
+      "sha256": "91f6e7edcbedf87accc3a7987fdebdf156ea41a901ff3ad762018901b907445c",
+      "project": "Terraria",
+      "path": "Content/Sounds/Custom/dd2_lightning_bug_zap_1.xnb",
+      "source_sha256": "73865d4f64973ed473d5a7e92f96367114dc11ea161eb1e9d8c2be16fcff5fee",
+      "license": "Re-Logic original terms",
+      "used_by": [
+        "Biome Blade"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/biome_zap_2.ogg",
+      "sha256": "9859930c0dc5bb95f630fd74d46ca457a7b7acff0403b1a4c45200702a4d7384",
+      "project": "Terraria",
+      "path": "Content/Sounds/Custom/dd2_lightning_bug_zap_2.xnb",
+      "source_sha256": "acf68c714e0d9acf2044a43f0a3be7a16e2f59e41c31937a537787c202278ef6",
+      "license": "Re-Logic original terms",
+      "used_by": [
+        "Biome Blade"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/biome_cold_thrust_0.ogg",
+      "sha256": "99626a352d445a45e5bd7961b3809d8cd0c011e8f8b1bb5b7fbde40b11e4a2e6",
+      "project": "Terraria",
+      "path": "Content/Sounds/Custom/dd2_phantom_phoenix_shot_0.xnb",
+      "source_sha256": "e081ad325c4534405642b01b26201311541ae72f48716aea975ced84345ba8cc",
+      "license": "Re-Logic original terms",
+      "used_by": [
+        "Biome Blade"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/biome_cold_thrust_1.ogg",
+      "sha256": "69c07ac85bf2c7123693ab197e33c6cac55cb757f1aeccff8f86c78e69123844",
+      "project": "Terraria",
+      "path": "Content/Sounds/Custom/dd2_phantom_phoenix_shot_1.xnb",
+      "source_sha256": "9b29c2dd4394062cee1dd4e4d77df3f01e9714700290386166af1da68c24af51",
+      "license": "Re-Logic original terms",
+      "used_by": [
+        "Biome Blade"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/biome_cold_thrust_2.ogg",
+      "sha256": "0045c5c8048a0174cf3a282b42621f97f73d9ab80694934ae8d7db6c870fb112",
+      "project": "Terraria",
+      "path": "Content/Sounds/Custom/dd2_phantom_phoenix_shot_2.xnb",
+      "source_sha256": "08191d6d2b711d75aa352a05b34f1fd98ca0fb4135e1c5934186aa9bfbec580a",
+      "license": "Re-Logic original terms",
+      "used_by": [
+        "Biome Blade"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/biome_whip_snap_0.ogg",
+      "sha256": "79c0bca8e7832e4e05cec22ffa1a181aaac5fbc70c9667e472e9a0becbc4a5a8",
+      "project": "Terraria",
+      "path": "Content/Sounds/Item_41.xnb",
+      "source_sha256": "586ef1adf17c1cf502b123dbbad3a7d2a63066c539f4a1956f5e3460fd4baad5",
+      "license": "Re-Logic original terms",
+      "used_by": [
+        "Biome Blade"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/biome_vines_0.ogg",
+      "sha256": "11d19d99b052a5d82f0e2e5c7f75cb7ee730bb40ece31a54ac548a89916100ab",
+      "project": "Terraria",
+      "path": "Content/Sounds/Item_56.xnb",
+      "source_sha256": "e2ac40b3bed7cf109cdd0daa1d86bd3fd9555d8e83783d6103b1ffc0bfb8a011",
+      "license": "Re-Logic original terms",
+      "used_by": [
+        "Biome Blade"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/biome_evil_0.ogg",
+      "sha256": "5740e5d02e8ce408f006582307a0c629c28360fb00df14acce35c9198a164ff0",
+      "project": "Terraria",
+      "path": "Content/Sounds/Item_103.xnb",
+      "source_sha256": "f984c3a8da3117f4b25bd9f74f47a003a25ad0937130cce37871fdd3c45f74d1",
+      "license": "Re-Logic original terms",
+      "used_by": [
+        "Biome Blade"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/biome_splash_0.ogg",
+      "sha256": "4e6ed1bb19ccce4e02c8c26134005a3b0d95972d86492a4fd27cd82e33e2f5d1",
+      "project": "Terraria",
+      "path": "Content/Sounds/Splash_0.xnb",
+      "source_sha256": "5897645e7c4010012d87487d505a3aab7a21d6059a46d4135c181dba7a3154ed",
+      "license": "Re-Logic original terms",
+      "used_by": [
+        "Biome Blade"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/biome_splash_1.ogg",
+      "sha256": "3b9546667e0b742b97dafe726c4d0ed2085eeb5e4eb926270aeee90f92bb8295",
+      "project": "Terraria",
+      "path": "Content/Sounds/Splash_1.xnb",
+      "source_sha256": "1928e24277b223c23fc1ab056c88b908160a0a8b80d20abc448ddd67bb51a2fa",
+      "license": "Re-Logic original terms",
+      "used_by": [
+        "Biome Blade"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/biome_splash_2.ogg",
+      "sha256": "8e270f48a688ede4852a04901de612a897b9875e47480fe7370104c721655bb6",
+      "project": "Terraria",
+      "path": "Content/Sounds/Splash_2.xnb",
+      "source_sha256": "0abd0b23391e74f50d8549bf6f8f9b64c93914679bc3fb579a8514d729230508",
+      "license": "Re-Logic original terms",
+      "used_by": [
+        "Biome Blade"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/biome_splash_3.ogg",
+      "sha256": "bb8becea28de5b3cff367df9720168e323360b68bbccb389bcc6d0a2ba0973c4",
+      "project": "Terraria",
+      "path": "Content/Sounds/Splash_3.xnb",
+      "source_sha256": "c30b38ffdbe6d1f50c393e22c0e429077097e12352fe2c3917a6073f7412d516",
+      "license": "Re-Logic original terms",
+      "used_by": [
+        "Biome Blade"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/biome_splash_4.ogg",
+      "sha256": "c7303921ad99cb75474e2ed035fc33e822ef30bbea5c39f74ab7b59d4d5ff6d2",
+      "project": "Terraria",
+      "path": "Content/Sounds/Splash_4.xnb",
+      "source_sha256": "07c9bfac4b3569b496d2f80c2dd6304cc7fb29cd45e12711cf34d45b02e041af",
+      "license": "Re-Logic original terms",
+      "used_by": [
+        "Biome Blade"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/biome_splash_5.ogg",
+      "sha256": "31f7a386bb8d1d1ac94db7b89e2398ff396e4c928a39b83063bbefe8b39df423",
+      "project": "Terraria",
+      "path": "Content/Sounds/Splash_5.xnb",
+      "source_sha256": "0bf39e347bd34e90eb1b5c08f4c20340a8fa02cdc130530623b1063aaf80a4ac",
+      "license": "Re-Logic original terms",
+      "used_by": [
+        "Biome Blade"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/biome_swing_0.ogg",
+      "sha256": "3c6c1ee2893ed27711b9b7c3b4f7d4565321154505332f4bfcd482733fc773a2",
+      "project": "Terraria",
+      "path": "Content/Sounds/Item_1.xnb",
+      "source_sha256": "66083307fa38d8f473abd97b86b59d4e04099c64a82a9c7f855c4e083f4aa716",
+      "license": "Re-Logic original terms",
+      "used_by": [
+        "Biome Blade"
       ]
     }
   ]

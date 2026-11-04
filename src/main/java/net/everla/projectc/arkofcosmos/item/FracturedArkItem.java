@@ -33,6 +33,8 @@ public final class FracturedArkItem extends SwordItem {
     }
     @Override public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) { return InteractionResultHolder.success(player.getItemInHand(hand)); }
     @Override public void inventoryTick(ItemStack stack, Level level, Entity entity, int slot, boolean selected) {
+        if (!level.isClientSide && entity instanceof Player owner)
+            net.everla.projectc.arkofcosmos.combat.HaloCompat.refill(owner, stack);
         if (!level.isClientSide && entity instanceof Player player && cooldown(stack) != ArkCombat.parryCooldown(player, stack))
             stack.getOrCreateTag().putInt("ArkParryCooldown", ArkCombat.parryCooldown(player, stack));
     }

@@ -20,7 +20,7 @@ import net.minecraftforge.api.distmarker.Dist;
 public final class ArkNetwork {
     private ArkNetwork() {}
     private static final SimpleChannel CHANNEL = NetworkRegistry.newSimpleChannel(
-            ResourceLocation.fromNamespaceAndPath(ArkOfCosmos.MOD_ID, "input"), () -> "3", "3"::equals, "3"::equals);
+            ResourceLocation.fromNamespaceAndPath(ArkOfCosmos.MOD_ID, "input"), () -> "5", "5"::equals, "5"::equals);
     public record Input(boolean left, boolean right, boolean alt) {
         static Input read(FriendlyByteBuf buffer) { return new Input(buffer.readBoolean(), buffer.readBoolean(), buffer.readBoolean()); }
         void write(FriendlyByteBuf buffer) { buffer.writeBoolean(left); buffer.writeBoolean(right); buffer.writeBoolean(alt); }
@@ -43,6 +43,13 @@ public final class ArkNetwork {
     private record SpearFeedback(int entity) {}
     public static void spearFeedback(Entity entity) { CHANNEL.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(()->entity),new SpearFeedback(entity.getId())); }
     public static void register() {
+        CHANNEL.messageBuilder(BiomeUnlocks.class,9,NetworkDirection.PLAY_TO_CLIENT)
+            .encoder((p,b)->b.writeByte(p.mask())).decoder(b->new BiomeUnlocks(b.readUnsignedByte()))
+            .consumerMainThread((p,c)->DistExecutor.unsafeRunWhenOn(Dist.CLIENT,()->()->net.everla.projectc.arkofcosmos.client.BiomeClient.unlocks=p.mask())).add();
+        CHANNEL.messageBuilder(BiomeInput.class,8,NetworkDirection.PLAY_TO_SERVER)
+            .encoder((p,b)->{b.writeBoolean(p.left());b.writeBoolean(p.right());b.writeByte(p.slot());b.writeByte(p.mode());})
+            .decoder(b->new BiomeInput(b.readBoolean(),b.readBoolean(),b.readByte(),b.readByte()))
+            .consumerMainThread((p,c)->{if(c.get().getSender()!=null){var player=c.get().getSender();net.everla.projectc.arkofcosmos.combat.BiomeCombat.input(player,p.left(),p.right());net.everla.projectc.arkofcosmos.combat.BiomeCombat.select(player,p.slot(),p.mode());}}).add();
         CHANNEL.messageBuilder(TrueBiomeInput.class,7,NetworkDirection.PLAY_TO_SERVER)
             .encoder((p,b)->{b.writeBoolean(p.left());b.writeByte(p.slot());b.writeByte(p.mode());})
             .decoder(b->new TrueBiomeInput(b.readBoolean(),b.readByte(),b.readByte()))
@@ -85,6 +92,11 @@ public final class ArkNetwork {
     private record Effect(CompoundTag data) {}
     private record GalaxiaInput(boolean left, int selection) {}
     private record TrueBiomeInput(boolean left,int slot,int mode) {}
+    private record BiomeInput(boolean left,boolean right,int slot,int mode) {}
+    private record BiomeUnlocks(int mask) {}
+    public static void biomeUnlocks(net.minecraft.server.level.ServerPlayer p,int mask){CHANNEL.send(PacketDistributor.PLAYER.with(()->p),new BiomeUnlocks(mask));}
+    public static void biomeSelect(int slot,int mode){CHANNEL.sendToServer(new BiomeInput(false,false,slot,mode));}
+    public static void biome(boolean left,boolean right){CHANNEL.sendToServer(new BiomeInput(left,right,-1,-1));}
     public static void trueBiome(boolean left,int slot,int mode){CHANNEL.sendToServer(new TrueBiomeInput(left,slot,mode));}
     public static void galaxia(boolean left,int selection) { CHANNEL.sendToServer(new GalaxiaInput(left,selection)); }
     public static void effect(Entity entity, CompoundTag data) {

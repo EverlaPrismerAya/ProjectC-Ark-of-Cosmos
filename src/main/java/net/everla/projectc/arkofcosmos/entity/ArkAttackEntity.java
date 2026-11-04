@@ -212,7 +212,7 @@ public final class ArkAttackEntity extends CalamityAttackEntity {
     }
 
     private static void postAttack(ItemStack stack, Player owner, LivingEntity target) {
-        stack.getAllEnchantments().forEach((enchantment, level) -> {
+        net.everla.projectc.arkofcosmos.combat.InnateEnchantment.combatEnchantments(stack).forEach((enchantment, level) -> {
             if (enchantment != Enchantments.UNBREAKING && enchantment != Enchantments.MENDING)
                 enchantment.doPostAttack(owner, target, level);
         });

@@ -249,7 +249,7 @@ public final class OldOneEntity extends Entity {
         double knockback=(9.5+weapon.getEnchantmentLevel(net.minecraft.world.item.enchantment.Enchantments.KNOCKBACK)*2)/16;
         t.knockback(knockback,-direction.x,-direction.z);
         net.minecraft.world.item.enchantment.EnchantmentHelper.doPostHurtEffects(t,p);
-        weapon.getAllEnchantments().forEach((enchantment,level)->enchantment.doPostAttack(p,t,level));
+        net.everla.projectc.arkofcosmos.combat.InnateEnchantment.combatEnchantments(weapon).forEach((enchantment,level)->enchantment.doPostAttack(p,t,level));
         if(cooldown!=0)hitUntil.put(t.getId(),cooldown);if(kind==Kind.NEBULA||kind==Kind.SOLAR_EXPLOSION||cooldown==0&&(penetrate!=1||explosion))OWNER_IMMUNITY.computeIfAbsent(t,k->new HashMap<>()).put(ownerUuid,now+(kind==Kind.NEBULA?5:kind==Kind.SOLAR_EXPLOSION?4:10));
         if(kind==Kind.SWORD)OldOneEffects.grant(p,OldOneEnvironment.zone(p));
         else if(beam()){for(var s:new OldOneEffects.Status[]{OldOneEffects.Status.BRIMSTONE,OldOneEffects.Status.GLACIAL,OldOneEffects.Status.PLAGUE,OldOneEffects.Status.HOLY_FIRE})OldOneEffects.apply(t,s,40);}

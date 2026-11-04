@@ -33,8 +33,8 @@ public final class AncientsCombat {
         if (!holding(p) || !WeaponUser.active(p)) return;
         long now = p.level().getGameTime() * 3;
         if ((right || burst) && now >= c.nextUse && !active(p)) {
-            int charge=AncientsArkItem.charge(p.getMainHandItem());
-            if(c.alt && charge>0){AncientsEntity.blast(p,charge,AttackFrame.capture(p));AncientsArkItem.charge(p.getMainHandItem(),0);c.nextUse=now+25;}
+            int charge=HaloCompat.charge(p, AncientsArkItem.charge(p.getMainHandItem()), 10);
+            if(c.alt && charge>0){AncientsEntity.blast(p,charge,AttackFrame.capture(p));AncientsArkItem.charge(p.getMainHandItem(), HaloCompat.charge(p, 0, 10));c.nextUse=now+25;}
             else if(right && ArkCombat.beginParry(p,p.getMainHandItem(),AncientsRules.BASE_DAMAGE))c.nextUse=now+15;
         }
         if (left) attack(p, c, false);
@@ -43,10 +43,10 @@ public final class AncientsCombat {
         long now = p.level().getGameTime() * 3;
         if (now < c.nextUse || active(p)) return;
         var stack = p.getMainHandItem();
-        int sign = stack.getOrCreateTag().getInt("AncientsCombo") == -1 ? -1 : 1, charge = AncientsArkItem.charge(stack);
+        int sign = stack.getOrCreateTag().getInt("AncientsCombo") == -1 ? -1 : 1, charge = HaloCompat.charge(p, AncientsArkItem.charge(stack), 10);
         AttackFrame frame=AttackFrame.capture(p);
         AncientsEntity.swing(p, sign, charge, frame); AncientsEntity.stars(p,sign,charge,frame);
-        stack.getOrCreateTag().putInt("AncientsCombo", -sign); AncientsArkItem.charge(stack, charge - 1);
+        stack.getOrCreateTag().putInt("AncientsCombo", -sign); AncientsArkItem.charge(stack, HaloCompat.charge(p, charge - 1, 10));
         // Carry the 25/3 fractional tick remainder during held input; clicks after an idle restart at now.
         c.nextUse = continuous && now - c.nextUse < 3 ? c.nextUse + AncientsRules.USE_TIME : now + AncientsRules.USE_TIME;
     }

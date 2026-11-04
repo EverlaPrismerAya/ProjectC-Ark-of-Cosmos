@@ -51,6 +51,10 @@ public final class ArkOfCosmos {
             () -> EntityType.Builder.<net.everla.projectc.arkofcosmos.entity.ElementsEntity>of(net.everla.projectc.arkofcosmos.entity.ElementsEntity::new, MobCategory.MISC)
                     .sized(.5f,.5f).noSave().noSummon().clientTrackingRange(128).updateInterval(1).build("arkofcosmos:elements_attack"));
     public static final RegistryObject<Item> GALAXIA = ITEMS.register("galaxia", net.everla.projectc.arkofcosmos.item.GalaxiaItem::new);
+    public static final RegistryObject<Item> BIOME_BLADE = ITEMS.register("biome_blade", net.everla.projectc.arkofcosmos.item.BiomeBladeItem::new);
+    public static final RegistryObject<EntityType<net.everla.projectc.arkofcosmos.entity.BiomeEntity>> BIOME_ATTACK = ENTITIES.register("biome_attack",
+            () -> EntityType.Builder.<net.everla.projectc.arkofcosmos.entity.BiomeEntity>of(net.everla.projectc.arkofcosmos.entity.BiomeEntity::new,MobCategory.MISC)
+                    .sized(.5f,.5f).noSave().noSummon().clientTrackingRange(128).updateInterval(1).build("arkofcosmos:biome_attack"));
     public static final RegistryObject<Item> TRUE_BIOME_BLADE = ITEMS.register("true_biome_blade", net.everla.projectc.arkofcosmos.item.TrueBiomeBladeItem::new);
     public static final RegistryObject<EntityType<net.everla.projectc.arkofcosmos.entity.TrueBiomeEntity>> TRUE_BIOME_ATTACK = ENTITIES.register("true_biome_attack",
             () -> EntityType.Builder.<net.everla.projectc.arkofcosmos.entity.TrueBiomeEntity>of(net.everla.projectc.arkofcosmos.entity.TrueBiomeEntity::new, MobCategory.MISC)
@@ -81,6 +85,7 @@ public final class ArkOfCosmos {
                 "galaxia_item60","galaxia_item71","galaxia_item76","galaxia_item77","galaxia_item78","galaxia_item79","galaxia_item80","galaxia_item90",
                 "galaxia_item101","galaxia_item109","galaxia_item120","galaxia_hit30","galaxia_hit43","galaxia_book","galaxia_impact","galaxia_eruption",
                 "galaxia_beacon","galaxia_lightning","galaxia_meaty",
+                "biome_swap","biome_zap","biome_cold_thrust","biome_whip_snap","biome_vines","biome_evil","biome_splash","biome_eruption","biome_swing",
                 "true_biome_charge","true_biome_flail","true_biome_blast","true_biome_beam_end","true_biome_beam_start","true_biome_hook_end","true_biome_slice","true_biome_pulse"})
             AUDIO.put(name, SOUNDS.register(name, () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(MOD_ID, name))));
     }
@@ -125,6 +130,7 @@ public final class ArkOfCosmos {
             event.accept(ARK_OF_THE_OLD_ONE);
             event.accept(GALAXIA);
             event.accept(TRUE_BIOME_BLADE);
+            event.accept(BIOME_BLADE);
             event.accept(ARK_OF_THE_ELEMENTS);
             event.accept(FRACTURED_ARK);
             event.accept(ARK_OF_THE_ANCIENTS);

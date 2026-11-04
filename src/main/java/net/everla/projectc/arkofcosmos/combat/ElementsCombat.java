@@ -33,7 +33,7 @@ public final class ElementsCombat {
     }
     public static boolean holding(Player p){return p.getMainHandItem().is(ArkOfCosmos.ARK_OF_THE_ELEMENTS.get());}
     public static boolean channeling(Player p){Controls c=CONTROLS.get(p.getUUID());return holding(p)&&p.isAlive()&&!p.isSpectator()&&c!=null&&c.left;}
-    public static int cooldown(Player p){Controls c=CONTROLS.get(p.getUUID());return c==null?0:c.cooldown;}
+    public static int cooldown(Player p){Controls c=CONTROLS.get(p.getUUID());return HaloCompat.cooldown(p, c==null?0:c.cooldown);}
     public static boolean active(Player p){return !p.level().getEntitiesOfClass(ElementsEntity.class,p.getBoundingBox().inflate(80),e->e.ownerId()==p.getId()&&(e.kind()==ElementsEntity.BLADE||e.kind()==ElementsEntity.BLAST)).isEmpty();}
     public static void input(ServerPlayer p,ArkNetwork.Input input){
         Controls c=CONTROLS.get(p.getUUID());
@@ -42,13 +42,13 @@ public final class ElementsCombat {
         c.left=holding(p)&&input.left();c.right=holding(p)&&input.right();c.idle=0;
         if(!holding(p)||!p.isAlive()||p.isSpectator())return;
         if(right&&!active(p)&&c.use==0){
-            ItemStack stack=p.getMainHandItem();int charge=ElementsItem.charge(stack);
+            ItemStack stack=p.getMainHandItem();int charge=HaloCompat.charge(p, ElementsItem.charge(stack), 10);
             if(input.alt()&&charge>0){
                 ElementsEntity.create(p,ElementsEntity.BLAST,0,charge,ElementsRules.blastDamage(charge,0),p.getBoundingBox().getCenter().add(p.getLookAngle().scale(90/16d)),Vec3.ZERO,AttackFrame.capture(p));
-                ElementsItem.charge(stack,0);c.use=20;
-            }else if(c.cooldown==0){
+                ElementsItem.charge(stack, HaloCompat.charge(p, 0, 10));c.use=20;
+            }else if(cooldown(p)==0){
                 c.parried=false;c.parryStack=stack;c.invulnerableUntil=p.level().getGameTime()+5;
-                c.cooldown=340;c.use=20;stack.getOrCreateTag().putInt("ElementsCooldown",340);
+                c.cooldown=HaloCompat.cooldown(p,340);c.use=20;stack.getOrCreateTag().putInt("ElementsCooldown",c.cooldown);
                 ElementsEntity.create(p,ElementsEntity.PARRY,0,0,ElementsRules.BASE_DAMAGE,p.getBoundingBox().getCenter(),Vec3.ZERO,AttackFrame.capture(p));
             }
         }
@@ -56,10 +56,10 @@ public final class ElementsCombat {
     }
     private static void attack(ServerPlayer p,Controls c){
         if(c.use>0||active(p))return;
-        ItemStack stack=p.getMainHandItem();int combo=Math.floorMod(stack.getOrCreateTag().getInt("ElementsCombo"),5),mode=ElementsRules.mode(combo),charge=ElementsItem.charge(stack);
+        ItemStack stack=p.getMainHandItem();int combo=Math.floorMod(stack.getOrCreateTag().getInt("ElementsCombo"),5),mode=ElementsRules.mode(combo),charge=HaloCompat.charge(p, ElementsItem.charge(stack), 10);
         float damage=ElementsRules.charged(ElementsRules.BASE_DAMAGE,charge);AttackFrame f=AttackFrame.capture(p);
         swing(p,mode,charge,damage,f);
-        stack.getOrCreateTag().putInt("ElementsCombo",(combo+1)%5);ElementsItem.charge(stack,ElementsRules.afterAttack(charge));c.use=20;
+        stack.getOrCreateTag().putInt("ElementsCombo",(combo+1)%5);ElementsItem.charge(stack, HaloCompat.charge(p, ElementsRules.afterAttack(charge), 10));c.use=20;
     }
     /** Identical item/Boss swing and mode-one needle/four-star pattern. */
     public static ElementsEntity swing(LivingEntity p,int mode,int charge,float damage,AttackFrame f){
@@ -75,7 +75,7 @@ public final class ElementsCombat {
     @SubscribeEvent public static void tick(TickEvent.PlayerTickEvent e){
         if(e.phase!=TickEvent.Phase.END||!(e.player instanceof ServerPlayer p))return;
         Controls c=CONTROLS.get(p.getUUID());if(c==null)return;
-        int old=c.cooldown;c.cooldown=Math.max(0,c.cooldown-3);c.use=Math.max(0,c.use-3);
+        int old=c.cooldown;c.cooldown=HaloCompat.cooldown(p,Math.max(0,c.cooldown-HaloCompat.cooldownStep(p)));c.use=Math.max(0,c.use-3);
         if(old>0&&c.cooldown==0)sound(p,p.getId(),"item35",1,true,true);
         if(++c.idle>40||!holding(p)||!p.isAlive()||p.isSpectator()){c.left=c.right=false;c.invulnerableUntil=0;return;}
         if(c.left)attack(p,c);

@@ -54,7 +54,7 @@ public final class ArkCombat {
         ItemStack parryStack = ItemStack.EMPTY;
     }
     public static Controls controls(Player player) { return CONTROLS.computeIfAbsent(player.getUUID(), k -> new Controls()); }
-    public static int parryCooldown(Player player, ItemStack stack) { return controls(player).parryCooldowns.getOrDefault(stack.getItem(), 0); }
+    public static int parryCooldown(Player player, ItemStack stack) { return HaloCompat.cooldown(player, controls(player).parryCooldowns.getOrDefault(stack.getItem(), 0)); }
     public static boolean holding(Player player) { return player.getMainHandItem().is(ArkOfCosmos.ARK_OF_COSMOS.get()); }
     public static boolean channeling(Player player) { return holding(player) && controls(player).left && player.isAlive() && !player.isSpectator(); }
 
@@ -73,12 +73,12 @@ public final class ArkCombat {
     private static void right(ServerPlayer player, Controls c) {
         if (activeBlade(player) || c.useCooldown > 0) return;
         ItemStack stack = player.getMainHandItem();
-        int charge = ArkItem.charge(stack);
+        int charge = HaloCompat.charge(player, ArkItem.charge(stack), 16);
         if (c.alt && charge > 0) {
             ArkAttackEntity.create(player, ArkAttackEntity.Kind.BLAST, 0, charge,
                     scaled(BASE_DAMAGE, charge * 1.35f * .5f), player.getBoundingBox().getCenter().add(player.getLookAngle().scale(90 * PIXEL)), Vec3.ZERO,
                     AttackFrame.capture(player));
-            ArkItem.charge(stack, 0);
+            ArkItem.charge(stack, HaloCompat.charge(player, 0, 16));
             c.useCooldown = 15;
         } else beginParry(player, stack, BASE_DAMAGE);
     }
@@ -89,8 +89,9 @@ public final class ArkCombat {
         if (parryCooldown(player, stack) > 0 || c.useCooldown > 0 || !player.isAlive() || player.isSpectator()) return false;
         c.parried = false; c.parryStack = stack;
         c.invulnerableUntil = player.level().getGameTime() + 7;
-        c.parryCooldowns.put(stack.getItem(), 340); c.useCooldown = 15;
-        stack.getOrCreateTag().putInt("ArkParryCooldown", 340);
+        int cooldown = HaloCompat.cooldown(player, 340);
+        c.parryCooldowns.put(stack.getItem(), cooldown); c.useCooldown = 15;
+        stack.getOrCreateTag().putInt("ArkParryCooldown", cooldown);
         if (stack.is(ArkOfCosmos.FRACTURED_ARK.get()))
             net.everla.projectc.arkofcosmos.entity.FracturedEntity.parry(player, damage, AttackFrame.capture(player));
         else if (stack.is(ArkOfCosmos.ARK_OF_THE_ANCIENTS.get()))
@@ -118,7 +119,7 @@ public final class ArkCombat {
         Controls c = CONTROLS.get(player.getUUID());
         if (c == null) return;
         c.parryCooldowns.replaceAll((item, remaining) -> {
-            int cooldown = Math.max(0, remaining - 3);
+            int cooldown = HaloCompat.cooldown(player, Math.max(0, remaining - HaloCompat.cooldownStep(player)));
             if (remaining > 0 && cooldown == 0) {
                 if (item == ArkOfCosmos.FRACTURED_ARK.get() || item == ArkOfCosmos.ARK_OF_THE_ANCIENTS.get())
                     FracturedCombat.sound(player,player,"item35",.75f,true,true);
@@ -141,7 +142,7 @@ public final class ArkCombat {
         ItemStack stack = player.getMainHandItem();
         int combo = Math.floorMod(stack.getOrCreateTag().getInt("ArkCombo"), 5);
         int mode = ArkWeaponRules.comboMode(combo);
-        int charge = ArkItem.charge(stack);
+        int charge = HaloCompat.charge(player, ArkItem.charge(stack), 16);
         float damage = charge > 0 ? scaled(BASE_DAMAGE, 1.35f) : BASE_DAMAGE;
         AttackFrame frame = AttackFrame.capture(player);
         Vec3 center = player.getBoundingBox().getCenter();
@@ -149,7 +150,7 @@ public final class ArkCombat {
         if (mode != 2) ArkAttackEntity.create(player, ArkAttackEntity.Kind.NEEDLE, 0, 0,
                 scaled(damage, .7f), center.add(frame.forward().scale(20 * PIXEL)), frame.forward().scale(28 * 1.4 * PIXEL), frame);
         stack.getOrCreateTag().putInt("ArkCombo", (combo + 1) % 5);
-        ArkItem.charge(stack, charge - 1);
+        ArkItem.charge(stack, HaloCompat.charge(player, charge - 1, 16));
         c.useCooldown = 15;
     }
 
