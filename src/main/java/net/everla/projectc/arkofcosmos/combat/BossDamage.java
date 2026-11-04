@@ -23,17 +23,19 @@ public final class BossDamage {
         if (!ArkDamage.validHit(target, amount)) return false;
         if (ArkDamage.nativeTarget(target)) return target.hurt(source, amount);
         boolean fourth = CalamityAttackGuard.damageOwner(source) != null;
-        float damage = fourth ? mitigated(target, source, amount) : mahouDamage(target, amount);
+        float damage = fourth ? mitigated(target, source, amount) : mahouDamage(target, source, amount);
         return ArkDamage.applyDamage(target, source, damage, true);
     }
 
-    /** Mahou retains its original armor/resistance reduction and 35 percent floor. */
-    private static float mahouDamage(LivingEntity target, float amount) {
+    /** Apply protection enchantments after Mahou's armor/resistance floor. */
+    private static float mahouDamage(LivingEntity target, DamageSource source, float amount) {
         float reduced = CombatRules.getDamageAfterAbsorb(amount, target.getArmorValue(),
                 (float) target.getAttributeValue(Attributes.ARMOR_TOUGHNESS));
         var resistance = target.getEffect(MobEffects.DAMAGE_RESISTANCE);
         if (resistance != null) reduced *= Math.max(0, 1 - (resistance.getAmplifier() + 1) * .2f);
-        return Math.max(amount * .35f, reduced);
+        reduced = Math.max(amount * .35f, reduced);
+        int protection = EnchantmentHelper.getDamageProtection(target.getArmorSlots(), source);
+        return protection > 0 ? CombatRules.getDamageAfterMagicAbsorb(reduced, protection) : reduced;
     }
 
     /** Fourth Calamity retains source-specific vanilla mitigation and no damage floor. */
