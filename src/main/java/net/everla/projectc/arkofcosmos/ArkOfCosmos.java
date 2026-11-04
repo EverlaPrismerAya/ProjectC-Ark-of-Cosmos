@@ -26,7 +26,7 @@ public final class ArkOfCosmos {
     private static final DeferredRegister<SoundEvent> SOUNDS = DeferredRegister.create(ForgeRegistries.SOUND_EVENTS, MOD_ID);
     private static final DeferredRegister<net.minecraft.world.entity.ai.attributes.Attribute> ATTRIBUTES=DeferredRegister.create(ForgeRegistries.ATTRIBUTES,MOD_ID);
     public static final RegistryObject<net.minecraft.world.entity.ai.attributes.Attribute> FOURTH_MAX_HEALTH=ATTRIBUTES.register("fourth_max_health",
-        ()->new net.minecraft.world.entity.ai.attributes.RangedAttribute("attribute.name.generic.max_health",660,1,Double.MAX_VALUE).setSyncable(true));
+        ()->new net.minecraft.world.entity.ai.attributes.RangedAttribute("attribute.name.generic.max_health",880,1,Double.MAX_VALUE).setSyncable(true));
     public static final RegistryObject<EntityType<net.everla.projectc.arkofcosmos.entity.FourthCalamityEntity>> THE_PLAYER=ENTITIES.register("the_player",
         ()->EntityType.Builder.<net.everla.projectc.arkofcosmos.entity.FourthCalamityEntity>of(net.everla.projectc.arkofcosmos.entity.FourthCalamityEntity::new,MobCategory.MONSTER)
             .sized(.6f,1.8f).clientTrackingRange(128).updateInterval(1).build("arkofcosmos:the_player"));
@@ -113,6 +113,9 @@ public final class ArkOfCosmos {
     public static final RegistryObject<Item> ANNIHILATION_EMBER = ITEMS.register("annihilation_ember",
             net.everla.projectc.arkofcosmos.item.AnnihilationEmberItem::new);
 
+    public static final RegistryObject<Item> ASHES_OF_CALAMITY = ITEMS.register("ashes_of_calamity",
+            net.everla.projectc.arkofcosmos.item.AshesOfCalamityItem::new);
+
     public ArkOfCosmos(FMLJavaModLoadingContext context) {
         IEventBus bus = context.getModEventBus();
         net.everla.projectc.arkofcosmos.combat.vanilla.VanillaCombat.register(bus);
@@ -147,6 +150,7 @@ public final class ArkOfCosmos {
         }
         if (event.getTabKey() == CreativeModeTabs.INGREDIENTS) event.accept(AURIC_BAR);
         if (event.getTabKey() == CreativeModeTabs.INGREDIENTS) event.accept(ANNIHILATION_EMBER);
+        if (event.getTabKey() == CreativeModeTabs.INGREDIENTS) event.accept(ASHES_OF_CALAMITY);
         if (event.getTabKey() == CreativeModeTabs.SPAWN_EGGS) event.accept(THE_PLAYER_SPAWN_EGG);
     }
 }

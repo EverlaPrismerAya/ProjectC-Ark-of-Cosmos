@@ -188,6 +188,7 @@ repositories {
 dependencies {
     clientRuntimeOnly fg.deobf('maven.modrinth:oculus:iQ1SwGc3')
     clientRuntimeOnly fg.deobf('maven.modrinth:embeddium:UTbfe5d1')
+    compileOnly fg.deobf('maven.modrinth:jei:6E4ps2ER')
     runtimeOnly fg.deobf('maven.modrinth:jei:6E4ps2ER')
     runtimeOnly fg.deobf('curse.maven:goety-586095:9153454') // 2.5.59.0; required by Goety Revelation 2.3.5.
     runtimeOnly fg.deobf('maven.modrinth:goety-revelation:t59lWC8J')

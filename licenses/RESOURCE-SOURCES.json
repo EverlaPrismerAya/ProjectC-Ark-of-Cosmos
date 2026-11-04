@@ -3859,6 +3859,17 @@
       "used_by": [
         "Broken Biome Blade Crumbling effect"
       ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/item/ashes_of_calamity.png",
+      "sha256": "20508aa0ed9b2c0e228f5ab59cacdd25deda25cec5a398583f242525a250376e",
+      "source_sha256": "20508aa0ed9b2c0e228f5ab59cacdd25deda25cec5a398583f242525a250376e",
+      "project": "Calamity Mod",
+      "path": "Items/Materials/AshesofCalamity.png",
+      "license": "ARR (Calamity original terms)",
+      "used_by": [
+        "Calamity Wither loot and beacon summoning"
+      ]
     }
   ]
 }

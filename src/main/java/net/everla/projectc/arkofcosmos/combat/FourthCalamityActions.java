@@ -212,6 +212,9 @@ public final class FourthCalamityActions {
         return crystalBaseRejection(base)==null;
     }
     public String crystalBaseRejection(BlockPos base) {
+        return crystalBaseRejection(base,false);
+    }
+    private String crystalBaseRejection(BlockPos base,boolean ignoreEntities) {
         if(base==null)return "NO_CANDIDATE";
         if(boss.tickCount<rejectedBases.getOrDefault(base,Integer.MIN_VALUE))return "RETRY_COOLDOWN";
         Level level=boss.level();
@@ -219,15 +222,49 @@ public final class FourthCalamityActions {
         if(level.isOutsideBuildHeight(base)||level.isOutsideBuildHeight(base.above())
             ||!level.getWorldBorder().isWithinBounds(base))return "WORLD_BOUNDS";
         if(!level.isEmptyBlock(base.above()))return "BLOCK_ABOVE";
-        if(!level.getEntities(null,new AABB(base.above()).expandTowards(0,1,0)).isEmpty())return "ENTITY_OCCUPIED";
+        if(!ignoreEntities&&!level.getEntities(null,new AABB(base.above()).expandTowards(0,1,0)).isEmpty())return "ENTITY_OCCUPIED";
         Vec3 eye=boss.getEyePosition();
         Vec3 nearest=new Vec3(Mth.clamp(eye.x,base.getX(),base.getX()+1),Mth.clamp(eye.y,base.getY(),base.getY()+1),Mth.clamp(eye.z,base.getZ(),base.getZ()+1));
         if(eye.distanceToSqr(nearest)>REACH*REACH)return "OUT_OF_REACH";
         var state=boss.level().getBlockState(base);
         if(state.is(Blocks.OBSIDIAN)||state.is(Blocks.BEDROCK))return canUse(base)?null:"RAY_BLOCKED";
         if(!state.canBeReplaced())return "BASE_OCCUPIED";
-        if(!level.isUnobstructed(Blocks.OBSIDIAN.defaultBlockState(),base,net.minecraft.world.phys.shapes.CollisionContext.empty()))return "BASE_ENTITY_OCCUPIED";
+        if(!ignoreEntities&&!level.isUnobstructed(Blocks.OBSIDIAN.defaultBlockState(),base,net.minecraft.world.phys.shapes.CollisionContext.empty()))return "BASE_ENTITY_OCCUPIED";
         return placementHit(base)!=null?null:"NO_REACHABLE_SUPPORT_FACE";
+    }
+    boolean crystalsBlockedByEntities(LivingEntity target) {
+        if(bestCrystal(target)!=null)return false;
+        boolean occupied=false;
+        BlockPos center=boss.blockPosition();
+        for(BlockPos pos:BlockPos.betweenClosed(center.offset(-5,-5,-5),center.offset(5,4,5))) {
+            String reason=crystalBaseRejection(pos);
+            if(reason==null)return false;
+            if(("ENTITY_OCCUPIED".equals(reason)||"BASE_ENTITY_OCCUPIED".equals(reason))
+                &&crystalBaseRejection(pos,true)==null
+                &&!boss.level().getEntitiesOfClass(Mob.class,new AABB(pos).expandTowards(0,2,0),
+                    mob->mob!=boss&&mob.isAlive()&&mob.getTarget()==boss).isEmpty())occupied=true;
+        }
+        return occupied;
+    }
+    boolean crystalSpaceAvailable(LivingEntity target) {
+        if(bestCrystal(target)!=null)return true;
+        BlockPos center=boss.blockPosition();
+        for(BlockPos pos:BlockPos.betweenClosed(center.offset(-5,-5,-5),center.offset(5,4,5))) {
+            if(crystalBaseRejection(pos)==null&&score(Vec3.atBottomCenterOf(pos.above()),target)>Double.NEGATIVE_INFINITY)return true;
+        }
+        return false;
+    }
+    /** Meteor KillAura multi-target pass: one timing gate, then attack every selected entity. */
+    void killAura() {
+        if(!attackBudget())return;
+        for(Entity target:boss.level().getEntities(boss,boss.getBoundingBox().inflate(6),
+            e->e.isAlive()&&!e.isSpectator()&&!boss.isAlliedTo(e)
+                &&!(e instanceof FourthCalamityEntity)&&!CalamityAttackGuard.owned(e,boss)
+                &&(!(e instanceof net.minecraft.world.entity.player.Player p)||!p.isCreative())
+                &&e.getBoundingBox().distanceToSqr(boss.position())<=36)) {
+            boss.doHurtTarget(target);
+        }
+        boss.swing(InteractionHand.MAIN_HAND,true);
     }
     public EndCrystal pendingCrystal() {
         if(pendingCrystal==null)return null;

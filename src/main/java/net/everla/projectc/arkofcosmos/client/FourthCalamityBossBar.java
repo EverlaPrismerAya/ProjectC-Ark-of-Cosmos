@@ -13,7 +13,7 @@ import net.minecraftforge.fml.common.Mod;
 @Mod.EventBusSubscriber(modid=ArkOfCosmos.MOD_ID,value=Dist.CLIENT)
 public final class FourthCalamityBossBar {
     private static final int[] RAINBOW={0xFFFF5555,0xFFFF9900,0xFFFFFF55,0xFF55DD55,0xFF55DDDD,0xFF5577FF,0xFFBB55FF};
-    private static final int TOTAL_BARS=33;
+    private static final int TOTAL_BARS=44;
     private static final class State {
         int bars;
         double previous=Double.NaN, trailing;

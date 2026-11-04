@@ -26,7 +26,10 @@
     "entity.combat.VanillaLivingCombatMixin",
     "compact.goetyRevelation.GoetyApollyonMixin",
     "weapon.brokenBiome.BrokenBiomeFrozenAiMixin",
-    "weapon.brokenBiome.BrokenBiomeFrozenTravelMixin"
+    "weapon.brokenBiome.BrokenBiomeFrozenTravelMixin",
+    "world.CalamityWitherMixin",
+    "world.BeaconSummonMixin",
+    "world.CalamitySkullDropsMixin"
   ],
   "client": [
     "client.gui.BossBarProgressAccessor",
@@ -38,7 +41,8 @@
     "client.spear.SpearFirstPersonMixin",
     "client.spear.SpearHumanoidMixin",
     "client.spear.SpearHeldItemMixin",
-    "client.spear.SpearMovementMixin"
+    "client.spear.SpearMovementMixin",
+    "client.gui.BeaconSummonScreenMixin"
   ],
   "injectors": {
     "defaultRequire": 1

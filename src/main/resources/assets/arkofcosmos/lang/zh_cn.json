@@ -210,5 +210,15 @@
   "broken_biome.controls": "按住 %1$s 攻击\n按住 %2$s 打开调谐轮盘，指向扇区后松开确认\n到访对应环境可永久解锁调谐",
   "broken_biome.select": "按住%s选择调谐",
   "broken_biome.locked": "尚未到访对应环境",
-  "broken_biome.selection_state": "当前调谐：%s"
+  "broken_biome.selection_state": "当前调谐：%s",
+  "item.arkofcosmos.ashes_of_calamity": "灾厄尘",
+  "tooltip.arkofcosmos.calamity_skull": "散发着不祥的力量",
+  "gui.arkofcosmos.summon": "召唤",
+  "tooltip.arkofcosmos.auric_bar.summon": "§c可放入信标以召唤第四天灾",
+  "tooltip.arkofcosmos.ashes_of_calamity.summon": "§c可放入信标以召唤至尊魔法使",
+  "jei.arkofcosmos.ashes_of_calamity.source": "击杀被灾厄侵染的凋灵获得",
+  "jei.arkofcosmos.beacon_summoning": "信标召唤",
+  "jei.arkofcosmos.boss.mahou": "至尊魔法使",
+  "jei.arkofcosmos.beacon_summoning.instructions": "放入1个材料，点击下界合金剑按钮召唤。无需信标等级，材料会被消耗。",
+  "tooltip.arkofcosmos.calamity_skull.summon": "可用于召唤被灾厄侵染的凋灵"
 }

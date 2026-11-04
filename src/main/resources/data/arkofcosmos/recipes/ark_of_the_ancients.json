@@ -15,7 +15,10 @@
       "item": "goety:magic_emerald"
     },
     {
-      "item": "minecraft:diamond_block"
+      "item": "minecraft:diamond"
+    },
+    {
+      "item": "minecraft:nether_star"
     },
     {
       "item": "minecraft:netherite_ingot"

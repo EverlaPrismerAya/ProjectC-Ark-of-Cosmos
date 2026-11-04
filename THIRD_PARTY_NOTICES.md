@@ -21,6 +21,7 @@ GPL 声明不授予第三方内容的额外权利，也不证明现有第三方�
 以下路径相对于上述 Java 根目录：
 
 | 文件 | Calamity 来源／派生内容 |
+| `textures/item/ashes_of_calamity.png` | Calamity Team：`Items/Materials/AshesofCalamity.png` 原图五帧动画；源 `AshesofCalamity.SetStaticDefaults` 每帧6 Terraria tick映射为2 Minecraft tick。ARR，非GPL授权；散列见资源清单。 |
 | --- | --- |
 | `calamity/combat/BrokenBiomeRules.java`、`entity/BrokenBiomeEntity.java`、`combat/BrokenBiomeCombat.java`、`combat/BrokenBiomeFreeze.java`、`item/BrokenBiomeBladeItem.java`、`client/BrokenBiome*.java`，以及共享 `client/BiomeEffects.java`、`client/BiomeItemEffects.java` 中相应粒子适配及 `client/TrueBiomeAudio.java` 的源音效参数 | 本机 CalamityMod.dll 的 `BrokenBiomeBlade`、五种基础 Attunement、`PurityProjection`、`AridGrandeur`、`BitingEmbrace`、`GrovetendersTouch`、`DecaysRetort`、原始 PreDraw／粒子参数与调谐逻辑；Calamity Team／原作者 ARR，不作 GPL 重新授权。Terraria AIType 156、Dust 75 与原始 SoundStyle 音频归 Re-Logic／原权利人。含用户确认的5点基础伤害、120°普通挥剑、三维位移、探索解锁轮盘及独立冻结控制；中英文用语参考 CalamityMod／CalamityCN，资源及复用音效 SHA-256 见资源清单。原版攻击与所用粒子均使用普通／加色混合，无专用着色器；独立崩解依用户确认只减少10护甲，暂不映射灾厄减伤属性 |
 | `calamity/combat/TrueBiomeRules.java`、`entity/TrueBiomeEntity.java`、`combat/TrueBiomeCombat.java`、`combat/GlacialStateEffect.java`、`item/TrueBiomeBladeItem.java`、`client/TrueBiome*.java`、`calamity/client/TrueBiomeEffects.java` | 本机 CalamityMod.dll 的 `OmegaBiomeBlade`、四种 Attunement、`SwordsmithsPride`／Beam、`LamentationsOfTheChained`、`GhastlyChain`、`ChainedMeatHook`、`SanguineFury`／Wheel／Dash、`MercurialTides`／Blast／Monolith、`PurityProjectionSigil`、gState 以及对应粒子和绘制规则；Calamity Team／原作者 ARR，不作 GPL 重新授权。Terraria AIType 156、Dust 75 及 SoundStyle／原始音频归 Re-Logic／原权利人；含用户确认的攻击平面、径向地表喷发、基础伤害与 Forge 接口适配。中英文调谐用语来自 CalamityMod／CalamityCN；资源 SHA-256 见清单 |
@@ -174,3 +175,5 @@ Java 移植、Minecraft 三维适配及项目维护：EverlaPrismerAya。
 第四天灾战术设计参考本地 sample 中 ProviPvP 与 Meteor Client 的操作节奏、触及、归属、自伤约束和水晶选点评分思路；不引入其客户端框架或训练假人的模拟受伤实现。真实交互使用 Minecraft／Forge 自身入口。
 
 第四天灾服务端 `FourthCalamityCrystalAura` 的选目标、破晶／放置流水线、支撑、面部放置、重试与预测伤害适配自 Meteor Development 的 Meteor Client `CrystalAura.java` 与 `DamageUtils.java`（本地版本提交 `2385f7b4bb9de1a698b4503254bd32f30fd7a87d`，上游 https://github.com/MeteorDevelopment/meteor-client ）。原代码版权归 Meteor Development，以 GNU GPL v3 发布；本项目适配代码遵循 GPL-3.0，许可证全文见 `LICENSE.txt`。客户端设置界面、按键、HUD 和网络发包由 Boss 服务端设置、原生实体同步及交互入口替代。
+
+第四天灾服务端自卫分支参考同一 Meteor Client 提交的 `KillAura.java`：复用命中箱最近点范围判定与一次时序门控后的多目标攻击遍历，以 Boss 原生攻击和既有伤害权威替代客户端发包。自卫配置为6格范围、不限制目标数量、每tick尝试攻击，保留既有目标10tick受伤冷却。

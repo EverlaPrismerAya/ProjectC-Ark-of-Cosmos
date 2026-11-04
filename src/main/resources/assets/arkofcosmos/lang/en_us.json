@@ -210,5 +210,15 @@
   "broken_biome.controls": "Hold %1$s to attack\nHold %2$s to open the attunement wheel; point and release to confirm\nVisit the matching environment to permanently unlock an attunement",
   "broken_biome.select": "Hold %s to select an attunement",
   "broken_biome.locked": "Visit the corresponding environment to unlock",
-  "broken_biome.selection_state": "Current attunement: %s"
+  "broken_biome.selection_state": "Current attunement: %s",
+  "item.arkofcosmos.ashes_of_calamity": "Ashes of Calamity",
+  "tooltip.arkofcosmos.calamity_skull": "Radiates an ominous power",
+  "gui.arkofcosmos.summon": "Summon",
+  "tooltip.arkofcosmos.auric_bar.summon": "§cPlace in a beacon to summon the Fourth Calamity",
+  "tooltip.arkofcosmos.ashes_of_calamity.summon": "§cPlace in a beacon to summon the Supreme Mahou Tsukai",
+  "jei.arkofcosmos.ashes_of_calamity.source": "Obtained by defeating a Wither infected by Calamity",
+  "jei.arkofcosmos.beacon_summoning": "Beacon Summoning",
+  "jei.arkofcosmos.boss.mahou": "Supreme Magician",
+  "jei.arkofcosmos.beacon_summoning.instructions": "Insert 1 material and click the netherite sword to summon. No beacon level is required. The material is consumed.",
+  "tooltip.arkofcosmos.calamity_skull.summon": "Can be used to summon a Wither infected by Calamity"
 }

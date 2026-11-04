@@ -222,6 +222,7 @@ public final class ArkDamage {
     static boolean applyDamage(LivingEntity target, DamageSource source, float amount, boolean bossDamage) {
         float before = target.getHealth();
         if (!Float.isFinite(before) || before <= 0) return false;
+        if (target instanceof net.minecraft.world.entity.boss.wither.WitherBoss && CalamityVariants.variant(target)) amount *= .75f;
         boolean seagull = seagull(target);
         if (seagull) amount = Float.MAX_VALUE;
         float after = Math.max(0, before - amount);

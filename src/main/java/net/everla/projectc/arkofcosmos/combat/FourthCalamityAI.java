@@ -61,6 +61,8 @@ public final class FourthCalamityAI {
     private Vec3 maceDirection;
     private double maceDiveY;
     private Vec3 riptideVelocity;
+    private int defenseTicks;
+    private final java.util.Set<LivingEntity> defenseAttackers=new java.util.HashSet<>();
     public void crystalBlast(LivingEntity target) {
         if(target!=boss.getTarget()||air!=Air.GROUND)return;
         if(crystalLaunchTarget==target.getId()&&boss.tickCount-crystalLaunchTick<=20)return;
@@ -114,6 +116,7 @@ public final class FourthCalamityAI {
             lastRetaliation=boss.getLastHurtByMobTimestamp();
             target=boss.getLastHurtByMob();boss.setTarget(target);
         }
+        if(selfDefense())return;
         if(!valid(target)) {
             target=boss.level().getEntitiesOfClass(LivingEntity.class,boss.getBoundingBox().inflate(128),this::proactiveTarget)
                 .stream().min(java.util.Comparator.comparingDouble(boss::distanceToSqr)).orElse(null);
@@ -198,6 +201,39 @@ public final class FourthCalamityAI {
     private boolean explosivePending() {
         return ground==Ground.RETREAT||ground==Ground.PREPARE||ground==Ground.PLACE
             ||ground==Ground.SHIELD||ground==Ground.CHARGE||ground==Ground.DETONATE;
+    }
+    private boolean selfDefense() {
+        var attackers=boss.level().getEntitiesOfClass(Mob.class,boss.getBoundingBox().inflate(6),
+            mob->valid(mob)&&boss.distanceToSqr(mob)<=36&&mob.getTarget()==boss);
+        if(defenseTicks==0) {
+            if(boss.phase()==3||attackers.size()<8||boss.tickCount-boss.getLastHurtByMobTimestamp()>40
+                ||!boss.actions.crystalsBlockedByEntities(attackers.get(0)))return false;
+            stop();boss.actions.cleanup();defenseTicks=1;enterAir(Air.READY);
+            if(boss.onGround())boss.setDeltaMovement(boss.getDeltaMovement().add(0,.65,0));
+        }
+        defenseAttackers.addAll(attackers);
+        defenseAttackers.removeIf(e->!e.isAlive()||e.isRemoved()||e.level()!=boss.level());
+        defenseTicks++;
+        LivingEntity target=defenseAttackers.stream().filter(this::valid).min(java.util.Comparator.comparingDouble(boss::distanceToSqr))
+            .orElse(null);
+        if(target==null&&valid(boss.getTarget()))target=boss.getTarget();
+        if(boss.phase()==3||defenseAttackers.isEmpty()||target!=null&&boss.actions.crystalSpaceAvailable(target)) {
+            stop();if(!boss.onGround())enterAir(Air.LAND);return false;
+        }
+        boss.actions.hold(Items.NETHERITE_SWORD);
+        if(!boss.getOffhandItem().is(VanillaCombat.SPEARS.get("netherite").get())) {
+            var spear=new net.minecraft.world.item.ItemStack(VanillaCombat.SPEARS.get("netherite").get());
+            spear.getOrCreateTag().putBoolean("Unbreakable",true);
+            spear.enchant(net.minecraft.world.item.enchantment.Enchantments.SHARPNESS,5);
+            spear.enchant(net.minecraft.world.item.enchantment.Enchantments.FIRE_ASPECT,2);
+            boss.setItemSlot(EquipmentSlot.OFFHAND,spear);
+        }
+        if(target!=null) {
+            boss.setTarget(target);hadTarget=true;
+            if(air!=Air.READY&&air!=Air.CHARGE)enterAir(Air.READY);
+            flight(target);
+        } else {boss.stopUsingItem();if(air!=Air.LAND)enterAir(Air.LAND);airAge++;land();}
+        boss.actions.killAura();return true;
     }
     private boolean fluidAttack(LivingEntity target) {
         boolean immersed=boss.isInWaterOrBubble()||boss.isInLava()
@@ -658,9 +694,9 @@ public final class FourthCalamityAI {
         return target.position().add(away.scale(SETUP_DISTANCE)).add(0,SETUP_HEIGHT,0);
     }
     private void brace() {
-        boss.actions.hold(VanillaCombat.SPEARS.get("netherite").get());
+        if(defenseTicks==0)boss.actions.hold(VanillaCombat.SPEARS.get("netherite").get());
         if(!boss.isUsingItem()) {
-            boss.startUsingItem(net.minecraft.world.InteractionHand.MAIN_HAND);SpearCombat.start(boss);
+            boss.startUsingItem(defenseTicks>0?net.minecraft.world.InteractionHand.OFF_HAND:net.minecraft.world.InteractionHand.MAIN_HAND);SpearCombat.start(boss);
             spearSequence=SpearCombat.sequence(boss);
         }
     }
@@ -713,7 +749,8 @@ public final class FourthCalamityAI {
     }
     private void finishCharge() {
         boss.stopUsingItem();
-        if(groundCharge)enterAir(Air.WIND_LAND);
+        if(defenseTicks>0)enterAir(Air.READY);
+        else if(groundCharge)enterAir(Air.WIND_LAND);
         else if(chargeHit)enterAir(Air.APPROACH);
         else { enterAir(Air.STRAFE);shotsLeft=3+boss.getRandom().nextInt(8); }
     }
@@ -922,6 +959,8 @@ public final class FourthCalamityAI {
         ground=Ground.ARROW;air=Air.GROUND;age=airAge=airborne=grounded=0;aerial=false;base=explosive=shield=null;lockedLanding=placementPosition=landing=chargePoint=chargeDirection=null;shotsLeft=windWait=0;chargeTarget=-1;groundCharge=chargeHit=windFired=false;
     }
     private void clearAttackState() {
+        if(defenseTicks>0)boss.setItemSlot(EquipmentSlot.OFFHAND,net.minecraft.world.item.ItemStack.EMPTY);
+        defenseTicks=0;defenseAttackers.clear();
         scaffoldStep=null;scaffoldAge=0;scaffolding=false;
         groundMace=false;auraRoundTicks=0;obstructedTicks=0;repositionStall=0;repositionLast=null;digStep=null;boss.actions.stopMining();maceDirection=null;maceDiveY=0;
         fluidTicks=riptideCharge=riptideCooldown=0;fluidCombat=false;riptideVelocity=null;boss.setRiptideTicks(0);
