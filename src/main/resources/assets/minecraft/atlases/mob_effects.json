@@ -1,0 +1,9 @@
+{
+  "sources": [
+    {
+      "type": "minecraft:single",
+      "resource": "arkofcosmos:mob_effect/glacial_state",
+      "sprite": "arkofcosmos:broken_biome_freeze"
+    }
+  ]
+}

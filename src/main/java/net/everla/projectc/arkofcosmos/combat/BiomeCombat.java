@@ -28,10 +28,9 @@ public final class BiomeCombat {
     }
     public static void sync(ServerPlayer p){net.everla.projectc.arkofcosmos.network.ArkNetwork.biomeUnlocks(p,unlocked(p));}
     public static void select(ServerPlayer p,int slot,int mode){
-        if(!holding(p)||!p.isAlive()||p.isSpectator()||slot<0||slot>1||mode<0||mode>7||(unlocked(p)&(1<<mode))==0)return;
-        cancel(p);var stack=p.getMainHandItem();int a=BiomeBladeItem.main(stack),b=BiomeBladeItem.secondary(stack);
-        if(slot==0){if(b==mode)b=a;a=mode;}else{if(a==mode)a=b;b=mode;}
-        BiomeBladeItem.set(stack,a,b);var c=control(p);c.left=c.right=false;c.combo=0;c.comboReset=0;c.cooldown=Math.max(c.cooldown,a<=0?15:21);p.getInventory().setChanged();p.containerMenu.broadcastChanges();
+        if(!holding(p)||!p.isAlive()||p.isSpectator()||slot!=0||mode<0||mode>7||(unlocked(p)&(1<<mode))==0)return;
+        cancel(p);var stack=p.getMainHandItem();int a=mode;
+        BiomeBladeItem.select(stack,a);var c=control(p);c.left=c.right=false;c.combo=0;c.comboReset=0;c.cooldown=Math.max(c.cooldown,a<=0?15:21);p.getInventory().setChanged();p.containerMenu.broadcastChanges();
     }
     @SubscribeEvent public static void login(PlayerEvent.PlayerLoggedInEvent e){if(e.getEntity() instanceof ServerPlayer p){restoreVisits(p);unlock(p,environment(p));sync(p);}}
     @SubscribeEvent public static void respawn(PlayerEvent.PlayerRespawnEvent e){if(e.getEntity() instanceof ServerPlayer p)sync(p);}

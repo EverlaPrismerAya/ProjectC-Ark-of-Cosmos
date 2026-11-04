@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    {
+      "item": "minecraft:wooden_sword"
+    },
+    {
+      "item": "minecraft:dirt"
+    },
+    {
+      "item": "minecraft:sand"
+    },
+    {
+      "item": "minecraft:snow_block"
+    },
+    {
+      "tag": "minecraft:logs"
+    },
+    {
+      "item": "minecraft:copper_ingot"
+    },
+    {
+      "item": "minecraft:amethyst_block"
+    }
+  ],
+  "result": {
+    "item": "arkofcosmos:broken_biome_blade"
+  }
+}

@@ -1,7 +1,7 @@
 package net.everla.projectc.arkofcosmos.client;
 
 import java.util.*;
-import net.everla.projectc.arkofcosmos.mixin.client.BossBarProgressAccessor;
+import net.everla.projectc.arkofcosmos.mixin.client.gui.BossBarProgressAccessor;
 import net.everla.projectc.arkofcosmos.ArkOfCosmos;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;

@@ -26,7 +26,7 @@ public final class BiomeEffects {
     private static final class Particle {
         String type;Vec3 at,previous,velocity;AttackFrame frame;float[] color,bloom,fade;
         Vec3 gravity=Vec3.ZERO;double scale,rotation,opacity=1,sourceOpacity,spin,bloomScale=1,born,died=1.01,fadeIn;
-        int age,life,owner,variant,dustAlpha;
+        int age,life,owner,variant,dustAlpha;boolean noGravity;
         final State[] states=new State[4];
         State state(){return new State(at,rotation,scale,opacity,sourceOpacity,age);}
         boolean update(){
@@ -37,6 +37,7 @@ public final class BiomeEffects {
                 case "bloom","generic_bloom"->{opacity=Math.sin(t*Math.PI);velocity=velocity.scale(.95);}
                 case "smoke","mist"->{rotation+=spin*sign;velocity=velocity.scale(.85);if(sourceOpacity>90){scale+=.01;sourceOpacity-=3;}else{scale*=.975;sourceOpacity-=2;}opacity=Math.max(0,sourceOpacity/255);return sourceOpacity>=0;}
                 case "stone"->{velocity=velocity.scale(.95).add(0,-.1/16d,0);opacity=t<.5?1:Math.sin(t*Math.PI);rotation+=spin*(velocity.dot(frame.forward())>0?1:-1);}
+                case "dust137"->{if(!noGravity)velocity=velocity.add(0,-.1/16d,0);velocity=velocity.multiply(.99,1,.99);rotation+=velocity.dot(frame.forward())*8;scale-=.01;if(noGravity){velocity=velocity.scale(.92);scale-=.04;}return scale>=.1;}
                 case "dust75"->{velocity=velocity.multiply(.99,1,.99).scale(.92);scale-=.05;rotation+=velocity.dot(frame.forward())*8;return scale>=.1;}
                 case "water"->{opacity*=.985;rotation+=spin*sign;velocity=velocity.scale(.85);scale*=.975;}
                 case "dust","dust_big"->{velocity=velocity.add(gravity).scale(.95);opacity=Math.sin(t*Math.PI);rotation+=spin*(velocity.dot(frame.forward())>0?1:-1);scale*=.98;}
@@ -93,11 +94,35 @@ public final class BiomeEffects {
         reset();var mc=Minecraft.getInstance();if(mc.level==null||mc.isPaused())return;
         DISPLAY.clear();DISPLAY.addAll(LIVE);for(Particle p:LIVE){p.born=0;p.died=1.01;Arrays.fill(p.states,p.state());}
         for(phase=0;phase<3;phase++){
-            for(var entity:mc.level.entitiesForRendering())if(entity instanceof BiomeEntity b)sample(b,b.view());
+            frozenPlayerDust();
+            for(var entity:mc.level.entitiesForRendering()){
+                if(entity instanceof BiomeEntity b)sample(b,b.view());
+                else if(entity instanceof net.everla.projectc.arkofcosmos.entity.BrokenBiomeEntity b)sampleBroken(b);
+            }
             if(phase==2){for(var event:EVENTS)burst(event);EVENTS.clear();}
             for(var it=LIVE.iterator();it.hasNext();){Particle p=it.next();boolean alive=p.update();p.states[phase+1]=p.state();if(!alive){p.died=(phase+1)/3d;it.remove();}}
         }
-        if(mc.level.getGameTime()%200==0){Set<UUID> ids=new HashSet<>();for(var e:mc.level.entitiesForRendering())if(e instanceof BiomeEntity)ids.add(e.getUUID());SEEN.keySet().retainAll(ids);}
+        if(mc.level.getGameTime()%200==0){Set<UUID> ids=new HashSet<>();for(var e:mc.level.entitiesForRendering())if(e instanceof BiomeEntity||e instanceof net.everla.projectc.arkofcosmos.entity.BrokenBiomeEntity)ids.add(e.getUUID());SEEN.keySet().retainAll(ids);}
+    }
+    // GlacialState.DrawEffects: one 1/4 roll per 60 Hz source frame, original Dust 137.
+    private static void frozenPlayerDust(){
+        var mc=Minecraft.getInstance();
+        for(var player:mc.level.players())if(player.hasEffect(net.everla.projectc.arkofcosmos.ArkOfCosmos.BROKEN_BIOME_FREEZE.get())&&RNG.nextInt(4)==0){
+            Vec3 horizontal=new Vec3(-Math.cos(Math.toRadians(player.getYRot())),0,-Math.sin(Math.toRadians(player.getYRot())));
+            CompoundTag s=new CompoundTag();s.putInt("Owner",player.getId());vector(s,"F",horizontal);vector(s,"R",new Vec3(0,1,0));
+            Vec3 at=player.getBoundingBox().getCenter().add(horizontal.scale((RNG.nextInt(16)-6)/16d)).add(0,-(RNG.nextInt(16)-6)/16d,0);
+            Vec3 velocity=horizontal.scale(RNG.nextInt(-20,21)*.02/16).add(0,-RNG.nextInt(-20,21)*.02/16,0);
+            Particle p=add("dust137",s,at,velocity,0xFFFFFF,1,100);p.noGravity=RNG.nextBoolean();p.rotation=0;
+            p.velocity=p.velocity.add(0,range(.4,.6)/16,0);p.scale=range(.4,.7);Arrays.fill(p.states,p.state());
+        }
+    }
+    private static void sampleBroken(net.everla.projectc.arkofcosmos.entity.BrokenBiomeEntity entity){
+        CompoundTag state=entity.view();int last=SEEN.getOrDefault(entity.getUUID(),0);ListTag samples=state.getList("Samples",10);
+        for(int i=phase*samples.size()/3;i<(phase+1)*samples.size()/3;i++){
+            CompoundTag sample=samples.getCompound(i);
+            if(sample.getInt("Age")>last){if(sample.getInt("Kind")==1)emit(sample);last=sample.getInt("Age");}
+        }
+        SEEN.put(entity.getUUID(),last);
     }
     private static void sample(BiomeEntity entity,CompoundTag state){
         if(state.isEmpty())return;int last=SEEN.getOrDefault(entity.getUUID(),0);ListTag samples=state.getList("Samples",10);
@@ -134,6 +159,7 @@ public final class BiomeEffects {
     private static void burst(CompoundTag s){
         String event=s.getString("Fx");Vec3 at=vector(s,"At"),dir=vector(s,"Direction"),ownerV=vector(s,"OwnerVelocity");AttackFrame f=frame(s);
         switch(event){
+            case "cold_mist"->{Vec3 point=at.add(spatial(circle(f,30),dir));Particle p=add("mist",s,point,point.subtract(vector(s,"Center")).scale(.2).add(ownerV),0xACEEFF,range(.5,1.5),245-RNG.nextInt(50));p.fade=rgb(0x91AABC);p.spin=.02;}
             case "cold_snow"->{add("snow",s,at,dir.scale(3/16d),0x4BB1FA,range(.3,1.5),40);}
             case "orb_end"->{for(int i=0;i<4;i++)add("mist",s,at.add(circle(f,26)),vector(s,"Velocity").scale(.5),0x778899,range(1,2),245-RNG.nextInt(50));}
             case "attuned"->{int color=COLORS[Math.max(0,s.getInt("Mode"))];for(int i=0;i<6;i++)add("generic_bloom",s,at.add(f.right().scale(range(-20,20)/16)),new Vec3(0,range(1,5)/16,0),color,range(.02,.22),20+RNG.nextInt(30));for(int i=0;i<11;i++)add("sparkle",s,at.add(f.right().scale(range(-16,16)/16)),new Vec3(0,range(1,5)/16,0),color,range(.3,.7),20+RNG.nextInt(30));}
@@ -151,7 +177,7 @@ public final class BiomeEffects {
             case "monolith_start"->{for(int i=0;i<20;i++)add("spark",s,at,spatial(circle(f,1).scale(range(7.5,20)),f.forward()),RNG.nextBoolean()?0x48D1CC:0xFF8C00,range(.1,1.6),20+RNG.nextInt(30));}
             case "monolith_burst"->{double size=s.getDouble("Size");for(int i=0;i<8;i++)add("smoke",s,at.add(f.direction(f.angle(dir)+Math.PI/2).scale(range(0,10)/16)),f.direction(f.angle(dir)+range(-Math.PI/2,Math.PI/2)).scale(range(5,15)/16),0xFF8C00,range(2.8,3.6)*size,165-RNG.nextInt(30)).color=mix(rgb(0xFF8C00),rgb(0x48D1CC),RNG.nextDouble());for(int i=0;i<6;i++)add("stone",s,at.add(f.direction(f.angle(dir)+Math.PI/2).scale(range(30,90)/16)),f.direction(f.angle(dir)+range(-Math.PI/4,Math.PI/4)).scale(range(3,6)/16),0x778899,range(1,3.4)*size,30+RNG.nextInt(50)).color=mix(rgb(0x483D8B),rgb(0x778899),RNG.nextDouble());}
             case "dash_hit"->{for(int i=0;i<3;i++){Particle p=add("spark",s,at,f.direction(f.angle(dir)+range(-Math.PI/4,Math.PI/4)).scale(9/16d),0xDC143C,range(1,2),30);p.spin=.4;p.bloomScale=.6;}}
-            case "critical"->{for(int i=0;i<4;i++)add("spark",s,at,f.direction(f.angle(dir)+range(-Math.PI/2,Math.PI/2)).scale(9/16d),0x32CD32,range(1,2),30).spin=.4;}
+            case "critical"->{for(int i=0;i<(s.getString("Event").equals("broken_biome_fx")?3:4);i++)add("spark",s,at,f.direction(f.angle(dir)+range(-Math.PI/2,Math.PI/2)).scale(9/16d),0x32CD32,range(1,2),30).spin=.4;}
         }
     }
     private static int drawOrder(Particle p){return p.type.startsWith("dust")&&!p.type.equals("dust_big")&&!p.type.equals("dust")?0:p.type.equals("smoke")||p.type.equals("stone")||p.type.equals("water")?1:2;}
@@ -162,12 +188,12 @@ public final class BiomeEffects {
             int step=Math.min(2,(int)(partial*3));double t=partial*3-step;State a=p.states[step],b=p.states[step+1];
             Vec3 at=a.at.lerp(b.at,t);double scale=lerp(a.scale,b.scale,t),rotation=lerp(a.rotation,b.rotation,t),opacity=lerp(a.opacity,b.opacity,t);
             var d=new TrueBiomeDraw(new NativeSprites.Draw(pose,buffers,camera,p.owner,true));float[] c=mul(p.color,opacity);
-            if(p.type.equals("dust33")||p.type.equals("dust16")||p.type.equals("dust75")){
-                int type=p.type.equals("dust33")?33:p.type.equals("dust16")?16:75;
+            if(p.type.equals("dust33")||p.type.equals("dust16")||p.type.equals("dust75")||p.type.equals("dust137")){
+                int type=p.type.equals("dust33")?33:p.type.equals("dust16")?16:p.type.equals("dust137")?137:75;
                 float[] dust=mul(rgb(0xFFFFFF),type==75?1:opacity);if(type==75)dust[3]=25/255f;
                 int light=type==75?15728880:net.minecraft.client.renderer.LevelRenderer.getLightColor(Minecraft.getInstance().level,net.minecraft.core.BlockPos.containing(at));
                 d.dust(at,face,rotation,scale,dust,type,p.variant,light,null);
-                if(type!=75)d.dust(at,face,rotation,scale,dust,type,p.variant,light,new float[]{1,1,1,1});
+                if(type!=75&&type!=137)d.dust(at,face,rotation,scale,dust,type,p.variant,light,new float[]{1,1,1,1});
                 continue;
             }
             String texture=BiomeAssets.texture(p.type.equals("spark")?"thin_spark":p.type.equals("generic_bloom")?"light":p.type);int w=NativeSprites.width(texture),h=NativeSprites.height(texture);

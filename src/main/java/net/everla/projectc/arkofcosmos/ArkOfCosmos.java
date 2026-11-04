@@ -36,6 +36,9 @@ public final class ArkOfCosmos {
     public static final RegistryObject<net.minecraft.world.effect.MobEffect> ARMOR_CRUNCH = EFFECTS.register("armor_crunch",
             () -> new net.minecraft.world.effect.MobEffect(net.minecraft.world.effect.MobEffectCategory.HARMFUL, 0x7140BC) {}
                     .addAttributeModifier(net.minecraft.world.entity.ai.attributes.Attributes.ARMOR, "71675e1d-46bd-42da-9ab2-ad341910674e", -15, net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation.ADDITION));
+    public static final RegistryObject<net.minecraft.world.effect.MobEffect> CRUMBLING = EFFECTS.register("crumbling",
+            () -> new net.minecraft.world.effect.MobEffect(net.minecraft.world.effect.MobEffectCategory.HARMFUL, 0xABB449) {}
+                    .addAttributeModifier(net.minecraft.world.entity.ai.attributes.Attributes.ARMOR, "589846b5-795f-440b-a5dd-0b008c5afc47", -10, net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation.ADDITION));
     public static final RegistryObject<net.minecraft.world.effect.MobEffect> ELEMENTAL_MIX = EFFECTS.register("elemental_mix",
             () -> new net.minecraft.world.effect.MobEffect(net.minecraft.world.effect.MobEffectCategory.HARMFUL, 0xFF6900) {});
     public static final RegistryObject<Item> ARK_OF_THE_ELEMENTS = ITEMS.register("ark_of_the_elements", net.everla.projectc.arkofcosmos.item.ElementsItem::new);
@@ -51,6 +54,12 @@ public final class ArkOfCosmos {
             () -> EntityType.Builder.<net.everla.projectc.arkofcosmos.entity.ElementsEntity>of(net.everla.projectc.arkofcosmos.entity.ElementsEntity::new, MobCategory.MISC)
                     .sized(.5f,.5f).noSave().noSummon().clientTrackingRange(128).updateInterval(1).build("arkofcosmos:elements_attack"));
     public static final RegistryObject<Item> GALAXIA = ITEMS.register("galaxia", net.everla.projectc.arkofcosmos.item.GalaxiaItem::new);
+    public static final RegistryObject<Item> BROKEN_BIOME_BLADE = ITEMS.register("broken_biome_blade", net.everla.projectc.arkofcosmos.item.BrokenBiomeBladeItem::new);
+    public static final RegistryObject<EntityType<net.everla.projectc.arkofcosmos.entity.BrokenBiomeEntity>> BROKEN_BIOME_ATTACK = ENTITIES.register("broken_biome_attack",
+            () -> EntityType.Builder.<net.everla.projectc.arkofcosmos.entity.BrokenBiomeEntity>of(net.everla.projectc.arkofcosmos.entity.BrokenBiomeEntity::new,MobCategory.MISC)
+                    .sized(.5f,.5f).noSave().noSummon().clientTrackingRange(128).updateInterval(1).build("arkofcosmos:broken_biome_attack"));
+    public static final RegistryObject<net.minecraft.world.effect.MobEffect> BROKEN_BIOME_FREEZE = EFFECTS.register("broken_biome_freeze",
+            () -> new net.minecraft.world.effect.MobEffect(net.minecraft.world.effect.MobEffectCategory.HARMFUL,0xA9CFFF) {});
     public static final RegistryObject<Item> BIOME_BLADE = ITEMS.register("biome_blade", net.everla.projectc.arkofcosmos.item.BiomeBladeItem::new);
     public static final RegistryObject<EntityType<net.everla.projectc.arkofcosmos.entity.BiomeEntity>> BIOME_ATTACK = ENTITIES.register("biome_attack",
             () -> EntityType.Builder.<net.everla.projectc.arkofcosmos.entity.BiomeEntity>of(net.everla.projectc.arkofcosmos.entity.BiomeEntity::new,MobCategory.MISC)
@@ -131,6 +140,7 @@ public final class ArkOfCosmos {
             event.accept(GALAXIA);
             event.accept(TRUE_BIOME_BLADE);
             event.accept(BIOME_BLADE);
+            event.accept(BROKEN_BIOME_BLADE);
             event.accept(ARK_OF_THE_ELEMENTS);
             event.accept(FRACTURED_ARK);
             event.accept(ARK_OF_THE_ANCIENTS);

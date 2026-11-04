@@ -32,7 +32,8 @@
       "source_sha256": "fbde0d06df324f23a1b589d9cda34dfa1f2daddd6cf7faf8ebb37f4516f3a5a9",
       "conversion": "XNB SoundEffectReader PCM -> WAV -> Vorbis quality 10; original sample rate and channels",
       "used_by": [
-        "Ark of the Ancients"
+        "Ark of the Ancients",
+        "Broken Biome Blade"
       ]
     },
     {
@@ -44,7 +45,8 @@
       "source_sha256": "25a6ff56eeb39429aea1c1d4f0a12bf588b8e625953f9b73560fb992c3e3be9f",
       "conversion": "XNB SoundEffectReader PCM -> WAV -> Vorbis quality 10; original sample rate and channels",
       "used_by": [
-        "Ark of the Ancients"
+        "Ark of the Ancients",
+        "Broken Biome Blade"
       ]
     },
     {
@@ -56,7 +58,8 @@
       "source_sha256": "be92576eff34eb3c299e1ff60ba4bd83985ad92fe4f263590120d60f8a03612b",
       "conversion": "XNB SoundEffectReader PCM -> WAV -> Vorbis quality 10; original sample rate and channels",
       "used_by": [
-        "Ark of the Ancients"
+        "Ark of the Ancients",
+        "Broken Biome Blade"
       ]
     },
     {
@@ -68,7 +71,8 @@
       "source_sha256": "ba63961c02af3e80db76d853fe48fec7d558db31720b70a50211e0462c4a8cb9",
       "conversion": "XNB SoundEffectReader PCM -> WAV -> Vorbis quality 10; original sample rate and channels",
       "used_by": [
-        "Ark of the Ancients"
+        "Ark of the Ancients",
+        "Broken Biome Blade"
       ]
     },
     {
@@ -211,7 +215,10 @@
       "license": "Re-Logic / original rights holders; not GPL-3.0-only",
       "recorded_output_sha256": "1ed54ab27eb2f4a09d970542bf1f1b11dc0806a70fd4c5a1567b2afa0731aa42",
       "source_sha256": "a65776ef3260e44189e06e23ff72f2963f3e77229f19edbd266eeb1d0212297a",
-      "matches_recorded_output": true
+      "matches_recorded_output": true,
+      "used_by": [
+        "Broken Biome Blade"
+      ]
     },
     {
       "file": "src/main/resources/assets/arkofcosmos/sounds/item71_0.ogg",
@@ -436,8 +443,11 @@
         "Fractured Ark visuals",
         "Ark of the Ancients",
         "True Biome Blade",
-        "Biome Blade"
-      ]
+        "Biome Blade",
+        "Broken Biome Blade",
+        "Broken Biome Blade particles"
+      ],
+      "source_sha256": "48a5319f6d7e7432af6891c891bc22426392e0192111e189996cdec709572b38"
     },
     {
       "file": "src/main/resources/assets/arkofcosmos/textures/fx/bloomline.png",
@@ -508,8 +518,10 @@
       "used_by": [
         "Fractured Ark visuals",
         "Ark of the Ancients",
-        "Biome Blade"
-      ]
+        "Biome Blade",
+        "Broken Biome Blade particles"
+      ],
+      "source_sha256": "c63c8daf47b899af3eadeadf1579af25133efb441379afca07f8b098b3382622"
     },
     {
       "file": "src/main/resources/assets/arkofcosmos/textures/fx/scarletdevilstreak.png",
@@ -577,8 +589,11 @@
         "Fractured Ark visuals",
         "Ark of the Ancients",
         "True Biome Blade",
-        "Biome Blade"
-      ]
+        "Biome Blade",
+        "Broken Biome Blade",
+        "Broken Biome Blade particles"
+      ],
+      "source_sha256": "eda3d9485fc2f117931e668a0fbfa117341b04c13ceba418311443492e37a493"
     },
     {
       "file": "src/main/resources/assets/arkofcosmos/textures/fx/trientcircularsmear.png",
@@ -683,7 +698,12 @@
       "license": "Calamity Team / All Rights Reserved",
       "file": "src/main/resources/assets/arkofcosmos/textures/fx/bloomcircle.png",
       "path": "Particles/BloomCircle.png",
-      "project": "Calamity Mod"
+      "project": "Calamity Mod",
+      "used_by": [
+        "Broken Biome Blade",
+        "Broken Biome Blade particles"
+      ],
+      "source_sha256": "48a5319f6d7e7432af6891c891bc22426392e0192111e189996cdec709572b38"
     },
     {
       "sha256": "29f68611e4ce80c756c8809dbb59c64a203ac269c7a4b960f5ed20e372f725e1",
@@ -739,7 +759,12 @@
       "license": "Calamity Team / All Rights Reserved",
       "file": "src/main/resources/assets/arkofcosmos/textures/fx/thinsparkle.png",
       "path": "Particles/ThinSparkle.png",
-      "project": "Calamity Mod"
+      "project": "Calamity Mod",
+      "used_by": [
+        "Broken Biome Blade",
+        "Broken Biome Blade particles"
+      ],
+      "source_sha256": "eda3d9485fc2f117931e668a0fbfa117341b04c13ceba418311443492e37a493"
     },
     {
       "license": "Calamity Team / All Rights Reserved",
@@ -846,7 +871,10 @@
       "license": "Original rights holders; not GPL-3.0-only",
       "source_sha256": "9f2c3dbe7790004ded7d1c2e973f8b9999a0ee2f017eaf5a085742f71f7531fd",
       "recorded_output_sha256": "05631f089002f150139a2b7456460c8f6243475087941a4e4eda82ed8daaaaa3",
-      "matches_recorded_output": true
+      "matches_recorded_output": true,
+      "used_by": [
+        "Broken Biome Blade"
+      ]
     },
     {
       "file": "src/main/resources/assets/arkofcosmos/sounds/galaxia_item101_0.ogg",
@@ -886,7 +914,10 @@
       "license": "Original rights holders; not GPL-3.0-only",
       "source_sha256": "474daefcfc0d69f18f07c9338c143414b451e79bbb7f6d47693f94bba282f27f",
       "recorded_output_sha256": "53d354c42990c8e0483abd787e6e68f46511d799445418c9fbee6b1560db7fb0",
-      "matches_recorded_output": true
+      "matches_recorded_output": true,
+      "used_by": [
+        "Broken Biome Blade"
+      ]
     },
     {
       "file": "src/main/resources/assets/arkofcosmos/sounds/galaxia_hit43_0.ogg",
@@ -896,7 +927,10 @@
       "license": "Original rights holders; not GPL-3.0-only",
       "source_sha256": "f7d43046ef0790b38f6be00a60a8b0f431b5a12ade0283720f2d1b441fce2be3",
       "recorded_output_sha256": "78da9a3f011ec55199660a62b0cdb3e71a3006c5c512952ed06b52e26161c0c6",
-      "matches_recorded_output": true
+      "matches_recorded_output": true,
+      "used_by": [
+        "Broken Biome Blade"
+      ]
     },
     {
       "file": "src/main/resources/assets/arkofcosmos/sounds/galaxia_book_0.ogg",
@@ -936,7 +970,10 @@
       "license": "Original rights holders; not GPL-3.0-only",
       "source_sha256": "e0648afede8ae70ad61cbb47293e8653b7818e5f090c90ec22e5867b60590a31",
       "recorded_output_sha256": "aaade1b41f33460c9d2086c4625faad84e8a92ce391432915d0d822406c9dde4",
-      "matches_recorded_output": true
+      "matches_recorded_output": true,
+      "used_by": [
+        "Broken Biome Blade"
+      ]
     },
     {
       "file": "src/main/resources/assets/arkofcosmos/sounds/galaxia_impact_1.ogg",
@@ -946,7 +983,10 @@
       "license": "Original rights holders; not GPL-3.0-only",
       "source_sha256": "1c6cb82197743ce096c91df6f0c9589a12866b0e63eafef798593fef3a0bf832",
       "recorded_output_sha256": "b517a32571d0f8a769e2b21fa1c37bf99904ee8a682aa34495a18f8ff1cfb5c0",
-      "matches_recorded_output": true
+      "matches_recorded_output": true,
+      "used_by": [
+        "Broken Biome Blade"
+      ]
     },
     {
       "file": "src/main/resources/assets/arkofcosmos/sounds/galaxia_impact_2.ogg",
@@ -956,7 +996,10 @@
       "license": "Original rights holders; not GPL-3.0-only",
       "source_sha256": "d86ea64681e57ab9a883b999f8171894bca5c562d7205f94aa3794f086221bff",
       "recorded_output_sha256": "a7596ed17050b00d14f444cc9635236d69bd0acd602ff7aab8e769af546c4287",
-      "matches_recorded_output": true
+      "matches_recorded_output": true,
+      "used_by": [
+        "Broken Biome Blade"
+      ]
     },
     {
       "file": "src/main/resources/assets/arkofcosmos/sounds/galaxia_eruption_0.ogg",
@@ -1110,7 +1153,8 @@
       "used_by": [
         "Fractured Ark visuals",
         "Ark of the Ancients",
-        "Biome Blade"
+        "Biome Blade",
+        "Broken Biome Blade particles"
       ]
     },
     {
@@ -3021,7 +3065,9 @@
       "source_sha256": "be1c5de8898da945f42b28cffdc055b017e0fcbfeed6a48012f393eceae7919d",
       "used_by": [
         "True Biome Blade",
-        "Biome Blade"
+        "Biome Blade",
+        "Broken Biome Blade",
+        "Broken Biome Blade particles"
       ]
     },
     {
@@ -3033,7 +3079,8 @@
       "source_sha256": "c588f3cbbad79ce22e88200487aed698076aa01e0598d07a2cf5b2ba0975d9de",
       "used_by": [
         "True Biome Blade",
-        "Biome Blade"
+        "Biome Blade",
+        "Broken Biome Blade particles"
       ]
     },
     {
@@ -3077,7 +3124,8 @@
       "license": "Re-Logic original terms",
       "source_sha256": "b11068ee2920373fbe7712526a8701da91d23644e9f2cd50968582153ff4422f",
       "used_by": [
-        "True Biome Blade"
+        "True Biome Blade",
+        "Broken Biome Blade"
       ]
     },
     {
@@ -3121,7 +3169,8 @@
       "license": "Re-Logic original terms",
       "source_sha256": "07ac493a3d09d26834de1661db22af59a28d33f6849911bbfffece3dcbc3b6de",
       "used_by": [
-        "True Biome Blade"
+        "True Biome Blade",
+        "Broken Biome Blade"
       ]
     },
     {
@@ -3132,7 +3181,8 @@
       "license": "Re-Logic original terms",
       "source_sha256": "aae1b13f9814f79249437e0d3363a6c1d656508f881bc8115e726512c80cb361",
       "used_by": [
-        "True Biome Blade"
+        "True Biome Blade",
+        "Broken Biome Blade"
       ]
     },
     {
@@ -3177,7 +3227,9 @@
       "source_sha256": "da0fc70dab62c89a1d8a6fe7f83066714276bd2204d13c7579d4db9dc6291966",
       "used_by": [
         "True Biome Blade",
-        "Biome Blade"
+        "Biome Blade",
+        "Broken Biome Blade",
+        "Broken Biome Blade particles"
       ]
     },
     {
@@ -3188,7 +3240,8 @@
       "license": "ARR (Calamity original terms)",
       "source_sha256": "62fa3414d2a583c438d128ff87bd7c9e9f0743044bfd7a0c34b54a328fcd6eaa",
       "used_by": [
-        "True Biome Blade"
+        "True Biome Blade",
+        "Broken Biome Blade"
       ]
     },
     {
@@ -3244,7 +3297,8 @@
       "source_sha256": "704bba14d03911d2eba2eb0591193090b6d05e36ba5635593299ca57bafd29fa",
       "license": "Calamity ARR",
       "used_by": [
-        "Biome Blade"
+        "Biome Blade",
+        "Broken Biome Blade"
       ]
     },
     {
@@ -3321,7 +3375,8 @@
       "source_sha256": "1ee1cd3f01752e82c4b999d31635c6989ad1e4e5c257b1077cc0d4835530f3ae",
       "license": "Calamity ARR",
       "used_by": [
-        "Biome Blade"
+        "Biome Blade",
+        "Broken Biome Blade"
       ]
     },
     {
@@ -3420,7 +3475,9 @@
       "source_sha256": "42fee3bbece3adfaa6fc670700fb1b4fb1435f74d93698f107aa7e061b54117d",
       "license": "Calamity ARR",
       "used_by": [
-        "Biome Blade"
+        "Biome Blade",
+        "Broken Biome Blade",
+        "Broken Biome Blade particles"
       ]
     },
     {
@@ -3541,7 +3598,8 @@
       "source_sha256": "e081ad325c4534405642b01b26201311541ae72f48716aea975ced84345ba8cc",
       "license": "Re-Logic original terms",
       "used_by": [
-        "Biome Blade"
+        "Biome Blade",
+        "Broken Biome Blade"
       ]
     },
     {
@@ -3552,7 +3610,8 @@
       "source_sha256": "9b29c2dd4394062cee1dd4e4d77df3f01e9714700290386166af1da68c24af51",
       "license": "Re-Logic original terms",
       "used_by": [
-        "Biome Blade"
+        "Biome Blade",
+        "Broken Biome Blade"
       ]
     },
     {
@@ -3563,7 +3622,8 @@
       "source_sha256": "08191d6d2b711d75aa352a05b34f1fd98ca0fb4135e1c5934186aa9bfbec580a",
       "license": "Re-Logic original terms",
       "used_by": [
-        "Biome Blade"
+        "Biome Blade",
+        "Broken Biome Blade"
       ]
     },
     {
@@ -3574,7 +3634,8 @@
       "source_sha256": "586ef1adf17c1cf502b123dbbad3a7d2a63066c539f4a1956f5e3460fd4baad5",
       "license": "Re-Logic original terms",
       "used_by": [
-        "Biome Blade"
+        "Biome Blade",
+        "Broken Biome Blade"
       ]
     },
     {
@@ -3596,7 +3657,8 @@
       "source_sha256": "f984c3a8da3117f4b25bd9f74f47a003a25ad0937130cce37871fdd3c45f74d1",
       "license": "Re-Logic original terms",
       "used_by": [
-        "Biome Blade"
+        "Biome Blade",
+        "Broken Biome Blade"
       ]
     },
     {
@@ -3673,7 +3735,8 @@
       "source_sha256": "66083307fa38d8f473abd97b86b59d4e04099c64a82a9c7f855c4e083f4aa716",
       "license": "Re-Logic original terms",
       "used_by": [
-        "Biome Blade"
+        "Biome Blade",
+        "Broken Biome Blade"
       ]
     },
     {
@@ -3685,6 +3748,116 @@
       "license": "Calamity ARR",
       "used_by": [
         "Biome Blade"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/item/broken_biome_blade.png",
+      "sha256": "822032967afb43994491d103e5c3cae925868de01582c3aba25f93b189e2bd0a",
+      "project": "Calamity Mod",
+      "path": "Items/Weapons/Melee/BrokenBiomeBlade.png",
+      "source_sha256": "822032967afb43994491d103e5c3cae925868de01582c3aba25f93b189e2bd0a",
+      "license": "Calamity ARR",
+      "used_by": [
+        "Broken Biome Blade"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/broken_biome_hot.png",
+      "sha256": "aa7b2de7133fd96e90bd89b534a3ab62d929bbc78b191999773993d2beae4e0d",
+      "project": "Calamity Mod",
+      "path": "Projectiles/Melee/BrokenBiomeBlade_AridGrandeur.png",
+      "source_sha256": "aa7b2de7133fd96e90bd89b534a3ab62d929bbc78b191999773993d2beae4e0d",
+      "license": "Calamity ARR",
+      "used_by": [
+        "Broken Biome Blade"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/broken_biome_hot_extra.png",
+      "sha256": "d1f457373fe1591154926c4b5297a7af1517fece7d7975509a6ed53bbdc09012",
+      "project": "Calamity Mod",
+      "path": "Projectiles/Melee/BrokenBiomeBlade_AridGrandeurExtra.png",
+      "source_sha256": "d1f457373fe1591154926c4b5297a7af1517fece7d7975509a6ed53bbdc09012",
+      "license": "Calamity ARR",
+      "used_by": [
+        "Broken Biome Blade"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/broken_biome_cold_small.png",
+      "sha256": "193c443c86f11fdaae8bd9dbadf8ec6424a532ecc095b54bb52ec5ed841ad2aa",
+      "project": "Calamity Mod",
+      "path": "Projectiles/Melee/BrokenBiomeBlade_BitingEmbraceSmall.png",
+      "source_sha256": "193c443c86f11fdaae8bd9dbadf8ec6424a532ecc095b54bb52ec5ed841ad2aa",
+      "license": "Calamity ARR",
+      "used_by": [
+        "Broken Biome Blade"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/broken_biome_cold_big.png",
+      "sha256": "a99fa2e52dc8115f0e7ca2c721d3502a34db70459d88ceb2fef669187a8ad0ba",
+      "project": "Calamity Mod",
+      "path": "Projectiles/Melee/BrokenBiomeBlade_BitingEmbraceBig.png",
+      "source_sha256": "a99fa2e52dc8115f0e7ca2c721d3502a34db70459d88ceb2fef669187a8ad0ba",
+      "license": "Calamity ARR",
+      "used_by": [
+        "Broken Biome Blade"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/broken_biome_cold_thrust.png",
+      "sha256": "3934f618dfdabd5e26550296d8bd2ac1307500263e8f344c568cf4c75dc54a54",
+      "project": "Calamity Mod",
+      "path": "Projectiles/Melee/BrokenBiomeBlade_BitingEmbraceThrust.png",
+      "source_sha256": "3934f618dfdabd5e26550296d8bd2ac1307500263e8f344c568cf4c75dc54a54",
+      "license": "Calamity ARR",
+      "used_by": [
+        "Broken Biome Blade"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/broken_biome_tropical.png",
+      "sha256": "e6a865ccbefe6413769953afc36fac1a23b62d63c51056e142104d4c17edd817",
+      "project": "Calamity Mod",
+      "path": "Projectiles/Melee/BrokenBiomeBlade_GrovetendersTouchBlade.png",
+      "source_sha256": "e6a865ccbefe6413769953afc36fac1a23b62d63c51056e142104d4c17edd817",
+      "license": "Calamity ARR",
+      "used_by": [
+        "Broken Biome Blade"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/broken_biome_tropical_glow.png",
+      "sha256": "399dba36c02e4554bbd4fcc7eea86d83152a13ce302e76a1761cf4bd3c6a9486",
+      "project": "Calamity Mod",
+      "path": "Projectiles/Melee/BrokenBiomeBlade_GrovetendersTouchGlow.png",
+      "source_sha256": "399dba36c02e4554bbd4fcc7eea86d83152a13ce302e76a1761cf4bd3c6a9486",
+      "license": "Calamity ARR",
+      "used_by": [
+        "Broken Biome Blade"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/broken_biome_evil.png",
+      "sha256": "2f4da65d0674a0b750e782d02a1d84e53ba4eebb0c8fc5d631a5e9814cf8d15b",
+      "project": "Calamity Mod",
+      "path": "Projectiles/Melee/BrokenBiomeBlade_DecaysRetort.png",
+      "source_sha256": "2f4da65d0674a0b750e782d02a1d84e53ba4eebb0c8fc5d631a5e9814cf8d15b",
+      "license": "Calamity ARR",
+      "used_by": [
+        "Broken Biome Blade"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/mob_effect/crumbling.png",
+      "sha256": "a3e8b20c5105b388e799661b142365dd28c8ee3097ed8a8e29e03206cf2bf067",
+      "project": "Calamity Mod",
+      "path": "Buffs/StatDebuffs/Crumbling.png",
+      "license": "ARR (Calamity original terms)",
+      "source_sha256": "a3e8b20c5105b388e799661b142365dd28c8ee3097ed8a8e29e03206cf2bf067",
+      "used_by": [
+        "Broken Biome Blade Crumbling effect"
       ]
     }
   ]

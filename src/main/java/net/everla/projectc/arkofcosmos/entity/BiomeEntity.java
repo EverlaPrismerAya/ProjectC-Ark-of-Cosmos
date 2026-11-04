@@ -206,7 +206,7 @@ public final class BiomeEntity extends Entity {
     private void marine(Player p){
         double half=age%20,sign=age<=20?-1:1,angle=(Math.PI/4+3*Math.PI/8*half/20)*sign;
         direction=frame.forward().scale(-Math.cos(angle)).add(frame.right().scale(Math.sin(angle)));setPos(center(p).add(direction.scale(Math.sin(half/20*Math.PI)*30/16d)));rotation=(float)frame.angle(direction);
-        if(half==10){BiomeEntity e=create(p,ORB,MARINE,center(p),frame,damage,160);e.direction=frame.right().scale(age<20?-1:1);e.velocity=e.direction.scale(3/16d).add(p.getDeltaMovement().scale(1/3d));e.spawn();sound(p,"biome_splash",1,(random.nextFloat()-.5f)*2);}
+        if(half==10){Vec3 shot=aim(p);BiomeEntity e=create(p,ORB,MARINE,center(p),GalaxiaEntity.aimFrame(shot,frame.right()),damage,160);e.direction=shot;e.velocity=e.direction.scale(3/16d).add(p.getDeltaMovement().scale(1/3d));e.spawn();sound(p,"biome_splash",1,(random.nextFloat()-.5f)*2);}
     }
     private void beam(Player p){
         if(age==0)sound(p,"true_biome_beam_start");

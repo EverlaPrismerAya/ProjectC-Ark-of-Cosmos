@@ -1,0 +1,39 @@
+{
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "goety"
+    }
+  ],
+  "type": "goety:ritual",
+  "ritual_type": "goety:craft",
+  "activation_item": {
+    "item": "arkofcosmos:broken_biome_blade"
+  },
+  "craftType": "forge",
+  "soulCost": 15,
+  "duration": 10,
+  "ingredients": [
+    {
+      "item": "minecraft:netherrack"
+    },
+    {
+      "item": "minecraft:soul_soil"
+    },
+    {
+      "item": "minecraft:crimson_nylium"
+    },
+    {
+      "item": "minecraft:warped_nylium"
+    },
+    {
+      "item": "minecraft:diamond"
+    },
+    {
+      "item": "minecraft:end_crystal"
+    }
+  ],
+  "result": {
+    "item": "arkofcosmos:biome_blade"
+  }
+}

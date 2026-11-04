@@ -1,0 +1,39 @@
+{
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "goety"
+    }
+  ],
+  "type": "goety:ritual",
+  "ritual_type": "goety:craft",
+  "activation_item": {
+    "item": "arkofcosmos:true_biome_blade"
+  },
+  "craftType": "forge",
+  "soulCost": 300,
+  "duration": 10,
+  "ingredients": [
+    {
+      "item": "goety:dark_ingot"
+    },
+    {
+      "item": "goety:dark_ingot"
+    },
+    {
+      "item": "goety:heart_of_the_night"
+    },
+    {
+      "item": "goety:soul_ruby"
+    },
+    {
+      "item": "goety:soul_emerald"
+    },
+    {
+      "item": "goety:unholy_blood"
+    }
+  ],
+  "result": {
+    "item": "arkofcosmos:galaxia"
+  }
+}

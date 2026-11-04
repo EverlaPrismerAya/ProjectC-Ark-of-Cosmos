@@ -3,6 +3,7 @@
 将 Terraria 灾厄模组（Calamity Mod）的鸿蒙方舟带入 Minecraft 的 Forge 模组。包含五段连击、投掷剪合、星链、针弹、追踪弹、招架充能与时空撕裂，并将对应的二维特效适配到 Minecraft 三维场景。
 
 其他武器还有：
+- Broken Biome Blade（残缺环境刃）：五种环境调谐、探索永久解锁和双环切换轮盘；[武器说明](docs/broken-biome-blade.md)。
 - Ark of The Old One（旧神方舟），为旧版鸿蒙方舟，纯粹的数值怪。
 - True Biome Blade（真·环境之刃）：四种主调谐、四种副调谐被动与双层选择盘；[武器说明](docs/true-biome-blade.md)。
 - Galaxia（银河），包含凤凰、白羊、北极星和仙女座四种攻击模式、星座选择盘及派生弹幕。
@@ -35,6 +36,7 @@
 ```mcfunction
 /give @s arkofcosmos:ark_of_cosmos
 /give @s arkofcosmos:galaxia
+/give @s arkofcosmos:broken_biome_blade
 /give @s arkofcosmos:true_biome_blade
 /give @s arkofcosmos:ark_of_the_elements
 /give @s arkofcosmos:fractured_ark

@@ -1,7 +1,27 @@
 {
-  "type": "minecraft:smithing_transform",
-  "template": { "item": "arkofcosmos:annihilation_ember" },
-  "base": { "item": "arkofcosmos:ark_of_cosmos" },
-  "addition": { "item": "arkofcosmos:auric_bar" },
-  "result": { "item": "arkofcosmos:ark_of_the_old_one" }
+  "type": "goety:ritual",
+  "ritual_type": "goety:craft",
+  "activation_item": {
+    "item": "arkofcosmos:ark_of_cosmos"
+  },
+  "craftType": "forge",
+  "soulCost": 400,
+  "duration": 10,
+  "ingredients": [
+    {
+      "item": "arkofcosmos:annihilation_ember"
+    },
+    {
+      "item": "arkofcosmos:annihilation_ember"
+    },
+    {
+      "item": "arkofcosmos:auric_bar"
+    },
+    {
+      "item": "arkofcosmos:auric_bar"
+    }
+  ],
+  "result": {
+    "item": "arkofcosmos:ark_of_the_old_one"
+  }
 }

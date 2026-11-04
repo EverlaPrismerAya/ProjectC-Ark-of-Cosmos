@@ -7,7 +7,7 @@ import net.minecraft.world.phys.Vec3;
 public final class TrueBiomeRules {
     private TrueBiomeRules() {}
     public static final int PRIDE=0, CHAINED=1, FURY=2, TIDES=3;
-    private static final float[] DAMAGE={4,6,4.5f,8};
+    private static final float[] DAMAGE={9.5f,14.25f,10.6875f,19};
     private static final int[] ORIGINAL={140,400,200,550};
     public static final int[] COLOR={0xDC69C5,0x71EFB1,0xD83716,0x846DE9};
     public static final int[] COLOR2={0xABEF71,0xA9CFFF,0xD88316,0x7AD5E9};

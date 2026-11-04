@@ -1,14 +1,26 @@
 {
-  "type": "minecraft:smithing_transform",
-  "template": {
-    "item": "minecraft:netherite_upgrade_smithing_template"
-  },
-  "base": {
+  "type": "goety:ritual",
+  "ritual_type": "goety:craft",
+  "activation_item": {
     "item": "arkofcosmos:fractured_ark"
   },
-  "addition": {
-    "item": "minecraft:netherite_ingot"
-  },
+  "craftType": "forge",
+  "soulCost": 30,
+  "duration": 10,
+  "ingredients": [
+    {
+      "item": "goety:cursed_ingot"
+    },
+    {
+      "item": "goety:magic_emerald"
+    },
+    {
+      "item": "minecraft:diamond_block"
+    },
+    {
+      "item": "minecraft:netherite_ingot"
+    }
+  ],
   "result": {
     "item": "arkofcosmos:ark_of_the_ancients"
   }

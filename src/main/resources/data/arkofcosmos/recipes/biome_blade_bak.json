@@ -1,0 +1,39 @@
+{
+  "conditions": [
+    {
+      "type": "forge:not",
+      "value": {
+        "type": "forge:mod_loaded",
+        "modid": "goety"
+      }
+    }
+  ],
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    {
+      "item": "arkofcosmos:broken_biome_blade"
+    },
+    {
+      "item": "minecraft:netherrack"
+    },
+    {
+      "item": "minecraft:soul_soil"
+    },
+    {
+      "item": "minecraft:crimson_nylium"
+    },
+    {
+      "item": "minecraft:warped_nylium"
+    },
+    {
+      "item": "minecraft:diamond"
+    },
+    {
+      "item": "minecraft:end_crystal"
+    }
+  ],
+  "result": {
+    "item": "arkofcosmos:biome_blade"
+  }
+}

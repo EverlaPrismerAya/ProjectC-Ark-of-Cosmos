@@ -55,38 +55,38 @@ public final class BiomeClient {
         }
         @Override public void render(GuiGraphics g,int mouseX,int mouseY,float partial) {
             int x=width/2,y=height/2,dx=mouseX-x,dy=mouseY-y;
-            double outer=Math.max(24,Math.min(130,Math.min(width/2d-8,height/2d-36))),inner=outer*.22,mid=outer*.58;
-            double radiusCursor=Math.sqrt(dx*dx+dy*dy);slot=radiusCursor<inner||radiusCursor>outer?-1:radiusCursor<mid?1:0;
+            double outer=Math.max(24,Math.min(130,Math.min(width/2d-8,height/2d-36))),inner=outer*.22;
+            double radiusCursor=Math.sqrt(dx*dx+dy*dy);slot=radiusCursor<inner||radiusCursor>outer?-1:0;
             selected=slot<0?-1:(int)Math.floor((Math.atan2(dy,dx)+Math.PI/2+Math.PI/8+Math.PI*2)%(Math.PI*2)/(Math.PI/4));
             g.flush();
             RenderSystem.enableBlend();RenderSystem.defaultBlendFunc();RenderSystem.disableCull();
             RenderSystem.setShader(GameRenderer::getPositionColorShader);
             BufferBuilder out=Tesselator.getInstance().getBuilder();out.begin(VertexFormat.Mode.QUADS,DefaultVertexFormat.POSITION_COLOR);
-            for(int ring=0;ring<2;ring++)for(int i=0;i<8;i++) {
+            for(int i=0;i<8;i++) {
                 double angle=-Math.PI/2+i*Math.PI/4;
                 boolean unlocked=(unlocks&(1<<i))!=0;
-                int color=net.everla.projectc.arkofcosmos.calamity.combat.BiomeRules.COLORS[i],alpha=i==selected&&(1-ring)==slot?230:110;
+                int color=net.everla.projectc.arkofcosmos.calamity.combat.BiomeRules.COLORS[i],alpha=i==selected?230:110;
                 if(!unlocked){color=0x555555;alpha=75;}
-                double lo=ring==0?inner:mid+3,hi=ring==0?mid-3:outer;
+                double lo=inner,hi=outer;
                 arc(out,g,x,y,lo,hi,angle,color,alpha);
                 arc(out,g,x,y,lo,lo+1.5,angle,color,255);
                 arc(out,g,x,y,hi-1.5,hi,angle,color,255);
             }
             BufferUploader.drawWithShader(out.end());
             RenderSystem.enableCull();RenderSystem.disableBlend();
-            for(int ring=0;ring<2;ring++)for(int i=0;i<8;i++) {
-                double angle=-Math.PI/2+i*Math.PI/4,radius=ring==0?(inner+mid)/2:(mid+outer)/2;
+            for(int i=0;i<8;i++) {
+                double angle=-Math.PI/2+i*Math.PI/4,radius=(inner+outer)/2;
                 int cx=x+(int)(Math.cos(angle)*radius),cy=y+(int)(Math.sin(angle)*radius);
                 var label=font.split(Component.translatable("biome.mode."+i).append((unlocks&(1<<i))==0?" ×":""),Math.max(20,(int)(outer*.36)));
                 for(int line=0;line<label.size();line++)
                     g.drawCenteredString(font,label.get(line),cx,cy-label.size()*font.lineHeight/2+line*font.lineHeight,
-                            i==selected&&(1-ring)==slot?0xFFFFFF:0xD0D0DD);
+                            i==selected?0xFFFFFF:0xD0D0DD);
             }
             g.drawCenteredString(font,title,x,y-(int)outer-16,0xFFFFFF);
             if(selected>=0&&(unlocks&(1<<selected))==0)g.drawCenteredString(font,Component.translatable("biome.locked"),x,y+(int)outer+20,0xAAAAAA);
             if(minecraft.player==null)return;
             var held=minecraft.player.getMainHandItem();
-            g.drawCenteredString(font,Component.translatable("biome.selection_state",Component.translatable("biome.mode."+net.everla.projectc.arkofcosmos.item.BiomeBladeItem.main(held)),Component.translatable("biome.mode."+net.everla.projectc.arkofcosmos.item.BiomeBladeItem.secondary(held))),x,y+(int)outer+8,0xFFFFFF);
+            g.drawCenteredString(font,Component.translatable("biome.selection_state",Component.translatable("biome.mode."+net.everla.projectc.arkofcosmos.item.BiomeBladeItem.main(held))),x,y+(int)outer+8,0xFFFFFF);
         }
         private void arc(BufferBuilder out,GuiGraphics g,int x,int y,double inner,double outer,double angle,int color,int alpha) {
             double start=angle-Math.PI/8+.025,end=angle+Math.PI/8-.025;

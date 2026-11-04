@@ -324,6 +324,12 @@ public final class FourthCalamityEntity extends Monster {
         if(actions!=null)actions.cleanup();
         if(bar!=null){for(ServerPlayer player:bar.getPlayers())syncBar(player,false);bar.removeAllPlayers();}
     }
+    public void removeByPlayerCommand() {
+        finishingDefeat = true;
+        try { discard(); }
+        finally { finishingDefeat = false; }
+    }
+
     @Override public void remove(RemovalReason reason) {
         if(protectRemoval(reason))return;
         if(!level().isClientSide) {

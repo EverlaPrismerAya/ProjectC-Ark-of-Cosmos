@@ -94,7 +94,14 @@ public final class BiomeRenderer extends EntityRenderer<BiomeEntity> {
     }
     private static void blade(TrueBiomeDraw d,String tex,Vec3 at,AttackFrame f,double angle,double scale,float[] color,boolean additive,int light){d.sprite(tex,at,f,angle+Math.PI/4,scale,scale,0,NativeSprites.height(tex),color,additive,true,light);}
     private static void phantoms(TrueBiomeDraw d,Vec3 center,Vec3 dir,AttackFrame f,double time,double scale,double ratio,int bounce,double opacity){
-        for(int i=0;i<4;i++){double wobble=Math.sin(time*5+i*Math.PI/2),angle=f.angle(dir)+wobble*Math.PI/10-wobble*Math.PI/9*ratio;Vec3 side=f.direction(f.angle(dir)+Math.PI/2);Vec3 at=center.add(dir.scale(Math.sin(time*7)*10/16d+clamp(bounce/20d)*20/16d)).add(side.scale(Math.sin(wobble)*(20+40*ratio)/16));blade(d,texture("hot_extra"),at,f,angle,scale,alpha(.8*opacity),true,15728880);}
+        for(int i=0;i<4;i++){
+            double orbit=time*5+i*Math.PI/2,wobble=Math.sin(orbit);
+            Vec3 axis=dir.normalize(),across=f.normal().cross(axis).normalize();
+            Vec3 radial=across.scale(Math.cos(orbit)).add(f.normal().scale(Math.sin(orbit)));
+            AttackFrame phantom=net.everla.projectc.arkofcosmos.entity.GalaxiaEntity.aimFrame(axis,radial);
+            Vec3 at=center.add(axis.scale(Math.sin(time*7)*10/16d+clamp(bounce/20d)*20/16d)).add(radial.scale(Math.abs(Math.sin(wobble))*(20+40*ratio)/16));
+            blade(d,texture("hot_extra"),at,phantom,wobble*Math.PI/10-wobble*Math.PI/9*ratio,scale,alpha(.8*opacity),true,15728880);
+        }
     }
     private static Vec3 jitter(AttackFrame f,int left){return left<15?Vec3.ZERO:f.direction(java.util.concurrent.ThreadLocalRandom.current().nextDouble(Math.PI*2)).scale(Math.sqrt(2)*(15-left/5d)*.5/16);}
     private static void holyChain(TrueBiomeDraw draw,Vec3 a,Vec3 b,AttackFrame f,double snap,double retract,int light){

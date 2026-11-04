@@ -20,7 +20,7 @@ import net.minecraftforge.api.distmarker.Dist;
 public final class ArkNetwork {
     private ArkNetwork() {}
     private static final SimpleChannel CHANNEL = NetworkRegistry.newSimpleChannel(
-            ResourceLocation.fromNamespaceAndPath(ArkOfCosmos.MOD_ID, "input"), () -> "5", "5"::equals, "5"::equals);
+            ResourceLocation.fromNamespaceAndPath(ArkOfCosmos.MOD_ID, "input"), () -> "6", "6"::equals, "6"::equals);
     public record Input(boolean left, boolean right, boolean alt) {
         static Input read(FriendlyByteBuf buffer) { return new Input(buffer.readBoolean(), buffer.readBoolean(), buffer.readBoolean()); }
         void write(FriendlyByteBuf buffer) { buffer.writeBoolean(left); buffer.writeBoolean(right); buffer.writeBoolean(alt); }
@@ -42,7 +42,13 @@ public final class ArkNetwork {
     private record SpearJab() {}
     private record SpearFeedback(int entity) {}
     public static void spearFeedback(Entity entity) { CHANNEL.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(()->entity),new SpearFeedback(entity.getId())); }
+    private record BrokenBiomeInput(boolean left,int slot,int mode) {}
+    public static void brokenBiome(boolean left,int slot,int mode){CHANNEL.sendToServer(new BrokenBiomeInput(left,slot,mode));}
     public static void register() {
+        CHANNEL.messageBuilder(BrokenBiomeInput.class,10,NetworkDirection.PLAY_TO_SERVER)
+            .encoder((p,b)->{b.writeBoolean(p.left());b.writeByte(p.slot());b.writeByte(p.mode());})
+            .decoder(b->new BrokenBiomeInput(b.readBoolean(),b.readByte(),b.readByte()))
+            .consumerMainThread((p,c)->{var player=c.get().getSender();if(player!=null){net.everla.projectc.arkofcosmos.combat.BrokenBiomeCombat.input(player,p.left(),false);net.everla.projectc.arkofcosmos.combat.BrokenBiomeCombat.select(player,p.slot(),p.mode());}}).add();
         CHANNEL.messageBuilder(BiomeUnlocks.class,9,NetworkDirection.PLAY_TO_CLIENT)
             .encoder((p,b)->b.writeByte(p.mask())).decoder(b->new BiomeUnlocks(b.readUnsignedByte()))
             .consumerMainThread((p,c)->DistExecutor.unsafeRunWhenOn(Dist.CLIENT,()->()->net.everla.projectc.arkofcosmos.client.BiomeClient.unlocks=p.mask())).add();

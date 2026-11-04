@@ -1,0 +1,36 @@
+{
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "goety"
+    }
+  ],
+  "type": "goety:ritual",
+  "ritual_type": "goety:craft",
+  "activation_item": {
+    "item": "arkofcosmos:biome_blade"
+  },
+  "craftType": "forge",
+  "soulCost": 20,
+  "duration": 10,
+  "ingredients": [
+    {
+      "item": "minecraft:end_stone"
+    },
+    {
+      "item": "minecraft:purpur_block"
+    },
+    {
+      "item": "minecraft:chorus_flower"
+    },
+    {
+      "item": "minecraft:dragon_breath"
+    },
+    {
+      "item": "minecraft:netherite_ingot"
+    }
+  ],
+  "result": {
+    "item": "arkofcosmos:true_biome_blade"
+  }
+}

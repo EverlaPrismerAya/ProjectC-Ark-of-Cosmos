@@ -1,14 +1,26 @@
 {
-  "type": "minecraft:smithing_transform",
-  "template": {
-    "item": "arkofcosmos:galaxia"
-  },
-  "base": {
+  "type": "goety:ritual",
+  "ritual_type": "goety:craft",
+  "activation_item": {
     "item": "arkofcosmos:ark_of_the_elements"
   },
-  "addition": {
-    "item": "arkofcosmos:auric_bar"
-  },
+  "craftType": "forge",
+  "soulCost": 400,
+  "duration": 10,
+  "ingredients": [
+    {
+      "item": "arkofcosmos:auric_bar"
+    },
+    {
+      "item": "arkofcosmos:auric_bar"
+    },
+    {
+      "item": "goety:unholy_blood"
+    },
+    {
+      "item": "arkofcosmos:galaxia"
+    }
+  ],
   "result": {
     "item": "arkofcosmos:ark_of_cosmos"
   }
