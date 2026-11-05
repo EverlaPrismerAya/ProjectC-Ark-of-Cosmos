@@ -16,6 +16,11 @@ public final class MaceItem extends Item {
     @Override public int getEnchantmentValue() { return 15; }
     @Override public boolean isValidRepairItem(ItemStack stack,ItemStack ingredient) { return ingredient.is(Items.BLAZE_ROD); }
     @Override public boolean canApplyAtEnchantingTable(ItemStack stack,Enchantment enchantment) { return VanillaEnchantments.accepts(stack,enchantment); }
+    @Override public boolean canPerformAction(ItemStack stack,net.minecraftforge.common.ToolAction action) {
+        return action==net.minecraftforge.common.ToolActions.SWORD_SWEEP
+            &&stack.getEnchantmentLevel(net.minecraft.world.item.enchantment.Enchantments.SWEEPING_EDGE)>0
+            ||super.canPerformAction(stack,action);
+    }
     @Override public boolean mineBlock(ItemStack stack,net.minecraft.world.level.Level level,net.minecraft.world.level.block.state.BlockState state,net.minecraft.core.BlockPos pos,LivingEntity miner) {
         if(!level.isClientSide&&state.getDestroySpeed(level,pos)!=0)stack.hurtAndBreak(2,miner,e->e.broadcastBreakEvent(EquipmentSlot.MAINHAND));return true;
     }

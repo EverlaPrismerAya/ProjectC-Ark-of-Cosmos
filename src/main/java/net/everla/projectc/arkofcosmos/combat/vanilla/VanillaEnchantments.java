@@ -26,6 +26,6 @@ public final class VanillaEnchantments extends Enchantment {
         if(e instanceof VanillaEnchantments v) return v.canApplyAtEnchantingTable(stack);
         if(e==Enchantments.UNBREAKING||e==Enchantments.MENDING||e==Enchantments.VANISHING_CURSE||e==Enchantments.FIRE_ASPECT||e==Enchantments.MOB_LOOTING) return true;
         if(stack.getItem() instanceof SpearItem) return e instanceof DamageEnchantment||e==Enchantments.KNOCKBACK;
-        return stack.getItem() instanceof MaceItem&&(e==Enchantments.SMITE||e==Enchantments.BANE_OF_ARTHROPODS);
+        return stack.getItem() instanceof MaceItem&&e.canApplyAtEnchantingTable(new ItemStack(net.minecraft.world.item.Items.DIAMOND_SWORD));
     }
 }
