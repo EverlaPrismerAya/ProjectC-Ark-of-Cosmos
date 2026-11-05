@@ -1,4 +1,6 @@
 package net.everla.projectc.arkofcosmos.mixin.entity.combat;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import net.everla.projectc.arkofcosmos.combat.vanilla.*;
 import net.everla.projectc.arkofcosmos.item.*;
 import net.minecraft.world.damagesource.DamageSource;
@@ -11,11 +13,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(LivingEntity.class)
 public abstract class VanillaLivingCombatMixin {
-    @Redirect(method="knockback",at=@At(value="INVOKE",target="Lnet/minecraft/world/entity/LivingEntity;getAttributeValue(Lnet/minecraft/world/entity/ai/attributes/Attribute;)D"))
-    private double fourthResistance(LivingEntity victim,net.minecraft.world.entity.ai.attributes.Attribute attribute) {
+    @WrapOperation(method="knockback",at=@At(value="INVOKE",target="Lnet/minecraft/world/entity/LivingEntity;getAttributeValue(Lnet/minecraft/world/entity/ai/attributes/Attribute;)D"))
+    private double fourthResistance(LivingEntity victim,net.minecraft.world.entity.ai.attributes.Attribute attribute,Operation<Double> original) {
         if(!(victim instanceof net.everla.projectc.arkofcosmos.entity.FourthCalamityEntity)&&attribute==net.minecraft.world.entity.ai.attributes.Attributes.KNOCKBACK_RESISTANCE
             &&Boolean.TRUE.equals(net.everla.projectc.arkofcosmos.combat.CalamityAttackGuard.FULL_KNOCKBACK.get()))return 0;
-        return victim.getAttributeValue(attribute);
+        return original.call(victim,attribute);
     }
     // Keep the invocation available to other mods' knockback argument modifiers.
     @WrapWithCondition(method="hurt",at=@At(value="INVOKE",target="Lnet/minecraft/world/entity/LivingEntity;knockback(DDD)V"))

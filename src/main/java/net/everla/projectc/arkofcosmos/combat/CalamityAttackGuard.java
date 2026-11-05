@@ -28,15 +28,21 @@ public final class CalamityAttackGuard {
         return null;
     }
     public static boolean hurt(Entity target,net.minecraft.world.damagesource.DamageSource source,float amount) {
+        return hurt(target,source,amount,()->target.hurt(source,amount));
+    }
+    public static boolean hurt(Entity target,net.minecraft.world.damagesource.DamageSource source,float amount,java.util.function.BooleanSupplier original) {
         FourthCalamityEntity boss=damageOwner(source);
         return boss!=null&&target!=boss&&target instanceof net.minecraft.world.entity.LivingEntity living
-            ?WeaponDamage.hurt(living,source,amount):target.hurt(source,amount);
+            ?WeaponDamage.hurt(living,source,amount):original.getAsBoolean();
     }
     public static final ThreadLocal<Boolean> FULL_KNOCKBACK=new ThreadLocal<>();
     public static void knockback(net.minecraft.world.entity.LivingEntity victim,double strength,double x,double z,Entity attacker) {
+        knockback(victim,strength,x,z,attacker,()->victim.knockback(strength,x,z));
+    }
+    public static void knockback(net.minecraft.world.entity.LivingEntity victim,double strength,double x,double z,Entity attacker,Runnable original) {
         Boolean previous=FULL_KNOCKBACK.get();
         if(attacker instanceof FourthCalamityEntity)FULL_KNOCKBACK.set(true);
-        try { victim.knockback(strength,x,z);if(attacker instanceof FourthCalamityEntity)net.everla.projectc.arkofcosmos.combat.vanilla.VanillaCombat.syncMotion(victim); }
+        try { original.run();if(attacker instanceof FourthCalamityEntity)net.everla.projectc.arkofcosmos.combat.vanilla.VanillaCombat.syncMotion(victim); }
         finally { if(previous==null)FULL_KNOCKBACK.remove();else FULL_KNOCKBACK.set(previous); }
     }
     private static FourthCalamityEntity crystalOwner(net.minecraftforge.event.level.ExplosionEvent event) {

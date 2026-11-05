@@ -1,4 +1,6 @@
 package net.everla.projectc.arkofcosmos.mixin.entity.fourthCalamity;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.*;
@@ -8,14 +10,14 @@ import org.spongepowered.asm.mixin.injection.*;
 
 @Mixin(AbstractArrow.class)
 public abstract class FourthCalamityArrowMixin {
-    @Redirect(method="onHitEntity",at=@At(value="INVOKE",target="Lnet/minecraft/world/entity/Entity;hurt(Lnet/minecraft/world/damagesource/DamageSource;F)Z"))
-    private boolean fourthArrowDamage(net.minecraft.world.entity.Entity target,net.minecraft.world.damagesource.DamageSource source,float amount) {
-        return net.everla.projectc.arkofcosmos.combat.CalamityAttackGuard.hurt(target,source,amount);
+    @WrapOperation(method="onHitEntity",at=@At(value="INVOKE",target="Lnet/minecraft/world/entity/Entity;hurt(Lnet/minecraft/world/damagesource/DamageSource;F)Z"))
+    private boolean fourthArrowDamage(net.minecraft.world.entity.Entity target,net.minecraft.world.damagesource.DamageSource source,float amount,Operation<Boolean> original) {
+        return net.everla.projectc.arkofcosmos.combat.CalamityAttackGuard.hurt(target,source,amount,()->original.call(target,source,amount));
     }
-    @Redirect(method="onHitEntity",at=@At(value="INVOKE",target="Lnet/minecraft/world/entity/LivingEntity;getAttributeValue(Lnet/minecraft/world/entity/ai/attributes/Attribute;)D"))
-    private double fourthArrowResistance(LivingEntity victim,Attribute attribute) {
+    @WrapOperation(method="onHitEntity",at=@At(value="INVOKE",target="Lnet/minecraft/world/entity/LivingEntity;getAttributeValue(Lnet/minecraft/world/entity/ai/attributes/Attribute;)D"))
+    private double fourthArrowResistance(LivingEntity victim,Attribute attribute,Operation<Double> original) {
         if(!(victim instanceof net.everla.projectc.arkofcosmos.entity.FourthCalamityEntity)&&attribute==Attributes.KNOCKBACK_RESISTANCE
             &&((AbstractArrow)(Object)this).getOwner() instanceof net.everla.projectc.arkofcosmos.entity.FourthCalamityEntity)return 0;
-        return victim.getAttributeValue(attribute);
+        return original.call(victim,attribute);
     }
 }

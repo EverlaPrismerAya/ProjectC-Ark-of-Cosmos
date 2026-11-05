@@ -1,4 +1,6 @@
 package net.everla.projectc.arkofcosmos.mixin.entity.combat;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 
 import net.everla.projectc.arkofcosmos.combat.ArkDamage;
 import net.minecraft.nbt.CompoundTag;
@@ -7,7 +9,7 @@ import net.minecraft.world.entity.LivingEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
+
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(value = LivingEntity.class, remap = false)
@@ -34,9 +36,12 @@ abstract class LivingEntityMixin {
         }
     }
 
-    @Redirect(method = "die", remap = true, at = @At(value = "INVOKE",
+    @WrapOperation(method = "die", remap = true, at = @At(value = "INVOKE",
             target = "Lnet/minecraft/world/entity/LivingEntity;dropAllDeathLoot(Lnet/minecraft/world/damagesource/DamageSource;)V"))
-    private void ark$deathLoot(LivingEntity entity, DamageSource source) { ArkDamage.deathLoot(entity, source); }
+    private void ark$deathLoot(LivingEntity entity, DamageSource source, Operation<Void> original) {
+        if(ArkDamage.finishing(entity))ArkDamage.deathLoot(entity,source);
+        else original.call(entity,source);
+    }
 
     @Inject(method = "<clinit>", at = @At("TAIL"))
     private static void ark$bootstrap(CallbackInfo ci) { ArkDamage.bootstrap(); }

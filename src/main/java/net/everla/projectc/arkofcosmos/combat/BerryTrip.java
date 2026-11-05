@@ -56,7 +56,10 @@ public final class BerryTrip {
         checkTrip(p);
     }
     public static boolean berryDamage(Entity entity,net.minecraft.world.damagesource.DamageSource source,float amount){
-        if(!(entity instanceof Player p)||!HaloCompat.equipped(p,"halo_of_the_end"))return entity.hurt(source,amount);
+        return berryDamage(entity,source,amount,()->entity.hurt(source,amount));
+    }
+    public static boolean berryDamage(Entity entity,net.minecraft.world.damagesource.DamageSource source,float amount,java.util.function.BooleanSupplier original){
+        if(!(entity instanceof Player p)||!HaloCompat.equipped(p,"halo_of_the_end"))return original.getAsBoolean();
         var berrySource=new net.minecraft.world.damagesource.DamageSource(p.level().registryAccess()
                 .registryOrThrow(net.minecraft.core.registries.Registries.DAMAGE_TYPE).getHolderOrThrow(HALO_BERRY_DAMAGE));
         if(!ArkDamage.hurtAtInterval(p,10,()->ArkDamage.hurtUnmitigated(p,berrySource,1)))return false;
