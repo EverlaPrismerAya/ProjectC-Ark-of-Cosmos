@@ -43,7 +43,9 @@
     "client.spear.SpearHumanoidMixin",
     "client.spear.SpearHeldItemMixin",
     "client.spear.SpearMovementMixin",
-    "client.gui.BeaconSummonScreenMixin"
+    "client.gui.BeaconSummonScreenMixin",
+    "client.berryTrip.BerryTripPlayerRendererMixin",
+    "client.berryTrip.BerryTripPlayerModelMixin"
   ],
   "injectors": {
     "defaultRequire": 1

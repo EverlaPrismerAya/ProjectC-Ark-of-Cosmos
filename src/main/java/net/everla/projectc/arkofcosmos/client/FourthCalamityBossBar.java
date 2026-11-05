@@ -43,7 +43,7 @@ public final class FourthCalamityBossBar {
     public static void update(UUID id,int phase,int bars) {
         if(phase==0)BARS.remove(id);else BARS.computeIfAbsent(id,key->new State(bars)).setBars(bars);
     }
-    @SubscribeEvent public static void logout(ClientPlayerNetworkEvent.LoggingOut event) { BARS.clear();ApollyonBossBar.clear(); }
+    @SubscribeEvent public static void logout(ClientPlayerNetworkEvent.LoggingOut event) { BARS.clear();ApollyonBossBar.clear();net.everla.projectc.arkofcosmos.combat.BerryTrip.clearClient(); }
     @SubscribeEvent public static void render(CustomizeGuiOverlayEvent.BossEventProgress event) {
         State state=BARS.get(event.getBossEvent().getId());if(state==null)return;
         float progress=((BossBarProgressAccessor)event.getBossEvent()).arkofcosmos$targetProgress();

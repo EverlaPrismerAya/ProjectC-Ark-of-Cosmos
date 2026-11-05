@@ -64,6 +64,10 @@ public final class ArkEffects {
         ArkFxParticle a=particle(SQUISH,p,v,c,range(.3,.6),60,f); a.squish=squish; a.hueShift=hue;
     }
     public static void receive(CompoundTag data){
+        if(data.getString("Event").equals("berry_trip")){
+            if(Minecraft.getInstance().level!=null)net.everla.projectc.arkofcosmos.combat.BerryTrip.clientStart(data.getInt("Entity"),Minecraft.getInstance().level.getGameTime());
+            return;
+        }
         if(data.getString("Event").equals("broken_biome_fx")){net.everla.projectc.arkofcosmos.client.BiomeEffects.receive(data);return;}
         if(data.getString("Event").equals("biome_fx")){net.everla.projectc.arkofcosmos.client.BiomeEffects.receive(data);return;}
         if(data.getString("Event").equals("true_biome_sound")){net.everla.projectc.arkofcosmos.client.TrueBiomeAudio.receive(data);return;}
