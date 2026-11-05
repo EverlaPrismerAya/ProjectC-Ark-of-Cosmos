@@ -163,6 +163,19 @@ tasks.register('verifyMixinSrg') {
     }
 }
 tasks.named('check').configure { dependsOn 'verifyMixinSrg' }
+
+// MixinExtras annotations also need refmap entries; @Shadow checks cannot cover them.
+tasks.register('verifyMixinRefmap', JavaExec) {
+    dependsOn 'reobfJar', 'reobfJarJar'
+    javaLauncher = javaToolchains.launcherFor { languageVersion = JavaLanguageVersion.of(17) }
+    classpath = sourceSets.main.compileClasspath
+    mainClass = file('gradle/MixinRefmapAudit.java').absolutePath
+    doFirst {
+        args = [tasks.named('jar').get().archiveFile.get().asFile.absolutePath,
+                tasks.named('jarJar').get().archiveFile.get().asFile.absolutePath]
+    }
+}
+tasks.named('check').configure { dependsOn 'verifyMixinRefmap' }
 repositories {
     // Optional local mirror of verified downloads for unreliable/offline networks.
     maven { url = uri('sample/runtime-maven') }
@@ -190,6 +203,7 @@ dependencies {
     runtimeOnly fg.deobf('maven.modrinth:relicera:uUTChve3') // 1.2.5; combat Mixin compatibility coverage.
     runtimeOnly fg.deobf('maven.modrinth:endinglibrary:c92g58AC') // 2.2.3; required by RevelationFix.
     compileOnly 'io.github.llamalad7:mixinextras-common:0.5.0'
+    annotationProcessor 'io.github.llamalad7:mixinextras-common:0.5.0'
     runtimeOnly 'io.github.llamalad7:mixinextras-forge:0.5.0'
     jarJar('io.github.llamalad7:mixinextras-forge:0.5.0') {
         jarJar.ranged(it, '[0.5.0,0.6)')
