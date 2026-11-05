@@ -43,7 +43,12 @@ public final class SpearCombat {
     public static int sequence(LivingEntity e) { State state=STATES.get(e);return state==null?0:state.sequence; }
     public static void stop(LivingEntity e) { State s=STATES.get(e);if(s!=null)s.contacts.clear(); }
     public static boolean condition(int used,int until,double speed,double threshold,float factor) { return used<=until&&speed>=threshold*factor; }
-    public static float kineticDamage(float base,double attacker,double target,float multiplier) { return base+Mth.floor(Math.max(0,attacker-target)*multiplier); }
+    public static float kineticDamage(float base,double relative,float multiplier,double threshold) {
+        relative=Math.max(0,relative);
+        if(relative>=threshold)return Math.max(1,base+Mth.floor(relative*multiplier));
+        double full=Math.max(1,base+Mth.floor(threshold*multiplier));
+        return (float)(1+(full-1)*Math.expm1(3*relative/threshold)/Math.expm1(3));
+    }
     public static void kinetic(LivingEntity attacker,ItemStack stack,int used) {
         if(!(stack.getItem() instanceof SpearItem spear)||!attacker.isAlive())return;
         SpearMaterial m=spear.material;int active=used-m.delayTicks();if(active<0)return;
@@ -56,8 +61,8 @@ public final class SpearCombat {
             double relative=Math.max(0,speed-look.dot(motion(target).scale(20)));
             boolean dismount=condition(active,m.dismountTicks(),speed,m.dismountSpeed(),factor);
             boolean knockback=condition(active,m.knockbackTicks(),speed,m.knockbackSpeed(),factor);
-            boolean damage=condition(active,m.damageTicks(),relative,m.relativeSpeed(),factor);
-            if(dismount||knockback||damage)affected|=stab(attacker,target,stack,kineticDamage((float)attacker.getAttributeBaseValue(Attributes.ATTACK_DAMAGE),speed,speed-relative,m.multiplier()),damage,knockback,dismount);
+            boolean damage=active<=m.damageTicks();
+            if(dismount||knockback||damage)affected|=stab(attacker,target,stack,kineticDamage((float)attacker.getAttributeBaseValue(Attributes.ATTACK_DAMAGE),relative,m.multiplier(),m.relativeSpeed()*factor),damage,knockback,dismount);
         }
         if(affected){sound(attacker,spear,"hit");net.everla.projectc.arkofcosmos.network.ArkNetwork.spearFeedback(attacker);}
     }
