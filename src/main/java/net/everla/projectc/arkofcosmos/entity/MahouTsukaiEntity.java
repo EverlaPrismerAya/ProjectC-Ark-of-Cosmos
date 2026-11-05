@@ -27,6 +27,7 @@ public final class MahouTsukaiEntity extends PathfinderMob implements net.minecr
 
     private boolean phaseRecovering;
     private boolean mistilteinnEnraged;
+    private java.util.UUID mistilteinnProvoker;
     private boolean defeatLooted;
     private java.util.UUID shikigami;
     private boolean shikigamiSummoned;
@@ -102,9 +103,10 @@ public final class MahouTsukaiEntity extends PathfinderMob implements net.minecr
     public boolean phaseRecovering() { return phaseRecovering; }
     public float outgoingDamageMultiplier() { return mistilteinnEnraged ? 6f : 1f; }
     void rageAttackDialogue(int kind) { if(mistilteinnEnraged)dialogue.enragedAttack(this,kind); }
-    public boolean enrageWithMistilteinn() {
+    public boolean enrageWithMistilteinn(net.minecraft.world.entity.player.Player attacker) {
         if(level().isClientSide||phase()!=2||!isAlive()||defeating())return false;
         mistilteinnEnraged=true;
+        mistilteinnProvoker=attacker.getUUID();
         bossEvent.setColor(BossEvent.BossBarColor.RED);
         healthWriteDepth++;
         try { setHealth(getMaxHealth()); }
@@ -296,6 +298,16 @@ public final class MahouTsukaiEntity extends PathfinderMob implements net.minecr
     public void removeByPlayerCommand() {
         clearCombatEntities();
         discard();
+    }
+
+    @Override public void awardKillScore(Entity victim,int score,DamageSource source) {
+        super.awardKillScore(victim,score,source);
+        if(!level().isClientSide&&mistilteinnEnraged&&source.getEntity()==this
+                &&victim instanceof net.minecraft.world.entity.player.Player
+                &&victim.getUUID().equals(mistilteinnProvoker)) {
+            clearCombatEntities();
+            discard();
+        }
     }
 
     @Override public void die(DamageSource source) {
@@ -493,6 +505,7 @@ public final class MahouTsukaiEntity extends PathfinderMob implements net.minecr
         shikigamiSummoned=tag.getBoolean("ShikigamiSummoned");
         phaseRecovering = phase() < MAX_PHASE && tag.getBoolean("PhaseRecovering");
         mistilteinnEnraged=tag.getBoolean("MistilteinnEnraged");
+        mistilteinnProvoker=tag.hasUUID("MistilteinnProvoker")?tag.getUUID("MistilteinnProvoker"):null;
         bossEvent.setColor(mistilteinnEnraged?BossEvent.BossBarColor.RED:BossEvent.BossBarColor.WHITE);
         // Minimal summon NBT is not a saved boss; do not erase its constructor's entrance.
         int transition=tag.contains("PhaseTransitionTicks")?tag.getInt("PhaseTransitionTicks"):
@@ -511,6 +524,7 @@ public final class MahouTsukaiEntity extends PathfinderMob implements net.minecr
         tag.putByte("Phase", (byte) phase());
         tag.putBoolean("PhaseRecovering", phaseRecovering);
         tag.putBoolean("MistilteinnEnraged", mistilteinnEnraged);
+        if(mistilteinnProvoker!=null)tag.putUUID("MistilteinnProvoker",mistilteinnProvoker);
         tag.putInt("PhaseTransitionTicks",phaseTransitionTicks());
         tag.putInt("NonPlayerInvulnerabilityTicks",(int)Math.max(0,nonPlayerInvulnerableUntil-level().getGameTime()));
         tag.putInt("DefeatTicks", defeatTicks());

@@ -38,7 +38,7 @@ public final class MistilteinnItem extends SwordItem {
             if (!attacker.level().isClientSide
                     && attacker.getMainHandItem().getItem() instanceof MistilteinnItem
                     && event.getTarget() instanceof net.everla.projectc.arkofcosmos.entity.MahouTsukaiEntity boss
-                    && boss.enrageWithMistilteinn()) {
+                    && boss.enrageWithMistilteinn(attacker)) {
                 event.setCanceled(true);
                 attacker.resetAttackStrengthTicker();
                 ArkOfCosmos.sound(boss, "bonk", 1);
