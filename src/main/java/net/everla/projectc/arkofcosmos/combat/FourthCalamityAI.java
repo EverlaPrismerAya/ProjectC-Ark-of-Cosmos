@@ -225,10 +225,9 @@ public final class FourthCalamityAI {
         if(!boss.getOffhandItem().is(VanillaCombat.SPEARS.get("netherite").get())) {
             var spear=new net.minecraft.world.item.ItemStack(VanillaCombat.SPEARS.get("netherite").get());
             spear.getOrCreateTag().putBoolean("Unbreakable",true);
-            spear.enchant(net.minecraft.world.item.enchantment.Enchantments.SHARPNESS,5);
-            spear.enchant(net.minecraft.world.item.enchantment.Enchantments.FIRE_ASPECT,2);
             boss.setItemSlot(EquipmentSlot.OFFHAND,spear);
         }
+        FourthCalamityActions.enchantWeapon(boss.getOffhandItem());
         if(target!=null) {
             boss.setTarget(target);hadTarget=true;
             if(air!=Air.READY&&air!=Air.CHARGE)enterAir(Air.READY);

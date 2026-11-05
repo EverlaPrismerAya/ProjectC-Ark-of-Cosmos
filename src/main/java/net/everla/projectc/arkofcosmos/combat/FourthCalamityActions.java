@@ -56,13 +56,23 @@ public final class FourthCalamityActions {
         boss.setItemSlot(EquipmentSlot.MAINHAND,stack);
         boss.getAttributes().addTransientAttributeModifiers(stack.getAttributeModifiers(EquipmentSlot.MAINHAND));
     }
-    private static void enchantWeapon(ItemStack stack) {
+    static void enchantWeapon(ItemStack stack) {
         Item item=stack.getItem();
+        if(item instanceof net.everla.projectc.arkofcosmos.item.SpearItem||item==Items.NETHERITE_SWORD) {
+            enchant(stack,Enchantments.SHARPNESS,5);
+            enchant(stack,Enchantments.SMITE,5);
+            enchant(stack,Enchantments.BANE_OF_ARTHROPODS,5);
+            if(net.minecraftforge.fml.ModList.get().isLoaded("goety_revelation")) {
+                var piercer=net.minecraftforge.registries.ForgeRegistries.ENCHANTMENTS.getValue(
+                        net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("goety_revelation","reality_piercer"));
+                if(piercer!=null)enchant(stack,piercer,10);
+            }
+        }
         if(item instanceof net.everla.projectc.arkofcosmos.item.SpearItem) {
-            enchant(stack,Enchantments.SHARPNESS,5);enchant(stack,Enchantments.FIRE_ASPECT,2);
+            enchant(stack,Enchantments.FIRE_ASPECT,2);
         } else if(item==VanillaCombat.MACE.get())enchant(stack,VanillaCombat.DENSITY.get(),5);
         else if(item==Items.NETHERITE_SWORD) {
-            enchant(stack,Enchantments.SHARPNESS,5);enchant(stack,Enchantments.KNOCKBACK,2);enchant(stack,Enchantments.FIRE_ASPECT,2);
+            enchant(stack,Enchantments.KNOCKBACK,2);enchant(stack,Enchantments.FIRE_ASPECT,2);
         } else if(item==Items.CROSSBOW) {
             enchant(stack,Enchantments.QUICK_CHARGE,3);enchant(stack,Enchantments.MULTISHOT,1);
         } else if(item==Items.BOW) {
