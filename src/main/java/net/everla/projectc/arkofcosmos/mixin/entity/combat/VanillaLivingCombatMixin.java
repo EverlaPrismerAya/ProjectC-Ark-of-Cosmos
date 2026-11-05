@@ -6,6 +6,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.util.Mth;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.*;
+import com.llamalad7.mixinextras.injector.WrapWithCondition;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(LivingEntity.class)
@@ -16,10 +17,11 @@ public abstract class VanillaLivingCombatMixin {
             &&Boolean.TRUE.equals(net.everla.projectc.arkofcosmos.combat.CalamityAttackGuard.FULL_KNOCKBACK.get()))return 0;
         return victim.getAttributeValue(attribute);
     }
-    @Redirect(method="hurt",at=@At(value="INVOKE",target="Lnet/minecraft/world/entity/LivingEntity;knockback(DDD)V"))
-    private void spearBaseKnockback(LivingEntity victim,double power,double x,double z,DamageSource source,float damage) {
+    // Keep the invocation available to other mods' knockback argument modifiers.
+    @WrapWithCondition(method="hurt",at=@At(value="INVOKE",target="Lnet/minecraft/world/entity/LivingEntity;knockback(DDD)V"))
+    private boolean spearBaseKnockback(LivingEntity victim,double power,double x,double z,DamageSource source,float damage) {
         var key=source.typeHolder().unwrapKey().orElse(null);
-        if(key==null||!key.location().toString().equals("arkofcosmos:spear"))victim.knockback(power,x,z);
+        return key==null||!key.location().toString().equals("arkofcosmos:spear");
     }
     @Inject(method="getCurrentSwingDuration",at=@At("HEAD"),cancellable=true)
     private void spearDuration(CallbackInfoReturnable<Integer> ci) {
