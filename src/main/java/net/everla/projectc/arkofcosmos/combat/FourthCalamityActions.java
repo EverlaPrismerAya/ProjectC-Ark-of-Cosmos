@@ -78,7 +78,7 @@ public final class FourthCalamityActions {
         long now=boss.level().getServer().getTickCount();if(useTick==now)return false;useTick=now;return true;
     }
     public boolean attackBudget() {
-        long now=boss.level().getServer().getTickCount();if(attackTick==now)return false;attackTick=now;return true;
+        long now=boss.level().getServer().getTickCount();if(attackTick==now)return false;attackTick=now;boss.attackDialogue();return true;
     }
     public boolean attackAvailable() { return attackTick!=boss.level().getServer().getTickCount(); }
     public void diagnostic(String step,BlockPos base,CrystalResult result,String reason) {
@@ -530,7 +530,9 @@ public final class FourthCalamityActions {
         var charge=new net.everla.projectc.arkofcosmos.entity.PlayerWindCharge(VanillaCombat.WIND_CHARGE.get(),boss.level());
         charge.setOwner(boss);charge.setPos(boss.getX(),boss.getEyeY(),boss.getZ());
         Vec3 direction=landing.subtract(charge.position());charge.shoot(direction.x,direction.y,direction.z,1.5f,0);
-        return boss.level().addFreshEntity(charge);
+        boolean spawned=boss.level().addFreshEntity(charge);
+        if(spawned)boss.attackDialogue();
+        return spawned;
     }
     public boolean maceMelee(LivingEntity target) {
         if(!target.isAlive()||boss.distanceToSqr(target)>9||!attackBudget())return false;

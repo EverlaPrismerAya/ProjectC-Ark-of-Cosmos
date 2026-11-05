@@ -5,6 +5,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.stats.Stats;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.level.ServerLevel;
+import net.everla.projectc.arkofcosmos.combat.MahouProgress;
 
 /** Server side boss dialogue broadcast within 128 blocks, localized on each client. */
 final class MahouDialogue {
@@ -15,7 +16,7 @@ final class MahouDialogue {
     private boolean defeatedBefore(MahouTsukaiEntity boss) {
         return boss.level() instanceof ServerLevel level && level.players().stream().anyMatch(
                 p -> boss.distanceToSqr(p) <= 128 * 128
-                        && p.getPersistentData().getBoolean("arkofcosmos_mahou_defeated"));
+                        && MahouProgress.defeated(p));
     }
 
     private ServerPlayer target(MahouTsukaiEntity boss) {
@@ -70,7 +71,7 @@ final class MahouDialogue {
     void summoned(MahouTsukaiEntity boss){ if(!summon){summon=true;say(boss,defeatedBefore(boss)?"dialogue.arkofcosmos.mahou.summon_repeat":"dialogue.arkofcosmos.mahou.summon");} }
     void defeatedSummon(MahouTsukaiEntity boss){ if(!summonDead){summonDead=true;say(boss,defeatedBefore(boss)?"dialogue.arkofcosmos.mahou.summon_dead_repeat":"dialogue.arkofcosmos.mahou.summon_dead");} }
     void vortex(MahouTsukaiEntity boss){ if(!vortex){vortex=true;if(defeatedBefore(boss))say(boss,"dialogue.arkofcosmos.mahou.vortex_repeat");} }
-    void beginDefeat(MahouTsukaiEntity boss){ defeatRepeat=defeatedBefore(boss); ServerPlayer p=target(boss); if(p==null)return; p.getPersistentData().putBoolean("arkofcosmos_mahou_defeated",true); defeatLine=0; }
+    void beginDefeat(MahouTsukaiEntity boss){ defeatRepeat=defeatedBefore(boss); ServerPlayer p=target(boss); if(p==null)return; MahouProgress.markDefeated(p); defeatLine=0; }
     void defeatTick(MahouTsukaiEntity boss){ if(defeatLine<4&&boss.defeatTicks()%20==0)say(boss,"dialogue.arkofcosmos.mahou.defeat_"+(++defeatLine)+(defeatRepeat?"_repeat":"")); }
     void disappeared(MahouTsukaiEntity boss){ if(!boss.level().isClientSide)say(boss,"dialogue.arkofcosmos.mahou.disappear"); }
 }

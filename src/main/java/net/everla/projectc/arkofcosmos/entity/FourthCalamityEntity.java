@@ -43,6 +43,19 @@ public final class FourthCalamityEntity extends Monster {
     private boolean finishingDefeat,nativeDeath;
     private int healthWriteDepth;
 
+    public void attackDialogue() {
+        if(level().isClientSide||defeated())return;
+        if(combat.selfDefending())say("dialogue.arkofcosmos.fourth.kill_aura");
+        else if(random.nextFloat()<.05f)say(random.nextBoolean()
+                ?"dialogue.arkofcosmos.fourth.yeeeart":"dialogue.arkofcosmos.fourth.washooooi");
+    }
+
+    private void say(String key) {
+        if(!(level() instanceof ServerLevel server))return;
+        Component message=Component.empty().append(Component.translatable("dialogue.arkofcosmos.fourth.name")).append(" ").append(Component.translatable(key));
+        for(ServerPlayer player:server.players())if(distanceToSqr(player)<=128*128)player.sendSystemMessage(message);
+    }
+
     /** One native hurt transaction, including event handlers which write health directly. */
     private final class Defense {
         final float armor=getArmorValue(),toughness=(float)getAttributeValue(Attributes.ARMOR_TOUGHNESS);
@@ -156,6 +169,9 @@ public final class FourthCalamityEntity extends Monster {
         if(key==DEFEAT_TICKS&&defeated()&&getBbHeight()>.4f)refreshDimensions();
     }
     private void beginDefeat(DamageSource source) {
+        beginDefeat(source,true);
+    }
+    private void beginDefeat(DamageSource source,boolean announce) {
         if(defeated())return;
         nativeDeath=false;writeHealth(1);defeatSource=source;entityData.set(DEFEAT_TICKS,0);
         // Mark death as already handled so external death adapters cannot repeat native loot/packets.
@@ -166,6 +182,10 @@ public final class FourthCalamityEntity extends Monster {
         setDeltaMovement(net.minecraft.world.phys.Vec3.ZERO);
         setItemSlot(EquipmentSlot.MAINHAND,ItemStack.EMPTY);setItemSlot(EquipmentSlot.OFFHAND,ItemStack.EMPTY);
         refreshDimensions();
+        if(announce&&!level().isClientSide) {
+            ArkOfCosmos.sound(this,"wilhelm_scream",1);
+            say("dialogue.arkofcosmos.fourth.defeat");
+        }
         if(!level().isClientSide&&source.getEntity() instanceof MahouTsukaiEntity mahou)mahou.discard();
     }
 
@@ -360,7 +380,7 @@ public final class FourthCalamityEntity extends Monster {
         super.readAdditionalSaveData(tag);clearStatusEffects();setGliding(false);combat.stop();
         nonPlayerInvulnerableUntil=level().getGameTime()+Mth.clamp(tag.getInt("NonPlayerInvulnerabilityTicks"),0,10);
         if(tag.contains("FourthDefeatTicks")) {
-            beginDefeat(damageSources().generic());
+            beginDefeat(damageSources().generic(),false);
             entityData.set(DEFEAT_TICKS,Mth.clamp(tag.getInt("FourthDefeatTicks"),0,DEFEAT_DURATION-1));
         }
     }

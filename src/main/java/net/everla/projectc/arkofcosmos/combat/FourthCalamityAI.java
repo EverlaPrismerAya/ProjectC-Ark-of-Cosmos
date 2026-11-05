@@ -62,6 +62,7 @@ public final class FourthCalamityAI {
     private double maceDiveY;
     private Vec3 riptideVelocity;
     private int defenseTicks;
+    public boolean selfDefending() { return defenseTicks>0; }
     private final java.util.Set<LivingEntity> defenseAttackers=new java.util.HashSet<>();
     public void crystalBlast(LivingEntity target) {
         if(target!=boss.getTarget()||air!=Air.GROUND)return;
@@ -280,6 +281,7 @@ public final class FourthCalamityAI {
         boss.setRiptideTicks(20);boss.resetFallDistance();
         if(boss.onGround())boss.move(MoverType.SELF,new Vec3(0,1.1999999,0));
         boss.playSound(net.minecraft.sounds.SoundEvents.TRIDENT_RIPTIDE_3,1,1);
+        boss.attackDialogue();
         VanillaCombat.syncMotion(boss);riptideCharge=0;riptideCooldown=20;
         return true;
     }
@@ -697,6 +699,7 @@ public final class FourthCalamityAI {
         if(defenseTicks==0)boss.actions.hold(VanillaCombat.SPEARS.get("netherite").get());
         if(!boss.isUsingItem()) {
             boss.startUsingItem(defenseTicks>0?net.minecraft.world.InteractionHand.OFF_HAND:net.minecraft.world.InteractionHand.MAIN_HAND);SpearCombat.start(boss);
+            boss.attackDialogue();
             spearSequence=SpearCombat.sequence(boss);
         }
     }

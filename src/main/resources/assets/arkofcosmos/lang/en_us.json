@@ -138,8 +138,8 @@
   "effect.arkofcosmos.old_one_daybreak": "Daybroken",
   "effect.arkofcosmos.old_one_celled": "Stardust Cell",
   "entity.arkofcosmos.the_player": "The Fourth Calamity",
-  "boss.arkofcosmos.the_player": "'I’m Angry When I‘m Angry', Kira Official",
-  "boss.arkofcosmos.the_player.name": "Kira Official",
+  "boss.arkofcosmos.the_player": "'I’m Angry When I‘m Angry', Kirara Official",
+  "boss.arkofcosmos.the_player.name": "Kirara Official",
   "boss.arkofcosmos.the_player.title": "'I’m Angry When I‘m Angry'",
   "item.arkofcosmos.the_player_spawn_egg": "The Fourth Calamity Spawn Egg",
   "item.arkofcosmos.annihilation_ember": "Ashes of Annihilation",
@@ -233,5 +233,10 @@
   "dialogue.arkofcosmos.mahou.rage_fusion": "Die! Just die!",
   "dialogue.arkofcosmos.mahou.rage_purple": "Die die die die die die!!!!",
   "dialogue.arkofcosmos.mahou.rage_blue_dash": "Ion-shu!",
-  "dialogue.arkofcosmos.mahou.rage_domain": "Hareruya Daisenpū!!!"
+  "dialogue.arkofcosmos.mahou.rage_domain": "Hareruya Daisenpū!!!",
+  "dialogue.arkofcosmos.fourth.name": "<Kirara>",
+  "dialogue.arkofcosmos.fourth.yeeeart": "Yeeeart！",
+  "dialogue.arkofcosmos.fourth.washooooi": "Washoooooi！",
+  "dialogue.arkofcosmos.fourth.kill_aura": "Yahhhhh! Kill Aura!!!!",
+  "dialogue.arkofcosmos.fourth.defeat": "It hurts so much, it hurts so much!"
 }

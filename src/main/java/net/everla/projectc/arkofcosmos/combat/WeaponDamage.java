@@ -32,6 +32,7 @@ public final class WeaponDamage {
         boolean mahouHit=source.getEntity() instanceof net.everla.projectc.arkofcosmos.entity.MahouTsukaiEntity;
         var fourth=CalamityAttackGuard.damageOwner(source);
         boolean fourthHit=fourth!=null&&target!=fourth;
+        if(fourthHit&&fourth.combat.selfDefending())amount*=6;
         boolean bossHit = mahouHit || fourthHit || target instanceof Player
                 && source.getEntity() instanceof net.everla.projectc.arkofcosmos.entity.MahoragaWardenEntity;
         long now = target.level().getGameTime();
