@@ -15,6 +15,8 @@ public final class WeaponDamage {
     }
 
     public static boolean hurt(LivingEntity target, DamageSource source, float amount) {
+        amount=net.everla.projectc.arkofcosmos.ProjectCCommonConfig.bossDamage(target,source,amount);
+        if(amount<=0)return false;
         // Keep native boss mitigation, but preserve player/servant weapons' hurt-frame bypass.
         if(target instanceof net.everla.projectc.arkofcosmos.entity.FourthCalamityEntity) {
             if(!WeaponUser.playerOwnedDamage(source))return target.hurt(source,amount);

@@ -122,7 +122,7 @@ public final class FracturedEntity extends Entity {
     private void hitLine(Player p, Vec3 from, Vec3 to, double width) {
         for (LivingEntity t : level().getEntitiesOfClass(LivingEntity.class, new AABB(from, to).inflate(width / 2 + 2), e -> ArkCombat.canHit(p, e))) {
             if (hit.contains(t.getId()) || !ArkGeometry.line(t.getBoundingBox(), from, to, width, frame)) continue;
-            float multiplier = damage / FracturedRules.BASE_DAMAGE;
+            float multiplier = damage / FracturedRules.baseDamage();
             float amount = damage + EnchantmentHelper.getDamageBonus(weapon, t.getMobType()) * multiplier;
             LivingEntity previous = HURTING.get(); HURTING.set(t);
             boolean success;

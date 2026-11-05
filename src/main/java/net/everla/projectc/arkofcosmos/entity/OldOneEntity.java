@@ -239,7 +239,7 @@ public final class OldOneEntity extends Entity {
         long now=level().getGameTime()*3+Math.min(2,(age-1)%3);
         if((cooldown==0||kind==Kind.SOLAR_EXPLOSION)&&OWNER_IMMUNITY.getOrDefault(t,Map.of()).getOrDefault(ownerUuid,0L)>now)return;
         DamageSource source=kind==Kind.SWORD&&!ArkDamage.netherApollyon(t)?t.damageSources().playerAttack(p):new DamageSource(level().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(DamageTypes.PLAYER_ATTACK),this,p);
-        float amount=(float)Math.rint((20+net.minecraft.world.item.enchantment.EnchantmentHelper.getDamageBonus(weapon,t.getMobType()))*(1f+(random.nextInt(31)-15)*.01f));
+        float amount=(float)Math.rint((net.everla.projectc.arkofcosmos.ProjectCCommonConfig.damage("ark_of_the_old_one")+net.minecraft.world.item.enchantment.EnchantmentHelper.getDamageBonus(weapon,t.getMobType()))*(1f+(random.nextInt(31)-15)*.01f));
         // Native melee base crit 4 plus the item's 15 percentage points; source critical multiplier is two.
         if(kind!=Kind.SOLAR_EXPLOSION&&random.nextInt(100)<19)amount*=2;
         if(!ArkDamage.hurtUnmitigated(t,source,amount))return;

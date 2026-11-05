@@ -58,7 +58,7 @@ public final class TrueBiomeCombat {
                 TrueBiomeEntity.passive(p,0);sound(p,p,"galaxia_item78",1,0,true,true);c.timer++;
             }
             if(secondary==1)TrueBiomeEntity.ensureHook(p,c.proc);
-            if(secondary==2&&c.proc)p.heal(net.everla.projectc.arkofcosmos.calamity.combat.GalaxiaRules.damage(7));
+            if(secondary==2&&c.proc)p.heal(net.everla.projectc.arkofcosmos.calamity.combat.GalaxiaRules.originalDamage(7));
             if(secondary==3&&c.timer%120==119){TrueBiomeEntity.passive(p,3);c.timer++;}
             if(secondary==1||secondary==2)c.proc=false;
         }

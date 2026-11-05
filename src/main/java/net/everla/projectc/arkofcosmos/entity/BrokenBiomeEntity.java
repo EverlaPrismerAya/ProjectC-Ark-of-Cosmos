@@ -175,7 +175,7 @@ public final class BrokenBiomeEntity extends Entity {
         if(kind==BLADE){
             if(mode==HOT&&cooldown<=0){shred+=62;cooldown=20;invulnerable(p,6);if(p.getDeltaMovement().y<0)impulse(p,p.getDeltaMovement().multiply(1,0,1).add(0,2*3/16d,0));sound(p,"galaxia_hit30");}
             if(mode==COLD&&combo==2)BrokenBiomeFreeze.apply(t,20);
-            if(mode==EVIL&&!bounced){p.heal(net.everla.projectc.arkofcosmos.calamity.combat.GalaxiaRules.damage(2));double speed=Math.min(22*3/16d,Math.max(8*3/16d,p.getDeltaMovement().length())*(p.onGround()?.2:1));impulse(p,direction.scale(-speed));bounced=true;invulnerable(p,10);}
+            if(mode==EVIL&&!bounced){p.heal(net.everla.projectc.arkofcosmos.calamity.combat.GalaxiaRules.originalDamage(2));double speed=Math.min(22*3/16d,Math.max(8*3/16d,p.getDeltaMovement().length())*(p.onGround()?.2:1));impulse(p,direction.scale(-speed));bounced=true;invulnerable(p,10);}
         }
         if(critical)event("critical",center(t),center(t).subtract(center(p)).normalize());
         return true;

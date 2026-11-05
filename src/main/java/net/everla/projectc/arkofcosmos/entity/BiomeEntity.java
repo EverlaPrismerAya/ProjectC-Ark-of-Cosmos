@@ -258,7 +258,7 @@ public final class BiomeEntity extends Entity {
             if(mode==PURE){BiomeEntity sigil=BiomeCombat.attacks(p).stream().filter(e->e.kind==SIGIL).findFirst().orElse(null);if(sigil==null){sigil=create(p,SIGIL,PURE,center(t),frame,0,900);sigil.target=t;sigil.spawn();}else{sigil.target=t;sigil.left=900;}}
             if(mode==HOT&&cooldown<=0){shred+=62;cooldown=20;invulnerable(p,8);if(p.getDeltaMovement().y<0)impulse(p,p.getDeltaMovement().multiply(1,0,1).add(0,2*3/16d,0));sound(p,"galaxia_hit30");}
             if(mode==COLD&&combo==2)t.addEffect(new net.minecraft.world.effect.MobEffectInstance(ArkOfCosmos.GLACIAL_STATE.get(),14));
-            if(mode==EVIL&&!charged&&!bounced){p.heal(net.everla.projectc.arkofcosmos.calamity.combat.GalaxiaRules.damage(2));double speed=Math.min(22*3/16d,Math.max(8*3/16d,p.getDeltaMovement().length())*(p.onGround()?.2:1));impulse(p,direction.scale(-speed));bounced=true;invulnerable(p,10);if(++BiomeCombat.control(p).power==3)sound(p,"galaxia_item79");}
+            if(mode==EVIL&&!charged&&!bounced){p.heal(net.everla.projectc.arkofcosmos.calamity.combat.GalaxiaRules.originalDamage(2));double speed=Math.min(22*3/16d,Math.max(8*3/16d,p.getDeltaMovement().length())*(p.onGround()?.2:1));impulse(p,direction.scale(-speed));bounced=true;invulnerable(p,10);if(++BiomeCombat.control(p).power==3)sound(p,"galaxia_item79");}
             if(mode==ASTRAL)invulnerable(p,20);
         }
         if(critical)event("critical",center(t),center(t).subtract(center(p)).normalize());

@@ -20,7 +20,11 @@ import net.minecraftforge.api.distmarker.Dist;
 public final class ArkNetwork {
     private ArkNetwork() {}
     private static final SimpleChannel CHANNEL = NetworkRegistry.newSimpleChannel(
-            ResourceLocation.fromNamespaceAndPath(ArkOfCosmos.MOD_ID, "input"), () -> "6", "6"::equals, "6"::equals);
+            ResourceLocation.fromNamespaceAndPath(ArkOfCosmos.MOD_ID, "input"), () -> "7", "7"::equals, "7"::equals);
+    private record CommonConfig(CompoundTag data) {}
+    public static void commonConfig(net.minecraft.server.level.ServerPlayer player,CompoundTag data) {
+        CHANNEL.send(PacketDistributor.PLAYER.with(()->player),new CommonConfig(data));
+    }
     public record Input(boolean left, boolean right, boolean alt) {
         static Input read(FriendlyByteBuf buffer) { return new Input(buffer.readBoolean(), buffer.readBoolean(), buffer.readBoolean()); }
         void write(FriendlyByteBuf buffer) { buffer.writeBoolean(left); buffer.writeBoolean(right); buffer.writeBoolean(alt); }
@@ -45,6 +49,9 @@ public final class ArkNetwork {
     private record BrokenBiomeInput(boolean left,int slot,int mode) {}
     public static void brokenBiome(boolean left,int slot,int mode){CHANNEL.sendToServer(new BrokenBiomeInput(left,slot,mode));}
     public static void register() {
+        CHANNEL.messageBuilder(CommonConfig.class,11,NetworkDirection.PLAY_TO_CLIENT)
+            .encoder((p,b)->b.writeNbt(p.data())).decoder(b->new CommonConfig(b.readNbt()))
+            .consumerMainThread((p,c)->net.everla.projectc.arkofcosmos.ProjectCCommonConfig.receive(p.data())).add();
         CHANNEL.messageBuilder(BrokenBiomeInput.class,10,NetworkDirection.PLAY_TO_SERVER)
             .encoder((p,b)->{b.writeBoolean(p.left());b.writeByte(p.slot());b.writeByte(p.mode());})
             .decoder(b->new BrokenBiomeInput(b.readBoolean(),b.readByte(),b.readByte()))

@@ -4,7 +4,10 @@ package net.everla.projectc.arkofcosmos.calamity.combat;
 public final class GalaxiaRules {
     private GalaxiaRules() {}
     public static final int PHOENIX = 0, ARIES = 1, POLARIS = 2, ANDROMEDA = 3;
-    public static float damage(double terraria) { return (float)(terraria * 16 / 1700); }
+    // Healing and boss-owned attacks keep their original conversion independently of player balance.
+    public static float originalDamage(double terraria) { return (float)(terraria*16/1700); }
+    public static float damage(double terraria) { return (float)(terraria * net.everla.projectc.arkofcosmos.ProjectCCommonConfig.damage("galaxia") / 1700); }
+    public static float originalBase(int mode) { return originalDamage(new int[]{1200, 1325, 1800, 2800}[mode]); }
     public static float base(int mode) { return damage(new int[]{1200, 1325, 1800, 2800}[mode]); }
     public static final int NAME_COLOR = 0x2B60DE;
     public static int tooltipColor(int mode) { return new int[]{0xFF5700, 0xC459C9, 0x80BDFF, 0x8480FF}[mode]; }

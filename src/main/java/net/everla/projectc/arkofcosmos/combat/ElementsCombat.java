@@ -49,7 +49,7 @@ public final class ElementsCombat {
             }else if(cooldown(p)==0){
                 c.parried=false;c.parryStack=stack;c.invulnerableUntil=p.level().getGameTime()+5;
                 c.cooldown=HaloCompat.cooldown(p,340);c.use=20;stack.getOrCreateTag().putInt("ElementsCooldown",c.cooldown);
-                ElementsEntity.create(p,ElementsEntity.PARRY,0,0,ElementsRules.BASE_DAMAGE,p.getBoundingBox().getCenter(),Vec3.ZERO,AttackFrame.capture(p));
+                ElementsEntity.create(p,ElementsEntity.PARRY,0,0,ElementsRules.baseDamage(),p.getBoundingBox().getCenter(),Vec3.ZERO,AttackFrame.capture(p));
             }
         }
         if(left)attack(p,c);
@@ -57,7 +57,7 @@ public final class ElementsCombat {
     private static void attack(ServerPlayer p,Controls c){
         if(c.use>0||active(p))return;
         ItemStack stack=p.getMainHandItem();int combo=Math.floorMod(stack.getOrCreateTag().getInt("ElementsCombo"),5),mode=ElementsRules.mode(combo),charge=HaloCompat.charge(p, ElementsItem.charge(stack), 10);
-        float damage=ElementsRules.charged(ElementsRules.BASE_DAMAGE,charge);AttackFrame f=AttackFrame.capture(p);
+        float damage=ElementsRules.charged(ElementsRules.baseDamage(),charge);AttackFrame f=AttackFrame.capture(p);
         swing(p,mode,charge,damage,f);
         stack.getOrCreateTag().putInt("ElementsCombo",(combo+1)%5);ElementsItem.charge(stack, HaloCompat.charge(p, ElementsRules.afterAttack(charge), 10));c.use=20;
     }

@@ -308,7 +308,7 @@ public final class TrueBiomeEntity extends Entity {
         if(kind==BLADE&&mode==TIDES)invulnerable(p,20);
         if(kind==HOOK)t.addEffect(new net.minecraft.world.effect.MobEffectInstance(ArkOfCosmos.GLACIAL_STATE.get(),34));
         if(kind==BEAM){t.addEffect(new net.minecraft.world.effect.MobEffectInstance(ArkOfCosmos.ARMOR_CRUNCH.get(),30));finish(p);}
-        if(kind==DASH)p.heal(net.everla.projectc.arkofcosmos.calamity.combat.GalaxiaRules.damage(4));
+        if(kind==DASH)p.heal(net.everla.projectc.arkofcosmos.calamity.combat.GalaxiaRules.originalDamage(4));
         return true;
     }
     private void finish(Player p){

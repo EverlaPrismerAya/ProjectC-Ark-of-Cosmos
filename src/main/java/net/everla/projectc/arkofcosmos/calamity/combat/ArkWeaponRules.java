@@ -6,9 +6,9 @@ import net.minecraft.util.Mth;
  */
 public final class ArkWeaponRules {
     private ArkWeaponRules() {}
-    public static final float BASE_DAMAGE = 16f;
+    public static float baseDamage() { return net.everla.projectc.arkofcosmos.ProjectCCommonConfig.damage("ark_of_cosmos"); }
     public static final int MAX_CHARGE = 16;
-    public static float scaled(float damage, float multiplier) { return (int)(damage * (1700f / BASE_DAMAGE) * multiplier) / (1700f / BASE_DAMAGE); }
+    public static float scaled(float damage, float multiplier) { return (int)(damage * (1700f / baseDamage()) * multiplier) / (1700f / baseDamage()); }
     public static int comboMode(int combo) { return combo == 4 ? 2 : combo % 2; }
     public static int tooltipColor(String key, float wave) {
         return switch (key) {

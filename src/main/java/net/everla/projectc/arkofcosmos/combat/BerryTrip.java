@@ -18,8 +18,7 @@ import java.util.Map;
 @Mod.EventBusSubscriber(modid=ArkOfCosmos.MOD_ID)
 public final class BerryTrip {
     private BerryTrip(){}
-    public static final int DURATION=20, INTERVAL=10;
-    private static final float CHANCE=.05f;
+    public static final int DURATION=100, INTERVAL=10;
     // Keyed by entity id and stamped with the side's own game time; the client map is filled from the sync packet.
     private static final Map<Integer,Long> SERVER=new HashMap<>(), CLIENT=new HashMap<>(), NEXT_CHECK=new HashMap<>();
 
@@ -41,7 +40,7 @@ public final class BerryTrip {
         long now=p.level().getGameTime();
         if(now<NEXT_CHECK.getOrDefault(p.getId(),Long.MIN_VALUE)||tripped(p)||!HaloCompat.equipped(p,"halo_of_the_end"))return;
         NEXT_CHECK.put(p.getId(),now+INTERVAL);
-        if(p.getRandom().nextFloat()>=CHANCE)return;
+        if(p.getRandom().nextFloat()>=net.everla.projectc.arkofcosmos.ProjectCCommonConfig.value("integration.end_halo_trip_chance"))return;
         SERVER.put(p.getId(),now);
         p.setSprinting(false);p.setDeltaMovement(0,Math.min(0,p.getDeltaMovement().y),0);p.hurtMarked=true;
         CompoundTag data=new CompoundTag();data.putString("Event","berry_trip");data.putInt("Entity",p.getId());

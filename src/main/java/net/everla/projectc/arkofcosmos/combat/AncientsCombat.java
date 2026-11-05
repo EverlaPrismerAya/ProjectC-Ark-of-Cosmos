@@ -35,7 +35,7 @@ public final class AncientsCombat {
         if ((right || burst) && now >= c.nextUse && !active(p)) {
             int charge=HaloCompat.charge(p, AncientsArkItem.charge(p.getMainHandItem()), 10);
             if(c.alt && charge>0){AncientsEntity.blast(p,charge,AttackFrame.capture(p));AncientsArkItem.charge(p.getMainHandItem(), HaloCompat.charge(p, 0, 10));c.nextUse=now+25;}
-            else if(right && ArkCombat.beginParry(p,p.getMainHandItem(),AncientsRules.BASE_DAMAGE))c.nextUse=now+15;
+            else if(right && ArkCombat.beginParry(p,p.getMainHandItem(),AncientsRules.baseDamage()))c.nextUse=now+15;
         }
         if (left) attack(p, c, false);
     }

@@ -27,7 +27,7 @@ public final class ArkItem extends SwordItem {
         @Override public int getEnchantmentValue() { return 15; }
         @Override public Ingredient getRepairIngredient() { return Ingredient.EMPTY; }
     };
-    public ArkItem() { super(TIER, (int)ArkCombat.BASE_DAMAGE - 1, 0, new Properties().stacksTo(1).fireResistant()); }
+    public ArkItem() { super(TIER, (int)net.everla.projectc.arkofcosmos.calamity.combat.ArkWeaponRules.baseDamage() - 1, 0, new Properties().stacksTo(1).fireResistant()); }
     @Override public boolean isEnchantable(ItemStack stack) { return stack.getCount() == 1; }
     @Override public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
         return enchantment != Enchantments.UNBREAKING && enchantment != Enchantments.MENDING && enchantment.category.canEnchant(this);
@@ -50,7 +50,7 @@ public final class ArkItem extends SwordItem {
     @Override public com.google.common.collect.Multimap<net.minecraft.world.entity.ai.attributes.Attribute, net.minecraft.world.entity.ai.attributes.AttributeModifier> getDefaultAttributeModifiers(net.minecraft.world.entity.EquipmentSlot slot) {
         if (slot != net.minecraft.world.entity.EquipmentSlot.MAINHAND) return super.getDefaultAttributeModifiers(slot);
         return com.google.common.collect.ImmutableMultimap.of(net.minecraft.world.entity.ai.attributes.Attributes.ATTACK_DAMAGE,
-                new net.minecraft.world.entity.ai.attributes.AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Weapon modifier", ArkCombat.BASE_DAMAGE - 1, net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation.ADDITION));
+                new net.minecraft.world.entity.ai.attributes.AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Weapon modifier", net.everla.projectc.arkofcosmos.calamity.combat.ArkWeaponRules.baseDamage() - 1, net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation.ADDITION));
     }
     // Both indicators are drawn by an item decorator, never by the vanilla durability bar.
     @Override public boolean isBarVisible(ItemStack stack) { return false; }

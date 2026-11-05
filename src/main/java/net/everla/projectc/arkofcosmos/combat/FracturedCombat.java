@@ -37,7 +37,7 @@ public final class FracturedCombat {
         c.left = holding(p) && input.left(); c.right = holding(p) && input.right(); c.heartbeat = p.level().getGameTime();
         if (!holding(p) || !WeaponUser.active(p)) return;
         long now = p.level().getGameTime() * 3;
-        if (right && now >= c.nextUse && !active(p) && ArkCombat.beginParry(p, p.getMainHandItem(), FracturedRules.BASE_DAMAGE)) c.nextUse = now + 15;
+        if (right && now >= c.nextUse && !active(p) && ArkCombat.beginParry(p, p.getMainHandItem(), FracturedRules.baseDamage())) c.nextUse = now + 15;
         if (left) attack(p, c, false);
     }
     private static void attack(ServerPlayer p, Controls c, boolean continuous) {

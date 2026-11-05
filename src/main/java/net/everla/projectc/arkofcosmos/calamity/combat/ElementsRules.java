@@ -5,13 +5,14 @@ import net.everla.projectc.arkofcosmos.calamity.util.ArkCurves;
 /** ArkoftheElements source rules, with the explicitly selected Minecraft balance. */
 public final class ElementsRules {
     private ElementsRules() {}
-    public static final float BASE_DAMAGE = 7;
+    public static float baseDamage() { return net.everla.projectc.arkofcosmos.ProjectCCommonConfig.damage("ark_of_the_elements"); }
     public static final int MAX_CHARGE = 10, PARRY_WINDOW = 15, PARRY_COOLDOWN = 340;
     public static final double MAX_REACH = 500 / 16d;
     public static int mode(int combo) { return combo == 4 ? 2 : combo % 2; }
     public static boolean snapWindow(int age) { return age >= 12 && age < 60; }
     public static float charged(float base, int charge) { return charge > 0 ? base * 1.35f : base; }
-    public static float blastDamage(int charge, int hits) { return BASE_DAMAGE * charge * 1.35f * .5f * (float)Math.pow(.25, hits * .1); }
+    public static float blastDamage(int charge, int hits) { return blastDamage(baseDamage(),charge,hits); }
+    public static float blastDamage(float base,int charge,int hits) { return base * charge * 1.35f * .5f * (float)Math.pow(.25, hits * .1); }
     public static int afterAttack(int charge) { return Math.max(0, charge - 1); }
     public static double throwRatio(double t) {
         t = clamp(t);

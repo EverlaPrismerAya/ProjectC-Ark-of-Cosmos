@@ -62,7 +62,7 @@ public final class GalaxiaEntity extends Entity {
         p.level().addFreshEntity(e);return e;
     }
     public static GalaxiaEntity blade(LivingEntity p,int mode) {
-        GalaxiaEntity e=create(p,BLADE,mode,p.getBoundingBox().getCenter(),AttackFrame.capture(p),base(mode),2);
+        GalaxiaEntity e=create(p,BLADE,mode,p.getBoundingBox().getCenter(),AttackFrame.capture(p),p instanceof MahouTsukaiEntity?GalaxiaRules.originalBase(mode):base(mode),2);
         if(mode==POLARIS) for(GalaxiaEntity star:p.level().getEntitiesOfClass(GalaxiaEntity.class,p.getBoundingBox().inflate(128),
                 s->s.ownerId==p.getId() && s.kind==STAR)) {
             Vec3 towards=star.position().subtract(p.getBoundingBox().getCenter()).normalize();
@@ -78,7 +78,7 @@ public final class GalaxiaEntity extends Entity {
     }
     public void releaseBossCharge(){bossHeld=false;}
     public static GalaxiaEntity bossDash(MahouTsukaiEntity boss,MahouAttackEntity warning){
-        GalaxiaEntity e=create(boss,BLADE,POLARIS,boss.getBoundingBox().getCenter(),AttackFrame.capture(boss),base(POLARIS),2);
+        GalaxiaEntity e=create(boss,BLADE,POLARIS,boss.getBoundingBox().getCenter(),AttackFrame.capture(boss),GalaxiaRules.originalDamage(1800),2);
         e.bossDash=true;e.charge=325;e.start=e.center(boss);
         e.bossWarning=warning;
         for(GalaxiaEntity star:boss.level().getEntitiesOfClass(GalaxiaEntity.class,boss.getBoundingBox().inflate(128),s->s.ownerId==boss.getId()&&s.kind==STAR)){
@@ -94,7 +94,7 @@ public final class GalaxiaEntity extends Entity {
         return bossBolt(boss,at,direction,10/16d,1);
     }
     static GalaxiaEntity bossBolt(MahouTsukaiEntity boss,Vec3 at,Vec3 direction,double speed,double acceleration){
-        GalaxiaEntity e=create(boss,BOLT,0,at,aimFrame(direction,AttackFrame.capture(boss).right()),base(POLARIS),80);
+        GalaxiaEntity e=create(boss,BOLT,0,at,aimFrame(direction,AttackFrame.capture(boss).right()),GalaxiaRules.originalDamage(1800),80);
         e.bossAcceleration=acceleration;e.velocity=direction.normalize().scale(speed);e.scale=1;e.hue=.55f;e.homing=0;e.bossStraight=true;e.publish();return e;
     }
     static GalaxiaEntity rainBolt(MahouTsukaiEntity boss,Vec3 at){
@@ -376,7 +376,7 @@ public final class GalaxiaEntity extends Entity {
         }
         if(kind==BOLT) {discardAttack();return;}
         if(kind==RING) {
-            if(mode==0 && random.nextFloat()<.4) p.heal(GalaxiaRules.damage(3));
+            if(mode==0 && random.nextFloat()<.4) p.heal(GalaxiaRules.originalDamage(3));
             else t.addEffect(new net.minecraft.world.effect.MobEffectInstance(ArkOfCosmos.ARMOR_CRUNCH.get(),67));
         }
         if(kind==BLADE && mode==ARIES && blastCooldown<=0) {

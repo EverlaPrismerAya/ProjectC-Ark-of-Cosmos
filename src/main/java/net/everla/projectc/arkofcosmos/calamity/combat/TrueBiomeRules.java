@@ -11,8 +11,8 @@ public final class TrueBiomeRules {
     private static final int[] ORIGINAL={140,400,200,550};
     public static final int[] COLOR={0xDC69C5,0x71EFB1,0xD83716,0x846DE9};
     public static final int[] COLOR2={0xABEF71,0xA9CFFF,0xD88316,0x7AD5E9};
-    public static float base(int mode){return DAMAGE[mode];}
-    public static float damage(int mode,double source){return (float)(source*DAMAGE[mode]/ORIGINAL[mode]);}
+    public static float base(int mode){return DAMAGE[mode]*net.everla.projectc.arkofcosmos.ProjectCCommonConfig.damage("true_biome_blade")/9.5f;}
+    public static float damage(int mode,double source){return (float)(source*base(mode)/ORIGINAL[mode]);}
     public static double clamp(double x){return Math.max(0,Math.min(1,x));}
     public static double lerp(double a,double b,double t){return a+(b-a)*t;}
     public static double shred(double charge){return clamp(charge/250);}

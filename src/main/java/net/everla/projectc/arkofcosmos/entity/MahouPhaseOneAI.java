@@ -173,7 +173,7 @@ final class MahouPhaseOneAI {
                 if(--swingWait<=0){
                     bladeWarning.discardAttack();bladeWarning=null;
                     elementBlade=net.everla.projectc.arkofcosmos.combat.ElementsCombat.swing(boss,swings%2,0,
-                            net.everla.projectc.arkofcosmos.calamity.combat.ElementsRules.BASE_DAMAGE,swingFrame);
+                            7f,swingFrame);
                     boss.swing(net.minecraft.world.InteractionHand.MAIN_HAND);swings++;
                 }
             }
@@ -207,7 +207,7 @@ final class MahouPhaseOneAI {
                             .add(right.scale((boss.getRandom().nextDouble()-.5)*24)).add(0,1+boss.getRandom().nextDouble()*12,0);
                     int delay=4+boss.getRandom().nextInt(21);
                     MahouAttackEntity.spawn(boss,MahouAttackEntity.NEEDLE_GATE,at,target.getBoundingBox().getCenter().subtract(at),delay,delay+10,
-                            net.everla.projectc.arkofcosmos.calamity.combat.ElementsRules.BASE_DAMAGE*.8f);
+                            7f*.8f);
                 }
                 if(age>=64)finish();
             }

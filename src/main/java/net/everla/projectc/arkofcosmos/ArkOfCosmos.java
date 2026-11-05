@@ -27,6 +27,8 @@ public final class ArkOfCosmos {
     private static final DeferredRegister<net.minecraft.world.entity.ai.attributes.Attribute> ATTRIBUTES=DeferredRegister.create(ForgeRegistries.ATTRIBUTES,MOD_ID);
     public static final RegistryObject<net.minecraft.world.entity.ai.attributes.Attribute> FOURTH_MAX_HEALTH=ATTRIBUTES.register("fourth_max_health",
         ()->new net.minecraft.world.entity.ai.attributes.RangedAttribute("attribute.name.generic.max_health",880,1,Double.MAX_VALUE).setSyncable(true));
+    public static final RegistryObject<net.minecraft.world.entity.ai.attributes.Attribute> MAHOU_MAX_HEALTH=ATTRIBUTES.register("mahou_max_health",
+        ()->new net.minecraft.world.entity.ai.attributes.RangedAttribute("attribute.name.generic.max_health",1000,1,Double.MAX_VALUE).setSyncable(true));
     public static final RegistryObject<EntityType<net.everla.projectc.arkofcosmos.entity.FourthCalamityEntity>> THE_PLAYER=ENTITIES.register("the_player",
         ()->EntityType.Builder.<net.everla.projectc.arkofcosmos.entity.FourthCalamityEntity>of(net.everla.projectc.arkofcosmos.entity.FourthCalamityEntity::new,MobCategory.MONSTER)
             .sized(.6f,1.8f).clientTrackingRange(128).updateInterval(1).build("arkofcosmos:the_player"));
@@ -120,6 +122,7 @@ public final class ArkOfCosmos {
         if(net.minecraftforge.fml.loading.FMLEnvironment.dist.isClient())
             ProjectCClientConfig.backupBeforeUpgrade(net.minecraftforge.fml.loading.FMLPaths.CONFIGDIR.get().resolve("projectc-client.toml"));
         context.registerConfig(net.minecraftforge.fml.config.ModConfig.Type.CLIENT,ProjectCClientConfig.SPEC,"projectc-client.toml");
+        context.registerConfig(net.minecraftforge.fml.config.ModConfig.Type.COMMON,ProjectCCommonConfig.SPEC,"projectc-common.toml");
         IEventBus bus = context.getModEventBus();
         net.everla.projectc.arkofcosmos.combat.vanilla.VanillaCombat.register(bus);
         ITEMS.register(bus);

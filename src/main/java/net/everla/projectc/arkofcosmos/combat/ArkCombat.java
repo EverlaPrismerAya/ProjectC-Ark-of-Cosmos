@@ -40,7 +40,7 @@ public final class ArkCombat {
             ResourceLocation.fromNamespaceAndPath(ArkOfCosmos.MOD_ID, "ignore_enemy_filter"));
     private ArkCombat() {}
     // Terraria damage remains proportional; this conversion changes no attack sequence or hit timing.
-    public static final float BASE_DAMAGE = ArkWeaponRules.BASE_DAMAGE;
+    public static float baseDamage() { return ArkWeaponRules.baseDamage(); }
     public static float scaled(float damage, float multiplier) { return ArkWeaponRules.scaled(damage, multiplier); }
     public static final double PIXEL = 1d / 16, MAX_REACH = 760 * PIXEL;
     private static final Map<UUID, Controls> CONTROLS = new HashMap<>();
@@ -76,11 +76,11 @@ public final class ArkCombat {
         int charge = HaloCompat.charge(player, ArkItem.charge(stack), 16);
         if (c.alt && charge > 0) {
             ArkAttackEntity.create(player, ArkAttackEntity.Kind.BLAST, 0, charge,
-                    scaled(BASE_DAMAGE, charge * 1.35f * .5f), player.getBoundingBox().getCenter().add(player.getLookAngle().scale(90 * PIXEL)), Vec3.ZERO,
+                    scaled(baseDamage(), charge * 1.35f * .5f), player.getBoundingBox().getCenter().add(player.getLookAngle().scale(90 * PIXEL)), Vec3.ZERO,
                     AttackFrame.capture(player));
             ArkItem.charge(stack, HaloCompat.charge(player, 0, 16));
             c.useCooldown = 15;
-        } else beginParry(player, stack, BASE_DAMAGE);
+        } else beginParry(player, stack, baseDamage());
     }
 
     /** Shared parry window and rewards, with an independent cooldown for each Ark type. */
@@ -143,7 +143,7 @@ public final class ArkCombat {
         int combo = Math.floorMod(stack.getOrCreateTag().getInt("ArkCombo"), 5);
         int mode = ArkWeaponRules.comboMode(combo);
         int charge = HaloCompat.charge(player, ArkItem.charge(stack), 16);
-        float damage = charge > 0 ? scaled(BASE_DAMAGE, 1.35f) : BASE_DAMAGE;
+        float damage = charge > 0 ? scaled(baseDamage(), 1.35f) : baseDamage();
         AttackFrame frame = AttackFrame.capture(player);
         Vec3 center = player.getBoundingBox().getCenter();
         ArkAttackEntity.create(player, ArkAttackEntity.Kind.BLADE, mode, charge, damage, center, frame.forward(), frame);

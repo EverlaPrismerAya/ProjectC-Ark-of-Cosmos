@@ -180,8 +180,16 @@ public final class FourthCalamityEntity extends Monster {
         xpReward=0;
     }
     public static AttributeSupplier.Builder createAttributes() {
-        return Monster.createMonsterAttributes().add(ArkOfCosmos.FOURTH_MAX_HEALTH.get(),880).add(Attributes.ATTACK_DAMAGE,2)
+        return Monster.createMonsterAttributes().add(ArkOfCosmos.FOURTH_MAX_HEALTH.get(),880d).add(Attributes.ATTACK_DAMAGE,2)
             .add(Attributes.MOVEMENT_SPEED,.36).add(Attributes.FOLLOW_RANGE,128).add(Attributes.ATTACK_KNOCKBACK,1).add(Attributes.KNOCKBACK_RESISTANCE,1);
+    }
+    public void applyConfiguredHealth() {
+        var attribute=getAttribute(Attributes.MAX_HEALTH);
+        double maximum=net.everla.projectc.arkofcosmos.ProjectCCommonConfig.fourthHealth();
+        if(attribute==null||attribute.getBaseValue()==maximum)return;
+        float ratio=getHealth()/getMaxHealth();attribute.setBaseValue(maximum);
+        writeHealth(defeated()?1:ratio*getMaxHealth());
+        lastBars=-1;
     }
     @Override public void knockback(double strength,double x,double z) {}
     @Override public void push(double x,double y,double z) {}
@@ -226,9 +234,9 @@ public final class FourthCalamityEntity extends Monster {
     @Override protected void defineSynchedData() { super.defineSynchedData();entityData.define(GLIDING,false);entityData.define(MACE_WINDUP,false);entityData.define(DEFEAT_TICKS,-1); }
     public boolean maceWindup() { return entityData.get(MACE_WINDUP); }
     public void setMaceWindup(boolean value) { entityData.set(MACE_WINDUP,value); }
-    public int bars() { return Math.max(0,(int)Math.ceil(getHealth()/20)); }
-    public int phase() { return getHealth()<=20?3:getHealth()<=480?2:1; }
-    public float barProgress() { int count=bars();return count==0?0:(getHealth()-(count-1)*20)/20; }
+    public int bars() { return Math.max(0,(int)Math.ceil(getHealth()/(getMaxHealth()/(double)net.everla.projectc.arkofcosmos.ProjectCCommonConfig.bars()))); }
+    public int phase() { return bars()<=1?3:getHealth()/getMaxHealth()<=480f/880?2:1; }
+    public float barProgress() { int count=bars();return count==0?0:(getHealth()-(count-1)*getMaxHealth()/net.everla.projectc.arkofcosmos.ProjectCCommonConfig.bars())/(getMaxHealth()/net.everla.projectc.arkofcosmos.ProjectCCommonConfig.bars()); }
     public boolean gliding() { return entityData.get(GLIDING); }
     public void setGliding(boolean value) { entityData.set(GLIDING,value);updateGlidingFlag(); }
     public void updateGlidingFlag() {

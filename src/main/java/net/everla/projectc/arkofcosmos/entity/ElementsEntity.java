@@ -46,11 +46,11 @@ public final class ElementsEntity extends Entity {
         e.samples.add(e.snapshot());e.publish();p.level().addFreshEntity(e);return e;
     }
     static ElementsEntity bossRift(MahouTsukaiEntity boss,AttackFrame frame){
-        ElementsEntity e=create(boss,BLAST,0,10,ElementsRules.blastDamage(10,0),boss.getBoundingBox().getCenter(),Vec3.ZERO,frame);
+        ElementsEntity e=create(boss,BLAST,0,10,ElementsRules.blastDamage(7,10,0),boss.getBoundingBox().getCenter(),Vec3.ZERO,frame);
         e.bossMovingBlast=true;return e;
     }
     static ElementsEntity bossStar(MahouTsukaiEntity boss,AttackFrame frame){
-        ElementsEntity e=create(boss,STAR,0,0,ElementsRules.BASE_DAMAGE*.2f,boss.getBoundingBox().getCenter(),frame.forward().scale(.28),frame);
+        ElementsEntity e=create(boss,STAR,0,0,7f*.2f,boss.getBoundingBox().getCenter(),frame.forward().scale(.28),frame);
         e.bossBurstStar=true;e.left=e.life=48;e.publish();return e;
     }
     static ElementsEntity rainStar(MahouTsukaiEntity boss,LivingEntity target,Vec3 at){
@@ -62,7 +62,7 @@ public final class ElementsEntity extends Entity {
         return rainStarTarget==null?boss.getTarget():WeaponUser.resolve(level(),rainStarTarget);
     }
     static ElementsEntity bossFanNeedle(MahouTsukaiEntity boss,AttackFrame frame){
-        ElementsEntity e=create(boss,NEEDLE,1,0,ElementsRules.BASE_DAMAGE*.8f,boss.getBoundingBox().getCenter(),frame.forward().scale(.3),frame);
+        ElementsEntity e=create(boss,NEEDLE,1,0,7f*.8f,boss.getBoundingBox().getCenter(),frame.forward().scale(.3),frame);
         // Slow fans need the longer deceleration window to cross the boss comfort distance.
         e.left=e.life=300;e.publish();return e;
     }
@@ -74,7 +74,7 @@ public final class ElementsEntity extends Entity {
     }
     static ElementsEntity rainNeedle(MahouTsukaiEntity boss,Vec3 at){
         AttackFrame frame=new AttackFrame(new Vec3(0,-1,0),new Vec3(1,0,0));
-        ElementsEntity e=create(boss,NEEDLE,1,0,ElementsRules.BASE_DAMAGE*.8f,at,frame.forward().scale(.45),frame);
+        ElementsEntity e=create(boss,NEEDLE,1,0,7f*.8f,at,frame.forward().scale(.45),frame);
         e.bossRain=true;e.left=e.life=180;e.publish();return e;
     }
     public int ownerId(){return entityData.get(VIEW).getInt("Owner");}

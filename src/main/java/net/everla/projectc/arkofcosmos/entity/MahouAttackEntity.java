@@ -239,7 +239,7 @@ public final class MahouAttackEntity extends Entity {
         return level().clip(new ClipContext(origin,end,ClipContext.Block.COLLIDER,ClipContext.Fluid.NONE,boss)).getType()!=HitResult.Type.MISS;
     }
     private void hit(MahouTsukaiEntity boss,LivingEntity victim) {
-        if(hits.add(victim.getId()))net.everla.projectc.arkofcosmos.combat.WeaponDamage.hurt(victim,kind==PILLAR?damageSources().mobAttack(boss):new net.minecraft.world.damagesource.DamageSource(level().registryAccess().registryOrThrow(net.minecraft.core.registries.Registries.DAMAGE_TYPE).getHolderOrThrow(net.minecraft.world.damagesource.DamageTypes.PLAYER_ATTACK),this,boss),damage);
+        if(hits.add(victim.getId()))net.everla.projectc.arkofcosmos.combat.WeaponDamage.hurt(victim,kind==PILLAR?new net.minecraft.world.damagesource.DamageSource(damageSources().mobAttack(boss).typeHolder(),this,boss):new net.minecraft.world.damagesource.DamageSource(level().registryAccess().registryOrThrow(net.minecraft.core.registries.Registries.DAMAGE_TYPE).getHolderOrThrow(net.minecraft.world.damagesource.DamageTypes.PLAYER_ATTACK),this,boss),damage);
     }
     /** The shield is a live radius around the boss, so moving into it before the
      * fusion impact resolves must protect the entity as well. */

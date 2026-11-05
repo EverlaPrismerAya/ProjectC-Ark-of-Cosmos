@@ -29,7 +29,7 @@ public final class ElementsItem extends SwordItem {
     @Override public com.google.common.collect.Multimap<net.minecraft.world.entity.ai.attributes.Attribute,net.minecraft.world.entity.ai.attributes.AttributeModifier> getDefaultAttributeModifiers(EquipmentSlot slot) {
         if (slot != EquipmentSlot.MAINHAND) return super.getDefaultAttributeModifiers(slot);
         return com.google.common.collect.ImmutableMultimap.of(net.minecraft.world.entity.ai.attributes.Attributes.ATTACK_DAMAGE,
-                new net.minecraft.world.entity.ai.attributes.AttributeModifier(BASE_ATTACK_DAMAGE_UUID,"Weapon modifier",ElementsRules.BASE_DAMAGE-1,net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation.ADDITION));
+                new net.minecraft.world.entity.ai.attributes.AttributeModifier(BASE_ATTACK_DAMAGE_UUID,"Weapon modifier",ElementsRules.baseDamage()-1,net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation.ADDITION));
     }
     @Override public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) { return InteractionResultHolder.success(player.getItemInHand(hand)); }
     @Override public void inventoryTick(ItemStack stack, Level level, Entity entity, int slot, boolean selected) {

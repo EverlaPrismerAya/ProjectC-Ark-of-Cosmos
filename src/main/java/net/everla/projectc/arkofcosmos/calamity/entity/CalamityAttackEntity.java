@@ -218,7 +218,7 @@ public abstract class CalamityAttackEntity extends Entity {
             if (attackKind == Kind.BLADE && mode == 3) amount *= 1.2f;
             if (attackKind == Kind.BLAST) amount *= (float)Math.pow(.25, hits * .1f);
             // Damage enchantments follow this attack's original multiplier, including small derived bolts.
-            amount += EnchantmentHelper.getDamageBonus(weapon, target.getMobType()) * (amount / ArkCombat.BASE_DAMAGE);
+            amount += EnchantmentHelper.getDamageBonus(weapon, target.getMobType()) * (amount / ArkCombat.baseDamage());
             if (!hurtTarget(owner, target, amount, 0)) continue;
             Vec3 effectPosition=target.getBoundingBox().getCenter();
             if((attackKind==Kind.NEEDLE||attackKind==Kind.PARRY)&&Math.hypot(target.getBbWidth(),target.getBbHeight())*16>=140)

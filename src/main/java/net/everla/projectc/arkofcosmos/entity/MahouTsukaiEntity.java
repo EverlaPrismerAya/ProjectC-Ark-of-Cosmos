@@ -43,7 +43,7 @@ public final class MahouTsukaiEntity extends PathfinderMob implements net.minecr
         return entity==null||entity.isAlive();
     }
     private void summonShikigami(){
-        if(phase()!=3||shikigamiSummoned||getHealth()>=getMaxHealth()*.5f)return;
+        if(phase()!=3||shikigamiSummoned||getHealth()>=getMaxHealth()*net.everla.projectc.arkofcosmos.ProjectCCommonConfig.value("boss.mahou.summon_threshold"))return;
         if(level().getBlockCollisions(this,getBoundingBox()).iterator().hasNext()){
             if(getHealth()<=0)setHealth(1);
             return;
@@ -82,9 +82,21 @@ public final class MahouTsukaiEntity extends PathfinderMob implements net.minecr
     }
 
     public static net.minecraft.world.entity.ai.attributes.AttributeSupplier.Builder createAttributes() {
-        return Mob.createMobAttributes().add(Attributes.MAX_HEALTH, 1000.0D).add(Attributes.MOVEMENT_SPEED, .2D).add(Attributes.FOLLOW_RANGE, 128).add(Attributes.KNOCKBACK_RESISTANCE, 1.0D).add(Attributes.ARMOR,20.0D).add(Attributes.ARMOR_TOUGHNESS,8.0D);
+        return Mob.createMobAttributes().add(net.everla.projectc.arkofcosmos.ArkOfCosmos.MAHOU_MAX_HEALTH.get(), 1000d).add(Attributes.MOVEMENT_SPEED, .2D).add(Attributes.FOLLOW_RANGE, 128).add(Attributes.KNOCKBACK_RESISTANCE, 1.0D).add(Attributes.ARMOR,20.0D).add(Attributes.ARMOR_TOUGHNESS,8.0D);
     }
 
+    public void applyConfiguredHealth() {
+        var attribute=getAttribute(Attributes.MAX_HEALTH);
+        double maximum=net.everla.projectc.arkofcosmos.ProjectCCommonConfig.value("boss.mahou.health");
+        if(attribute==null||attribute.getBaseValue()==maximum)return;
+        float ratio=getHealth()/getMaxHealth();attribute.setBaseValue(maximum);
+        healthWriteDepth++;
+        try { setHealth(defeating()?1:ratio*getMaxHealth()); }
+        finally { healthWriteDepth--; }
+    }
+    @Override public double getAttributeValue(net.minecraft.world.entity.ai.attributes.Attribute attribute) { return super.getAttributeValue(attribute==Attributes.MAX_HEALTH?net.everla.projectc.arkofcosmos.ArkOfCosmos.MAHOU_MAX_HEALTH.get():attribute); }
+    @Override public net.minecraft.world.entity.ai.attributes.AttributeInstance getAttribute(net.minecraft.world.entity.ai.attributes.Attribute attribute) { return super.getAttribute(attribute==Attributes.MAX_HEALTH?net.everla.projectc.arkofcosmos.ArkOfCosmos.MAHOU_MAX_HEALTH.get():attribute); }
+    @Override public double getAttributeBaseValue(net.minecraft.world.entity.ai.attributes.Attribute attribute) { return super.getAttributeBaseValue(attribute==Attributes.MAX_HEALTH?net.everla.projectc.arkofcosmos.ArkOfCosmos.MAHOU_MAX_HEALTH.get():attribute); }
     @Override protected void registerGoals() {}
     public boolean phaseRecovering() { return phaseRecovering; }
     public boolean defeating() { return entityData.get(DEFEAT_TICKS) > 0; }
@@ -118,9 +130,9 @@ public final class MahouTsukaiEntity extends PathfinderMob implements net.minecr
     public int phaseTransitionTicks(){return entityData.get(TRANSITION);}
     public float totalHealthProgress(){
         if(level().isClientSide)return entityData.get(TOTAL_HEALTH);
-        float current=phaseRecovering?0:Math.max(0,getHealth()/getMaxHealth()-(phase()==1?.5f:phase()==2?.25f:0));
-        float future=phase()==1?1.75f:phase()==2?1:0;
-        return net.minecraft.util.Mth.clamp((current+future)/2.25f,0,1);
+        float current=phaseRecovering?0:Math.max(0,getHealth()/getMaxHealth()-net.everla.projectc.arkofcosmos.ProjectCCommonConfig.threshold(phase()));
+        float future=phase()==1?2-net.everla.projectc.arkofcosmos.ProjectCCommonConfig.threshold(2):phase()==2?1:0;
+        return net.minecraft.util.Mth.clamp((current+future)/(3-net.everla.projectc.arkofcosmos.ProjectCCommonConfig.threshold(1)-net.everla.projectc.arkofcosmos.ProjectCCommonConfig.threshold(2)),0,1);
     }
 
 
@@ -135,7 +147,7 @@ public final class MahouTsukaiEntity extends PathfinderMob implements net.minecr
     public float damageMultiplier() { return phase() == 1 ? .5f : phase() == 2 ? .67f : 1f; }
 
     public float bossBarProgress() {
-        float threshold = phase() == 1 ? .5f : phase() == 2 ? .25f : 0f;
+        float threshold = net.everla.projectc.arkofcosmos.ProjectCCommonConfig.threshold(phase());
         return net.minecraft.util.Mth.clamp((getHealth() / getMaxHealth() - threshold) / (1f - threshold), 0f, 1f);
     }
 
@@ -318,7 +330,7 @@ public final class MahouTsukaiEntity extends PathfinderMob implements net.minecr
 
     private void beginPhaseRecovery() {
         if (phase() >= MAX_PHASE || phaseRecovering) return;
-        float threshold = phase() == 1 ? .5f : .25f;
+        float threshold = net.everla.projectc.arkofcosmos.ProjectCCommonConfig.threshold(phase());
         if (getHealth() < getMaxHealth() * threshold) phaseRecovering = true;
     }
 

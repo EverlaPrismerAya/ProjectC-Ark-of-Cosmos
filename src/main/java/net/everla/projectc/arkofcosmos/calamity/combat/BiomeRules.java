@@ -6,7 +6,7 @@ public final class BiomeRules {
     public static final int PURE=0,HOT=1,COLD=2,TROPICAL=3,EVIL=4,HOLY=5,ASTRAL=6,MARINE=7;
     public static final int[] SOURCE_DAMAGE={105,122,175,150,155,60,250,300};
     public static final int[] COLORS={0xABB449,0xF08B50,0x75DFFF,0x81CF50,0xD34093,0xDC8FFF,0x40CFC4,0x6495ED};
-    public static float damage(double source){return (float)(source*7/115);}
+    public static float damage(double source){return (float)(source*net.everla.projectc.arkofcosmos.ProjectCCommonConfig.damage("biome_blade")/115);}
     public static float base(int mode){return damage(mode<0?115:SOURCE_DAMAGE[mode]);}
     public static double clamp(double v){return Math.max(0,Math.min(1,v));}
     public static double lerp(double a,double b,double t){return a+(b-a)*t;}
