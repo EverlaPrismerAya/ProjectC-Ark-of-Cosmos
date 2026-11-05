@@ -126,17 +126,6 @@ public final class ArkDamage {
         return target instanceof ApollyonCompatTarget apollyon && apollyon.arkofcosmos$isNetherApollyon();
     }
 
-    public static boolean apollyonProjectile(LivingEntity target, DamageSource source) {
-        return netherApollyon(target) && source.getEntity() instanceof Player
-                && (source.getDirectEntity() instanceof net.everla.projectc.arkofcosmos.entity.ArkAttackEntity
-                || source.getDirectEntity() instanceof net.everla.projectc.arkofcosmos.entity.OldOneEntity);
-    }
-
-    public static float apollyonPanel(DamageSource source) {
-        return source.getDirectEntity() instanceof net.everla.projectc.arkofcosmos.entity.ArkAttackEntity
-                ? ArkCombat.BASE_DAMAGE : 20f;
-    }
-
 
     private static boolean seagull(LivingEntity target) {
         return SEAGULL.equals(net.minecraftforge.registries.ForgeRegistries.ENTITY_TYPES.getKey(target.getType()));
@@ -207,10 +196,6 @@ public final class ArkDamage {
 
     private static boolean hurtTarget(LivingEntity target, DamageSource source, float amount, boolean unmitigated) {
         if (!validHit(target, amount)) return false;
-        if (apollyonProjectile(target, source)) {
-            // Native mitigation, events and hurt frames; no Ark floor or weapon impersonation.
-            return target.hurt(source, apollyonPanel(source) * 2f);
-        }
         if (ordinaryTarget(target)) return WeaponDamage.handling(target,source)
                 ? target.hurt(source,amount) : WeaponDamage.hurt(target, source, amount);
         // The authority bypasses LivingHurtEvent; its native fallback still receives this bonus there.
