@@ -2,6 +2,7 @@
 uniform sampler2D Sampler0;
 uniform sampler2D Cosmic0, Cosmic1, Cosmic2, Cosmic3, Cosmic4, Cosmic5, Cosmic6, Cosmic7, Cosmic8, Cosmic9;
 uniform float uTime;
+uniform float uRage;
 in vec2 texCoord;
 in vec4 vertexColor;
 in vec3 fPos;
@@ -46,5 +47,6 @@ void main() {
             col += icon.rgb * icon.a * 0.035 * 3.0;
         }
     }
+    if (uRage > 0.5) col = vec3(0.55 + dot(col, vec3(0.299, 0.587, 0.114)), col.g * 0.15, col.b * 0.15);
     fragColor = vec4(clamp(col * vertexColor.rgb,0.0,1.0), mask.r * mask.a * vertexColor.a);
 }

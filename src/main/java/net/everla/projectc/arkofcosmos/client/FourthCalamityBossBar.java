@@ -51,11 +51,14 @@ public final class FourthCalamityBossBar {
             Component.translatable("boss.arkofcosmos.the_player.name"),Component.translatable("boss.arkofcosmos.the_player.title"));
     }
     static void draw(CustomizeGuiOverlayEvent.BossEventProgress event,State state,float progress,float visible,int total,String level,Component name,Component title) {
+        draw(event,state,progress,visible,total,level,name,title,0);
+    }
+    static void draw(CustomizeGuiOverlayEvent.BossEventProgress event,State state,float progress,float visible,int total,String level,Component name,Component title,int fillColor) {
         event.setCanceled(true);event.setIncrement(44);
         var graphics=event.getGuiGraphics();var font=Minecraft.getInstance().font;
         int width=Math.max(40,Math.min(210,graphics.guiWidth()-100));
         int x=(graphics.guiWidth()-width)/2,y=event.getY()+16;
-        int color=total>1?barColor(state.bars,total):RAINBOW[0];
+        int color=fillColor!=0?fillColor:total>1?barColor(state.bars,total):RAINBOW[0];
         // Read the authoritative target, not vanilla's 100 ms interpolation (which wraps on each bar).
         double trailing=state.trail(progress,System.nanoTime());
         bevel(graphics,x-2,y-2,width+4,11,width+4,0xC0182630);

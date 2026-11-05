@@ -17,6 +17,9 @@ import java.util.Map;
 /** GR easter egg: OdamaneHalo wearers occasionally fall flat with hands behind the back in sweet berry bushes. */
 @Mod.EventBusSubscriber(modid=ArkOfCosmos.MOD_ID)
 public final class BerryTrip {
+    private static final net.minecraft.resources.ResourceKey<net.minecraft.world.damagesource.DamageType> HALO_BERRY_DAMAGE =
+            net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.DAMAGE_TYPE,
+                    net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(ArkOfCosmos.MOD_ID,"halo_sweet_berry_bush"));
     private BerryTrip(){}
     public static final int DURATION=100, INTERVAL=10;
     // Keyed by entity id and stamped with the side's own game time; the client map is filled from the sync packet.
@@ -50,14 +53,24 @@ public final class BerryTrip {
     @SubscribeEvent(priority=EventPriority.LOWEST)
     public static void damage(LivingDamageEvent e){
         if(!(e.getEntity() instanceof Player p)||p.level().isClientSide||e.getAmount()<=0||!e.getSource().is(DamageTypes.SWEET_BERRY_BUSH))return;
+        checkTrip(p);
+    }
+    public static boolean berryDamage(Entity entity,net.minecraft.world.damagesource.DamageSource source,float amount){
+        if(!(entity instanceof Player p)||!HaloCompat.equipped(p,"halo_of_the_end"))return entity.hurt(source,amount);
+        var berrySource=new net.minecraft.world.damagesource.DamageSource(p.level().registryAccess()
+                .registryOrThrow(net.minecraft.core.registries.Registries.DAMAGE_TYPE).getHolderOrThrow(HALO_BERRY_DAMAGE));
+        if(!ArkDamage.hurtAtInterval(p,10,()->ArkDamage.hurtUnmitigated(p,berrySource,1)))return false;
+        BossHealingLock.apply(p,10);
+        checkTrip(p);
+        return true;
+    }
+    private static void checkTrip(Player p){
         long now=p.level().getGameTime();
         if(now<NEXT_CHECK.getOrDefault(p.getId(),Long.MIN_VALUE)||tripped(p)||!HaloCompat.equipped(p,"halo_of_the_end"))return;
         NEXT_CHECK.put(p.getId(),now+INTERVAL);
         if(p.getRandom().nextFloat()>=net.everla.projectc.arkofcosmos.ProjectCCommonConfig.value("integration.end_halo_trip_chance"))return;
-        SERVER.put(p.getId(),now);
-        p.setSprinting(false);p.setDeltaMovement(0,Math.min(0,p.getDeltaMovement().y),0);p.hurtMarked=true;
-        CompoundTag data=new CompoundTag();data.putString("Event","berry_trip");data.putInt("Entity",p.getId());
-        ArkNetwork.effect(p,data);
+        trip(p);
+        ArkOfCosmos.sound(p,"wilhelm_scream",1);
     }
     @SubscribeEvent public static void logout(PlayerEvent.PlayerLoggedOutEvent e){SERVER.remove(e.getEntity().getId());NEXT_CHECK.remove(e.getEntity().getId());}
     @SubscribeEvent public static void melee(AttackEntityEvent e){if(tripped(e.getEntity()))e.setCanceled(true);}

@@ -92,6 +92,8 @@ public final class ArkOfCosmos {
     private static final java.util.Map<String, RegistryObject<SoundEvent>> AUDIO = new java.util.HashMap<>();
     static {
         AUDIO.put("snap", SNAP);
+        AUDIO.put("wilhelm_scream", SOUNDS.register("wilhelm_scream", () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(MOD_ID, "wilhelm_scream"))));
+        AUDIO.put("bonk", SOUNDS.register("bonk", () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(MOD_ID, "bonk"))));
         for (String name : new String[]{"fractured_parry_start", "item67", "fractured_swing", "fractured_beam_death", "elements_item9", "phoenix", "meaty", "item4", "item35", "item63", "item64", "item65", "item71", "item84", "crystal", "needle_death", "mahou_defeat", "fourth_calamity_death",
                 "galaxia_item60","galaxia_item71","galaxia_item76","galaxia_item77","galaxia_item78","galaxia_item79","galaxia_item80","galaxia_item90",
                 "galaxia_item101","galaxia_item109","galaxia_item120","galaxia_hit30","galaxia_hit43","galaxia_book","galaxia_impact","galaxia_eruption",
@@ -117,8 +119,8 @@ public final class ArkOfCosmos {
 
     public static final RegistryObject<Item> ASHES_OF_CALAMITY = ITEMS.register("ashes_of_calamity",
             net.everla.projectc.arkofcosmos.item.AshesOfCalamityItem::new);
-    public static final RegistryObject<Item> MISTILTEINN = ITEMS.register("mistilteinn",
-            net.everla.projectc.arkofcosmos.item.MistilteinnItem::new);
+    public static final RegistryObject<Item> MISTILTEINN = net.minecraftforge.fml.ModList.get().isLoaded("goety_revelation")
+            ? ITEMS.register("mistilteinn", net.everla.projectc.arkofcosmos.item.MistilteinnItem::new) : null;
 
     public ArkOfCosmos(FMLJavaModLoadingContext context) {
         if(net.minecraftforge.fml.loading.FMLEnvironment.dist.isClient())
@@ -155,7 +157,7 @@ public final class ArkOfCosmos {
             event.accept(ARK_OF_THE_ELEMENTS);
             event.accept(FRACTURED_ARK);
             event.accept(ARK_OF_THE_ANCIENTS);
-            event.accept(MISTILTEINN);
+            if (MISTILTEINN != null) event.accept(MISTILTEINN);
         }
         if (event.getTabKey() == CreativeModeTabs.INGREDIENTS) event.accept(AURIC_BAR);
         if (event.getTabKey() == CreativeModeTabs.INGREDIENTS) event.accept(ANNIHILATION_EMBER);

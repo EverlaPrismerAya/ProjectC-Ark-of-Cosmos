@@ -6,6 +6,8 @@
   "refmap": "arkofcosmos.refmap.json",
   "plugin": "net.everla.projectc.arkofcosmos.mixin.infrastructure.ArkMixinPlugin",
   "mixins": [
+    "entity.combat.MistilteinnHurtSoundMixin",
+    "world.SweetBerryBushMixin",
     "entity.domain.DomainCollisionMixin",
     "command.KillCommandMixin",
     "entity.combat.LivingEntityMixin",

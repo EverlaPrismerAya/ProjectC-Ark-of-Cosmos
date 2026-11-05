@@ -227,5 +227,11 @@
   "jei.arkofcosmos.boss.mahou": "至尊魔法使",
   "jei.arkofcosmos.beacon_summoning.instructions": "放入1个材料，点击下界合金剑按钮召唤。无需信标等级，材料会被消耗。",
   "tooltip.arkofcosmos.calamity_skull.summon": "可用于召唤被灾厄侵染的凋灵",
-  "item.arkofcosmos.mistilteinn": "槲寄生"
+  "item.arkofcosmos.mistilteinn": "槲寄生",
+  "dialogue.arkofcosmos.mahou.rage_red": "暗龙夺魂手！",
+  "dialogue.arkofcosmos.mahou.rage_blue": "龙卷风摧毁停车场！",
+  "dialogue.arkofcosmos.mahou.rage_fusion": "给老娘死！给我死！",
+  "dialogue.arkofcosmos.mahou.rage_purple": "死死死死死死！！！！",
+  "dialogue.arkofcosmos.mahou.rage_blue_dash": "离子手！",
+  "dialogue.arkofcosmos.mahou.rage_domain": "哈利路大旋风！！！"
 }

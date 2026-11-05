@@ -66,6 +66,7 @@ public final class MahouBossBar {
     @SubscribeEvent public static void render(CustomizeGuiOverlayEvent.BossEventProgress event) {
         Integer phase = PHASES.get(event.getBossEvent().getId());
         if (phase == null) return;
+        boolean enraged=event.getBossEvent().getColor()==net.minecraft.world.BossEvent.BossBarColor.RED;
         if(net.everla.projectc.arkofcosmos.ProjectCClientConfig.MAHOU_SIMPLE_BOSS_BAR.get()) {
             int remaining=4-phase;
             var state=SIMPLE_BARS.computeIfAbsent(event.getBossEvent().getId(),key->new FourthCalamityBossBar.State(remaining));
@@ -73,7 +74,7 @@ public final class MahouBossBar {
             float progress=((net.everla.projectc.arkofcosmos.mixin.client.gui.BossBarProgressAccessor)event.getBossEvent()).arkofcosmos$targetProgress();
             FourthCalamityBossBar.draw(event,state,progress,event.getBossEvent().getProgress(),3,"Lv.2147483647",
                 net.minecraft.network.chat.Component.translatable("boss.arkofcosmos.mahou.name"),
-                net.minecraft.network.chat.Component.translatable("boss.arkofcosmos.mahou.title_"+phase));
+                net.minecraft.network.chat.Component.translatable("boss.arkofcosmos.mahou.title_"+phase),enraged?0xFFE53935:0);
             return;
         }
         SIMPLE_BARS.remove(event.getBossEvent().getId());
@@ -99,6 +100,7 @@ public final class MahouBossBar {
             RenderSystem.setShaderTexture(0, BAR);
             quad(graphics, x, y, 201, 48, .16f);
             if (shader != null) {
+                shader.safeGetUniform("uRage").set(enraged?1f:0f);
                 shader.safeGetUniform("uTime").set((mc.level == null ? 0 : mc.level.getGameTime() + event.getPartialTick()) / 20f);
                 RenderSystem.setShader(() -> shader);
                 for (int i = 0; i < STARS.length; i++) {
@@ -111,8 +113,10 @@ public final class MahouBossBar {
             } else {
                 RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
                 RenderSystem.setShaderTexture(0, BAR);
+                if(enraged)RenderSystem.setShaderColor(1f,.15f,.15f,1f);
             }
             quad(graphics, x, y, progress <= 0 ? 0 : 3 + Math.round(195 * progress), 48, 1f);
+            RenderSystem.setShaderColor(1,1,1,1);
             // Frame and phase ornament retain the texture's original colors.
             RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
             quad(graphics, x, y, 201, (phase - 1) * 16, 1f);

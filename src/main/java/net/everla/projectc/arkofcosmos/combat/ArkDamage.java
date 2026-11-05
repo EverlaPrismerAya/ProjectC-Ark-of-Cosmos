@@ -38,6 +38,7 @@ public final class ArkDamage {
     private static final MethodHandle BASE_LOOT = method(LivingEntity.class, "m_6668_", DamageSource.class, true);
     private static final MethodHandle NORMAL_LOOT = method(LivingEntity.class, "m_6668_", DamageSource.class, false);
     private static final ThreadLocal<LivingEntity> FINISHING = new ThreadLocal<>();
+    private static final java.util.Map<LivingEntity,Long> NEXT_INTERVAL_HIT = new java.util.WeakHashMap<>();
     private static final TagKey<EntityType<?>> IGNORE_DEATH_REMOVE = TagKey.create(Registries.ENTITY_TYPE,
             new ResourceLocation(ArkOfCosmos.MOD_ID, "ignore_death_remove"));
     private static final TagKey<EntityType<?>> IGNORE_SPECIAL_DAMAGE = TagKey.create(Registries.ENTITY_TYPE,
@@ -55,6 +56,13 @@ public final class ArkDamage {
 
     public static void define(LivingEntity entity) { entity.getEntityData().define(HEALTH, -1f); }
     public static boolean isHealthData(EntityDataAccessor<?> key){return key.equals(HEALTH)||key.equals(LivingEntity.DATA_HEALTH_ID);}
+    public static boolean authoritative(LivingEntity target){
+        return target.getEntityData().hasItem(HEALTH)&&target.getEntityData().get(HEALTH)>=0
+                &&!protectedPlayer(target)&&!ordinaryTarget(target);
+    }
+    public static boolean activeHealthData(LivingEntity target,EntityDataAccessor<?> key){
+        return key.equals(authoritative(target)?HEALTH:LivingEntity.DATA_HEALTH_ID);
+    }
     public static void syncHealingLock(LivingEntity target){
         if(target.getEntityData().hasItem(HEALTH)&&target.getEntityData().get(HEALTH)>=0)BossHealingLock.synced(target,HEALTH);
     }
@@ -93,7 +101,8 @@ public final class ArkDamage {
         if(object instanceof net.everla.projectc.arkofcosmos.entity.MahouTsukaiEntity boss)
             return boss.redirectHealthWrite(value)||boss.blocksHealthWrite(value);
         if(object instanceof net.everla.projectc.arkofcosmos.entity.MahoragaWardenEntity warden && warden.blocksHealthWrite(value))return true;
-        if (health(object) < 0) return false;
+        // A temporary healing ceiling must not activate a second health store on a native target.
+        if (!authoritative(entity)) return false;
         // Death remains final after die() returns: tick-based revival also uses this setter.
         if (finishing(object) || health(object) == 0) return true;
         if (Float.isFinite(value)) {
@@ -167,6 +176,35 @@ public final class ArkDamage {
 
     public static boolean hurt(LivingEntity target, DamageSource source, float amount) {
         return hurt(target,source,amount,false);
+    }
+
+    /** A shared per-target minimum interval, independent of damage amount and attacker. */
+    public static boolean hurtAtInterval(LivingEntity target,int ticks,java.util.function.BooleanSupplier hit){
+        if(target.level().isClientSide)return false;
+        long now=target.level().getGameTime();
+        Long previous=NEXT_INTERVAL_HIT.get(target);
+        if(previous!=null&&now<previous)return false;
+        NEXT_INTERVAL_HIT.put(target,now+ticks);
+        boolean success=false;
+        try {success=hit.getAsBoolean();return success;}
+        finally {
+            if(!success){
+                if(previous==null)NEXT_INTERVAL_HIT.remove(target);
+                else NEXT_INTERVAL_HIT.put(target,previous);
+            }
+        }
+    }
+
+    /** Retain vanilla's hurt window while the actual hit bypasses foreign hurt/health cooldowns. */
+    public static boolean hurtWithVanillaCooldown(LivingEntity target,DamageSource source,float amount){
+        if(!validHit(target,amount))return false;
+        boolean cooling=target.invulnerableTime>target.invulnerableDuration/2;
+        if(cooling&&amount<=target.lastHurt)return false;
+        float applied=cooling?amount-target.lastHurt:amount;
+        if(!hurt(target,source,applied))return false;
+        target.lastHurt=amount;
+        if(!cooling)target.invulnerableTime=target.invulnerableDuration;
+        return true;
     }
 
     /** Old One uses the same authority and tag fallbacks, without armor/resistance reduction. */

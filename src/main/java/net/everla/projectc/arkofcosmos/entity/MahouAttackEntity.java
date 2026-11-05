@@ -24,7 +24,9 @@ public final class MahouAttackEntity extends Entity {
     public static MahouAttackEntity spawn(MahouTsukaiEntity boss,int kind,Vec3 at,Vec3 velocity,int delay,int life,float damage) {
         MahouAttackEntity e=new MahouAttackEntity(ArkOfCosmos.MAHOU_ATTACK.get(),boss.level());
         e.owner=boss.getUUID();e.ownerPhase=boss.phase();e.kind=kind;e.velocity=velocity;e.delay=delay;e.life=life;e.damage=damage;e.setPos(at);
-        e.publish();e.refreshDimensions();boss.level().addFreshEntity(e);return e;
+        e.publish();e.refreshDimensions();
+        if(boss.level().addFreshEntity(e)&&kind!=BLUE_DASH)boss.rageAttackDialogue(kind);
+        return e;
     }
     public static MahouAttackEntity swingWarning(MahouTsukaiEntity boss,Vec3 direction,int mode){
         MahouAttackEntity e=spawn(boss,SWING_WARNING,boss.position().add(0,.1,0),direction,0,14,0);

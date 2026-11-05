@@ -55,6 +55,18 @@ final class MahouDialogue {
         }
     }
     void teleport(MahouTsukaiEntity boss){ if(!boss.level().isClientSide&&!defeatedBefore(boss)) say(boss,"dialogue.arkofcosmos.mahou.escape"); }
+    void enragedAttack(MahouTsukaiEntity boss,int kind){
+        String line=switch(kind){
+            case MahouAttackEntity.RED->"red";
+            case MahouAttackEntity.BLUE->"blue";
+            case MahouAttackEntity.FUSION->"fusion";
+            case MahouAttackEntity.PURPLE->"purple";
+            case MahouAttackEntity.BLUE_DASH->"blue_dash";
+            case MahouAttackEntity.DOMAIN->"domain";
+            default->null;
+        };
+        if(line!=null)say(boss,"dialogue.arkofcosmos.mahou.rage_"+line);
+    }
     void summoned(MahouTsukaiEntity boss){ if(!summon){summon=true;say(boss,defeatedBefore(boss)?"dialogue.arkofcosmos.mahou.summon_repeat":"dialogue.arkofcosmos.mahou.summon");} }
     void defeatedSummon(MahouTsukaiEntity boss){ if(!summonDead){summonDead=true;say(boss,defeatedBefore(boss)?"dialogue.arkofcosmos.mahou.summon_dead_repeat":"dialogue.arkofcosmos.mahou.summon_dead");} }
     void vortex(MahouTsukaiEntity boss){ if(!vortex){vortex=true;if(defeatedBefore(boss))say(boss,"dialogue.arkofcosmos.mahou.vortex_repeat");} }

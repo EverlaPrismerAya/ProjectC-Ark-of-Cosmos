@@ -27,10 +27,13 @@ public final class BossHealingLock {
         apply(target, owner, 40);
     }
     public static void apply(LivingEntity target,LivingEntity owner,int duration){
+        apply(target, duration);
+        ElementsCombat.applyResonance(target,owner,20);
+    }
+    public static void apply(LivingEntity target,int duration){
         float health=target.getHealth();
         target.getPersistentData().putFloat(CAP,health);
-        target.getPersistentData().putLong(UNTIL,target.level().getGameTime()+duration);
-        ElementsCombat.applyResonance(target,owner,20);
+        target.getPersistentData().putLong(UNTIL,Math.max(target.getPersistentData().getLong(UNTIL),target.level().getGameTime()+duration));
     }
     public static boolean blockWrite(Object target,float value){
         if(!(target instanceof LivingEntity living)||!active(living))return false;
@@ -41,6 +44,8 @@ public final class BossHealingLock {
     public static float filterHealth(float value,Object target){
         if(!(target instanceof LivingEntity living)||!active(living))return value;
         float cap=health(living);
+        // Only the active store may lower the ceiling; a stale vanilla value is not another hit.
+        if(ArkDamage.authoritative(living))return cap;
         if(Float.isNaN(value)||value>cap)return cap;
         value=Math.max(0,value);
         if(value<cap){
@@ -51,12 +56,12 @@ public final class BossHealingLock {
         return value;
     }
     public static Object dataWrite(Object target,EntityDataAccessor<?> key,Object value){
-        if(!(target instanceof LivingEntity living)||!ArkDamage.isHealthData(key)
+        if(!(target instanceof LivingEntity living)||!ArkDamage.activeHealthData(living,key)
                 ||!(value instanceof Float number)||!active(living))return value;
         return blockWrite(living,number)?health(living):value;
     }
     public static void synced(LivingEntity target,EntityDataAccessor<?> key){
-        if(!ArkDamage.isHealthData(key)||!active(target)||!target.getEntityData().hasItem(key))return;
+        if(!ArkDamage.activeHealthData(target,key)||!active(target)||!target.getEntityData().hasItem(key))return;
         @SuppressWarnings("unchecked") var healthKey=(EntityDataAccessor<Float>)key;
         float value=target.getEntityData().get(healthKey);
         if(blockWrite(target,value))target.getEntityData().set(healthKey,health(target));

@@ -1,4 +1,6 @@
 {
+  "wilhelm_scream": { "sounds": ["arkofcosmos:wilhelm_scream"] },
+  "bonk": { "sounds": ["arkofcosmos:bonk"] },
   "snap": {
     "sounds": [
       "arkofcosmos:snap_0"

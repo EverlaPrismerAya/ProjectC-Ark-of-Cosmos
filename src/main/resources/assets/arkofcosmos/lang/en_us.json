@@ -227,5 +227,11 @@
   "jei.arkofcosmos.boss.mahou": "Supreme Magician",
   "jei.arkofcosmos.beacon_summoning.instructions": "Insert 1 material and click the netherite sword to summon. No beacon level is required. The material is consumed.",
   "tooltip.arkofcosmos.calamity_skull.summon": "Can be used to summon a Wither infected by Calamity",
-  "item.arkofcosmos.mistilteinn": "Mistilteinn"
+  "item.arkofcosmos.mistilteinn": "Mistilteinn",
+  "dialogue.arkofcosmos.mahou.rage_red": "Ankoku Ryū Datsukon-shu!",
+  "dialogue.arkofcosmos.mahou.rage_blue": "Tatsumaki Chūshajō Hakai!",
+  "dialogue.arkofcosmos.mahou.rage_fusion": "Die! Just die!",
+  "dialogue.arkofcosmos.mahou.rage_purple": "Die die die die die die!!!!",
+  "dialogue.arkofcosmos.mahou.rage_blue_dash": "Ion-shu!",
+  "dialogue.arkofcosmos.mahou.rage_domain": "Hareruya Daisenpū!!!"
 }

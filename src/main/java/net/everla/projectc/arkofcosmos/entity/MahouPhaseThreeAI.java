@@ -86,6 +86,7 @@ final class MahouPhaseThreeAI {
                 }
                 if(cycle>=16&&cycle<32){boss.setDeltaMovement(Vec3.ZERO);}
                 else if(cycle>=32){
+                    if(cycle==32)boss.rageAttackDialogue(BLUE_DASH);
                     boss.setDeltaMovement(Vec3.ZERO);
                     boss.setPos(boss.position().add(dash));
                 }

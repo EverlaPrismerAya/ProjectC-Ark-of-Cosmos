@@ -2,6 +2,15 @@
   "notice": "Provenance records do not grant redistribution rights. See THIRD_PARTY_NOTICES.md.",
   "files": [
     {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/wilhelm_scream.ogg",
+      "sha256": "1662ae2ff62f81326fd121ca68c8f09d472cf49a56125515fbc81346c3c68d00",
+      "source_sha256": "1662ae2ff62f81326fd121ca68c8f09d472cf49a56125515fbc81346c3c68d00",
+      "project": "User-provided audio",
+      "path": "D:/chara/桌面/wilhelm_scream.ogg",
+      "license": "Unspecified by provider",
+      "used_by": ["OdamaneHalo sweet berry bush trip"]
+    },
+    {
       "file": "src/main/resources/assets/arkofcosmos/textures/item/fractured_ark.png",
       "sha256": "23c0a873f86587d8cacd7a3b3b961f72e6d2eb295b1d840f9206c35d2491f995",
       "project": "Calamity Mod",

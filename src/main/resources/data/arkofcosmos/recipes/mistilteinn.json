@@ -1,5 +1,8 @@
 {
   "type": "minecraft:crafting_shapeless",
+  "conditions": [
+    { "type": "forge:mod_loaded", "modid": "goety_revelation" }
+  ],
   "category": "equipment",
   "ingredients": [
     { "item": "minecraft:wooden_sword" },

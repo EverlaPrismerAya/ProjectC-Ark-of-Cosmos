@@ -106,7 +106,9 @@ public final class ProjectCCommonConfig {
                 default->direct==fourth?(fourth.getMainHandItem().getItem() instanceof net.everla.projectc.arkofcosmos.item.MaceItem?"mace":"melee"):"other";
             };
         }
-        return (float)(amount*value("boss."+boss+".skill_damage_multiplier")*value("boss."+boss+".skills."+skill));
+        float rage=source.getEntity() instanceof net.everla.projectc.arkofcosmos.entity.MahouTsukaiEntity mage
+                ?mage.outgoingDamageMultiplier():1f;
+        return (float)(amount*rage*value("boss."+boss+".skill_damage_multiplier")*value("boss."+boss+".skills."+skill));
     }
     public static CompoundTag snapshot() {
         var tag=new CompoundTag();current.forEach(tag::putDouble);return tag;

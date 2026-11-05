@@ -26,6 +26,7 @@ public final class MahouTsukaiEntity extends PathfinderMob implements net.minecr
     private final ServerBossEvent bossEvent = new ServerBossEvent(getName(), BossEvent.BossBarColor.WHITE, BossEvent.BossBarOverlay.PROGRESS);
 
     private boolean phaseRecovering;
+    private boolean mistilteinnEnraged;
     private boolean defeatLooted;
     private java.util.UUID shikigami;
     private boolean shikigamiSummoned;
@@ -65,7 +66,7 @@ public final class MahouTsukaiEntity extends PathfinderMob implements net.minecr
     private long positionRewoundAt=Long.MIN_VALUE;
     private LivingEntity pressureAttacker;
     private LivingEntity orbitAnchor;
-    private int healthWriteDepth, healthSyncDepth, translatedDamageDepth;
+    private int healthWriteDepth, healthSyncDepth, translatedDamageDepth, damageSettlementDepth;
     private float vitality;
     private float damageHealthFloor=Float.NEGATIVE_INFINITY;
     private boolean vitalityReady;
@@ -99,6 +100,20 @@ public final class MahouTsukaiEntity extends PathfinderMob implements net.minecr
     @Override public double getAttributeBaseValue(net.minecraft.world.entity.ai.attributes.Attribute attribute) { return super.getAttributeBaseValue(attribute==Attributes.MAX_HEALTH?net.everla.projectc.arkofcosmos.ArkOfCosmos.MAHOU_MAX_HEALTH.get():attribute); }
     @Override protected void registerGoals() {}
     public boolean phaseRecovering() { return phaseRecovering; }
+    public float outgoingDamageMultiplier() { return mistilteinnEnraged ? 6f : 1f; }
+    void rageAttackDialogue(int kind) { if(mistilteinnEnraged)dialogue.enragedAttack(this,kind); }
+    public boolean enrageWithMistilteinn() {
+        if(level().isClientSide||phase()!=2||!isAlive()||defeating())return false;
+        mistilteinnEnraged=true;
+        bossEvent.setColor(BossEvent.BossBarColor.RED);
+        healthWriteDepth++;
+        try { setHealth(getMaxHealth()); }
+        finally { healthWriteDepth--; }
+        advancePhase(3);
+        entityData.set(TOTAL_HEALTH,totalHealthProgress());
+        bossEvent.setName(getName());
+        return true;
+    }
     public boolean defeating() { return entityData.get(DEFEAT_TICKS) > 0; }
     public int defeatTicks() { return entityData.get(DEFEAT_TICKS); }
     void weaponInvulnerable(int updates) { weaponInvulnerableUntil=Math.max(weaponInvulnerableUntil,level().getGameTime()+(updates+2)/3); }
@@ -232,6 +247,8 @@ public final class MahouTsukaiEntity extends PathfinderMob implements net.minecr
         if(!vitalityReady||level().isClientSide){super.setHealth(health);return;}
         if(redirectHealthWrite(health)||Float.isNaN(health)||blocksHealthWrite(health))return;
         float before=vitality;
+        // Reduce the final commit after weapon damage floors; loading and healing stay unchanged.
+        if(mistilteinnEnraged&&damageSettlementDepth>0&&health<before)health=before-(before-health)*.5f;
         vitality=net.minecraft.util.Mth.clamp(Math.max(health,damageHealthFloor),0,getMaxHealth());
         if(healthWriteDepth==0 && vitality<before){
             nonPlayerInvulnerableUntil=level().getGameTime()+10;
@@ -263,9 +280,9 @@ public final class MahouTsukaiEntity extends PathfinderMob implements net.minecr
             amount=Math.min(amount,50f);
             damageHealthFloor=Math.max(previousFloor,before-50f);
         }
-        healthWriteDepth++;
+        healthWriteDepth++;damageSettlementDepth++;
         try { super.actuallyHurt(source, amount); }
-        finally { healthWriteDepth--;damageHealthFloor=previousFloor; }
+        finally { healthWriteDepth--;damageSettlementDepth--;damageHealthFloor=previousFloor; }
         if(getHealth()<before && !net.everla.projectc.arkofcosmos.combat.WeaponUser.playerOwnedDamage(source))
             nonPlayerInvulnerableUntil=level().getGameTime()+10;
         // Evaluate actual health after armor, absorption and Forge damage events.
@@ -475,6 +492,8 @@ public final class MahouTsukaiEntity extends PathfinderMob implements net.minecr
         shikigami=tag.hasUUID("Shikigami")?tag.getUUID("Shikigami"):null;
         shikigamiSummoned=tag.getBoolean("ShikigamiSummoned");
         phaseRecovering = phase() < MAX_PHASE && tag.getBoolean("PhaseRecovering");
+        mistilteinnEnraged=tag.getBoolean("MistilteinnEnraged");
+        bossEvent.setColor(mistilteinnEnraged?BossEvent.BossBarColor.RED:BossEvent.BossBarColor.WHITE);
         // Minimal summon NBT is not a saved boss; do not erase its constructor's entrance.
         int transition=tag.contains("PhaseTransitionTicks")?tag.getInt("PhaseTransitionTicks"):
                 !tag.hasUUID("UUID")&&!tag.contains("Phase")?300:0;
@@ -491,6 +510,7 @@ public final class MahouTsukaiEntity extends PathfinderMob implements net.minecr
         tag.putBoolean("ShikigamiSummoned",shikigamiSummoned);
         tag.putByte("Phase", (byte) phase());
         tag.putBoolean("PhaseRecovering", phaseRecovering);
+        tag.putBoolean("MistilteinnEnraged", mistilteinnEnraged);
         tag.putInt("PhaseTransitionTicks",phaseTransitionTicks());
         tag.putInt("NonPlayerInvulnerabilityTicks",(int)Math.max(0,nonPlayerInvulnerableUntil-level().getGameTime()));
         tag.putInt("DefeatTicks", defeatTicks());
