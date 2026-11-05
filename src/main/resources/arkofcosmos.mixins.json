@@ -32,6 +32,7 @@
     "world.CalamitySkullDropsMixin"
   ],
   "client": [
+    "client.gui.GoetyBossBarMixin",
     "client.gui.BossBarProgressAccessor",
     "client.biomeBlade.BiomeItemRendererMixin",
     "client.domain.DomainBlockEntityMixin",

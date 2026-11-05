@@ -14,8 +14,7 @@ import net.minecraftforge.fml.common.Mod;
 @Mod.EventBusSubscriber(modid=ArkOfCosmos.MOD_ID,value=Dist.CLIENT)
 public final class FourthCalamityBossBar {
     private static final int[] RAINBOW={0xFFFF5555,0xFFFF9900,0xFFFFFF55,0xFF55DD55,0xFF55DDDD,0xFF5577FF,0xFFBB55FF};
-    private static final int TOTAL_BARS=44;
-    private static final class State {
+    static final class State {
         int bars;
         double previous=Double.NaN, trailing;
         long lastFrame, delayUntil;
@@ -44,30 +43,33 @@ public final class FourthCalamityBossBar {
     public static void update(UUID id,int phase,int bars) {
         if(phase==0)BARS.remove(id);else BARS.computeIfAbsent(id,key->new State(bars)).setBars(bars);
     }
-    @SubscribeEvent public static void logout(ClientPlayerNetworkEvent.LoggingOut event) { BARS.clear(); }
+    @SubscribeEvent public static void logout(ClientPlayerNetworkEvent.LoggingOut event) { BARS.clear();ApollyonBossBar.clear(); }
     @SubscribeEvent public static void render(CustomizeGuiOverlayEvent.BossEventProgress event) {
         State state=BARS.get(event.getBossEvent().getId());if(state==null)return;
+        float progress=((BossBarProgressAccessor)event.getBossEvent()).arkofcosmos$targetProgress();
+        draw(event,state,progress,event.getBossEvent().getProgress(),44,"Lv.19",
+            Component.translatable("boss.arkofcosmos.the_player.name"),Component.translatable("boss.arkofcosmos.the_player.title"));
+    }
+    static void draw(CustomizeGuiOverlayEvent.BossEventProgress event,State state,float progress,float visible,int total,String level,Component name,Component title) {
         event.setCanceled(true);event.setIncrement(44);
         var graphics=event.getGuiGraphics();var font=Minecraft.getInstance().font;
         int width=Math.max(40,Math.min(210,graphics.guiWidth()-100));
         int x=(graphics.guiWidth()-width)/2,y=event.getY()+16;
-        int color=barColor(state.bars);
+        int color=barColor(state.bars,total);
         // Read the authoritative target, not vanilla's 100 ms interpolation (which wraps on each bar).
-        float progress=((BossBarProgressAccessor)event.getBossEvent()).arkofcosmos$targetProgress();
         double trailing=state.trail(progress,System.nanoTime());
         bevel(graphics,x-2,y-2,width+4,11,width+4,0xC0182630);
         bevel(graphics,x-1,y-1,width+2,9,width+2,0xFF83949B);
-        bevel(graphics,x,y,width,7,width,state.bars>1?barColor(state.bars-1):0xFF342A32);
+        bevel(graphics,x,y,width,7,width,state.bars>1?barColor(state.bars-1,total):0xFF342A32);
         bevel(graphics,x,y,width,7,(int)Math.round(width*trailing),0xFFFFF2B0);
-        int filled=Math.round(width*event.getBossEvent().getProgress());
+        int filled=Math.round(width*visible);
         bevel(graphics,x,y,width,7,filled,color);
         // Thin highlights leave the original phase colors readable.
         graphics.fill(x+3,y,x+width-3,y+1,0x40FFFFFF);
         graphics.fill(x+3,y+6,x+width-3,y+7,0x50000000);
-        String level="Lv.19";
         graphics.drawString(font,level,x-font.width(level)-8,y,0xFFF3F4EF);
-        centeredText(graphics,Component.translatable("boss.arkofcosmos.the_player.name"),y-26,1.35f,0xFFF3F4EF);
-        centeredText(graphics,Component.translatable("boss.arkofcosmos.the_player.title"),y-11,.85f,0xFFB8C4CA);
+        centeredText(graphics,name,y-26,1.35f,0xFFF3F4EF);
+        centeredText(graphics,title,y-11,.85f,0xFFB8C4CA);
         String count="× "+state.bars;
         int countWidth=Math.max(34,font.width(count)+12),countX=x+width+8;
         bevel(graphics,countX,y-2,countWidth,11,countWidth,0xB025343E);
@@ -89,5 +91,5 @@ public final class FourthCalamityBossBar {
             if(right>inset)graphics.fill(x+inset,y+row,x+right,y+row+1,color);
         }
     }
-    private static int barColor(int bars) { return RAINBOW[Math.floorMod(TOTAL_BARS-bars,RAINBOW.length)]; }
+    private static int barColor(int bars,int total) { return RAINBOW[Math.floorMod(total-bars,RAINBOW.length)]; }
 }
