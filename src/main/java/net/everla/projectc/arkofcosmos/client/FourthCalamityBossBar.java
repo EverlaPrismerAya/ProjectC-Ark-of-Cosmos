@@ -55,7 +55,7 @@ public final class FourthCalamityBossBar {
         var graphics=event.getGuiGraphics();var font=Minecraft.getInstance().font;
         int width=Math.max(40,Math.min(210,graphics.guiWidth()-100));
         int x=(graphics.guiWidth()-width)/2,y=event.getY()+16;
-        int color=barColor(state.bars,total);
+        int color=total>1?barColor(state.bars,total):RAINBOW[0];
         // Read the authoritative target, not vanilla's 100 ms interpolation (which wraps on each bar).
         double trailing=state.trail(progress,System.nanoTime());
         bevel(graphics,x-2,y-2,width+4,11,width+4,0xC0182630);
@@ -70,17 +70,21 @@ public final class FourthCalamityBossBar {
         graphics.drawString(font,level,x-font.width(level)-8,y,0xFFF3F4EF);
         centeredText(graphics,name,y-26,1.35f,0xFFF3F4EF);
         centeredText(graphics,title,y-11,.85f,0xFFB8C4CA);
-        String count="× "+state.bars;
-        int countWidth=Math.max(34,font.width(count)+12),countX=x+width+8;
-        bevel(graphics,countX,y-2,countWidth,11,countWidth,0xB025343E);
-        graphics.drawString(font,count,countX+(countWidth-font.width(count))/2,y,0xFFF3F4EF);
+        if(total>1) {
+            String count="× "+state.bars;
+            int countWidth=Math.max(34,font.width(count)+12),countX=x+width+8;
+            bevel(graphics,countX,y-2,countWidth,11,countWidth,0xB025343E);
+            graphics.drawString(font,count,countX+(countWidth-font.width(count))/2,y,0xFFF3F4EF);
+        }
     }
     private static void centeredText(GuiGraphics graphics,Component text,int y,float scale,int color) {
         var font=Minecraft.getInstance().font;
+        text=Component.literal(text.getString().strip());
         graphics.pose().pushPose();
         graphics.pose().translate(graphics.guiWidth()/2f,y,0);
         graphics.pose().scale(scale,scale,1);
-        graphics.drawString(font,text,-font.width(text)/2,0,color);
+        graphics.pose().translate(-font.width(text)/2f,0,0);
+        graphics.drawString(font,text,0,0,color);
         graphics.pose().popPose();
     }
     /** Clip each layer to the same pointed silhouette, including an empty or full bar. */

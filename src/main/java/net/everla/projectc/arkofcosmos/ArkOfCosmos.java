@@ -117,6 +117,8 @@ public final class ArkOfCosmos {
             net.everla.projectc.arkofcosmos.item.AshesOfCalamityItem::new);
 
     public ArkOfCosmos(FMLJavaModLoadingContext context) {
+        if(net.minecraftforge.fml.loading.FMLEnvironment.dist.isClient())
+            ProjectCClientConfig.backupBeforeUpgrade(net.minecraftforge.fml.loading.FMLPaths.CONFIGDIR.get().resolve("projectc-client.toml"));
         context.registerConfig(net.minecraftforge.fml.config.ModConfig.Type.CLIENT,ProjectCClientConfig.SPEC,"projectc-client.toml");
         IEventBus bus = context.getModEventBus();
         net.everla.projectc.arkofcosmos.combat.vanilla.VanillaCombat.register(bus);

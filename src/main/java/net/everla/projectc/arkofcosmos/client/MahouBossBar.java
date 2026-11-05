@@ -24,6 +24,7 @@ import java.util.UUID;
 @Mod.EventBusSubscriber(modid = ArkOfCosmos.MOD_ID, value = Dist.CLIENT)
 public final class MahouBossBar {
     private static final Map<UUID, Integer> PHASES = new HashMap<>();
+    private static final Map<UUID, FourthCalamityBossBar.State> SIMPLE_BARS = new HashMap<>();
     private static final ResourceLocation BAR = id("textures/gui/boss_bar.png");
     private static final ResourceLocation[] STARS = java.util.stream.IntStream.range(0, 10)
             .mapToObj(i -> id("textures/misc/cosmic/cosmic_" + i + ".png")).toArray(ResourceLocation[]::new);
@@ -34,11 +35,11 @@ public final class MahouBossBar {
     private static ResourceLocation id(String path) { return ResourceLocation.fromNamespaceAndPath(ArkOfCosmos.MOD_ID, path); }
 
     public static void update(UUID id, int phase) {
-        if (phase <= 0) PHASES.remove(id);
+        if (phase <= 0) { PHASES.remove(id);SIMPLE_BARS.remove(id); }
         else PHASES.put(id, Mth.clamp(phase, 1, 3));
     }
 
-    @SubscribeEvent public static void logout(ClientPlayerNetworkEvent.LoggingOut event) { PHASES.clear(); }
+    @SubscribeEvent public static void logout(ClientPlayerNetworkEvent.LoggingOut event) { PHASES.clear();SIMPLE_BARS.clear(); }
 
     public static void registerShader(RegisterShadersEvent event) throws IOException {
         // Use vanilla metadata parsing and retain each source frame's duration.
@@ -65,6 +66,17 @@ public final class MahouBossBar {
     @SubscribeEvent public static void render(CustomizeGuiOverlayEvent.BossEventProgress event) {
         Integer phase = PHASES.get(event.getBossEvent().getId());
         if (phase == null) return;
+        if(net.everla.projectc.arkofcosmos.ProjectCClientConfig.MAHOU_SIMPLE_BOSS_BAR.get()) {
+            int remaining=4-phase;
+            var state=SIMPLE_BARS.computeIfAbsent(event.getBossEvent().getId(),key->new FourthCalamityBossBar.State(remaining));
+            state.setBars(remaining);
+            float progress=((net.everla.projectc.arkofcosmos.mixin.client.gui.BossBarProgressAccessor)event.getBossEvent()).arkofcosmos$targetProgress();
+            FourthCalamityBossBar.draw(event,state,progress,event.getBossEvent().getProgress(),3,"Lv.2147483647",
+                net.minecraft.network.chat.Component.translatable("boss.arkofcosmos.mahou.name"),
+                net.minecraft.network.chat.Component.translatable("boss.arkofcosmos.mahou.title_"+phase));
+            return;
+        }
+        SIMPLE_BARS.remove(event.getBossEvent().getId());
         event.setCanceled(true);
         event.setIncrement(29);
         Minecraft mc = Minecraft.getInstance();

@@ -11,18 +11,27 @@ import net.minecraftforge.common.ForgeConfigSpec;
 public final class ApollyonBossBar {
     private static final Map<UUID,FourthCalamityBossBar.State> STATES=new HashMap<>();
     private static Object world;
+    private static com.google.gson.JsonObject englishNames;
     private ApollyonBossBar() {}
-    static void clear() { STATES.clear();world=null; }
+    static void clear() { STATES.clear();world=null;englishNames=null; }
 
     public static boolean render(CustomizeGuiOverlayEvent.BossEventProgress event,Map<UUID,Mob> bosses) {
-        if(!ProjectCClientConfig.APOLLYON_BOSS_BAR.get()) { STATES.clear();return false; }
         Mob boss=bosses.get(event.getBossEvent().getId());
         if(boss==null)return false;
         try {
-            Class<?> helper=Class.forName("z1gned.goetyrevelation.util.ApollyonAbilityHelper");
-            if(!helper.isInstance(boss)||!(boolean)helper.getMethod("allTitlesApostle_1_20_1$isApollyon").invoke(boss))return false;
+            if(!Class.forName("com.Polarice3.Goety.common.entities.boss.Apostle").isInstance(boss))return false;
+            Class<?> helper=null;
+            boolean apollyon=false;
+            try {
+                helper=Class.forName("z1gned.goetyrevelation.util.ApollyonAbilityHelper");
+                apollyon=helper.isInstance(boss)&&(boolean)helper.getMethod("allTitlesApostle_1_20_1$isApollyon").invoke(boss);
+            } catch(ClassNotFoundException ignored) { /* Ordinary Goety is supported too. */ }
+            if(!(apollyon?ProjectCClientConfig.APOLLYON_BOSS_BAR:ProjectCClientConfig.APOSTLE_BOSS_BAR).get()) {
+                STATES.remove(event.getBossEvent().getId());return false;
+            }
             if(world!=boss.level()) { STATES.clear();world=boss.level(); }
             STATES.keySet().retainAll(bosses.keySet());
+            if(!apollyon)return renderApostle(event,boss);
             float max=((Number)((ForgeConfigSpec.ConfigValue<?>)Class.forName("z1gned.goetyrevelation.config.ModConfig")
                 .getField("APOLLYON_HEALTH").get(null)).get()).floatValue();
             float health=boss.getHealth();
@@ -56,6 +65,42 @@ public final class ApollyonBossBar {
             // Unknown optional-mod versions retain their native bar.
             return false;
         }
+    }
+
+    private static boolean renderApostle(CustomizeGuiOverlayEvent.BossEventProgress event,Mob boss) throws ReflectiveOperationException {
+        Component name=boss.getName();
+        int title=(int)boss.getClass().getMethod("getTitleNumber").invoke(boss);
+        Component subtitle=Component.translatable("title.goety."+title);
+        // Goety synchronizes its generated name as one literal translation key, not two components.
+        String full=name.getString();
+        if(englishNames==null) {
+            englishNames=new com.google.gson.JsonObject();
+            try(var stream=ApollyonBossBar.class.getResourceAsStream("/assets/goety/lang/en_us.json")) {
+                if(stream!=null)try(var reader=new java.io.InputStreamReader(stream,java.nio.charset.StandardCharsets.UTF_8)) {
+                    englishNames=com.google.gson.JsonParser.parseReader(reader).getAsJsonObject();
+                }
+            } catch(java.io.IOException ignored) { /* Localized suffixes remain available. */ }
+        }
+        for(int i=0;i<12;i++) {
+            String key="title.goety."+i;
+            String suffix=Component.translatable(key).getString();
+            if(!full.endsWith(suffix)&&englishNames.has(key))suffix=englishNames.get(key).getAsString();
+            if(!suffix.isBlank()&&full.endsWith(suffix)) {
+                name=Component.literal(full.substring(0,full.length()-suffix.length()).strip());
+                subtitle=Component.translatable("title.goety."+i);
+                break;
+            }
+        }
+        for(int i=0;i<18;i++) {
+            String key="name.goety.apostle."+i;
+            if(englishNames.has(key)&&name.getString().equals(englishNames.get(key).getAsString().strip())) {
+                name=Component.translatable(key);break;
+            }
+        }
+        float progress=Math.max(0,Math.min(1,boss.getHealth()/boss.getMaxHealth()));
+        var state=STATES.computeIfAbsent(event.getBossEvent().getId(),key->new FourthCalamityBossBar.State(1));
+        FourthCalamityBossBar.draw(event,state,progress,progress,1,"Lv.66",name,subtitle);
+        return true;
     }
 
     record Segment(float low,float high,int title) {}
