@@ -4,6 +4,7 @@ import java.util.*;
 import net.everla.projectc.arkofcosmos.mixin.client.gui.BossBarProgressAccessor;
 import net.everla.projectc.arkofcosmos.ArkOfCosmos;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.*;
@@ -20,7 +21,12 @@ public final class FourthCalamityBossBar {
         long lastFrame, delayUntil;
         State(int bars) { this.bars=bars; }
         void setBars(int bars) {
-            if(this.bars!=bars) { previous=Double.NaN;delayUntil=0; }
+            if(this.bars!=bars) {
+                // Only the surviving bar's overflow damage should leave a trail.
+                if(bars<this.bars&&!Double.isNaN(previous))previous=trailing=1;
+                else previous=Double.NaN;
+                delayUntil=0;
+            }
             this.bars=bars;
         }
         double trail(double health,long now) {
@@ -41,21 +47,47 @@ public final class FourthCalamityBossBar {
     @SubscribeEvent public static void logout(ClientPlayerNetworkEvent.LoggingOut event) { BARS.clear(); }
     @SubscribeEvent public static void render(CustomizeGuiOverlayEvent.BossEventProgress event) {
         State state=BARS.get(event.getBossEvent().getId());if(state==null)return;
-        event.setCanceled(true);event.setIncrement(25);
+        event.setCanceled(true);event.setIncrement(44);
         var graphics=event.getGuiGraphics();var font=Minecraft.getInstance().font;
-        int x=graphics.guiWidth()/2-91,y=event.getY();
+        int width=Math.max(40,Math.min(210,graphics.guiWidth()-100));
+        int x=(graphics.guiWidth()-width)/2,y=event.getY()+16;
         int color=barColor(state.bars);
         // Read the authoritative target, not vanilla's 100 ms interpolation (which wraps on each bar).
         float progress=((BossBarProgressAccessor)event.getBossEvent()).arkofcosmos$targetProgress();
         double trailing=state.trail(progress,System.nanoTime());
-        graphics.fill(x-1,y-1,x+183,y+6,0xFF000000);
-        graphics.fill(x,y,x+182,y+5,state.bars>1?barColor(state.bars-1):0xFF442222);
-        graphics.fill(x,y,x+(int)Math.round(182*trailing),y+5,0xFFFFF2B0);
-        int filled=Math.round(182*event.getBossEvent().getProgress());
-        graphics.fill(x,y,x+filled,y+5,color);
-        Component name=event.getBossEvent().getName();
-        graphics.drawString(font,name,graphics.guiWidth()/2-font.width(name)/2,y-10,0xFFFFFF);
-        graphics.drawString(font,"×"+state.bars,x+187,y-2,color);
+        bevel(graphics,x-2,y-2,width+4,11,width+4,0xC0182630);
+        bevel(graphics,x-1,y-1,width+2,9,width+2,0xFF83949B);
+        bevel(graphics,x,y,width,7,width,state.bars>1?barColor(state.bars-1):0xFF342A32);
+        bevel(graphics,x,y,width,7,(int)Math.round(width*trailing),0xFFFFF2B0);
+        int filled=Math.round(width*event.getBossEvent().getProgress());
+        bevel(graphics,x,y,width,7,filled,color);
+        // Thin highlights leave the original phase colors readable.
+        graphics.fill(x+3,y,x+width-3,y+1,0x40FFFFFF);
+        graphics.fill(x+3,y+6,x+width-3,y+7,0x50000000);
+        String level="Lv.19";
+        graphics.drawString(font,level,x-font.width(level)-8,y,0xFFF3F4EF);
+        centeredText(graphics,Component.translatable("boss.arkofcosmos.the_player.name"),y-26,1.35f,0xFFF3F4EF);
+        centeredText(graphics,Component.translatable("boss.arkofcosmos.the_player.title"),y-11,.85f,0xFFB8C4CA);
+        String count="× "+state.bars;
+        int countWidth=Math.max(34,font.width(count)+12),countX=x+width+8;
+        bevel(graphics,countX,y-2,countWidth,11,countWidth,0xB025343E);
+        graphics.drawString(font,count,countX+(countWidth-font.width(count))/2,y,0xFFF3F4EF);
+    }
+    private static void centeredText(GuiGraphics graphics,Component text,int y,float scale,int color) {
+        var font=Minecraft.getInstance().font;
+        graphics.pose().pushPose();
+        graphics.pose().translate(graphics.guiWidth()/2f,y,0);
+        graphics.pose().scale(scale,scale,1);
+        graphics.drawString(font,text,-font.width(text)/2,0,color);
+        graphics.pose().popPose();
+    }
+    /** Clip each layer to the same pointed silhouette, including an empty or full bar. */
+    private static void bevel(GuiGraphics graphics,int x,int y,int width,int height,int filled,int color) {
+        filled=Math.max(0,Math.min(width,filled));
+        for(int row=0;row<height;row++) {
+            int inset=Math.abs(row-height/2),right=Math.min(width-inset,filled);
+            if(right>inset)graphics.fill(x+inset,y+row,x+right,y+row+1,color);
+        }
     }
     private static int barColor(int bars) { return RAINBOW[Math.floorMod(TOTAL_BARS-bars,RAINBOW.length)]; }
 }
