@@ -24,9 +24,12 @@ public final class BossHealingLock {
         return target instanceof LivingEntity living&&active(living)?living.getPersistentData().getFloat(CAP):-1;
     }
     public static void apply(LivingEntity target,LivingEntity owner){
+        apply(target, owner, 40);
+    }
+    public static void apply(LivingEntity target,LivingEntity owner,int duration){
         float health=target.getHealth();
         target.getPersistentData().putFloat(CAP,health);
-        target.getPersistentData().putLong(UNTIL,target.level().getGameTime()+40);
+        target.getPersistentData().putLong(UNTIL,target.level().getGameTime()+duration);
         ElementsCombat.applyResonance(target,owner,20);
     }
     public static boolean blockWrite(Object target,float value){

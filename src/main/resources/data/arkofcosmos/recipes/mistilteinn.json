@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    { "item": "minecraft:wooden_sword" },
+    { "item": "minecraft:sweet_berries" }
+  ],
+  "result": { "item": "arkofcosmos:mistilteinn" }
+}

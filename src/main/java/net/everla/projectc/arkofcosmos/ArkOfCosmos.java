@@ -117,6 +117,8 @@ public final class ArkOfCosmos {
 
     public static final RegistryObject<Item> ASHES_OF_CALAMITY = ITEMS.register("ashes_of_calamity",
             net.everla.projectc.arkofcosmos.item.AshesOfCalamityItem::new);
+    public static final RegistryObject<Item> MISTILTEINN = ITEMS.register("mistilteinn",
+            net.everla.projectc.arkofcosmos.item.MistilteinnItem::new);
 
     public ArkOfCosmos(FMLJavaModLoadingContext context) {
         if(net.minecraftforge.fml.loading.FMLEnvironment.dist.isClient())
@@ -153,6 +155,7 @@ public final class ArkOfCosmos {
             event.accept(ARK_OF_THE_ELEMENTS);
             event.accept(FRACTURED_ARK);
             event.accept(ARK_OF_THE_ANCIENTS);
+            event.accept(MISTILTEINN);
         }
         if (event.getTabKey() == CreativeModeTabs.INGREDIENTS) event.accept(AURIC_BAR);
         if (event.getTabKey() == CreativeModeTabs.INGREDIENTS) event.accept(ANNIHILATION_EMBER);

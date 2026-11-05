@@ -226,5 +226,6 @@
   "jei.arkofcosmos.beacon_summoning": "信标召唤",
   "jei.arkofcosmos.boss.mahou": "至尊魔法使",
   "jei.arkofcosmos.beacon_summoning.instructions": "放入1个材料，点击下界合金剑按钮召唤。无需信标等级，材料会被消耗。",
-  "tooltip.arkofcosmos.calamity_skull.summon": "可用于召唤被灾厄侵染的凋灵"
+  "tooltip.arkofcosmos.calamity_skull.summon": "可用于召唤被灾厄侵染的凋灵",
+  "item.arkofcosmos.mistilteinn": "槲寄生"
 }

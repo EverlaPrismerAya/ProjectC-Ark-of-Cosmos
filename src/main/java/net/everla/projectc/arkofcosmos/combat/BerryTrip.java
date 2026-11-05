@@ -34,6 +34,19 @@ public final class BerryTrip {
     public static void clientStart(int entity,long gameTime){CLIENT.put(entity,gameTime);}
     public static void clearClient(){CLIENT.clear();}
 
+    public static void trip(Player p) {
+        if (p.level().isClientSide) return;
+        long now = p.level().getGameTime();
+        SERVER.put(p.getId(), now);
+        p.setSprinting(false);
+        p.setDeltaMovement(0, Math.min(0, p.getDeltaMovement().y), 0);
+        p.hurtMarked = true;
+        CompoundTag data = new CompoundTag();
+        data.putString("Event", "berry_trip");
+        data.putInt("Entity", p.getId());
+        ArkNetwork.effect(p, data);
+    }
+
     @SubscribeEvent(priority=EventPriority.LOWEST)
     public static void damage(LivingDamageEvent e){
         if(!(e.getEntity() instanceof Player p)||p.level().isClientSide||e.getAmount()<=0||!e.getSource().is(DamageTypes.SWEET_BERRY_BUSH))return;
