@@ -17,6 +17,13 @@ public final class WeaponDamage {
     public static boolean hurt(LivingEntity target, DamageSource source, float amount) {
         amount=net.everla.projectc.arkofcosmos.ProjectCCommonConfig.bossDamage(target,source,amount);
         if(amount<=0)return false;
+        // Calamitas summons retain native hurt frames and mitigation even when
+        // struck by an Ark weapon; do not install this dispatcher's 35% floor.
+        if(target instanceof net.everla.projectc.arkofcosmos.entity.CalamitasMinionEntity
+                || target instanceof net.everla.projectc.arkofcosmos.entity.CalamitasBrotherEntity
+                || target instanceof net.everla.projectc.arkofcosmos.entity.SupremeCalamitasEntity
+                || target instanceof net.everla.projectc.arkofcosmos.entity.CalamitasSepulcherEntity)
+            return target.hurt(source,amount);
         // Keep native boss mitigation, but preserve player/servant weapons' hurt-frame bypass.
         if(target instanceof net.everla.projectc.arkofcosmos.entity.FourthCalamityEntity) {
             if(!WeaponUser.playerOwnedDamage(source))return target.hurt(source,amount);
@@ -30,10 +37,11 @@ public final class WeaponDamage {
                 || !Float.isFinite(amount) || amount <= 0
                 || target instanceof Player player && (player.isCreative() || player.isSpectator())) return false;
         boolean mahouHit=source.getEntity() instanceof net.everla.projectc.arkofcosmos.entity.MahouTsukaiEntity;
+        boolean calamitasHit=BossDamage.calamitas(source);
         var fourth=CalamityAttackGuard.damageOwner(source);
         boolean fourthHit=fourth!=null&&target!=fourth;
         if(fourthHit&&fourth.combat.selfDefending())amount*=6;
-        boolean bossHit = mahouHit || fourthHit || target instanceof Player
+        boolean bossHit = mahouHit || calamitasHit || fourthHit || target instanceof Player
                 && source.getEntity() instanceof net.everla.projectc.arkofcosmos.entity.MahoragaWardenEntity;
         long now = target.level().getGameTime();
         Long previousUntil = bossHit ? BOSS_HIT_UNTIL.get(target) : null;
@@ -43,10 +51,10 @@ public final class WeaponDamage {
         boolean success = false;
         Hit previous = CURRENT.get();
         int cooldown = target.invulnerableTime;
-        CURRENT.set(new Hit(target, source, fourthHit ? 0 : amount * .35f));
+        CURRENT.set(new Hit(target, source, fourthHit ? 0 : net.everla.projectc.arkofcosmos.calamity.CalamitasHexEffect.outgoing(source, amount) * .35f));
         try {
             target.invulnerableTime = 0;
-            success = fourthHit || mahouHit ? BossDamage.hurt(target,source,amount) : target.hurt(source, amount);
+            success = fourthHit || mahouHit || calamitasHit ? BossDamage.hurt(target,source,amount) : target.hurt(source, amount);
             if(success&&fourthHit&&!source.is(net.minecraft.tags.DamageTypeTags.IS_EXPLOSION)
                 &&source.getDirectEntity()==fourth&&!source.is(net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.DAMAGE_TYPE,net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("arkofcosmos","spear"))))
                 CalamityAttackGuard.knockback(target,.4,fourth.getX()-target.getX(),fourth.getZ()-target.getZ(),fourth);

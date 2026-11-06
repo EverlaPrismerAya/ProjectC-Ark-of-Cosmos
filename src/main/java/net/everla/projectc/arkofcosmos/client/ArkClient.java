@@ -122,6 +122,16 @@ public final class ArkClient {
             });
         }
         @SubscribeEvent public static void renderers(EntityRenderersEvent.RegisterRenderers event) {
+            if (net.everla.projectc.arkofcosmos.CalamitasContent.ENABLED)
+                net.everla.projectc.arkofcosmos.CalamitasContent.ATTACKS.values().forEach(type -> event.registerEntityRenderer(type.get(), CalamitasAttackRenderer::new));
+            if (net.everla.projectc.arkofcosmos.CalamitasContent.ENABLED)
+                net.everla.projectc.arkofcosmos.CalamitasContent.MINIONS.values().forEach(type -> event.registerEntityRenderer(type.get(), CalamitasMinionRenderer::new));
+            if (net.everla.projectc.arkofcosmos.CalamitasContent.ENABLED)
+                net.everla.projectc.arkofcosmos.CalamitasContent.SEPULCHER.values().forEach(type -> event.registerEntityRenderer(type.get(), CalamitasSepulcherRenderer::new));
+            if (net.everla.projectc.arkofcosmos.CalamitasContent.ENABLED)
+                net.everla.projectc.arkofcosmos.CalamitasContent.BROTHERS.values().forEach(type -> event.registerEntityRenderer(type.get(), CalamitasBrotherRenderer::new));
+            if (net.everla.projectc.arkofcosmos.CalamitasContent.ENABLED)
+                event.registerEntityRenderer(net.everla.projectc.arkofcosmos.CalamitasContent.BOSS.get(), SupremeCalamitasRenderer::new);
             event.registerEntityRenderer(ArkOfCosmos.ATTACK.get(), ArkAttackRenderer::new);
             event.registerEntityRenderer(ArkOfCosmos.OLD_ONE_ATTACK.get(), net.everla.projectc.arkofcosmos.client.OldOneRenderer::new);
             event.registerEntityRenderer(ArkOfCosmos.MAHOU_TSUKAI.get(), MahouTsukaiRenderer::new);

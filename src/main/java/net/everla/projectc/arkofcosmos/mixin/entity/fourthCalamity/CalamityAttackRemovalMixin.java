@@ -12,10 +12,12 @@ public abstract class CalamityAttackRemovalMixin {
     private void fourthRemoval(Entity.RemovalReason reason,CallbackInfo ci) {
         Entity entity=(Entity)(Object)this;
         if(entity instanceof net.everla.projectc.arkofcosmos.entity.FourthCalamityEntity boss&&boss.protectRemoval(reason)
+                ||entity instanceof net.everla.projectc.arkofcosmos.entity.SupremeCalamitasEntity calamitas&&calamitas.protectRemoval(reason)
                 ||CalamityAttackGuard.blockRemoval(entity,reason))ci.cancel();
     }
     @Inject(method="setRemoved",at=@At("HEAD"),cancellable=true)
     private void fourthFinalRemoval(Entity.RemovalReason reason,CallbackInfo ci) {
-        if((Object)this instanceof net.everla.projectc.arkofcosmos.entity.FourthCalamityEntity boss&&boss.protectRemoval(reason))ci.cancel();
+        if((Object)this instanceof net.everla.projectc.arkofcosmos.entity.FourthCalamityEntity boss&&boss.protectRemoval(reason)
+                ||(Object)this instanceof net.everla.projectc.arkofcosmos.entity.SupremeCalamitasEntity calamitas&&calamitas.protectRemoval(reason))ci.cancel();
     }
 }

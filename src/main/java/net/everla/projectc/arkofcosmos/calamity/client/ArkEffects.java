@@ -64,6 +64,8 @@ public final class ArkEffects {
         ArkFxParticle a=particle(SQUISH,p,v,c,range(.3,.6),60,f); a.squish=squish; a.hueShift=hue;
     }
     public static void receive(CompoundTag data){
+        if(data.getString("Event").equals("calamitas_cast_sparks")){CalamitasParticles.receive(data);return;}
+        if(data.getString("Event").equals("calamitas_acceptance_music")){net.everla.projectc.arkofcosmos.client.CalamitasMusic.acceptance(data);return;}
         if(data.getString("Event").equals("berry_trip")){
             if(Minecraft.getInstance().level!=null)net.everla.projectc.arkofcosmos.combat.BerryTrip.clientStart(data.getInt("Entity"),Minecraft.getInstance().level.getGameTime());
             return;
@@ -133,13 +135,14 @@ public final class ArkEffects {
     }
     public static void tick(){
         Minecraft mc=Minecraft.getInstance();
-        if(world!=mc.level){world=mc.level;particles.clear();frameParticles.clear();visuals.clear();GalaxiaEffects.clear();shake=0;}
+        if(world!=mc.level){world=mc.level;particles.clear();frameParticles.clear();visuals.clear();GalaxiaEffects.clear();CalamitasParticles.clear();shake=0;}
         if(mc.level==null||mc.isPaused())return;
         Set<Integer> live=new HashSet<>();
         frameParticles.clear();frameParticles.addAll(particles);for(ArkFxParticle p:particles)p.beginFrame();
         simulating=true;
         for(phase=0;phase<3;phase++){
             GalaxiaEffects.tick(phase);
+            CalamitasParticles.tick(phase);
             for(var e:mc.level.entitiesForRendering())if(e instanceof ArkAttackEntity a){live.add(a.getId()); consume(a,phase);}
             particles.removeIf(p->{p.prepareFrame();p.update();p.capture(phase+1);if(p.time>=p.lifetime){p.died=(phase+1)/3d;return true;}return false;});
         }
@@ -269,7 +272,7 @@ public final class ArkEffects {
         AttackFrame billboard=new AttackFrame(forward.cross(up).normalize(),up.scale(-1));
         ArkFxDraw.matrix=pose.last().pose();ArkFxDraw.camera=camera;
         try {
-            for(boolean additive:new boolean[]{false,true})for(ArkFxParticle p:frameParticles)if((p.type!=SMOKE||p.glowing)==additive){
+            for(boolean additive:new boolean[]{false,true})for(ArkFxParticle p:frameParticles)if(((p.type!=SMOKE||p.glowing)&&p.type!=VOID_SPARK&&p.type!=SOURCE_DUST_261&&p.type!=SOURCE_DUST_66&&p.type!=SOURCE_DUST_279&&p.type!=SOURCE_DUST_60&&p.type!=SOURCE_DUST_114&&p.type!=SOURCE_DUST_182&&p.type!=SOURCE_DUST_5)==additive){
                 ArkFxDraw.ownerView(p.ownerId,Vec3.ZERO);
                 p.draw(partial,billboard);
             }

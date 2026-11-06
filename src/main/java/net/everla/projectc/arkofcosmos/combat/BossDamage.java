@@ -14,7 +14,15 @@ public final class BossDamage {
     private BossDamage() {}
 
     public static boolean owns(DamageSource source) {
-        return source.getEntity() instanceof MahouTsukaiEntity || CalamityAttackGuard.damageOwner(source) != null;
+        return source.getEntity() instanceof MahouTsukaiEntity || calamitas(source) || CalamityAttackGuard.damageOwner(source) != null;
+    }
+
+    public static boolean calamitas(DamageSource source) {
+        return source.getEntity() instanceof net.everla.projectc.arkofcosmos.entity.SupremeCalamitasEntity
+                || source.getEntity() instanceof net.everla.projectc.arkofcosmos.entity.CalamitasBrotherEntity
+                || source.getEntity() instanceof net.everla.projectc.arkofcosmos.entity.CalamitasMinionEntity
+                || source.getEntity() instanceof net.everla.projectc.arkofcosmos.entity.CalamitasSepulcherEntity
+                || source.getDirectEntity() instanceof net.everla.projectc.arkofcosmos.entity.CalamitasAttackEntity;
     }
 
     public static boolean hurt(LivingEntity target, DamageSource source, float amount) {
@@ -22,6 +30,7 @@ public final class BossDamage {
         if (!WeaponDamage.handling(target, source)) return WeaponDamage.hurt(target, source, amount);
         if (!ArkDamage.validHit(target, amount)) return false;
         if (ArkDamage.nativeTarget(target)) return target.hurt(source, amount);
+        amount = net.everla.projectc.arkofcosmos.calamity.CalamitasHexEffect.outgoing(source, amount);
         boolean fourth = CalamityAttackGuard.damageOwner(source) != null;
         float damage = fourth ? mitigated(target, source, amount) : mahouDamage(target, source, amount);
         return ArkDamage.applyDamage(target, source, damage, true);

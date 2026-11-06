@@ -12,6 +12,7 @@ uniform float uTintStrength;
 uniform float uPostMusicHit;
 uniform float uRandom;
 uniform float uFixedBoundary;
+uniform float uSupremeSource;
 out vec4 fragColor;
 float inverseLerp(float x,float a,float b){return clamp((x-a)/(b-a),0.0,1.0);}
 void main(){
@@ -24,6 +25,12 @@ void main(){
     float ring=sin(3.141*inverseLerp(r,start,start+.1))*1.96;
     if(r<start)alpha*=mix(1.0,2.6,noise);
     else alpha=mix(alpha,ring,inverseLerp(r,start,start+.05));
+    // The original SCal call supplies its own quantized palette/flicker. Keep other callers' policy below.
+    if(uSupremeSource>0.5){
+        alpha*=mix(1.0,.56,r)*2.45*.65;
+        fragColor=vec4(mix(baseColor.rgb,color,.5),1.0)*alpha;
+        return;
+    }
     float power=(uHealthRatio<.6?.1:0.0)+(uHealthRatio<.3?.25:0.0);
     power+=uPostMusicHit*.61;
     if(uHealthRatio<.05)power+=mix(.7,1.0,uRandom);

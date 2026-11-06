@@ -15,7 +15,7 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraftforge.network.NetworkHooks;
 
-public final class MahouTsukaiEntity extends PathfinderMob implements net.minecraft.world.entity.monster.Enemy {
+public final class MahouTsukaiEntity extends PathfinderMob implements net.minecraft.world.entity.monster.Enemy, net.everla.projectc.arkofcosmos.combat.ProtectedBoss {
     public static final int MAX_PHASE = 3;
     public static final double FUSION_SHIELD_RADIUS = 3.0;
     private static final double RAIN_RADIUS = 24;

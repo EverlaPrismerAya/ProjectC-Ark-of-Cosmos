@@ -50,6 +50,16 @@ public final class ProjectCCommonConfig {
         for(String skill:new String[]{"melee","spear","mace","arrow","trident","wind_charge","explosion","other"})
             define(b,skill,1,0,100,"Damage multiplier for this attack type, multiplied by skill_damage_multiplier");
         b.pop();
+        b.pop().push("calamitas");
+        define(b,"health_multiplier",.002,.0002,100,"Source health conversion; shared by Calamitas and her summons. Calamitas maximum health is at least 100");
+        define(b,"damage_multiplier",.06,0,100,"Source damage conversion: original / 1000 * 60; before the shared Mahou damage policy");
+        define(b,"armor_multiplier",.1,0,1,"Source defense conversion to native Minecraft armor points");
+        define(b,"movement_multiplier",1,.01,100,"Movement conversion after pixels_per_block; does not change the source clock");
+        define(b,"pixels_per_block",16,1,256,"Source pixels per Minecraft block; captured at encounter creation");
+        b.push("skills");
+        for(String skill:new String[]{"contact","dart","hellblast","fireblast","gigablast","wave","maelstrom","fist","slash"})
+            define(b,skill,1,0,100,"Independent attack multiplier, multiplied by damage_multiplier");
+        b.pop();
         b.pop().pop().push("weapons");
         String[] ids={"fractured_ark","ark_of_the_ancients","ark_of_the_elements","ark_of_cosmos","ark_of_the_old_one","broken_biome_blade","biome_blade","true_biome_blade","galaxia"};
         double[] damage={4,6,7,16,20,5,7,9.5,16};
@@ -70,6 +80,10 @@ public final class ProjectCCommonConfig {
         VALUES.put(String.join(".",entry.getPath()),entry);
     }
     public static double value(String key) { return current.get(key); }
+    public static double calamitasValue(String key) { return value("boss.calamitas."+key); }
+    public static double calamitasDamage(String skill,double sourceDamage) {
+        return sourceDamage*calamitasValue("damage_multiplier")*calamitasValue("skills."+skill);
+    }
     public static float damage(String item) { return (float)value("weapons."+item+".base_damage"); }
     public static int bars() { return (int)value("boss.fourth_calamity.health_bars"); }
     public static double fourthHealth() { return bars()*value("boss.fourth_calamity.bar_health"); }

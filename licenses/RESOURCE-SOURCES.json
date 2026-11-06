@@ -2,13 +2,350 @@
   "notice": "Provenance records do not grant redistribution rights. See THIRD_PARTY_NOTICES.md.",
   "files": [
     {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/calamitas_dust_5_0.png",
+      "sha256": "7e7c5d86803466a7fbfe88abc95ca5d23e5ebbfc1df92ae4fdfad3ac24a89a5f",
+      "project": "Terraria / Re-Logic",
+      "path": "G:/SteamLibrary/steamapps/common/tModLoader/Content/Images/Dust.xnb",
+      "source_sha256": "b7d68955a87e3a7d77ebf0f7c7e4da75c04877d704db1db1355d228aba97a8a6",
+      "license": "ARR (Terraria original terms)",
+      "conversion": "Lossless native 8x8 atlas frame crop after XNB decode",
+      "source_rect": [
+        50,
+        0,
+        8,
+        8
+      ],
+      "used_by": [
+        "BrimstoneHeart tendril destruction Blood Dust5"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/calamitas_dust_5_1.png",
+      "sha256": "10e245d0a8c20dac0eee1110baf73d3a2f633912e3db97ffaa5614952615e612",
+      "project": "Terraria / Re-Logic",
+      "path": "G:/SteamLibrary/steamapps/common/tModLoader/Content/Images/Dust.xnb",
+      "source_sha256": "b7d68955a87e3a7d77ebf0f7c7e4da75c04877d704db1db1355d228aba97a8a6",
+      "license": "ARR (Terraria original terms)",
+      "conversion": "Lossless native 8x8 atlas frame crop after XNB decode",
+      "source_rect": [
+        50,
+        10,
+        8,
+        8
+      ],
+      "used_by": [
+        "BrimstoneHeart tendril destruction Blood Dust5"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/calamitas_dust_5_2.png",
+      "sha256": "8043c06d6d2cc19e623a970d3ecb205e2c71fe830b3b8ab94fa7b3d1d742c579",
+      "project": "Terraria / Re-Logic",
+      "path": "G:/SteamLibrary/steamapps/common/tModLoader/Content/Images/Dust.xnb",
+      "source_sha256": "b7d68955a87e3a7d77ebf0f7c7e4da75c04877d704db1db1355d228aba97a8a6",
+      "license": "ARR (Terraria original terms)",
+      "conversion": "Lossless native 8x8 atlas frame crop after XNB decode",
+      "source_rect": [
+        50,
+        20,
+        8,
+        8
+      ],
+      "used_by": [
+        "BrimstoneHeart tendril destruction Blood Dust5"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/calamitas_static_ring.png",
+      "sha256": "4c935583e1a4d3432b3e8238f0854b43fff29b11a63102ddf505a4a803d80403",
+      "source_sha256": "4c935583e1a4d3432b3e8238f0854b43fff29b11a63102ddf505a4a803d80403",
+      "project": "Calamity Mod",
+      "path": "Particles/HighResHollowCircleHardEdge.png",
+      "upstream_commit": "1a8cebd27ec5615316b78f71973446b5528d2b78",
+      "license": "ARR (Calamity original terms)",
+      "used_by": [
+        "SoulSeekerSupreme pre-shot StaticPulseRing pair"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/calamitas_dust_279_1.png",
+      "sha256": "bd9ce13a615cd5fd077ca6d5b8d3fffea1fb7dfebb61a8915cfa77d12383960c",
+      "project": "Terraria / Re-Logic",
+      "path": "G:/SteamLibrary/steamapps/common/tModLoader/Content/Images/Dust.xnb",
+      "source_sha256": "b7d68955a87e3a7d77ebf0f7c7e4da75c04877d704db1db1355d228aba97a8a6",
+      "license": "ARR (Terraria original terms)",
+      "conversion": "Lossless native 8x8 atlas frame crop after XNB decode; binary-alpha original pixels",
+      "source_rect": [
+        790,
+        70,
+        8,
+        8
+      ],
+      "source_rgba_sha256": "01e799c7ed80a230e8765a24b4685ae5a56b1c427d45e08794588a7d60d9c400",
+      "used_by": [
+        "Supreme Catastrophe slash native Dust 66/279",
+        "Supreme Cataclysm fist trail/final rings/brother-death native Dust 66/279"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/calamitas_dust_279_0.png",
+      "sha256": "c64d0c71f35ceb56489075c8e2b85526ba1b7b82e3532a2cb9a2d2a9ceb4ffa3",
+      "project": "Terraria / Re-Logic",
+      "path": "G:/SteamLibrary/steamapps/common/tModLoader/Content/Images/Dust.xnb",
+      "source_sha256": "b7d68955a87e3a7d77ebf0f7c7e4da75c04877d704db1db1355d228aba97a8a6",
+      "license": "ARR (Terraria original terms)",
+      "conversion": "Lossless native 8x8 atlas frame crop after XNB decode; binary-alpha original pixels",
+      "source_rect": [
+        790,
+        60,
+        8,
+        8
+      ],
+      "source_rgba_sha256": "497a4282955a22c30b78269b5b5f09ebfb4a4bda1b1aaa734d1727fb7335a29d",
+      "used_by": [
+        "Supreme Catastrophe slash native Dust 66/279",
+        "Supreme Cataclysm fist trail/final rings/brother-death native Dust 66/279"
+      ],
+      "source_rects": [
+        [
+          790,
+          60,
+          8,
+          8
+        ],
+        [
+          790,
+          80,
+          8,
+          8
+        ]
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/calamitas_dust_66_2.png",
+      "sha256": "b1c02732d39619515771393bc9486666022b55d38e5800a35d2a6ce1cf199bf9",
+      "project": "Terraria / Re-Logic",
+      "path": "G:/SteamLibrary/steamapps/common/tModLoader/Content/Images/Dust.xnb",
+      "source_sha256": "b7d68955a87e3a7d77ebf0f7c7e4da75c04877d704db1db1355d228aba97a8a6",
+      "license": "ARR (Terraria original terms)",
+      "conversion": "Lossless native 8x8 atlas frame crop after XNB decode; binary-alpha original pixels",
+      "source_rect": [
+        660,
+        20,
+        8,
+        8
+      ],
+      "source_rgba_sha256": "a0947dda65e279a642a5d16d91af001a357801ddfa26ed90f2d7d5febe8d553a",
+      "used_by": [
+        "Supreme Catastrophe slash native Dust 66/279",
+        "Supreme Cataclysm fist trail/final rings/brother-death native Dust 66/279"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/calamitas_dust_66_1.png",
+      "sha256": "878073205717d08a51ed03603454471f2a58c25718e66318b9569a9a69da0014",
+      "project": "Terraria / Re-Logic",
+      "path": "G:/SteamLibrary/steamapps/common/tModLoader/Content/Images/Dust.xnb",
+      "source_sha256": "b7d68955a87e3a7d77ebf0f7c7e4da75c04877d704db1db1355d228aba97a8a6",
+      "license": "ARR (Terraria original terms)",
+      "conversion": "Lossless native 8x8 atlas frame crop after XNB decode; binary-alpha original pixels",
+      "source_rect": [
+        660,
+        10,
+        8,
+        8
+      ],
+      "source_rgba_sha256": "9982695f38bd8a5a85e7395564beb940f8d8ef4f2211cab29a965218c6525fab",
+      "used_by": [
+        "Supreme Catastrophe slash native Dust 66/279",
+        "Supreme Cataclysm fist trail/final rings/brother-death native Dust 66/279"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/calamitas_dust_66_0.png",
+      "sha256": "c367f20c641050df0c95386405205b6c882d147c4ed4a83f948c9099e8ba9731",
+      "project": "Terraria / Re-Logic",
+      "path": "G:/SteamLibrary/steamapps/common/tModLoader/Content/Images/Dust.xnb",
+      "source_sha256": "b7d68955a87e3a7d77ebf0f7c7e4da75c04877d704db1db1355d228aba97a8a6",
+      "license": "ARR (Terraria original terms)",
+      "conversion": "Lossless native 8x8 atlas frame crop after XNB decode; binary-alpha original pixels",
+      "source_rect": [
+        660,
+        0,
+        8,
+        8
+      ],
+      "source_rgba_sha256": "48cb1ef6373f146a3bafe1ca17c766766831a4b2ff1995b04335a5c8b7cde389",
+      "used_by": [
+        "Supreme Catastrophe slash native Dust 66/279",
+        "Supreme Cataclysm fist trail/final rings/brother-death native Dust 66/279"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/calamitas_dust_235_0.png",
+      "sha256": "9cd6319c3e401a55ca2ac4a35e481f5fcde6281be2e0593f8c141314dc48d8f4",
+      "project": "Terraria / Re-Logic",
+      "path": "G:/SteamLibrary/steamapps/common/tModLoader/Content/Images/Dust.xnb",
+      "source_sha256": "b7d68955a87e3a7d77ebf0f7c7e4da75c04877d704db1db1355d228aba97a8a6",
+      "license": "ARR (Terraria original terms)",
+      "conversion": "Lossless native 8x8 atlas frame crop after XNB decode; binary-alpha original pixels",
+      "source_rect": [
+        350,
+        60,
+        8,
+        8
+      ],
+      "source_rgba_sha256": "91f0326380e29ceb6c19929571caf0700345f1634139c4d79608e91bfb70baa9",
+      "used_by": [
+        "Vulnerability Hex native Dust 235/261",
+        "BrimstoneMonster native growth Dust235 (center-relative 3D mapping)",
+        "SoulSeekerSupreme death25 Dust235 with native noGravity/fadeIn and death-time target"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/calamitas_dust_235_1.png",
+      "sha256": "454a49477b72a9dd4917527ce05b70b6abad963fa298bdf026081e69ad6ebba4",
+      "project": "Terraria / Re-Logic",
+      "path": "G:/SteamLibrary/steamapps/common/tModLoader/Content/Images/Dust.xnb",
+      "source_sha256": "b7d68955a87e3a7d77ebf0f7c7e4da75c04877d704db1db1355d228aba97a8a6",
+      "license": "ARR (Terraria original terms)",
+      "conversion": "Lossless native 8x8 atlas frame crop after XNB decode; binary-alpha original pixels",
+      "source_rect": [
+        350,
+        70,
+        8,
+        8
+      ],
+      "source_rgba_sha256": "5ece905bd298abf7f3bf62d4909136dcc47e479e24b9bb3f6f48a2a9c988d307",
+      "used_by": [
+        "Vulnerability Hex native Dust 235/261",
+        "BrimstoneMonster native growth Dust235 (center-relative 3D mapping)",
+        "SoulSeekerSupreme death25 Dust235 with native noGravity/fadeIn and death-time target"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/calamitas_dust_235_2.png",
+      "sha256": "43bf133d6fc8e2431e57d3d07d68a28d3b887daeefab270952b4c28674349bb5",
+      "project": "Terraria / Re-Logic",
+      "path": "G:/SteamLibrary/steamapps/common/tModLoader/Content/Images/Dust.xnb",
+      "source_sha256": "b7d68955a87e3a7d77ebf0f7c7e4da75c04877d704db1db1355d228aba97a8a6",
+      "license": "ARR (Terraria original terms)",
+      "conversion": "Lossless native 8x8 atlas frame crop after XNB decode; binary-alpha original pixels",
+      "source_rect": [
+        350,
+        80,
+        8,
+        8
+      ],
+      "source_rgba_sha256": "9e495f81fadac94f2a731e22836fd12b536d5cc55f4278b36969995534c537ff",
+      "used_by": [
+        "Vulnerability Hex native Dust 235/261",
+        "BrimstoneMonster native growth Dust235 (center-relative 3D mapping)",
+        "SoulSeekerSupreme death25 Dust235 with native noGravity/fadeIn and death-time target"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/calamitas_dust_261_0.png",
+      "sha256": "8ce85a1b37e4899345e0c64471d7027fb5470bc64d7a7466e8c3d723879740db",
+      "project": "Terraria / Re-Logic",
+      "path": "G:/SteamLibrary/steamapps/common/tModLoader/Content/Images/Dust.xnb",
+      "source_sha256": "b7d68955a87e3a7d77ebf0f7c7e4da75c04877d704db1db1355d228aba97a8a6",
+      "license": "ARR (Terraria original terms)",
+      "conversion": "Lossless native 8x8 atlas frame crop after XNB decode; binary-alpha original pixels",
+      "source_rect": [
+        610,
+        60,
+        8,
+        8
+      ],
+      "source_rgba_sha256": "8d0103d2899b0467cc15d10db43de84c30976d4536449bd6668bc5cc0419d216",
+      "used_by": [
+        "Vulnerability Hex native Dust 235/261"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/calamitas_dust_261_1.png",
+      "sha256": "f981e6cacda4abb26a118ff512052fe45df41d4413e37e973807e4ae38671f46",
+      "project": "Terraria / Re-Logic",
+      "path": "G:/SteamLibrary/steamapps/common/tModLoader/Content/Images/Dust.xnb",
+      "source_sha256": "b7d68955a87e3a7d77ebf0f7c7e4da75c04877d704db1db1355d228aba97a8a6",
+      "license": "ARR (Terraria original terms)",
+      "conversion": "Lossless native 8x8 atlas frame crop after XNB decode; binary-alpha original pixels",
+      "source_rect": [
+        610,
+        70,
+        8,
+        8
+      ],
+      "source_rgba_sha256": "3f20824fea7cdb965149b225248277de9becfe2325efd95d52e8c4d27f1fb1af",
+      "used_by": [
+        "Vulnerability Hex native Dust 235/261"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/calamitas_dust_261_2.png",
+      "sha256": "a9296521cfb464305c6f6052ca82f0eea5191a3e9061aadc9f209d2e0035190f",
+      "project": "Terraria / Re-Logic",
+      "path": "G:/SteamLibrary/steamapps/common/tModLoader/Content/Images/Dust.xnb",
+      "source_sha256": "b7d68955a87e3a7d77ebf0f7c7e4da75c04877d704db1db1355d228aba97a8a6",
+      "license": "ARR (Terraria original terms)",
+      "conversion": "Lossless native 8x8 atlas frame crop after XNB decode; binary-alpha original pixels",
+      "source_rect": [
+        610,
+        80,
+        8,
+        8
+      ],
+      "source_rgba_sha256": "970b01c6355cbd93c45d246658ba6d6dabb5521442d155e40c8b99c26cb439f4",
+      "used_by": [
+        "Vulnerability Hex native Dust 235/261"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/mob_effect/vulnerability_hex.png",
+      "sha256": "81784fbdd58994a9aa15326cb52fa522d807379d2ae500b35fe352db1a151e30",
+      "source_sha256": "81784fbdd58994a9aa15326cb52fa522d807379d2ae500b35fe352db1a151e30",
+      "project": "Calamity Mod",
+      "path": "Buffs/DamageOverTime/VulnerabilityHex.png",
+      "upstream_commit": "1a8cebd27ec5615316b78f71973446b5528d2b78",
+      "license": "ARR (Calamity original terms)",
+      "used_by": [
+        "Supreme Calamitas native Vulnerability Hex status icon"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/entity/supreme_calamitas.png",
+      "sha256": "e4ff470dfa03bc89ea537dbab027f7be4796e5fdd4542718ab4da2aa7fd630f3",
+      "source_sha256": "e4ff470dfa03bc89ea537dbab027f7be4796e5fdd4542718ab4da2aa7fd630f3",
+      "project": "User-provided Supreme Calamitas skin",
+      "path": "sample/至尊女巫-灾厄.png",
+      "license": "Unspecified by provider; rights retained by original author",
+      "used_by": [
+        "Supreme Calamitas slim player model including outer skin layers"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/entity/brimstone_heart.png",
+      "sha256": "25fe5551315da078d676ebc2994bb69c24643ed672650b89b4e22321912a9a9c",
+      "source_sha256": "25fe5551315da078d676ebc2994bb69c24643ed672650b89b4e22321912a9a9c",
+      "project": "Calamity Mod",
+      "path": "NPCs/SupremeCalamitas/BrimstoneHeart.png",
+      "upstream_commit": "1a8cebd27ec5615316b78f71973446b5528d2b78",
+      "license": "ARR (Calamity original terms)",
+      "used_by": [
+        "Supreme Calamitas original six-frame Brimstone Heart"
+      ]
+    },
+    {
       "file": "src/main/resources/assets/arkofcosmos/sounds/wilhelm_scream.ogg",
       "sha256": "1662ae2ff62f81326fd121ca68c8f09d472cf49a56125515fbc81346c3c68d00",
       "source_sha256": "1662ae2ff62f81326fd121ca68c8f09d472cf49a56125515fbc81346c3c68d00",
       "project": "User-provided audio",
       "path": "D:/chara/桌面/wilhelm_scream.ogg",
       "license": "Unspecified by provider",
-      "used_by": ["OdamaneHalo sweet berry bush trip"]
+      "used_by": [
+        "OdamaneHalo sweet berry bush trip"
+      ]
     },
     {
       "file": "src/main/resources/assets/arkofcosmos/textures/item/fractured_ark.png",
@@ -513,7 +850,8 @@
       "recorded_output_sha256": "c0cbb361955d90e56ecd769ff1538b2f9ac291b75890badde8f0cdda6aacc8e6",
       "matches_recorded_output": true,
       "used_by": [
-        "Ark of the Ancients"
+        "Ark of the Ancients",
+        "SepulcherHead 30-dart burst DirectionalPulseRing"
       ]
     },
     {
@@ -1283,12 +1621,12 @@
     },
     {
       "file": "src/main/resources/assets/arkofcosmos/shaders/core/mahou_forcefield.fsh",
-      "sha256": "b4358f36717c5814e7c8a474b4bf251b440138947b170aaa4599cacbee320320",
+      "sha256": "cdf260b7d6c8a9ae8ae73f2d8eab51f037f3f7ce14fbbae09f075c2254265fb0",
       "project": "Calamity Mod",
       "path": "Effects/SupremeShieldShader.fx",
       "license": "Calamity Team / original rights holders; not GPL-3.0-only",
       "source_sha256": "20852fdc08bf4770798e888749ecd266866b549fc0b05109927f14b2f86a4742",
-      "transformation": "HLSL-to-GLSL port with phase palette and native total-health flicker"
+      "transformation": "HLSL-to-GLSL port with phase palette and native total-health flicker; opt-in Supreme Calamitas source branch preserves original radial alpha and ignored vertex color"
     },
     {
       "file": "src/main/resources/assets/arkofcosmos/sounds/music/calamitas_phase_1.ogg",
@@ -1297,7 +1635,10 @@
       "project": "Calamity Mod Music / DM DOKURO",
       "path": "Sounds/Music/CalamitasPhase1.ogg",
       "license": "Original music rights holders; not GPL-3.0-only",
-      "matches_recorded_output": true
+      "matches_recorded_output": true,
+      "used_by": [
+        "Supreme Evoker Calamitas source Grief/Lament/Epiphany scene music, ordinary-world health thresholds"
+      ]
     },
     {
       "file": "src/main/resources/assets/arkofcosmos/sounds/music/calamitas_phase_2.ogg",
@@ -1306,7 +1647,10 @@
       "project": "Calamity Mod Music / DM DOKURO",
       "path": "Sounds/Music/CalamitasPhase2.ogg",
       "license": "Original music rights holders; not GPL-3.0-only",
-      "matches_recorded_output": true
+      "matches_recorded_output": true,
+      "used_by": [
+        "Supreme Evoker Calamitas source Grief/Lament/Epiphany scene music, ordinary-world health thresholds"
+      ]
     },
     {
       "file": "src/main/resources/assets/arkofcosmos/sounds/music/calamitas_phase_3.ogg",
@@ -1315,7 +1659,10 @@
       "project": "Calamity Mod Music / DM DOKURO",
       "path": "Sounds/Music/CalamitasPhase3.ogg",
       "license": "Original music rights holders; not GPL-3.0-only",
-      "matches_recorded_output": true
+      "matches_recorded_output": true,
+      "used_by": [
+        "Supreme Evoker Calamitas source Grief/Lament/Epiphany scene music, ordinary-world health thresholds"
+      ]
     },
     {
       "file": "src/main/resources/assets/arkofcosmos/textures/item/auric_bar.png",
@@ -1335,7 +1682,10 @@
       "project": "Calamity Mod Music / DM DOKURO",
       "path": "Sounds/Music/CalamitasDefeat_LongFade.ogg",
       "license": "Original rights holders; not GPL-3.0-only",
-      "matches_recorded_output": true
+      "matches_recorded_output": true,
+      "used_by": [
+        "Supreme Evoker Calamitas ScalDefeated once-per-world58.689second music event"
+      ]
     },
     {
       "file": "src/main/resources/assets/arkofcosmos/sounds/brimstone_monster_drone.ogg",
@@ -1344,7 +1694,12 @@
       "project": "Calamity Mod",
       "path": "Sounds/Custom/SCalSounds/BrimstoneMonsterDrone.ogg",
       "license": "Calamity Team / original rights holders; All Rights Reserved; not GPL-3.0-only",
-      "matches_recorded_output": true
+      "matches_recorded_output": true,
+      "source_commit": "1a8cebd27ec5615316b78f71973446b5528d2b78",
+      "used_by": [
+        "Mahou vortex audio event",
+        "Supreme Evoker Calamitas native streaming vortex drone"
+      ]
     },
     {
       "file": "src/main/resources/assets/arkofcosmos/particles/gust.json",
@@ -3879,6 +4234,1467 @@
       "used_by": [
         "Calamity Wither loot and beacon summoning"
       ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/calamitas_slash.png",
+      "sha256": "69405705dc9b17fec50e88469e557fe7112c29e9b60b47ed8a90ecb442373ec9",
+      "source_sha256": "69405705dc9b17fec50e88469e557fe7112c29e9b60b47ed8a90ecb442373ec9",
+      "project": "Calamity Mod",
+      "path": "Projectiles/Boss/SupremeCatastropheSlash.png",
+      "upstream_commit": "1a8cebd27ec5615316b78f71973446b5528d2b78",
+      "license": "ARR (Calamity original terms)",
+      "used_by": [
+        "Supreme Catastrophe white slash; original alpha silhouette, runtime recoloring"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/calamitas_slash_alt.png",
+      "sha256": "b7d42724b33388625ab84dcaa95d6e11511b3878c5dc8b8f28b2366df5b9bc67",
+      "source_sha256": "b7d42724b33388625ab84dcaa95d6e11511b3878c5dc8b8f28b2366df5b9bc67",
+      "project": "Calamity Mod",
+      "path": "Projectiles/Boss/SupremeCatastropheSlashAlt.png",
+      "upstream_commit": "1a8cebd27ec5615316b78f71973446b5528d2b78",
+      "license": "ARR (Calamity original terms)",
+      "used_by": [
+        "Supreme Catastrophe white slash; original alpha silhouette, runtime recoloring"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/calamitas_screamy_face.png",
+      "sha256": "ec39d66a125b803b895c2b86b7aae2a52e0ee2051368443de6dee7e07f1e9f64",
+      "source_sha256": "ec39d66a125b803b895c2b86b7aae2a52e0ee2051368443de6dee7e07f1e9f64",
+      "project": "Calamity Mod",
+      "path": "ExtraTextures/ScreamyFace.png",
+      "upstream_commit": "1a8cebd27ec5615316b78f71973446b5528d2b78",
+      "license": "ARR (Calamity original terms)",
+      "used_by": [
+        "Whispering Maelstrom original HellBall/soul vortex/black center rendering"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/calamitas_soul_vortex.png",
+      "sha256": "d5fec1a953ffd0bfa9a199adb0268be3df795485968354152fa361290c8f76ae",
+      "source_sha256": "d5fec1a953ffd0bfa9a199adb0268be3df795485968354152fa361290c8f76ae",
+      "project": "Calamity Mod",
+      "path": "ExtraTextures/SoulVortex.png",
+      "upstream_commit": "1a8cebd27ec5615316b78f71973446b5528d2b78",
+      "license": "ARR (Calamity original terms)",
+      "used_by": [
+        "Whispering Maelstrom original HellBall/soul vortex/black center rendering"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/calamitas_large_bloom.png",
+      "sha256": "0f30e1b5c20ad6f770b3390fcdc5230f1399e0521c49d278248f0a167eedbbc7",
+      "source_sha256": "0f30e1b5c20ad6f770b3390fcdc5230f1399e0521c49d278248f0a167eedbbc7",
+      "project": "Calamity Mod",
+      "path": "Particles/LargeBloom.png",
+      "upstream_commit": "1a8cebd27ec5615316b78f71973446b5528d2b78",
+      "license": "ARR (Calamity original terms)",
+      "used_by": [
+        "Whispering Maelstrom original HellBall/soul vortex/black center rendering",
+        "Supreme Cataclysm fist CustomPulse layers"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/shaders/core/calamitas_hell_ball.fsh",
+      "sha256": "4e2556c00bac4052c0e5ba635b2b238bd1ed470ec169524cddce81b6ea139a7e",
+      "project": "Calamity Mod",
+      "path": "Effects/HellBall.fx",
+      "source_sha256": "38e1ca73f934e6d166347fe947662ae4c3682d08bf023d05fc43c627b0847da3",
+      "upstream_commit": "1a8cebd27ec5615316b78f71973446b5528d2b78",
+      "license": "ARR (Calamity original terms)",
+      "used_by": [
+        "HellBall algorithm GLSL port with BrimstoneMonster ordinary-world source parameters"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/calamitas_shield_top.png",
+      "sha256": "f8c6fa63545c748d3dc1f9bd6ec8fe7729b49ace9ad2516a6fbb123a68db01dd",
+      "source_sha256": "f8c6fa63545c748d3dc1f9bd6ec8fe7729b49ace9ad2516a6fbb123a68db01dd",
+      "project": "Calamity Mod",
+      "path": "NPCs/SupremeCalamitas/SupremeShieldTop.png",
+      "upstream_commit": "1a8cebd27ec5615316b78f71973446b5528d2b78",
+      "license": "ARR (Calamity original terms)",
+      "used_by": [
+        "Supreme Calamitas pinned forcefield and charge skull shield"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/calamitas_shield_bottom.png",
+      "sha256": "e960477a0d5b2dd0431bca878a2d9dffd4e292de4430863003c8838950d939cd",
+      "source_sha256": "e960477a0d5b2dd0431bca878a2d9dffd4e292de4430863003c8838950d939cd",
+      "project": "Calamity Mod",
+      "path": "NPCs/SupremeCalamitas/SupremeShieldBottom.png",
+      "upstream_commit": "1a8cebd27ec5615316b78f71973446b5528d2b78",
+      "license": "ARR (Calamity original terms)",
+      "used_by": [
+        "Supreme Calamitas pinned forcefield and charge skull shield"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/calamitas_central_gold.png",
+      "sha256": "d01c7d4d7e78fbe32d9465f7661e4c252a32031a12d2ca9e3cba97e4ec39a319",
+      "source_sha256": "d01c7d4d7e78fbe32d9465f7661e4c252a32031a12d2ca9e3cba97e4ec39a319",
+      "project": "Calamity Mod",
+      "path": "Particles/CentralGold.png",
+      "upstream_commit": "1a8cebd27ec5615316b78f71973446b5528d2b78",
+      "license": "ARR (Calamity original terms)",
+      "used_by": [
+        "Supreme Calamitas pinned forcefield and charge skull shield"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/calamitas_immune_smear.png",
+      "sha256": "d66bfbd3c6a31c47c43c829dae84df084c05c1f237c56e142e0821301fa8208f",
+      "source_sha256": "d66bfbd3c6a31c47c43c829dae84df084c05c1f237c56e142e0821301fa8208f",
+      "project": "Calamity Mod",
+      "path": "Particles/SemiCircularSmearVertical.png",
+      "upstream_commit": "1a8cebd27ec5615316b78f71973446b5528d2b78",
+      "license": "ARR (Calamity original terms)",
+      "used_by": [
+        "Supreme Calamitas pinned forcefield and charge skull shield"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/calamitas_forcefield.png",
+      "sha256": "5f29a67c2e1f5b2bcc5ed333d0a33c53150b75e3c45930de165e3f5415891e43",
+      "source_sha256": "5f29a67c2e1f5b2bcc5ed333d0a33c53150b75e3c45930de165e3f5415891e43",
+      "project": "Calamity Mod",
+      "path": "NPCs/SupremeCalamitas/ForcefieldTexture.png",
+      "upstream_commit": "1a8cebd27ec5615316b78f71973446b5528d2b78",
+      "license": "ARR (Calamity original terms)",
+      "used_by": [
+        "Supreme Calamitas pinned forcefield and charge skull shield"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/terraria_perlin.png",
+      "sha256": "570c596b8e0ee1e0c53afe25f76d0c9f3a3f0cc02909e38371b0b3a993962345",
+      "source_sha256": "ad2be156f4520c22dff5c5dbee776b3a72679605a7bd7954403d71d5fafa27d2",
+      "project": "Terraria",
+      "path": "Content/Images/Misc/Perlin.xnb",
+      "source_file": "G:/SteamLibrary/steamapps/common/Terraria/Content/Images/Misc/Perlin.xnb",
+      "license": "Re-Logic original rights retained",
+      "transformation": "Lossless XNB Texture2D RGBA export to PNG via xnb; pixel bytes SHA256 8533c5e9b68a34b84c65042839d6b1a170ecec4421a3b2a9c72459efcfc01ec9",
+      "used_by": [
+        "Supreme Calamitas original Images/Misc/Perlin noise; distinct from Calamity gradient texture"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/calamitas_shot.ogg",
+      "sha256": "f3cd0bf3520151e61cc8af087697e6dcf75128f55a0e808442997dd22694d43e",
+      "source_sha256": "f3cd0bf3520151e61cc8af087697e6dcf75128f55a0e808442997dd22694d43e",
+      "project": "Calamity Mod",
+      "path": "Sounds/Custom/SCalSounds/BrimstoneShoot.ogg",
+      "source_commit": "1a8cebd27ec5615316b78f71973446b5528d2b78",
+      "license": "All Rights Reserved (Calamity Team / original authors); not GPL-3.0-only",
+      "used_by": [
+        "Supreme Evoker Calamitas source sound cue: shot",
+        "SupremeCataclysmFist.cs154 ordinary orb child emission: one cue per event, volume1.2 pitch2^.55"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/calamitas_big_shot.ogg",
+      "sha256": "7d38654be7fe134d8f887f7b9c24c50df88146c4e028e10eff5c1b6a6f7a4419",
+      "source_sha256": "7d38654be7fe134d8f887f7b9c24c50df88146c4e028e10eff5c1b6a6f7a4419",
+      "project": "Calamity Mod",
+      "path": "Sounds/Custom/SCalSounds/BrimstoneBigShoot.ogg",
+      "source_commit": "1a8cebd27ec5615316b78f71973446b5528d2b78",
+      "license": "All Rights Reserved (Calamity Team / original authors); not GPL-3.0-only",
+      "used_by": [
+        "Supreme Evoker Calamitas source sound cue: big_shot"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/calamitas_hellblast.ogg",
+      "sha256": "72e9b3f48239f6af5d40de1d9ce5096a8760b5dd67c92f5f5d76d9edfb4d02c5",
+      "source_sha256": "72e9b3f48239f6af5d40de1d9ce5096a8760b5dd67c92f5f5d76d9edfb4d02c5",
+      "project": "Calamity Mod",
+      "path": "Sounds/Custom/SCalSounds/BrimstoneHellblastSound.ogg",
+      "source_commit": "1a8cebd27ec5615316b78f71973446b5528d2b78",
+      "license": "All Rights Reserved (Calamity Team / original authors); not GPL-3.0-only",
+      "used_by": [
+        "Supreme Evoker Calamitas source sound cue: hellblast"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/calamitas_dash.ogg",
+      "sha256": "93cd40a9655a859b0ab47bb34d67e761480c7fdefd8169fc87b82c9d59b551e6",
+      "source_sha256": "93cd40a9655a859b0ab47bb34d67e761480c7fdefd8169fc87b82c9d59b551e6",
+      "project": "Calamity Mod",
+      "path": "Sounds/Custom/SCalSounds/SCalDash.ogg",
+      "source_commit": "1a8cebd27ec5615316b78f71973446b5528d2b78",
+      "license": "All Rights Reserved (Calamity Team / original authors); not GPL-3.0-only",
+      "used_by": [
+        "Supreme Evoker Calamitas source sound cue: dash"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/calamitas_fireblast_impact.ogg",
+      "sha256": "9676ab4a51cbc67937225f7d31a92e7aa11df6aef1e41dba8444f34b66d40715",
+      "source_sha256": "9676ab4a51cbc67937225f7d31a92e7aa11df6aef1e41dba8444f34b66d40715",
+      "project": "Calamity Mod",
+      "path": "Sounds/Custom/SCalSounds/BrimstoneFireblastImpact.ogg",
+      "source_commit": "1a8cebd27ec5615316b78f71973446b5528d2b78",
+      "license": "All Rights Reserved (Calamity Team / original authors); not GPL-3.0-only",
+      "used_by": [
+        "Supreme Evoker Calamitas source sound cue: fireblast_impact"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/calamitas_gigablast_impact.ogg",
+      "sha256": "d8dec9350b81a9dd1604a3460c9b2e9db90d45da37882a957730aabaff97d02a",
+      "source_sha256": "d8dec9350b81a9dd1604a3460c9b2e9db90d45da37882a957730aabaff97d02a",
+      "project": "Calamity Mod",
+      "path": "Sounds/Custom/SCalSounds/BrimstoneGigablastImpact.ogg",
+      "source_commit": "1a8cebd27ec5615316b78f71973446b5528d2b78",
+      "license": "All Rights Reserved (Calamity Team / original authors); not GPL-3.0-only",
+      "used_by": [
+        "Supreme Evoker Calamitas source sound cue: gigablast_impact"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/calamitas_vortex_spawn.ogg",
+      "sha256": "92f773d37182b4cd7c3f3cb4739cb0c6de8052d7eef04fc4440820149ad9e948",
+      "source_sha256": "92f773d37182b4cd7c3f3cb4739cb0c6de8052d7eef04fc4440820149ad9e948",
+      "project": "Calamity Mod",
+      "path": "Sounds/Custom/SCalSounds/BrimstoneMonsterSpawn.ogg",
+      "source_commit": "1a8cebd27ec5615316b78f71973446b5528d2b78",
+      "license": "All Rights Reserved (Calamity Team / original authors); not GPL-3.0-only",
+      "used_by": [
+        "Supreme Evoker Calamitas source sound cue: vortex_spawn"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/calamitas_sepulcher_spawn.ogg",
+      "sha256": "0126652a710e0c8aec7cd7914ac78b3b88045f11d1ce81eea7ed83c1665e2d26",
+      "source_sha256": "0126652a710e0c8aec7cd7914ac78b3b88045f11d1ce81eea7ed83c1665e2d26",
+      "project": "Calamity Mod",
+      "path": "Sounds/Custom/SCalSounds/SepulcherSpawn.ogg",
+      "source_commit": "1a8cebd27ec5615316b78f71973446b5528d2b78",
+      "license": "All Rights Reserved (Calamity Team / original authors); not GPL-3.0-only",
+      "used_by": [
+        "Supreme Evoker Calamitas source sound cue: sepulcher_spawn"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/calamitas_barrage_end.ogg",
+      "sha256": "72e2d63326bc5d5fe3e8b17c6da5221e7d3eff2c85c7683bea916e3a9b986703",
+      "source_sha256": "72e2d63326bc5d5fe3e8b17c6da5221e7d3eff2c85c7683bea916e3a9b986703",
+      "project": "Calamity Mod",
+      "path": "Sounds/Custom/SCalSounds/SCalEndBH.ogg",
+      "source_commit": "1a8cebd27ec5615316b78f71973446b5528d2b78",
+      "license": "All Rights Reserved (Calamity Team / original authors); not GPL-3.0-only",
+      "used_by": [
+        "Supreme Evoker Calamitas source sound cue: barrage_end"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/calamitas_brother_hurt1.ogg",
+      "sha256": "dc39d7e86c7102912aefb6d1872cfc30f6b75ca99e7237a16d03b7bb21c434ab",
+      "source_sha256": "dc39d7e86c7102912aefb6d1872cfc30f6b75ca99e7237a16d03b7bb21c434ab",
+      "project": "Calamity Mod",
+      "path": "Sounds/Custom/SCalSounds/BrothersHurt1.ogg",
+      "source_commit": "1a8cebd27ec5615316b78f71973446b5528d2b78",
+      "license": "All Rights Reserved (Calamity Team / original authors); not GPL-3.0-only",
+      "used_by": [
+        "Supreme Evoker Calamitas brothers native hurt/death sound"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/calamitas_brother_hurt2.ogg",
+      "sha256": "422c2ab1ed4f619236d7f786f411ad1f1676e38d676d5c7fb141e8deed18f7cb",
+      "source_sha256": "422c2ab1ed4f619236d7f786f411ad1f1676e38d676d5c7fb141e8deed18f7cb",
+      "project": "Calamity Mod",
+      "path": "Sounds/Custom/SCalSounds/BrothersHurt2.ogg",
+      "source_commit": "1a8cebd27ec5615316b78f71973446b5528d2b78",
+      "license": "All Rights Reserved (Calamity Team / original authors); not GPL-3.0-only",
+      "used_by": [
+        "Supreme Evoker Calamitas brothers native hurt/death sound"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/calamitas_brother_death1.ogg",
+      "sha256": "17ec8f13e2689fd520c8ce33a292520389e1bcdbfde9abd0ad30876445c61f74",
+      "source_sha256": "17ec8f13e2689fd520c8ce33a292520389e1bcdbfde9abd0ad30876445c61f74",
+      "project": "Calamity Mod",
+      "path": "Sounds/Custom/SCalSounds/BrothersDeath1.ogg",
+      "source_commit": "1a8cebd27ec5615316b78f71973446b5528d2b78",
+      "license": "All Rights Reserved (Calamity Team / original authors); not GPL-3.0-only",
+      "used_by": [
+        "Supreme Evoker Calamitas brothers native hurt/death sound"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/calamitas_brother_death2.ogg",
+      "sha256": "40961284eac5ca2e04a752ee4ec2f79c9d7d56da3dd99b8c98185f255ca58b78",
+      "source_sha256": "40961284eac5ca2e04a752ee4ec2f79c9d7d56da3dd99b8c98185f255ca58b78",
+      "project": "Calamity Mod",
+      "path": "Sounds/Custom/SCalSounds/BrothersDeath2.ogg",
+      "source_commit": "1a8cebd27ec5615316b78f71973446b5528d2b78",
+      "license": "All Rights Reserved (Calamity Team / original authors); not GPL-3.0-only",
+      "used_by": [
+        "Supreme Evoker Calamitas brothers native hurt/death sound"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/calamitas_shield_hurt1.ogg",
+      "sha256": "2bac7a5480dc743e9ebb7602ec51119f24ce76d2cffbd1acb7f0df3fda128c9f",
+      "source_sha256": "2bac7a5480dc743e9ebb7602ec51119f24ce76d2cffbd1acb7f0df3fda128c9f",
+      "project": "Calamity Mod",
+      "path": "Sounds/NPCHit/ShieldHit1.ogg",
+      "source_commit": "1a8cebd27ec5615316b78f71973446b5528d2b78",
+      "license": "All Rights Reserved (Calamity Team / original authors); not GPL-3.0-only",
+      "used_by": [
+        "Supreme Evoker Calamitas source shield hurt sound"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/calamitas_shield_hurt2.ogg",
+      "sha256": "448703b2d6557e64a37de8e054df0f1d8c41b0e3a7fc2aebd0924db3b3b9f970",
+      "source_sha256": "448703b2d6557e64a37de8e054df0f1d8c41b0e3a7fc2aebd0924db3b3b9f970",
+      "project": "Calamity Mod",
+      "path": "Sounds/NPCHit/ShieldHit2.ogg",
+      "source_commit": "1a8cebd27ec5615316b78f71973446b5528d2b78",
+      "license": "All Rights Reserved (Calamity Team / original authors); not GPL-3.0-only",
+      "used_by": [
+        "Supreme Evoker Calamitas source shield hurt sound"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/calamitas_shield_hurt3.ogg",
+      "sha256": "c23391acbd8543c5e582b5e49e3d70a9fa12b0f04c3e7cf87abe5cabc4ab7545",
+      "source_sha256": "c23391acbd8543c5e582b5e49e3d70a9fa12b0f04c3e7cf87abe5cabc4ab7545",
+      "project": "Calamity Mod",
+      "path": "Sounds/NPCHit/ShieldHit3.ogg",
+      "source_commit": "1a8cebd27ec5615316b78f71973446b5528d2b78",
+      "license": "All Rights Reserved (Calamity Team / original authors); not GPL-3.0-only",
+      "used_by": [
+        "Supreme Evoker Calamitas source shield hurt sound"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/calamitas_transition_burst.ogg",
+      "sha256": "fc06afb14f4f82b6a7119c6f6a2179a3dad5ecd0a511660900f41d6e49afe6a7",
+      "source_sha256": "fc06afb14f4f82b6a7119c6f6a2179a3dad5ecd0a511660900f41d6e49afe6a7",
+      "project": "Calamity Mod",
+      "path": "Sounds/Custom/SupremeCalamitasSpawn.ogg",
+      "source_commit": "1a8cebd27ec5615316b78f71973446b5528d2b78",
+      "license": "All Rights Reserved (Calamity Team / original authors); not GPL-3.0-only",
+      "used_by": [
+        "Supreme Evoker Calamitas source sound cue: transition_burst"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/calamitas_cataclysm_spawn.ogg",
+      "sha256": "c6f52db1ba5117b4e9f4a947da8a0079fa0551a4e015b55aaec9930315ee453c",
+      "source_sha256": "c6f52db1ba5117b4e9f4a947da8a0079fa0551a4e015b55aaec9930315ee453c",
+      "project": "Calamity Mod",
+      "path": "Sounds/NPCKilled/RavagerDeath1.ogg",
+      "source_commit": "1a8cebd27ec5615316b78f71973446b5528d2b78",
+      "license": "All Rights Reserved (Calamity Team / original authors); not GPL-3.0-only",
+      "used_by": [
+        "Supreme Evoker Calamitas source sound cue: cataclysm_spawn"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/calamitas_catastrophe_spawn.ogg",
+      "sha256": "26339dc49aae0bc3fca99aeee280f8e6d83d4cd82f477e4ac5a49fbd61125218",
+      "source_sha256": "26339dc49aae0bc3fca99aeee280f8e6d83d4cd82f477e4ac5a49fbd61125218",
+      "project": "Calamity Mod",
+      "path": "Sounds/NPCKilled/RavagerDeath2.ogg",
+      "source_commit": "1a8cebd27ec5615316b78f71973446b5528d2b78",
+      "license": "All Rights Reserved (Calamity Team / original authors); not GPL-3.0-only",
+      "used_by": [
+        "Supreme Evoker Calamitas source sound cue: catastrophe_spawn"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/calamitas_brother_roar.ogg",
+      "sha256": "2b6a015b4f0c6dffec3c1a370c0e6b1a4c7ae64143e1243f905a17a38eca320f",
+      "source_sha256": "2b6a015b4f0c6dffec3c1a370c0e6b1a4c7ae64143e1243f905a17a38eca320f",
+      "project": "Calamity Mod",
+      "path": "Sounds/NPCKilled/RavagerLimbLoss2.ogg",
+      "source_commit": "1a8cebd27ec5615316b78f71973446b5528d2b78",
+      "license": "All Rights Reserved (Calamity Team / original authors); not GPL-3.0-only",
+      "used_by": [
+        "Supreme Evoker Calamitas source brother cue: brother_roar"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/calamitas_brother_charge.ogg",
+      "sha256": "04bf5e21ea32e7d664aab0f426057274157998ddf650d11a0f8fb6d087d068fc",
+      "source_sha256": "04bf5e21ea32e7d664aab0f426057274157998ddf650d11a0f8fb6d087d068fc",
+      "project": "Calamity Mod",
+      "path": "Sounds/Custom/Ravager/RavagerPillarSummon.ogg",
+      "source_commit": "1a8cebd27ec5615316b78f71973446b5528d2b78",
+      "license": "All Rights Reserved (Calamity Team / original authors); not GPL-3.0-only",
+      "used_by": [
+        "Supreme Evoker Calamitas source brother cue: brother_charge"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/calamitas_brother_echo.ogg",
+      "sha256": "14ff43f8aeb9afccc54bd1e6680e30a919b050e5613c761874f6afed18c32cac",
+      "source_sha256": "14ff43f8aeb9afccc54bd1e6680e30a919b050e5613c761874f6afed18c32cac",
+      "project": "Calamity Mod",
+      "path": "Sounds/NPCHit/ThanatosHitOpen1.ogg",
+      "source_commit": "1a8cebd27ec5615316b78f71973446b5528d2b78",
+      "license": "All Rights Reserved (Calamity Team / original authors); not GPL-3.0-only",
+      "used_by": [
+        "Supreme Evoker Calamitas source brother cue: brother_echo"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/calamitas_brother_finisher1.ogg",
+      "sha256": "9f4e5edba3a92bcbd310e5013a3bcbf480d9bf711498b09e8995b4aa56499391",
+      "source_sha256": "9f4e5edba3a92bcbd310e5013a3bcbf480d9bf711498b09e8995b4aa56499391",
+      "project": "Calamity Mod",
+      "path": "Sounds/Item/ScorchedEarthShot1.ogg",
+      "source_commit": "1a8cebd27ec5615316b78f71973446b5528d2b78",
+      "license": "All Rights Reserved (Calamity Team / original authors); not GPL-3.0-only",
+      "used_by": [
+        "Supreme Evoker Calamitas source brother cue: brother_finisher"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/calamitas_brother_finisher2.ogg",
+      "sha256": "d59779e8c33a074d8c53d92ea58c4e89c6ff59eb50c07c7ae62f6ce309d6e4fd",
+      "source_sha256": "d59779e8c33a074d8c53d92ea58c4e89c6ff59eb50c07c7ae62f6ce309d6e4fd",
+      "project": "Calamity Mod",
+      "path": "Sounds/Item/ScorchedEarthShot2.ogg",
+      "source_commit": "1a8cebd27ec5615316b78f71973446b5528d2b78",
+      "license": "All Rights Reserved (Calamity Team / original authors); not GPL-3.0-only",
+      "used_by": [
+        "Supreme Evoker Calamitas source brother cue: brother_finisher"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/calamitas_brother_finisher3.ogg",
+      "sha256": "5374a52c3e6a7e320f62279e8d812b5292817ab13b5984b8d49df3407d850729",
+      "source_sha256": "5374a52c3e6a7e320f62279e8d812b5292817ab13b5984b8d49df3407d850729",
+      "project": "Calamity Mod",
+      "path": "Sounds/Item/ScorchedEarthShot3.ogg",
+      "source_commit": "1a8cebd27ec5615316b78f71973446b5528d2b78",
+      "license": "All Rights Reserved (Calamity Team / original authors); not GPL-3.0-only",
+      "used_by": [
+        "Supreme Evoker Calamitas source brother cue: brother_finisher"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/calamitas_brother_resonance.ogg",
+      "sha256": "33204dd9fa43d841f1c9f4f462ab5f77f3563df3197212d3785c6f072e902e74",
+      "source_sha256": "33204dd9fa43d841f1c9f4f462ab5f77f3563df3197212d3785c6f072e902e74",
+      "project": "Calamity Mod",
+      "path": "Sounds/Custom/SCalSounds/CatastropheResonanceSlash.ogg",
+      "source_commit": "1a8cebd27ec5615316b78f71973446b5528d2b78",
+      "license": "All Rights Reserved (Calamity Team / original authors); not GPL-3.0-only",
+      "used_by": [
+        "Supreme Evoker Calamitas source brother cue: brother_resonance"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/calamitas_brother_swing.ogg",
+      "sha256": "edbbf48b7f8737332ec5f4941d27e100895d547b1647cdcadfd6ffb23c1c10e4",
+      "source_sha256": "edbbf48b7f8737332ec5f4941d27e100895d547b1647cdcadfd6ffb23c1c10e4",
+      "project": "Calamity Mod",
+      "path": "Sounds/Item/MurasamaBigSwing.ogg",
+      "source_commit": "1a8cebd27ec5615316b78f71973446b5528d2b78",
+      "license": "All Rights Reserved (Calamity Team / original authors); not GPL-3.0-only",
+      "used_by": [
+        "Supreme Evoker Calamitas source brother cue: brother_swing"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/calamitas_brother_dash.ogg",
+      "sha256": "09cf5b30e3b1c5fbe8ed7f9e39d9c9e3b1a228ca1d5eb2cb66e36dc8efa52cf5",
+      "source_sha256": "09cf5b30e3b1c5fbe8ed7f9e39d9c9e3b1a228ca1d5eb2cb66e36dc8efa52cf5",
+      "project": "Calamity Mod",
+      "path": "Sounds/Item/ExobladeBeamSlash.ogg",
+      "source_commit": "1a8cebd27ec5615316b78f71973446b5528d2b78",
+      "license": "All Rights Reserved (Calamity Team / original authors); not GPL-3.0-only",
+      "used_by": [
+        "Supreme Evoker Calamitas source brother cue: brother_dash",
+        "SupremeCatastropheSlash.cs127/159 delayed trail explosion: one cue, volume.65 pitch2^.8"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/calamitas_brother_revive.ogg",
+      "sha256": "b18720d31ad60f9af3ceb2428f53a0c02f39947c983e568d59ba28b50ec220f5",
+      "source_sha256": "b18720d31ad60f9af3ceb2428f53a0c02f39947c983e568d59ba28b50ec220f5",
+      "project": "Calamity Mod",
+      "path": "Sounds/NPCKilled/RavagerLimbLoss3.ogg",
+      "source_commit": "1a8cebd27ec5615316b78f71973446b5528d2b78",
+      "license": "All Rights Reserved (Calamity Team / original authors); not GPL-3.0-only",
+      "used_by": [
+        "Supreme Evoker Calamitas source brother cue: brother_revive"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/calamitas_barrage_rumble.ogg",
+      "sha256": "ff072e0a95256efc9c54bc7ddf358dc6ea3f3d3ce716cbc1fefa2212f8be2dbb",
+      "source_sha256": "ff072e0a95256efc9c54bc7ddf358dc6ea3f3d3ce716cbc1fefa2212f8be2dbb",
+      "project": "Calamity Mod",
+      "path": "Sounds/Custom/SCalSounds/SCalRumble.ogg",
+      "source_commit": "1a8cebd27ec5615316b78f71973446b5528d2b78",
+      "license": "All Rights Reserved (Calamity Team / original authors); not GPL-3.0-only",
+      "used_by": [
+        "Supreme Evoker Calamitas source non-looping target-following barrage rumble"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/calamitas_sepulcher_burst.ogg",
+      "sha256": "0c8f076bd2412228d97c321a582d1fbe966f866d6bca9166aa1781d7559c2582",
+      "source_sha256": "0c8f076bd2412228d97c321a582d1fbe966f866d6bca9166aa1781d7559c2582",
+      "project": "Calamity Mod",
+      "path": "Sounds/Item/DeadSunRicochet.ogg",
+      "source_commit": "1a8cebd27ec5615316b78f71973446b5528d2b78",
+      "license": "All Rights Reserved (Calamity Team / original authors); not GPL-3.0-only",
+      "used_by": [
+        "Supreme Evoker Calamitas source Sepulcher cue: sepulcher_burst"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/calamitas_sepulcher_death.ogg",
+      "sha256": "6042e1eb51d0f1e08cbc7f5af99d6d1a212c40821f692d9920deda5a37306ece",
+      "source_sha256": "6042e1eb51d0f1e08cbc7f5af99d6d1a212c40821f692d9920deda5a37306ece",
+      "project": "Calamity Mod",
+      "path": "Sounds/NPCKilled/SepulcherDeath.ogg",
+      "source_commit": "1a8cebd27ec5615316b78f71973446b5528d2b78",
+      "license": "All Rights Reserved (Calamity Team / original authors); not GPL-3.0-only",
+      "used_by": [
+        "Supreme Evoker Calamitas source Sepulcher cue: sepulcher_death"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/calamitas_vortex_burn.ogg",
+      "sha256": "24b410095484938e650f68fb1387ae6aacb5ec2febe48d7ab5eef2f9ee84d3c5",
+      "source_sha256": "24b410095484938e650f68fb1387ae6aacb5ec2febe48d7ab5eef2f9ee84d3c5",
+      "project": "Calamity Mod",
+      "path": "Sounds/Item/WeldingBurn.ogg",
+      "source_commit": "1a8cebd27ec5615316b78f71973446b5528d2b78",
+      "license": "All Rights Reserved (Calamity Team / original authors); not GPL-3.0-only",
+      "used_by": [
+        "BrimstoneMonster.cs306 range damage cue every sixth source frame; native successful hurt adaptation"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/calamitas_heart_hurt.ogg",
+      "sha256": "ffa8f3b0b6e4f64bc1bccf9880e6ed62745ac58d43d5bc0d306972931b0d9269",
+      "source_sha256": "af4216d116ae59e920a0db579578b9002a0942dad1872cc0aa3a6736df466acb",
+      "project": "Terraria",
+      "path": "G:\\SteamLibrary\\steamapps\\common\\Terraria\\Content\\Sounds\\NPC_Hit_13.xnb",
+      "license": "All Rights Reserved (Re-Logic / original authors); not GPL-3.0-only",
+      "used_by": [
+        "Supreme Evoker Calamitas native minion heart_hurt"
+      ],
+      "conversion": {
+        "source_format": "uncompressed XNB SoundEffectReader PCM16",
+        "source_pcm_sha256": "a4d0bea234fefefc91a097d6e5ea9529f0afe82b25f48c943bdce912364ac163",
+        "wave_sha256": "8057185b094dd0643951c8ca5627af8311028a422c3eca65932aad52c76acc47",
+        "output_codec": "Ogg Vorbis libvorbis q10; format conversion, not byte-identical audio",
+        "sample_rate": 44100,
+        "channels": 2,
+        "pcm_frames": 10397,
+        "native_duration_ms": 235,
+        "decoded_pcm_bytes": 41984,
+        "ffmpeg_decoder_frame_delta": 99,
+        "container_start_pts": -128,
+        "container_duration_frames": 10525,
+        "filters": "none; no gain, trim, resampling or remix"
+      }
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/calamitas_heart_death.ogg",
+      "sha256": "2922d07dea6eec47334c03c8533db1bdea3a3da90ec287dc1aacea1b8c71b9fd",
+      "source_sha256": "6ef362df14fcf1625fab927cf3d79121a9ef38fc04ff788b9984031198fe4047",
+      "project": "Terraria",
+      "path": "G:\\SteamLibrary\\steamapps\\common\\Terraria\\Content\\Sounds\\NPC_Killed_1.xnb",
+      "license": "All Rights Reserved (Re-Logic / original authors); not GPL-3.0-only",
+      "used_by": [
+        "Supreme Evoker Calamitas native minion heart_death"
+      ],
+      "conversion": {
+        "source_format": "uncompressed XNB SoundEffectReader PCM16",
+        "source_pcm_sha256": "233d134200c488ccf7008bab076487d8e4bebd6a8a759b50ba7b246a31240d66",
+        "wave_sha256": "141b2fe459301599a422cd03f6c57caa755bccc19b74da6c607948be4682a993",
+        "output_codec": "Ogg Vorbis libvorbis q10; format conversion, not byte-identical audio",
+        "sample_rate": 44100,
+        "channels": 2,
+        "pcm_frames": 15104,
+        "native_duration_ms": 342,
+        "decoded_pcm_bytes": 59904,
+        "ffmpeg_decoder_frame_delta": -128,
+        "container_start_pts": -128,
+        "container_duration_frames": 15232,
+        "filters": "none; no gain, trim, resampling or remix"
+      }
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/calamitas_seeker_death0.ogg",
+      "sha256": "a8e17ab35848f2de3a6d2d532938b4081c75dd7202c0e9deb29f07c721f2f7c9",
+      "source_sha256": "809e22753ee90d2b5b522166cdd90138af855718e6a8972123dfacec96ac9682",
+      "project": "Terraria",
+      "path": "G:\\SteamLibrary\\steamapps\\common\\Terraria\\Content\\Sounds\\Custom\\dd2_skeleton_death_0.xnb",
+      "license": "All Rights Reserved (Re-Logic / original authors); not GPL-3.0-only",
+      "used_by": [
+        "Supreme Evoker Calamitas native minion seeker_death"
+      ],
+      "conversion": {
+        "source_format": "uncompressed XNB SoundEffectReader PCM16",
+        "source_pcm_sha256": "27c6af1b21d199867357fab401da4699de578d25c3a5d203a8988e3537b6164a",
+        "wave_sha256": "a9ab1d48d09b32def4273202042213d3768bf24f1f912c8fa34655e457968f59",
+        "output_codec": "Ogg Vorbis libvorbis q10; format conversion, not byte-identical audio",
+        "sample_rate": 48000,
+        "channels": 2,
+        "pcm_frames": 154571,
+        "native_duration_ms": 3220,
+        "decoded_pcm_bytes": 618284,
+        "ffmpeg_decoder_frame_delta": 0,
+        "container_start_pts": -128,
+        "container_duration_frames": 154699,
+        "filters": "none; no gain, trim, resampling or remix"
+      }
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/calamitas_seeker_death1.ogg",
+      "sha256": "4b319dcdfcf9af426727cbf0e343c8483101c032c6ae460059952f63caaa53d4",
+      "source_sha256": "808585f5dd0d588901378789b01d1a304fe5f67620986d58e0edfad481dcacfb",
+      "project": "Terraria",
+      "path": "G:\\SteamLibrary\\steamapps\\common\\Terraria\\Content\\Sounds\\Custom\\dd2_skeleton_death_1.xnb",
+      "license": "All Rights Reserved (Re-Logic / original authors); not GPL-3.0-only",
+      "used_by": [
+        "Supreme Evoker Calamitas native minion seeker_death"
+      ],
+      "conversion": {
+        "source_format": "uncompressed XNB SoundEffectReader PCM16",
+        "source_pcm_sha256": "41cabcbe9194101c6615820ca197a6fd1b9b6136fcd880e442d9ea8f5cb9b671",
+        "wave_sha256": "6a0cfc54f8a7a6c5400e5a17b6a5bdbc0c826922e4bded383c9d0d13a65db126",
+        "output_codec": "Ogg Vorbis libvorbis q10; format conversion, not byte-identical audio",
+        "sample_rate": 48000,
+        "channels": 2,
+        "pcm_frames": 96725,
+        "native_duration_ms": 2015,
+        "decoded_pcm_bytes": 386900,
+        "ffmpeg_decoder_frame_delta": 0,
+        "container_start_pts": -128,
+        "container_duration_frames": 96853,
+        "filters": "none; no gain, trim, resampling or remix"
+      }
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/calamitas_seeker_death2.ogg",
+      "sha256": "bf45a848961e1aa24f98b5c720b276a082a5c71582e4f98d1a84f751eb4f5275",
+      "source_sha256": "4c1166ae047c8c44c86c4496a943dd5d7292df7bacc5ef442db2c5cc7b2a1dde",
+      "project": "Terraria",
+      "path": "G:\\SteamLibrary\\steamapps\\common\\Terraria\\Content\\Sounds\\Custom\\dd2_skeleton_death_2.xnb",
+      "license": "All Rights Reserved (Re-Logic / original authors); not GPL-3.0-only",
+      "used_by": [
+        "Supreme Evoker Calamitas native minion seeker_death"
+      ],
+      "conversion": {
+        "source_format": "uncompressed XNB SoundEffectReader PCM16",
+        "source_pcm_sha256": "a187b848d5e09663a86ab31f14382e23115245528537109ff9577f6c950a20d2",
+        "wave_sha256": "bc651d46c4249629639fe359edd67ed4f07adf8d24a291327a4e599b98135220",
+        "output_codec": "Ogg Vorbis libvorbis q10; format conversion, not byte-identical audio",
+        "sample_rate": 48000,
+        "channels": 2,
+        "pcm_frames": 115144,
+        "native_duration_ms": 2398,
+        "decoded_pcm_bytes": 460576,
+        "ffmpeg_decoder_frame_delta": 0,
+        "container_start_pts": -128,
+        "container_duration_frames": 115272,
+        "filters": "none; no gain, trim, resampling or remix"
+      }
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/calamitas_flame.ogg",
+      "sha256": "f202b34e01155185571e0bc857d2158630a7741d091312537869395c3abdc702",
+      "source_sha256": "ab1aeb65396ffe414ce848ef595b86996e95dd449a5ce9aef592340cc7c28263",
+      "project": "Terraria",
+      "path": "G:\\SteamLibrary\\steamapps\\common\\Terraria\\Content\\Sounds\\Item_20.xnb",
+      "license": "All Rights Reserved (Re-Logic / original authors); not GPL-3.0-only",
+      "used_by": [
+        "Supreme Evoker Calamitas native combat flame"
+      ],
+      "conversion": {
+        "source_format": "uncompressed XNB SoundEffectReader PCM16",
+        "source_pcm_sha256": "6ce4340a52b4482e6d45ffb2203a5602d980881a7c9e0d76bbeb77baac666c5b",
+        "wave_sha256": "78ed9ad10be4c6381f4fc927034774aa67daa7d1e35338a9f80bcf6df565fa52",
+        "output_codec": "Ogg Vorbis libvorbis q10; format conversion, not byte-identical audio",
+        "sample_rate": 44100,
+        "channels": 2,
+        "pcm_frames": 45108,
+        "native_duration_ms": 1022,
+        "decoded_pcm_bytes": 180432,
+        "ffmpeg_decoder_frame_delta": 0,
+        "container_start_pts": -128,
+        "container_duration_frames": 45236,
+        "filters": "none; no gain, trim, resampling or remix"
+      }
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/calamitas_seeker_cast.ogg",
+      "sha256": "438332802b32f770a2ba690ab7da7ed08812bff09e8cfdbbc7906a429c5ee712",
+      "source_sha256": "fae9dba50a16f595e4abf309005f7a541134fbdb4524755c6491e42037ebd3a6",
+      "project": "Terraria",
+      "path": "G:\\SteamLibrary\\steamapps\\common\\Terraria\\Content\\Sounds\\Item_74.xnb",
+      "license": "All Rights Reserved (Re-Logic / original authors); not GPL-3.0-only",
+      "used_by": [
+        "Supreme Evoker Calamitas native combat seeker_cast"
+      ],
+      "conversion": {
+        "source_format": "uncompressed XNB SoundEffectReader PCM16",
+        "source_pcm_sha256": "1e6f629307d0c325c1fd113f1c0845b560bb989ba00428d40a7c49e8e5ec1997",
+        "wave_sha256": "340085bb8332f4ebd45516dc76306904dc25412a869b1ff5ab0a2a9e8a8b3e89",
+        "output_codec": "Ogg Vorbis libvorbis q10; format conversion, not byte-identical audio",
+        "sample_rate": 44100,
+        "channels": 1,
+        "pcm_frames": 74676,
+        "native_duration_ms": 1693,
+        "decoded_pcm_bytes": 149352,
+        "ffmpeg_decoder_frame_delta": 0,
+        "container_start_pts": -128,
+        "container_duration_frames": 74804,
+        "filters": "none; no gain, trim, resampling or remix"
+      }
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/calamitas_heart_cast0.ogg",
+      "sha256": "cc8036829746079e55ffd034c194eef7541402dd61e747ddb7dd4d66699cbdf2",
+      "source_sha256": "dccbb448fd811cf3e0a9022d2146040febd81ee8ff2877060a2839471ec7c1d6",
+      "project": "Terraria",
+      "path": "G:\\SteamLibrary\\steamapps\\common\\Terraria\\Content\\Sounds\\Custom\\dd2_dark_mage_cast_heal_0.xnb",
+      "license": "All Rights Reserved (Re-Logic / original authors); not GPL-3.0-only",
+      "used_by": [
+        "Supreme Evoker Calamitas native combat heart_cast"
+      ],
+      "conversion": {
+        "source_format": "uncompressed XNB SoundEffectReader PCM16",
+        "source_pcm_sha256": "8d326c5866f86934d371e1971e83ab88336691f2b454bc43909026dfaa2b873b",
+        "wave_sha256": "5d9e393be65faea4f6e2b0aea7e71d64b73a0073abdfd6db6b8b3ed45e98b678",
+        "output_codec": "Ogg Vorbis libvorbis q10; format conversion, not byte-identical audio",
+        "sample_rate": 48000,
+        "channels": 2,
+        "pcm_frames": 51068,
+        "native_duration_ms": 1063,
+        "decoded_pcm_bytes": 204272,
+        "ffmpeg_decoder_frame_delta": 0,
+        "container_start_pts": -128,
+        "container_duration_frames": 51196,
+        "filters": "none; no gain, trim, resampling or remix"
+      }
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/calamitas_heart_cast1.ogg",
+      "sha256": "d01facf612473a3f3437027f2193f9fe22922a1d1c5ac9862aa3cebae0aec912",
+      "source_sha256": "ffc543ed435bbfbb2727433da20523293b437d23b5c9d9fbca3570025bcdd631",
+      "project": "Terraria",
+      "path": "G:\\SteamLibrary\\steamapps\\common\\Terraria\\Content\\Sounds\\Custom\\dd2_dark_mage_cast_heal_1.xnb",
+      "license": "All Rights Reserved (Re-Logic / original authors); not GPL-3.0-only",
+      "used_by": [
+        "Supreme Evoker Calamitas native combat heart_cast"
+      ],
+      "conversion": {
+        "source_format": "uncompressed XNB SoundEffectReader PCM16",
+        "source_pcm_sha256": "14e7537f32e8d19af01bfe34ceda87a2caa77055af0d7b347bbaae97d714e971",
+        "wave_sha256": "220700bb24defac68d90f039fa20cf96e3d634d879203b95c9057f8f7dd40cf0",
+        "output_codec": "Ogg Vorbis libvorbis q10; format conversion, not byte-identical audio",
+        "sample_rate": 48000,
+        "channels": 2,
+        "pcm_frames": 48231,
+        "native_duration_ms": 1004,
+        "decoded_pcm_bytes": 192924,
+        "ffmpeg_decoder_frame_delta": 0,
+        "container_start_pts": -128,
+        "container_duration_frames": 48359,
+        "filters": "none; no gain, trim, resampling or remix"
+      }
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/calamitas_heart_cast2.ogg",
+      "sha256": "014bf9d804fb5edaa9cacc2a9fc20c74c25c12d320d930c227b6f2eed04ea572",
+      "source_sha256": "8294736e64dacd973e4b067fadf3c38efe4cb36558a81c7629ead0424eaefe79",
+      "project": "Terraria",
+      "path": "G:\\SteamLibrary\\steamapps\\common\\Terraria\\Content\\Sounds\\Custom\\dd2_dark_mage_cast_heal_2.xnb",
+      "license": "All Rights Reserved (Re-Logic / original authors); not GPL-3.0-only",
+      "used_by": [
+        "Supreme Evoker Calamitas native combat heart_cast"
+      ],
+      "conversion": {
+        "source_format": "uncompressed XNB SoundEffectReader PCM16",
+        "source_pcm_sha256": "5ad5c0ca54382907beeed4864ebc96002a2acbeff59a5429f2204b13d9ec2737",
+        "wave_sha256": "e7cde707af8ee8a461cad18e43a2779fd5ebaca1ac381689621909aef3d11eb1",
+        "output_codec": "Ogg Vorbis libvorbis q10; format conversion, not byte-identical audio",
+        "sample_rate": 48000,
+        "channels": 2,
+        "pcm_frames": 50658,
+        "native_duration_ms": 1055,
+        "decoded_pcm_bytes": 202632,
+        "ffmpeg_decoder_frame_delta": 0,
+        "container_start_pts": -128,
+        "container_duration_frames": 50786,
+        "filters": "none; no gain, trim, resampling or remix"
+      }
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/calamitas_seeker_impact0.ogg",
+      "sha256": "71598c9a014c1b74af08b91a6abe8ea65f2e55e2b5ad436e664c1375127928a6",
+      "source_sha256": "fce205289d2dddb66900186ef88e7fde02975a789f7733f52ff3763fbca941f7",
+      "project": "Terraria",
+      "path": "G:\\SteamLibrary\\steamapps\\common\\Terraria\\Content\\Sounds\\Custom\\dd2_dark_mage_heal_impact_0.xnb",
+      "license": "All Rights Reserved (Re-Logic / original authors); not GPL-3.0-only",
+      "used_by": [
+        "Supreme Evoker Calamitas native combat seeker_impact"
+      ],
+      "conversion": {
+        "source_format": "uncompressed XNB SoundEffectReader PCM16",
+        "source_pcm_sha256": "a34ae550d295c211f610a7f4b468c9887ffb8e68e94b4a3ff189cec4236b5bb9",
+        "wave_sha256": "eef6ada68b9bfdabfb87df0798819ff40c2fa4a417af97db223fbb42b1acac8c",
+        "output_codec": "Ogg Vorbis libvorbis q10; format conversion, not byte-identical audio",
+        "sample_rate": 48000,
+        "channels": 2,
+        "pcm_frames": 95668,
+        "native_duration_ms": 1993,
+        "decoded_pcm_bytes": 382672,
+        "ffmpeg_decoder_frame_delta": 0,
+        "container_start_pts": -128,
+        "container_duration_frames": 95796,
+        "filters": "none; no gain, trim, resampling or remix"
+      }
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/calamitas_seeker_impact1.ogg",
+      "sha256": "a8ff04ce58d5a3463ea4641becfcbcee62b4646821c40c8b5d2f2b011f0d3eb9",
+      "source_sha256": "b425221a5cc39033992dad455c6bb0577efa5f09179d99314d0430c646e1eb0c",
+      "project": "Terraria",
+      "path": "G:\\SteamLibrary\\steamapps\\common\\Terraria\\Content\\Sounds\\Custom\\dd2_dark_mage_heal_impact_1.xnb",
+      "license": "All Rights Reserved (Re-Logic / original authors); not GPL-3.0-only",
+      "used_by": [
+        "Supreme Evoker Calamitas native combat seeker_impact"
+      ],
+      "conversion": {
+        "source_format": "uncompressed XNB SoundEffectReader PCM16",
+        "source_pcm_sha256": "b28012413a114b925e3217637a40f4c12865499590f13b515d8cb98248bf5a3c",
+        "wave_sha256": "ab0d2b9b6fb1f96ee05d6ef2900fe3ec2e4764af5333b18f0cc0743fedbbe3fe",
+        "output_codec": "Ogg Vorbis libvorbis q10; format conversion, not byte-identical audio",
+        "sample_rate": 48000,
+        "channels": 2,
+        "pcm_frames": 128064,
+        "native_duration_ms": 2668,
+        "decoded_pcm_bytes": 512256,
+        "ffmpeg_decoder_frame_delta": 0,
+        "container_start_pts": -128,
+        "container_duration_frames": 128192,
+        "filters": "none; no gain, trim, resampling or remix"
+      }
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/calamitas_seeker_impact2.ogg",
+      "sha256": "3f169e6f8d95b5d808bab3ce4ef6298c630e44ad2e35c75e77faa01b3da7d529",
+      "source_sha256": "275385f4e9c278cd1dc038cb42fed0661a1265514ab095579897ddf3a8e2651f",
+      "project": "Terraria",
+      "path": "G:\\SteamLibrary\\steamapps\\common\\Terraria\\Content\\Sounds\\Custom\\dd2_dark_mage_heal_impact_2.xnb",
+      "license": "All Rights Reserved (Re-Logic / original authors); not GPL-3.0-only",
+      "used_by": [
+        "Supreme Evoker Calamitas native combat seeker_impact"
+      ],
+      "conversion": {
+        "source_format": "uncompressed XNB SoundEffectReader PCM16",
+        "source_pcm_sha256": "39ebada0c3384ece84ea2c084ec0b13de16f8e9e221829810895643b3f376b67",
+        "wave_sha256": "669afcb4450fb2326e6dfc9889f9bb3dafd4cbfab70fdd9e36ba5a8f935f2e21",
+        "output_codec": "Ogg Vorbis libvorbis q10; format conversion, not byte-identical audio",
+        "sample_rate": 48000,
+        "channels": 2,
+        "pcm_frames": 109459,
+        "native_duration_ms": 2280,
+        "decoded_pcm_bytes": 437836,
+        "ffmpeg_decoder_frame_delta": 0,
+        "container_start_pts": -128,
+        "container_duration_frames": 109587,
+        "filters": "none; no gain, trim, resampling or remix"
+      }
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/calamitas_vortex_warning.ogg",
+      "sha256": "3b87e1dfe4da45527e49235095a2c765739bcadad9854977f7dbbf1dcfcc0d59",
+      "source_sha256": "3b87e1dfe4da45527e49235095a2c765739bcadad9854977f7dbbf1dcfcc0d59",
+      "project": "Calamity Mod",
+      "path": "Sounds/Custom/SCalAltarSummon.ogg",
+      "source_commit": "1a8cebd27ec5615316b78f71973446b5528d2b78",
+      "license": "All Rights Reserved (Calamity Team / original authors); not GPL-3.0-only",
+      "used_by": [
+        "SupremeCalamitas.cs1431 ordinary fourth barrage passedVar180 warning at player center, pitch +.3 octaves"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/music/calamitas_defeat.ogg",
+      "sha256": "6605f47d5138c74570a60b62c242ca23441588bfca45a631833ff05ff5878754",
+      "source_sha256": "6605f47d5138c74570a60b62c242ca23441588bfca45a631833ff05ff5878754",
+      "project": "Calamity Mod Music / DM DOKURO",
+      "path": "E:/工具/tModUnpacker/CalamityModMusic/Sounds/Music/CalamitasDefeat.ogg",
+      "license": "Original music rights holders; not GPL-3.0-only",
+      "used_by": [
+        "Supreme Evoker Calamitas ordinary CalamitasDefeat scene fallback, separate from world-once ScalDefeated longfade event"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/calamitas_spark.png",
+      "sha256": "31a1d12be94e3a3ff42fdcac6079c61199c5e9d47e63336d04a3bddc30fddd95",
+      "source_sha256": "31a1d12be94e3a3ff42fdcac6079c61199c5e9d47e63336d04a3bddc30fddd95",
+      "project": "Calamity Mod",
+      "path": "Projectiles/StarProj.png",
+      "upstream_commit": "1a8cebd27ec5615316b78f71973446b5528d2b78",
+      "license": "ARR (Calamity original terms)",
+      "used_by": [
+        "Supreme Calamitas original brothers Spark/VoidSpark warning and spawn burst",
+        "SCalBrimstoneFireblast and SCalBrimstoneGigablast flight SparkParticle"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/calamitas_void_spark_glow.png",
+      "sha256": "b907e3dde8b638f13f9e45c1fa0dcecdd0b0d7b4aaadf3d2a32def5730653b03",
+      "source_sha256": "b907e3dde8b638f13f9e45c1fa0dcecdd0b0d7b4aaadf3d2a32def5730653b03",
+      "project": "Calamity Mod",
+      "path": "Particles/GlowSpark.png",
+      "upstream_commit": "1a8cebd27ec5615316b78f71973446b5528d2b78",
+      "license": "ARR (Calamity original terms)",
+      "used_by": [
+        "Supreme Calamitas original brothers Spark/VoidSpark warning and spawn burst",
+        "Vulnerability Hex player VoidSpark visual",
+        "Supreme Cataclysm fist GlowSpark direction telegraph"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/calamitas_void_spark.png",
+      "sha256": "51bd9b798a72a716b061933df5e913995f69efb5d146cc5cbb261b941ff4ecad",
+      "source_sha256": "51bd9b798a72a716b061933df5e913995f69efb5d146cc5cbb261b941ff4ecad",
+      "project": "Calamity Mod",
+      "path": "Particles/GlowSpark2.png",
+      "upstream_commit": "1a8cebd27ec5615316b78f71973446b5528d2b78",
+      "license": "ARR (Calamity original terms)",
+      "used_by": [
+        "Supreme Calamitas original brothers Spark/VoidSpark warning and spawn burst",
+        "Vulnerability Hex player VoidSpark visual"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/calamitas_glow_orb.png",
+      "sha256": "a9af785cd24b23a71c0873a822b9a5a89ce2ad6e8a9a30457e11a6e946d61d7a",
+      "source_sha256": "a9af785cd24b23a71c0873a822b9a5a89ce2ad6e8a9a30457e11a6e946d61d7a",
+      "project": "Calamity Mod",
+      "path": "Particles/GlowOrbParticle.png",
+      "upstream_commit": "1a8cebd27ec5615316b78f71973446b5528d2b78",
+      "license": "ARR (Calamity original terms)",
+      "used_by": [
+        "Supreme Calamitas original brothers cast GlowOrb/Bloom",
+        "Supreme Calamitas Whispering Maelstrom successful native-hit GlowOrb particles",
+        "BrimstoneMonster original three growth GlowOrbParticle emissions"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/calamitas_bloom.png",
+      "sha256": "207fc44f4c3a077e70b2cc8d559e5f2935fe7c097bf7b5be5affa19aafbc8507",
+      "source_sha256": "207fc44f4c3a077e70b2cc8d559e5f2935fe7c097bf7b5be5affa19aafbc8507",
+      "project": "Calamity Mod",
+      "path": "Particles/BloomCircle.png",
+      "upstream_commit": "1a8cebd27ec5615316b78f71973446b5528d2b78",
+      "license": "ARR (Calamity original terms)",
+      "used_by": [
+        "Supreme Calamitas original brothers cast GlowOrb/Bloom",
+        "SCalBrimstoneFireblast and SCalBrimstoneGigablast pre-explosion BloomParticle",
+        "BrimstoneMonster original three startup BloomParticle layers",
+        "SepulcherHead original 30-dart burst red and white BloomParticle pair"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/calamitas_arena_smoke.png",
+      "sha256": "188a312e7088ac8dbd3bd2b1b380e70e7ef4025cd77f34eb0fe622177972dfbd",
+      "source_sha256": "188a312e7088ac8dbd3bd2b1b380e70e7ef4025cd77f34eb0fe622177972dfbd",
+      "project": "Calamity Mod",
+      "path": "Graphics/Metaballs/ScalArenaLayerSmoke.png",
+      "upstream_commit": "1a8cebd27ec5615316b78f71973446b5528d2b78",
+      "license": "ARR (Calamity original terms)",
+      "used_by": [
+        "Supreme Calamitas original arena smoke/wave metaball composite"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/calamitas_arena_wave.png",
+      "sha256": "420bab49670ff4837faf48da262a8a0323aeef2314447bc70a23f2970ccc3a07",
+      "source_sha256": "420bab49670ff4837faf48da262a8a0323aeef2314447bc70a23f2970ccc3a07",
+      "project": "Calamity Mod",
+      "path": "Graphics/Metaballs/ScalArenaLayerWave.png",
+      "upstream_commit": "1a8cebd27ec5615316b78f71973446b5528d2b78",
+      "license": "ARR (Calamity original terms)",
+      "used_by": [
+        "Supreme Calamitas original arena smoke/wave metaball composite"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/shaders/core/calamitas_arena_metaball.fsh",
+      "sha256": "ff729c77a2a1fae89e39688a1801cd331f370797b2cbf96c863a93c1a2df3dc6",
+      "project": "Calamity Mod",
+      "path": "Effects/Metaballs/MetaballEdgeShader.fx",
+      "source_sha256": "daab2ac5887ab47ae5ad8996567b0b2663a275983b40dac1c42c719967a753ba",
+      "upstream_commit": "1a8cebd27ec5615316b78f71973446b5528d2b78",
+      "license": "ARR (Calamity original terms)",
+      "used_by": [
+        "Supreme Calamitas original two-layer arena Metaball GLSL port with ScalArenaMetaball wave RGBA correction"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/calamitas_arena_circle.png",
+      "sha256": "488c022f5540ce88a44180321d5dfb21089d3effddee031e95547eea85080e97",
+      "source_sha256": "488c022f5540ce88a44180321d5dfb21089d3effddee031e95547eea85080e97",
+      "project": "Calamity Mod",
+      "path": "ExtraTextures/BasicCircle.png",
+      "upstream_commit": "1a8cebd27ec5615316b78f71973446b5528d2b78",
+      "license": "ARR (Calamity original terms)",
+      "used_by": [
+        "Supreme Calamitas original arena 16px particle mask"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/calamitas_dust_60_0.png",
+      "sha256": "6fbc12f95d223a83a1ea7b0ffcd4ec5c72ad3ce0669a474197fa7c12eccbab33",
+      "project": "Terraria / Re-Logic",
+      "path": "G:/SteamLibrary/steamapps/common/tModLoader/Content/Images/Dust.xnb",
+      "source_sha256": "b7d68955a87e3a7d77ebf0f7c7e4da75c04877d704db1db1355d228aba97a8a6",
+      "license": "ARR (Terraria original terms)",
+      "conversion": "Lossless native 8x8 atlas frame crop after XNB decode",
+      "source_rect": [
+        600,
+        0,
+        8,
+        8
+      ],
+      "source_rgba_sha256": "f2f5f3234a331f2c0a3add2d3122e0816342677e0810b8748c85d36095e68301",
+      "used_by": [
+        "BrimstoneWave trail and SCal Fireblast/Gigablast countdown/burst native Dust60/114",
+        "SoulSeekerSupreme successful and failed shot native Dust60/114"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/calamitas_dust_60_1.png",
+      "sha256": "045dd99db1779af913fc37742f8003c0c9978f1b1e1bd9765efb7cfcc1a252ff",
+      "project": "Terraria / Re-Logic",
+      "path": "G:/SteamLibrary/steamapps/common/tModLoader/Content/Images/Dust.xnb",
+      "source_sha256": "b7d68955a87e3a7d77ebf0f7c7e4da75c04877d704db1db1355d228aba97a8a6",
+      "license": "ARR (Terraria original terms)",
+      "conversion": "Lossless native 8x8 atlas frame crop after XNB decode",
+      "source_rect": [
+        600,
+        10,
+        8,
+        8
+      ],
+      "source_rgba_sha256": "450c82d3f9f0fc0022a11cd7df719e3e1c9398467f58a1300e02db28cafc02ca",
+      "used_by": [
+        "BrimstoneWave trail and SCal Fireblast/Gigablast countdown/burst native Dust60/114",
+        "SoulSeekerSupreme successful and failed shot native Dust60/114"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/calamitas_dust_60_2.png",
+      "sha256": "31a1807ae18fbe2724415df109698c935a1eba62ecc35211377b46edd88795c3",
+      "project": "Terraria / Re-Logic",
+      "path": "G:/SteamLibrary/steamapps/common/tModLoader/Content/Images/Dust.xnb",
+      "source_sha256": "b7d68955a87e3a7d77ebf0f7c7e4da75c04877d704db1db1355d228aba97a8a6",
+      "license": "ARR (Terraria original terms)",
+      "conversion": "Lossless native 8x8 atlas frame crop after XNB decode",
+      "source_rect": [
+        600,
+        20,
+        8,
+        8
+      ],
+      "source_rgba_sha256": "b71f1a341120254dbafe7c6d17e02d55046ebe1aa0b9f51500cddfe529f347fc",
+      "used_by": [
+        "BrimstoneWave trail and SCal Fireblast/Gigablast countdown/burst native Dust60/114",
+        "SoulSeekerSupreme successful and failed shot native Dust60/114"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/calamitas_dust_114_0.png",
+      "sha256": "88955b9e92fa7c913147b6e271c1d626e0b83bf6c0905c9c5bbfb6705ce3c714",
+      "project": "Terraria / Re-Logic",
+      "path": "G:/SteamLibrary/steamapps/common/tModLoader/Content/Images/Dust.xnb",
+      "source_sha256": "b7d68955a87e3a7d77ebf0f7c7e4da75c04877d704db1db1355d228aba97a8a6",
+      "license": "ARR (Terraria original terms)",
+      "conversion": "Lossless native 8x8 atlas frame crop after XNB decode",
+      "source_rect": [
+        140,
+        30,
+        8,
+        8
+      ],
+      "source_rgba_sha256": "91744a4cab2f1a3af1c9bf8612aaaf08e3a28d1e7499cdfe1c370dc8c59509b8",
+      "used_by": [
+        "BrimstoneWave trail and SCal Fireblast/Gigablast countdown/burst native Dust60/114",
+        "SoulSeekerSupreme successful and failed shot native Dust60/114"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/calamitas_dust_114_1.png",
+      "sha256": "c38a03edf8fbab985ea9f62332d4101d5f7a437a9418d35a55d1c43a33276670",
+      "project": "Terraria / Re-Logic",
+      "path": "G:/SteamLibrary/steamapps/common/tModLoader/Content/Images/Dust.xnb",
+      "source_sha256": "b7d68955a87e3a7d77ebf0f7c7e4da75c04877d704db1db1355d228aba97a8a6",
+      "license": "ARR (Terraria original terms)",
+      "conversion": "Lossless native 8x8 atlas frame crop after XNB decode",
+      "source_rect": [
+        140,
+        40,
+        8,
+        8
+      ],
+      "source_rgba_sha256": "5311fff44cba0bf982a9e01fb122bcd6990d4e754eb159a8ee4b37374b46cbda",
+      "used_by": [
+        "BrimstoneWave trail and SCal Fireblast/Gigablast countdown/burst native Dust60/114",
+        "SoulSeekerSupreme successful and failed shot native Dust60/114"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/calamitas_dust_114_2.png",
+      "sha256": "4ae14e7402d6054c2b686633706eb01c0bb87133acc2c82f2804d435865bf1cb",
+      "project": "Terraria / Re-Logic",
+      "path": "G:/SteamLibrary/steamapps/common/tModLoader/Content/Images/Dust.xnb",
+      "source_sha256": "b7d68955a87e3a7d77ebf0f7c7e4da75c04877d704db1db1355d228aba97a8a6",
+      "license": "ARR (Terraria original terms)",
+      "conversion": "Lossless native 8x8 atlas frame crop after XNB decode",
+      "source_rect": [
+        140,
+        50,
+        8,
+        8
+      ],
+      "source_rgba_sha256": "9579c70455c9cc8da6234efe82923fb98e70aa252f9c83fd132258d4e17201d1",
+      "used_by": [
+        "BrimstoneWave trail and SCal Fireblast/Gigablast countdown/burst native Dust60/114",
+        "SoulSeekerSupreme successful and failed shot native Dust60/114"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/calamitas_point.png",
+      "sha256": "f3dfe8ec07866d5c09f0d4b291be3d00a155fb5bf2833b71f76507a6011ecc8e",
+      "source_sha256": "f3dfe8ec07866d5c09f0d4b291be3d00a155fb5bf2833b71f76507a6011ecc8e",
+      "project": "Calamity Mod",
+      "path": "Particles/PointParticle.png",
+      "upstream_commit": "1a8cebd27ec5615316b78f71973446b5528d2b78",
+      "license": "ARR (Calamity original terms)",
+      "used_by": [
+        "SCalBrimstoneFireblast and SCalBrimstoneGigablast original PointParticle burst"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/calamitas_dust_182.png",
+      "sha256": "64d13fdcd156c66106f5dcfe6cd4240c0e55c9393f9b2b3ddfc345c135877533",
+      "project": "Terraria",
+      "path": "Content/Images/Dust.xnb: DustID.TheDestroyer182 frames0/1/2 identical 8x8",
+      "license": "Terraria original terms / ARR",
+      "used_by": [
+        "Supreme Calamitas seeker and Sepulcher BrimstoneBarrage variant3 native Dust trail"
+      ]
     }
-  ]
+  ],
+  "supreme_calamitas_dialogue": [
+    {
+      "language": "en_us",
+      "source": "..\\_calamity_public\\Localization\\en-US\\Mods.CalamityMod.Status.Boss.hjson",
+      "source_sha256": "65121eb552d795c583cbea5df4a8fcd1834bc4c1822fe611160370038b872f20",
+      "upstream_commit": "1a8cebd27ec5615316b78f71973446b5528d2b78",
+      "keys": [
+        "dialogue.arkofcosmos.calamitas.SCalSummonText",
+        "dialogue.arkofcosmos.calamitas.SCalStartText",
+        "dialogue.arkofcosmos.calamitas.SCalBH2Text",
+        "dialogue.arkofcosmos.calamitas.SCalBH3Text",
+        "dialogue.arkofcosmos.calamitas.SCalBrothersText",
+        "dialogue.arkofcosmos.calamitas.SCalPhase2Text",
+        "dialogue.arkofcosmos.calamitas.SCalBH4Text",
+        "dialogue.arkofcosmos.calamitas.SCalSeekerRingText",
+        "dialogue.arkofcosmos.calamitas.SCalBH5Text",
+        "dialogue.arkofcosmos.calamitas.SCalSepulcher2Text",
+        "dialogue.arkofcosmos.calamitas.SCalDesparationText1",
+        "dialogue.arkofcosmos.calamitas.SCalDesparationText2",
+        "dialogue.arkofcosmos.calamitas.SCalDesparationText3",
+        "dialogue.arkofcosmos.calamitas.SCalDesparationText4",
+        "dialogue.arkofcosmos.calamitas.SCalAcceptanceText1",
+        "dialogue.arkofcosmos.calamitas.SCalAcceptanceText2",
+        "dialogue.arkofcosmos.calamitas.SCalAcceptanceText3",
+        "dialogue.arkofcosmos.calamitas.SCalSummonTextRematch",
+        "dialogue.arkofcosmos.calamitas.SCalStartTextRematch",
+        "dialogue.arkofcosmos.calamitas.SCalBH2TextRematch",
+        "dialogue.arkofcosmos.calamitas.SCalBH3TextRematch",
+        "dialogue.arkofcosmos.calamitas.SCalBrothersTextRematch",
+        "dialogue.arkofcosmos.calamitas.SCalPhase2TextRematch",
+        "dialogue.arkofcosmos.calamitas.SCalBH4TextRematch",
+        "dialogue.arkofcosmos.calamitas.SCalSeekerRingTextRematch",
+        "dialogue.arkofcosmos.calamitas.SCalBH5TextRematch",
+        "dialogue.arkofcosmos.calamitas.SCalSepulcher2TextRematch",
+        "dialogue.arkofcosmos.calamitas.SCalDesparationText1Rematch",
+        "dialogue.arkofcosmos.calamitas.SCalDesparationText2Rematch",
+        "dialogue.arkofcosmos.calamitas.SCalDesparationText3Rematch",
+        "dialogue.arkofcosmos.calamitas.SCalDesparationText4Rematch"
+      ],
+      "copied_text_sha256": "6fd7886227662f27fa4deb6d66149dbfd808a268b9e2dc653b3254dbdae36549",
+      "license": "Calamity ARR; Chinese translations from CalamityCN, original rights retained"
+    },
+    {
+      "language": "zh_cn",
+      "source": "E:\\工具\\tModUnpacker\\CalamityCN\\Localization\\CalamityMod\\zh-Hans\\Mods.CalamityMod.Status.Boss.hjson",
+      "source_sha256": "626c308b07c3f6634f424ad9810adf338598704e803561b442d8709e7460efa1",
+      "upstream_commit": null,
+      "keys": [
+        "dialogue.arkofcosmos.calamitas.SCalSummonText",
+        "dialogue.arkofcosmos.calamitas.SCalStartText",
+        "dialogue.arkofcosmos.calamitas.SCalBH2Text",
+        "dialogue.arkofcosmos.calamitas.SCalBH3Text",
+        "dialogue.arkofcosmos.calamitas.SCalBrothersText",
+        "dialogue.arkofcosmos.calamitas.SCalPhase2Text",
+        "dialogue.arkofcosmos.calamitas.SCalBH4Text",
+        "dialogue.arkofcosmos.calamitas.SCalSeekerRingText",
+        "dialogue.arkofcosmos.calamitas.SCalBH5Text",
+        "dialogue.arkofcosmos.calamitas.SCalSepulcher2Text",
+        "dialogue.arkofcosmos.calamitas.SCalDesparationText1",
+        "dialogue.arkofcosmos.calamitas.SCalDesparationText2",
+        "dialogue.arkofcosmos.calamitas.SCalDesparationText3",
+        "dialogue.arkofcosmos.calamitas.SCalDesparationText4",
+        "dialogue.arkofcosmos.calamitas.SCalAcceptanceText1",
+        "dialogue.arkofcosmos.calamitas.SCalAcceptanceText2",
+        "dialogue.arkofcosmos.calamitas.SCalAcceptanceText3",
+        "dialogue.arkofcosmos.calamitas.SCalSummonTextRematch",
+        "dialogue.arkofcosmos.calamitas.SCalStartTextRematch",
+        "dialogue.arkofcosmos.calamitas.SCalBH2TextRematch",
+        "dialogue.arkofcosmos.calamitas.SCalBH3TextRematch",
+        "dialogue.arkofcosmos.calamitas.SCalBrothersTextRematch",
+        "dialogue.arkofcosmos.calamitas.SCalPhase2TextRematch",
+        "dialogue.arkofcosmos.calamitas.SCalBH4TextRematch",
+        "dialogue.arkofcosmos.calamitas.SCalSeekerRingTextRematch",
+        "dialogue.arkofcosmos.calamitas.SCalBH5TextRematch",
+        "dialogue.arkofcosmos.calamitas.SCalSepulcher2TextRematch",
+        "dialogue.arkofcosmos.calamitas.SCalDesparationText1Rematch",
+        "dialogue.arkofcosmos.calamitas.SCalDesparationText2Rematch",
+        "dialogue.arkofcosmos.calamitas.SCalDesparationText3Rematch",
+        "dialogue.arkofcosmos.calamitas.SCalDesparationText4Rematch"
+      ],
+      "copied_text_sha256": "ef08ca7c74580a16781d732862b14033e763441c943a3c2de2a7c32123500bab",
+      "license": "Calamity ARR; Chinese translations from CalamityCN, original rights retained"
+    }
+  ],
+  "supreme_calamitas_external_appearance": {
+    "project": "Goety",
+    "dependency": "maven.modrinth:goety:AIxkLaCV",
+    "usage": "Resource identifiers and baked model layers only; no resources or classes copied",
+    "layers": [
+      "goety:hell_blast#main",
+      "goety:soul_bolt#main",
+      "goety:cursed_skull#main"
+    ],
+    "textures": [
+      {
+        "resource": "goety:textures/entity/projectiles/hell_blast/hell_blast1.png",
+        "sha256": "2086de124123cebfb1ca701e18bfd11b8cbcb7c1b5c2fb281aaba24c23b51ad7"
+      },
+      {
+        "resource": "goety:textures/entity/projectiles/hell_blast/hell_blast10.png",
+        "sha256": "42a1a962904fa986814e92dd1caf5707e2f4c88dc135fa82c33616dbd3d1e2b0"
+      },
+      {
+        "resource": "goety:textures/entity/projectiles/hell_blast/hell_blast11.png",
+        "sha256": "9d51212447f7eb1c28b02445b3d088d86fdac2e478fdbe42a04d580bb57dbb28"
+      },
+      {
+        "resource": "goety:textures/entity/projectiles/hell_blast/hell_blast12.png",
+        "sha256": "27bdc8123aa28d0c18642d6146777ca4c119b28701d40f5f9fe3062ed89e7ac8"
+      },
+      {
+        "resource": "goety:textures/entity/projectiles/hell_blast/hell_blast13.png",
+        "sha256": "89c73cc82333c60d90aa2d77a6265d32a4e095a74428a3301df606aa45e7684a"
+      },
+      {
+        "resource": "goety:textures/entity/projectiles/hell_blast/hell_blast14.png",
+        "sha256": "da3848e063d41c44d93fae1794fc1d572cf6606307a2cb7345158732ce50c339"
+      },
+      {
+        "resource": "goety:textures/entity/projectiles/hell_blast/hell_blast15.png",
+        "sha256": "387db610c0e64da36a96c4bbd359d358e602a5af7c98f7c596bc16abf7936b3b"
+      },
+      {
+        "resource": "goety:textures/entity/projectiles/hell_blast/hell_blast16.png",
+        "sha256": "1e37a74dc2355651286004c5aa34b5b30d8e9382014ebf4024e5d91e54cf6ad2"
+      },
+      {
+        "resource": "goety:textures/entity/projectiles/hell_blast/hell_blast17.png",
+        "sha256": "0ad7e069cb6f7745cf284e28dc1bcce70bbe71f3ae5561f9ad0a6ace1420b05e"
+      },
+      {
+        "resource": "goety:textures/entity/projectiles/hell_blast/hell_blast18.png",
+        "sha256": "4265ee6365bc126bcddbb08b88084f258adc443cdc61ab0e7d025f86e94ba728"
+      },
+      {
+        "resource": "goety:textures/entity/projectiles/hell_blast/hell_blast19.png",
+        "sha256": "944cafe69453b06f371ba6a1a722ad1d11a1c2e4abdd2f0d3258aee52291d506"
+      },
+      {
+        "resource": "goety:textures/entity/projectiles/hell_blast/hell_blast2.png",
+        "sha256": "95c6aca9e9240a94fd1fadfcde38eb6d5cddbab5e1525e120972a957debebe54"
+      },
+      {
+        "resource": "goety:textures/entity/projectiles/hell_blast/hell_blast20.png",
+        "sha256": "a28acfa2e70a6b08d602364f94b5887f4cb85690fd42ab7259737791d800bfb7"
+      },
+      {
+        "resource": "goety:textures/entity/projectiles/hell_blast/hell_blast21.png",
+        "sha256": "0df29ead1599f9ee844364c789e3be68efae05b14239257ee5288e119ca3de13"
+      },
+      {
+        "resource": "goety:textures/entity/projectiles/hell_blast/hell_blast22.png",
+        "sha256": "f259b57a7f51f7dd535451eb597a5ce3b2ccc8700d0fbfa94e4422ccb8ec9713"
+      },
+      {
+        "resource": "goety:textures/entity/projectiles/hell_blast/hell_blast23.png",
+        "sha256": "8a34825f0dd13b2eb849bea684242fde4b93f0e5c0586a7ee7fd30a18bf71d60"
+      },
+      {
+        "resource": "goety:textures/entity/projectiles/hell_blast/hell_blast24.png",
+        "sha256": "1014ba47a95d94713fc50c3fcdad30c41aa33e0b41e1a01b707829eccc3057f8"
+      },
+      {
+        "resource": "goety:textures/entity/projectiles/hell_blast/hell_blast25.png",
+        "sha256": "42f3a5380707fcf3164c30f85eaaa4542b3e37e08d3e5fd29290f9af7d1e83d5"
+      },
+      {
+        "resource": "goety:textures/entity/projectiles/hell_blast/hell_blast26.png",
+        "sha256": "cd8979009ea64d2e87bf6ac7325b1e577115ad1d38ce78cd5c5aeab4561be9ff"
+      },
+      {
+        "resource": "goety:textures/entity/projectiles/hell_blast/hell_blast27.png",
+        "sha256": "a1a1c9bb83ac6e7fe5af9c80bcbb9cd2f90f41659a2f8ec15b475108e84cdc42"
+      },
+      {
+        "resource": "goety:textures/entity/projectiles/hell_blast/hell_blast28.png",
+        "sha256": "92415f892effd6e81edddf2b970ddb7be7761c9faa12c767615c8ef226393ada"
+      },
+      {
+        "resource": "goety:textures/entity/projectiles/hell_blast/hell_blast29.png",
+        "sha256": "95dccb17d81b96ce11dfb266256149f5eed7e7e76ebd60a5be28adc24ef87e0b"
+      },
+      {
+        "resource": "goety:textures/entity/projectiles/hell_blast/hell_blast3.png",
+        "sha256": "0ad490600ebf4d18a14a63c4341d68100a88989097b6ba23642b5825fb0d8098"
+      },
+      {
+        "resource": "goety:textures/entity/projectiles/hell_blast/hell_blast30.png",
+        "sha256": "1cacd4f4de74c175e9e3c5892c8d293487955050b0bb5b76a3b280ade142b69a"
+      },
+      {
+        "resource": "goety:textures/entity/projectiles/hell_blast/hell_blast31.png",
+        "sha256": "e357061405ba3f20ab6750dcb0ba8d42b256a907581cc61ae8f002f963358a66"
+      },
+      {
+        "resource": "goety:textures/entity/projectiles/hell_blast/hell_blast32.png",
+        "sha256": "0ea0e0cf23d2e4327df315d41f5f2975bec337a8d0ba1c78150c88fb43ff0343"
+      },
+      {
+        "resource": "goety:textures/entity/projectiles/hell_blast/hell_blast4.png",
+        "sha256": "34a56dbb0ae2de6d478bb5e5473b16219cc1548702758f0ddace4ce24638b63d"
+      },
+      {
+        "resource": "goety:textures/entity/projectiles/hell_blast/hell_blast5.png",
+        "sha256": "f70169d9b984e1338a0447026831192d31285e22af53326c3b20e4d439b5b8fb"
+      },
+      {
+        "resource": "goety:textures/entity/projectiles/hell_blast/hell_blast6.png",
+        "sha256": "166bf3814342d210556262fe4e0a3394bcb43bf7c011db4e4868743db4cd5909"
+      },
+      {
+        "resource": "goety:textures/entity/projectiles/hell_blast/hell_blast7.png",
+        "sha256": "e5c47a4a68feb6a6cc5f06d2baf5c11e27c74ec5b103f35a7d924024655e8de8"
+      },
+      {
+        "resource": "goety:textures/entity/projectiles/hell_blast/hell_blast8.png",
+        "sha256": "3a4cbc9ff98a9f64c9fb61f17aaf6ae0f12d1ce16ad575a7fbc730852f37b436"
+      },
+      {
+        "resource": "goety:textures/entity/projectiles/hell_blast/hell_blast9.png",
+        "sha256": "355b5c6d227d6d6ff6d4d52effeb29ed468a723a8a8290cb6897cb5352f3dae0"
+      },
+      {
+        "resource": "goety:textures/entity/projectiles/hell_bolt/bolt_1.png",
+        "sha256": "a9c8c2e57dd0fcb1f61901be845009cd100b3404c4194d82f72432cc28dbb46d"
+      },
+      {
+        "resource": "goety:textures/entity/projectiles/hell_bolt/bolt_2.png",
+        "sha256": "da58e1496e0bc6b79cf7765a09c0c29506c7cb72c55436445b7ca6f8e3bbe10e"
+      },
+      {
+        "resource": "goety:textures/entity/projectiles/hell_bolt/bolt_3.png",
+        "sha256": "a46d94a9cfce41d15bf7561efa0d8542b79f21d3f913b9bbad701e787cee574c"
+      },
+      {
+        "resource": "goety:textures/entity/projectiles/soul_bolt/soul_bolt_1.png",
+        "sha256": "5b5826fe55347797bfd43c077ecf30a46aa2cf55c81c50af227c1be72e694901"
+      },
+      {
+        "resource": "goety:textures/entity/projectiles/soul_bolt/soul_bolt_2.png",
+        "sha256": "754a2d6bcb5f1cdc9091551eaf639d4a9e959152db2eaf790ba2b0aa8eec144c"
+      },
+      {
+        "resource": "goety:textures/entity/projectiles/soul_bolt/soul_bolt_3.png",
+        "sha256": "dc93c363371c507274538efed63d41b78db55e1dd7b8a731449a439e8964e618"
+      },
+      {
+        "resource": "goety:textures/entity/servants/haunted_skull/attack/skull1.png",
+        "sha256": "a63b67c30f1442071a300f74cf7fd5315b9aef75c4b145eacc0a6d0ec574e7be"
+      },
+      {
+        "resource": "goety:textures/entity/servants/haunted_skull/attack/skull2.png",
+        "sha256": "a738685349c1e26b99a13b62d8951160c5d575f46c05ea9fa8bb25cdb3c24c8b"
+      },
+      {
+        "resource": "goety:textures/entity/servants/haunted_skull/attack/skull3.png",
+        "sha256": "f4bb49147b6b8684a48c769710c8607eb1976559b7ea93ec547615eb3658d633"
+      },
+      {
+        "resource": "goety:textures/entity/servants/haunted_skull/attack/skull4.png",
+        "sha256": "cb4d9381cd7a46fefbc803c3bb21e510e01292cf98fec91c1db90d04732f0890"
+      },
+      {
+        "resource": "goety:textures/entity/servants/haunted_skull/attack/skull5.png",
+        "sha256": "de20a2cec94ab79b5b15b143a4c1ae29f07f2450f15d69a05f2c647401877d60"
+      },
+      {
+        "resource": "goety:textures/entity/servants/haunted_skull/attack/skull6.png",
+        "sha256": "b5ca90a95267ffd0b96ab8cda8c9370fce77a1d855ded34b6dbc25831f754ace"
+      },
+      {
+        "resource": "goety:textures/entity/servants/haunted_skull/attack/skull7.png",
+        "sha256": "7da4ef9aacd7ae23952071df850c2eae196c07bfce69afbf9ec2a20facb649ab"
+      },
+      {
+        "resource": "goety:textures/entity/servants/haunted_skull/attack/skull8.png",
+        "sha256": "5c64cc6e10a9b8347922050ed87586d870668cf9f95ef0a0ff09ba22f37db328"
+      }
+    ]
+  },
+  "supreme_calamitas_audio_api": {
+    "scope": "Read-only native API verification; no runtime library copies in this mod",
+    "files": [
+      {
+        "path": "G:/SteamLibrary/steamapps/common/tModLoader/tModLoader.dll",
+        "sha256": "bf2ca4d53512d064fae664170a0d21ecc5e2ed51b5e917d871ec78cc449263e9"
+      },
+      {
+        "path": "G:/SteamLibrary/steamapps/common/tModLoader/Libraries/FNA/1.0.0/FNA.dll",
+        "sha256": "f2eb9e915a8f8a4d4e8bcc4a8a00ace75f9c5f6895c3c46c0deff2174ec433fa"
+      }
+    ],
+    "terraria_utils_get_lerp_value_default_clamped": false,
+    "terraria_active_sound_camera_attenuation_pixels": 2500,
+    "fna_pitch_frequency_ratio": "2 ^ pitch (no one-octave clamp)",
+    "minecraft_adaptation": "3D listener/camera distance, native HOSTILE category, streaming canonical drone OGG; dedicated pitch hook preserves drone high and paired-fist echo low source ratios"
+  }
 }

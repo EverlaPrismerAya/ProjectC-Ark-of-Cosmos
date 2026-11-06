@@ -103,6 +103,11 @@ public final class ArkNetwork {
         CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), new BossBar(id, phase));
     }
     private record Effect(CompoundTag data) {}
+    public static void calamitasMusic(java.util.UUID owner, boolean start) {
+        var data = new CompoundTag(); data.putString("Event", "calamitas_acceptance_music");
+        data.putUUID("Owner", owner); data.putBoolean("Start", start);
+        CHANNEL.send(PacketDistributor.ALL.noArg(), new Effect(data));
+    }
     private record GalaxiaInput(boolean left, int selection) {}
     private record TrueBiomeInput(boolean left,int slot,int mode) {}
     private record BiomeInput(boolean left,boolean right,int slot,int mode) {}
@@ -117,6 +122,9 @@ public final class ArkNetwork {
     }
     public static void nearbyEffect(Entity entity,CompoundTag data){
         CHANNEL.send(PacketDistributor.NEAR.with(()->new PacketDistributor.TargetPoint(entity.getX(),entity.getY(),entity.getZ(),256,entity.level().dimension())),new Effect(data));
+    }
+    public static void playerEffect(net.minecraft.server.level.ServerPlayer player, CompoundTag data) {
+        CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), new Effect(data));
     }
     public static void parryEffect(net.minecraft.world.entity.player.Player player,AttackFrame frame){
         CompoundTag data=new CompoundTag();data.putString("Event","parry");data.putInt("Owner",player.getId());

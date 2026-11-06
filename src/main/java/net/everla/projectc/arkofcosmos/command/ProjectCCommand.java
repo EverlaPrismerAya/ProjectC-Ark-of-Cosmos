@@ -4,6 +4,8 @@ import net.everla.projectc.arkofcosmos.ArkOfCosmos;
 import net.everla.projectc.arkofcosmos.combat.BiomeCombat;
 import net.everla.projectc.arkofcosmos.entity.FourthCalamityEntity;
 import net.everla.projectc.arkofcosmos.entity.MahouTsukaiEntity;
+import net.everla.projectc.arkofcosmos.entity.SupremeCalamitasEntity;
+import net.everla.projectc.arkofcosmos.CalamitasContent;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
@@ -29,7 +31,7 @@ public final class ProjectCCommand {
                 return 1;
             }));
         }
-        event.getDispatcher().register(Commands.literal("projectc")
+        var root = Commands.literal("projectc")
             .requires(source -> source.hasPermission(2))
             .then(Commands.literal("biomeblade")
                 .then(Commands.literal("unlockall").executes(context -> {
@@ -43,14 +45,29 @@ public final class ProjectCCommand {
                 var bosses = new ArrayList<Entity>();
                 for (var level : context.getSource().getServer().getAllLevels())
                     for (var entity : level.getAllEntities())
-                        if (!entity.isRemoved() && (entity instanceof MahouTsukaiEntity || entity instanceof FourthCalamityEntity))
+                        if (!entity.isRemoved() && (entity instanceof MahouTsukaiEntity || entity instanceof FourthCalamityEntity || entity instanceof SupremeCalamitasEntity || net.everla.projectc.arkofcosmos.entity.CalamitasSummons.commandRoot(entity)))
                             bosses.add(entity);
                 for (var boss : bosses) {
                     if (boss instanceof MahouTsukaiEntity mahou) mahou.removeByPlayerCommand();
                     else if (boss instanceof FourthCalamityEntity calamity) calamity.removeByPlayerCommand();
+                    else if (boss instanceof SupremeCalamitasEntity calamitas) calamitas.endBattle(false);
+                    else net.everla.projectc.arkofcosmos.entity.CalamitasSummons.removeCommandRoot(boss);
                 }
                 context.getSource().sendSuccess(() -> Component.literal("已移除 " + bosses.size() + " 个 Boss"), true);
                 return bosses.size();
+            }));
+        if (CalamitasContent.ENABLED) root.then(Commands.literal("calamitas")
+            .then(Commands.literal("summon").executes(context -> {
+                var source = context.getSource();
+                var target = source.getEntity() instanceof net.minecraft.world.entity.LivingEntity living ? living : null;
+                var boss = SupremeCalamitasEntity.spawn(source.getLevel(), source.getPosition().add(0, 3, 0), target);
+                if (boss == null) {
+                    source.sendFailure(Component.translatable("commands.projectc.calamitas.summon_failed"));
+                    return 0;
+                }
+                source.sendSuccess(() -> Component.translatable("commands.projectc.calamitas.summoned", boss.getDisplayName()), true);
+                return 1;
             })));
+        event.getDispatcher().register(root);
     }
 }

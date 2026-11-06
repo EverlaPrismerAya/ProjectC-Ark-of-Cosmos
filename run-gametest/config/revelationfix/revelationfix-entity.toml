@@ -1,0 +1,234 @@
+
+[IceHermit]
+	#The configured maximum health of the Ice Hermit. The larger of this value and the inherited maximum health is used.
+	#Range: 1.0 ~ 32768.0
+	maximumHealth = 268.0
+	#The Ice Hermit teleport cooldown in game ticks; not reduced in the second phase.
+	#Range: 1.0 ~ 32768.0
+	teleportCooldown = 100.0
+	#The horizontal teleport landing radius around the target in blocks.
+	#Range: 1.0 ~ 64.0
+	teleportRadius = 15.0
+	#The maximum health damage the Ice Hermit can take from a single hit after damage reductions, absorption, and damage events. Damage that bypasses invulnerability ignores this limit.
+	#Range: 0.0 ~ 32768.0
+	maximumDamagePerHit = 20.0
+	#The damage per hit of first-phase frost breath. Empowered frost breath only accumulates cold.
+	#Range: 0.0 ~ 32768.0
+	breathDamage = 8.0
+	#The damage of a frozen-target execution.
+	#Range: 0.0 ~ 32768.0
+	executionDamage = 100.0
+	#The damage per hit of basic ice spikes, including spikes released by empowered and final storms.
+	#Range: 0.0 ~ 32768.0
+	spikeDamage = 10.0
+	#The basic ice spike cooldown in game ticks.
+	#Range: 1.0 ~ 32768.0
+	spikeCooldown = 60.0
+	#The interval between empowered spike bursts in game ticks.
+	#Range: 1.0 ~ 32768.0
+	spikeBurstInterval = 5.0
+	#The maximum lifetime of a boss ice spike in game ticks.
+	#Range: 1.0 ~ 32768.0
+	spikeLifetime = 100.0
+	#The maximum number of wall ricochets.
+	#Range: 1.0 ~ 32768.0
+	spikeBounces = 3.0
+	#The damage per hit of hail clouds in both phases.
+	#Range: 0.0 ~ 32768.0
+	cloudDamage = 2.0
+	#The hail cloud lifetime in game ticks.
+	#Range: 1.0 ~ 32768.0
+	cloudLifetime = 500.0
+	#The hail cloud cooldown in game ticks.
+	#Range: 1.0 ~ 32768.0
+	cloudCooldown = 200.0
+	#The area damage per hit of a first-phase frost storm.
+	#Range: 0.0 ~ 32768.0
+	stormDamage = 6.0
+	#The area damage per hit of empowered and final frost storms.
+	#Range: 0.0 ~ 32768.0
+	empoweredStormDamage = 12.0
+	#The frost storm lifetime in game ticks.
+	#Range: 1.0 ~ 32768.0
+	stormLifetime = 900.0
+	#The frost storm cooldown in game ticks.
+	#Range: 1.0 ~ 32768.0
+	stormCooldown = 600.0
+	#The damage interval per target for hail and storms in game ticks.
+	#Range: 1.0 ~ 32768.0
+	areaHitInterval = 20.0
+	#The empowered storm spike interval in game ticks.
+	#Range: 1.0 ~ 32768.0
+	stormSpikeInterval = 40.0
+	#The impact damage of first-phase falling ice, including overhead ice in absolute zero.
+	#Range: 0.0 ~ 32768.0
+	chunkDamage = 17.0
+	#The impact damage of empowered falling ice, including overhead ice in absolute zero.
+	#Range: 0.0 ~ 32768.0
+	empoweredChunkDamage = 22.0
+	#The falling ice cooldown in game ticks.
+	#Range: 1.0 ~ 32768.0
+	chunkCooldown = 300.0
+	#The interval between three falling ice summons in game ticks.
+	#Range: 1.0 ~ 32768.0
+	chunkInterval = 10.0
+	#The damage per hit of glacial walls in both phases. Ritual pillars do not deal this damage.
+	#Range: 0.0 ~ 32768.0
+	wallDamage = 1.0
+	#The glacial wall cooldown in game ticks.
+	#Range: 1.0 ~ 32768.0
+	wallCooldown = 200.0
+	#The normal glacial wall lifetime in game ticks.
+	#Range: 1.0 ~ 32768.0
+	wallLifetime = 240.0
+	#The minimum target distance for glacial walls in blocks.
+	#Range: 1.0 ~ 32768.0
+	wallMinimumDistance = 8.0
+	#The damage per hit of the ice spike rain released by blizzard.
+	#Range: 0.0 ~ 32768.0
+	blizzardSpikeDamage = 8.0
+	#The blizzard channel duration in game ticks.
+	#Range: 1.0 ~ 32768.0
+	blizzardDuration = 160.0
+	#The blizzard cooldown in game ticks.
+	#Range: 1.0 ~ 32768.0
+	blizzardCooldown = 900.0
+	#The damage of each absolute zero pulse, including ritual and final domains.
+	#Range: 0.0 ~ 32768.0
+	absolutePulseDamage = 3.0
+	#The damage per hit of the ice spike rain in absolute zero, including ritual and final domains.
+	#Range: 0.0 ~ 32768.0
+	absoluteSpikeDamage = 10.0
+	#The regular absolute zero duration in game ticks.
+	#Range: 1.0 ~ 32768.0
+	absoluteDuration = 180.0
+	#The absolute zero cooldown before the second phase reduction in game ticks.
+	#Range: 1.0 ~ 32768.0
+	absoluteCooldown = 1800.0
+	#The first phase absolute zero radius in blocks.
+	#Range: 1.0 ~ 32768.0
+	absoluteRadius = 24.0
+	#The second phase absolute zero radius in blocks.
+	#Range: 1.0 ~ 32768.0
+	absoluteEmpoweredRadius = 48.0
+	#The overhead ice summon interval per target in game ticks.
+	#Range: 1.0 ~ 32768.0
+	absoluteChunkInterval = 40.0
+	#The three-dimensional range of the non-final absolute zero push in blocks.
+	#Range: 0.0 ~ 128.0
+	absolutePushRadius = 7.5
+	#The horizontal distance at which the non-final domain push reaches full speed, capped to its radius.
+	#Range: 0.0 ~ 128.0
+	absolutePushFullDistance = 5.0
+	#The maximum outward speed of the non-final domain in blocks per tick (0.5 = 10 blocks per second).
+	#Range: 0.0 ~ 128.0
+	absolutePushSpeed = 0.5
+	#The maximum outward velocity increment per tick for the non-final domain, scaled by the cubic distance curve, in blocks per tick squared.
+	#Range: 0.0 ~ 128.0
+	absolutePushAcceleration = 0.12
+	#The interval between single gathering wind particles in non-final domains, in game ticks.
+	#Range: 1.0 ~ 32768.0
+	absoluteWindInterval = 10.0
+	#The damage of every beam released by non-final absolute zero domains.
+	#Range: 0.0 ~ 32768.0
+	beamDamage = 10.0
+	#The interval between regular target-position beam warnings in game ticks.
+	#Range: 1.0 ~ 32768.0
+	beamInterval = 40.0
+	#The interval between second-phase surrounding beam batches in game ticks.
+	#Range: 1.0 ~ 32768.0
+	beamRingInterval = 100.0
+	#The number of surrounding beam warnings per target in a second-phase batch.
+	#Range: 0.0 ~ 128.0
+	beamRingCount = 4.0
+	#The period of final-domain beam burst windows in game ticks.
+	#Range: 1.0 ~ 32768.0
+	finalBeamBurstPeriod = 400.0
+	#The duration of each final-domain beam burst window, capped to its period, in game ticks.
+	#Range: 0.0 ~ 32768.0
+	finalBeamBurstDuration = 160.0
+	#The interval between target and forward-offset beam pairs during a final burst, in game ticks.
+	#Range: 1.0 ~ 32768.0
+	finalBeamBurstInterval = 20.0
+	#The horizontal offset of the second final-burst beam along target motion or facing, in blocks.
+	#Range: 0.0 ~ 128.0
+	finalBeamOffset = 1.5
+	#The damage of every beam released by the final absolute zero domain.
+	#Range: 0.0 ~ 32768.0
+	finalBeamDamage = 20.0
+	#The additional cold accumulation of every final-domain beam, separate from actual freezing damage.
+	#Range: 0.0 ~ 32768.0
+	finalBeamCold = 15.0
+	#The half health ritual duration in game ticks.
+	#Range: 1.0 ~ 32768.0
+	ritualDuration = 600.0
+	#The stagger duration after all four cores break in game ticks.
+	#Range: 1.0 ~ 32768.0
+	ritualStagger = 60.0
+	#The health recovered each second while fighting in the second phase.
+	#Range: 0.0 ~ 32768.0
+	regenerationPerSecond = 1.0
+	#Free attack window in game ticks.
+	#Range: 0.0 ~ 32768.0
+	freeWindowTicks = 200.0
+	#Interval between the three second phase storms in game ticks.
+	#Range: 0.0 ~ 32768.0
+	stormBurstInterval = 10.0
+	#Final absolute zero radius in blocks.
+	#Range: 0.0 ~ 32768.0
+	finalRadius = 60.0
+	#First tick at or after the authored 1.13 second effect cue.
+	#Range: 0.0 ~ 32768.0
+	domainWarmupTicks = 23.0
+	#Full duration of the normal absolute zero animation in game ticks.
+	#Range: 0.0 ~ 32768.0
+	domainAnimationTicks = 249.0
+	#Full duration of the final absolute zero opening animation in game ticks.
+	#Range: 0.0 ~ 32768.0
+	finalAnimationTicks = 73.0
+	#Wait after a normal domain animation in game ticks.
+	#Range: 0.0 ~ 32768.0
+	domainRecoveryTicks = 100.0
+	#Wait after frost breath in game ticks.
+	#Range: 0.0 ~ 32768.0
+	breathRecoveryTicks = 16.0
+	#Wait after hail in game ticks.
+	#Range: 0.0 ~ 32768.0
+	hailRecoveryTicks = 60.0
+	#Wait after a normal storm cast in game ticks.
+	#Range: 0.0 ~ 32768.0
+	stormRecoveryTicks = 40.0
+	#First phase wait after all falling ice resolves in game ticks.
+	#Range: 0.0 ~ 32768.0
+	chunkRecoveryTicks = 60.0
+	#Second phase wait after all falling ice resolves in game ticks.
+	#Range: 0.0 ~ 32768.0
+	empoweredChunkRecoveryTicks = 40.0
+	#First phase wait after a wall cast in game ticks.
+	#Range: 0.0 ~ 32768.0
+	wallRecoveryTicks = 2.0
+	#Second phase wait after spikes in game ticks.
+	#Range: 0.0 ~ 32768.0
+	empoweredSpikeRecoveryTicks = 15.0
+	#Minimum first phase wait after spikes in game ticks.
+	#Range: 0.0 ~ 32768.0
+	spikeRecoveryMinTicks = 4.0
+	#Maximum first phase wait after spikes in game ticks.
+	#Range: 0.0 ~ 32768.0
+	spikeRecoveryMaxTicks = 8.0
+	#Initial horizontal final domain knockback speed in blocks per tick.
+	#Range: 0.0 ~ 128.0
+	initialPushSpeed = 1.5
+	#Continuous horizontal final domain motion speed in blocks per tick (0.05 = 1 block per second at 20 TPS).
+	#Range: 0.0 ~ 128.0
+	continuousPushSpeed = 0.05
+	#Horizontal radius of the one-shot final domain knockback in blocks.
+	#Range: 0.0 ~ 128.0
+	initialPushRadius = 40.0
+	#First phase chance to select a ready storm, in percent.
+	#Range: 0 ~ 100
+	stormChance = 75
+	#Chance of a domain after the second phase free window, in percent.
+	#Range: 0 ~ 100
+	domainChance = 50
+

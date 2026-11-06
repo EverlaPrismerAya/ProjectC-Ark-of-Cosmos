@@ -78,7 +78,7 @@ public final class ArkDamage {
         if (!(object instanceof LivingEntity entity) || !entity.getEntityData().hasItem(HEALTH)) return -1;
         if(object instanceof net.everla.projectc.arkofcosmos.entity.FourthCalamityEntity boss&&boss.protectingDefeat()&&!boss.level().isClientSide)return 1;
         float locked=BossHealingLock.health(object);if(locked>=0)return locked;
-        if(object instanceof net.everla.projectc.arkofcosmos.entity.MahouTsukaiEntity boss&&!boss.level().isClientSide)
+        if(object instanceof ProtectedBoss boss&&!entity.level().isClientSide)
             return boss.combatVitality();
         Float value = entity.getEntityData().get(HEALTH);
         return value == null || value < 0 || protectedPlayer(entity) || ordinaryTarget(entity) ? -1 : value;
@@ -98,7 +98,7 @@ public final class ArkDamage {
         if (!(object instanceof LivingEntity entity) || !entity.getEntityData().hasItem(HEALTH)) return false;
         if(object instanceof net.everla.projectc.arkofcosmos.entity.FourthCalamityEntity boss)return boss.protectDeathHealthWrite(value);
         if(BossHealingLock.blockWrite(object,value))return true;
-        if(object instanceof net.everla.projectc.arkofcosmos.entity.MahouTsukaiEntity boss)
+        if(object instanceof ProtectedBoss boss)
             return boss.redirectHealthWrite(value)||boss.blocksHealthWrite(value);
         if(object instanceof net.everla.projectc.arkofcosmos.entity.MahoragaWardenEntity warden && warden.blocksHealthWrite(value))return true;
         // A temporary healing ceiling must not activate a second health store on a native target.
@@ -127,6 +127,10 @@ public final class ArkDamage {
         return target instanceof ApollyonCompatTarget apollyon && apollyon.arkofcosmos$isNetherApollyon()
                 || target instanceof net.everla.projectc.arkofcosmos.entity.MahouTsukaiEntity
                 || target instanceof net.everla.projectc.arkofcosmos.entity.FourthCalamityEntity
+                || target instanceof net.everla.projectc.arkofcosmos.entity.CalamitasMinionEntity
+                || target instanceof net.everla.projectc.arkofcosmos.entity.CalamitasBrotherEntity
+                || target instanceof net.everla.projectc.arkofcosmos.entity.SupremeCalamitasEntity
+                || target instanceof net.everla.projectc.arkofcosmos.entity.CalamitasSepulcherEntity
                 || target instanceof net.everla.projectc.arkofcosmos.entity.MahoragaWardenEntity
                 || !seagull(target) && target.getType().is(IGNORE_SPECIAL_DAMAGE);
     }
@@ -236,6 +240,7 @@ public final class ArkDamage {
         if (!validHit(target, amount)) return false;
         if (ordinaryTarget(target)) return WeaponDamage.handling(target,source)
                 ? target.hurt(source,amount) : WeaponDamage.hurt(target, source, amount);
+        amount = net.everla.projectc.arkofcosmos.calamity.CalamitasHexEffect.outgoing(source, amount);
         // The authority bypasses LivingHurtEvent; its native fallback still receives this bonus there.
         if(unmitigated&&source.getEntity() instanceof LivingEntity attacker&&OldOneEffects.has(attacker,OldOneEffects.Status.WRATH))amount*=1.1f;
         return applyDamage(target, source, unmitigated ? amount : reducedDamage(target, amount, true), false);

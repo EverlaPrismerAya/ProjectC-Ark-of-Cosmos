@@ -92,9 +92,7 @@ minecraft {
             args '--nogui'
         }
 
-        client {
-            lazyToken('minecraft_classpath') { configurations.clientRuntimeOnly.asPath }
-        }
+        client {}
 
         data {
             // example of overriding the workingDirectory set in configureEach above
@@ -263,13 +261,16 @@ tasks.named('processResources', ProcessResources).configure {
     }
 }
 
-// Example for how to get properties into the manifest for reading at runtime.
-tasks.named('jar', Jar).configure {
+// Both distributable archives carry the same project and third-party notices.
+tasks.matching { it.name in ['jar', 'jarJar'] }.configureEach {
     from('LICENSE.txt', 'THIRD_PARTY_NOTICES.md')
     from('licenses') {
         into 'licenses'
     }
+}
 
+// Example for how to get properties into the manifest for reading at runtime.
+tasks.named('jar', Jar).configure {
     manifest {
         attributes([
                 'Specification-Title'     : mod_id,
@@ -308,4 +309,10 @@ publishing {
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
+}
+
+// Keep optional rendering mods on the client JVM and Forge discovery paths only.
+tasks.matching { it.name == 'runClient' }.configureEach {
+    classpath(configurations.clientRuntimeOnly)
+    runtimeClasspathArtifacts.from(configurations.clientRuntimeOnly)
 }

@@ -1,6 +1,14 @@
 {
-  "wilhelm_scream": { "sounds": ["arkofcosmos:wilhelm_scream"] },
-  "bonk": { "sounds": ["arkofcosmos:bonk"] },
+  "wilhelm_scream": {
+    "sounds": [
+      "arkofcosmos:wilhelm_scream"
+    ]
+  },
+  "bonk": {
+    "sounds": [
+      "arkofcosmos:bonk"
+    ]
+  },
   "snap": {
     "sounds": [
       "arkofcosmos:snap_0"
@@ -555,6 +563,244 @@
       {
         "name": "arkofcosmos:biome_swing_0",
         "stream": false
+      }
+    ]
+  },
+  "calamitas_shot": {
+    "sounds": [
+      "arkofcosmos:calamitas_shot"
+    ]
+  },
+  "calamitas_big_shot": {
+    "sounds": [
+      "arkofcosmos:calamitas_big_shot"
+    ]
+  },
+  "calamitas_hellblast": {
+    "sounds": [
+      "arkofcosmos:calamitas_hellblast"
+    ]
+  },
+  "calamitas_dash": {
+    "sounds": [
+      "arkofcosmos:calamitas_dash"
+    ]
+  },
+  "calamitas_fireblast_impact": {
+    "sounds": [
+      "arkofcosmos:calamitas_fireblast_impact"
+    ]
+  },
+  "calamitas_gigablast_impact": {
+    "sounds": [
+      "arkofcosmos:calamitas_gigablast_impact"
+    ]
+  },
+  "calamitas_vortex_spawn": {
+    "sounds": [
+      "arkofcosmos:calamitas_vortex_spawn"
+    ]
+  },
+  "calamitas_sepulcher_spawn": {
+    "sounds": [
+      "arkofcosmos:calamitas_sepulcher_spawn"
+    ]
+  },
+  "calamitas_barrage_end": {
+    "sounds": [
+      "arkofcosmos:calamitas_barrage_end"
+    ]
+  },
+  "calamitas_vortex_drone": {
+    "sounds": [
+      {
+        "name": "arkofcosmos:brimstone_monster_drone",
+        "stream": true
+      }
+    ]
+  },
+  "calamitas_brother_hurt": {
+    "sounds": [
+      "arkofcosmos:calamitas_brother_hurt1",
+      "arkofcosmos:calamitas_brother_hurt2"
+    ]
+  },
+  "calamitas_brother_death": {
+    "sounds": [
+      "arkofcosmos:calamitas_brother_death1",
+      "arkofcosmos:calamitas_brother_death2"
+    ]
+  },
+  "calamitas_shield_hurt": {
+    "sounds": [
+      "arkofcosmos:calamitas_shield_hurt1",
+      "arkofcosmos:calamitas_shield_hurt2",
+      "arkofcosmos:calamitas_shield_hurt3"
+    ]
+  },
+  "calamitas_transition_burst": {
+    "sounds": [
+      "arkofcosmos:calamitas_transition_burst"
+    ]
+  },
+  "calamitas_cataclysm_spawn": {
+    "sounds": [
+      "arkofcosmos:calamitas_cataclysm_spawn"
+    ]
+  },
+  "calamitas_catastrophe_spawn": {
+    "sounds": [
+      "arkofcosmos:calamitas_catastrophe_spawn"
+    ]
+  },
+  "calamitas_brother_roar": {
+    "sounds": [
+      "arkofcosmos:calamitas_brother_roar"
+    ]
+  },
+  "calamitas_brother_charge": {
+    "sounds": [
+      "arkofcosmos:calamitas_brother_charge"
+    ]
+  },
+  "calamitas_brother_echo": {
+    "sounds": [
+      "arkofcosmos:calamitas_brother_echo"
+    ]
+  },
+  "calamitas_brother_finisher": {
+    "sounds": [
+      "arkofcosmos:calamitas_brother_finisher1",
+      "arkofcosmos:calamitas_brother_finisher2",
+      "arkofcosmos:calamitas_brother_finisher3"
+    ]
+  },
+  "calamitas_brother_resonance": {
+    "sounds": [
+      "arkofcosmos:calamitas_brother_resonance"
+    ]
+  },
+  "calamitas_brother_swing": {
+    "sounds": [
+      "arkofcosmos:calamitas_brother_swing"
+    ]
+  },
+  "calamitas_brother_dash": {
+    "sounds": [
+      "arkofcosmos:calamitas_brother_dash"
+    ]
+  },
+  "calamitas_brother_revive": {
+    "sounds": [
+      "arkofcosmos:calamitas_brother_revive"
+    ]
+  },
+  "calamitas_barrage_rumble": {
+    "sounds": [
+      {
+        "name": "arkofcosmos:calamitas_barrage_rumble",
+        "stream": true
+      }
+    ]
+  },
+  "calamitas_sepulcher_burst": {
+    "sounds": [
+      "arkofcosmos:calamitas_sepulcher_burst"
+    ]
+  },
+  "calamitas_sepulcher_death": {
+    "sounds": [
+      "arkofcosmos:calamitas_sepulcher_death"
+    ]
+  },
+  "calamitas_vortex_burn": {
+    "sounds": [
+      "arkofcosmos:calamitas_vortex_burn"
+    ]
+  },
+  "calamitas_seeker_death": {
+    "sounds": [
+      "arkofcosmos:calamitas_seeker_death0",
+      "arkofcosmos:calamitas_seeker_death1",
+      "arkofcosmos:calamitas_seeker_death2"
+    ]
+  },
+  "calamitas_heart_hurt": {
+    "sounds": [
+      "arkofcosmos:calamitas_heart_hurt"
+    ]
+  },
+  "calamitas_heart_death": {
+    "sounds": [
+      "arkofcosmos:calamitas_heart_death"
+    ]
+  },
+  "calamitas_flame": {
+    "sounds": [
+      "arkofcosmos:calamitas_flame"
+    ]
+  },
+  "calamitas_seeker_impact": {
+    "sounds": [
+      "arkofcosmos:calamitas_seeker_impact0",
+      "arkofcosmos:calamitas_seeker_impact1",
+      "arkofcosmos:calamitas_seeker_impact2"
+    ]
+  },
+  "calamitas_heart_cast": {
+    "sounds": [
+      "arkofcosmos:calamitas_heart_cast0",
+      "arkofcosmos:calamitas_heart_cast1",
+      "arkofcosmos:calamitas_heart_cast2"
+    ]
+  },
+  "calamitas_seeker_cast": {
+    "sounds": [
+      "arkofcosmos:calamitas_seeker_cast"
+    ]
+  },
+  "calamitas_vortex_warning": {
+    "sounds": [
+      "arkofcosmos:calamitas_vortex_warning"
+    ]
+  },
+  "calamitas_music_1": {
+    "sounds": [
+      {
+        "name": "arkofcosmos:music/calamitas_phase_1",
+        "stream": true
+      }
+    ]
+  },
+  "calamitas_music_2": {
+    "sounds": [
+      {
+        "name": "arkofcosmos:music/calamitas_phase_2",
+        "stream": true
+      }
+    ]
+  },
+  "calamitas_music_3": {
+    "sounds": [
+      {
+        "name": "arkofcosmos:music/calamitas_phase_3",
+        "stream": true
+      }
+    ]
+  },
+  "calamitas_acceptance": {
+    "sounds": [
+      {
+        "name": "arkofcosmos:music/calamitas_defeat_long_fade",
+        "stream": true
+      }
+    ]
+  },
+  "calamitas_music_4": {
+    "sounds": [
+      {
+        "name": "arkofcosmos:music/calamitas_defeat",
+        "stream": true
       }
     ]
   }

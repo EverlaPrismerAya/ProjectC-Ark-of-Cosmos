@@ -1,0 +1,15 @@
+{
+  "vertex": "arkofcosmos:calamitas_arena_metaball",
+  "fragment": "arkofcosmos:calamitas_arena_metaball",
+  "attributes": ["Position", "Color", "UV0"],
+  "samplers": [{"name": "Sampler0"}, {"name": "Sampler1"}, {"name": "Sampler2"}],
+  "uniforms": [
+    {"name": "uScreenSize", "type": "float", "count": 2, "values": [1, 1]},
+    {"name": "LayerSize", "type": "float", "count": 2, "values": [1, 1]},
+    {"name": "LayerOffset", "type": "float", "count": 2, "values": [0, 0]},
+    {"name": "SingleFrameScreenOffset", "type": "float", "count": 2, "values": [0, 0]},
+    {"name": "EdgeColor", "type": "float", "count": 4, "values": [1, 0, 0, 1]},
+    {"name": "LayerColor", "type": "float", "count": 4, "values": [1, 1, 1, 1]},
+    {"name": "WaveLayer", "type": "float", "count": 1, "values": [0]}
+  ]
+}

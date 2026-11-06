@@ -26,7 +26,7 @@ public final class OculusShaderCompat {
     private static final Matrix4f MODEL_VIEW = new Matrix4f(), PROJECTION = new Matrix4f();
     private static Object api;
     private static Method shaderPack, shadowPass;
-    private static boolean initialized, active, drawing, viewReady;
+    private static boolean initialized, active, drawing, viewReady, backgroundQueued;
 
     private OculusShaderCompat() {}
 
@@ -37,6 +37,7 @@ public final class OculusShaderCompat {
         if (event.phase != TickEvent.Phase.START) return;
         DEFERRED.clear();
         viewReady = false;
+        backgroundQueued = false;
         if (!initialized) {
             initialized = true;
             if (ModList.get().isLoaded("oculus")) {
@@ -66,8 +67,18 @@ public final class OculusShaderCompat {
     }
 
     /** Snapshot entity-local transforms before the dispatcher pops its mutable pose stack. */
-    public static boolean defer(Runnable draw) {
-        if (!active) return false;
+    public static boolean defer(Runnable draw) { return defer(draw, false); }
+
+    /** A retained-depth backdrop must precede particles even when Oculus has no shader pack. */
+    public static void deferBackground(Runnable draw) {
+        if (query(shadowPass)) return;
+        if (defer(draw, true)) backgroundQueued = true;
+        else draw.run();
+    }
+
+    /** Entity FX that must follow clouds/translucency also use the retained-depth pass without a pack. */
+    public static boolean defer(Runnable draw, boolean afterWorld) {
+        if (!active && !afterWorld) return false;
         if (query(shadowPass)) return true;
         if (drawing) return false;
         Matrix4f matrix = new Matrix4f(ArkFxDraw.matrix);
@@ -89,18 +100,17 @@ public final class OculusShaderCompat {
         Minecraft mc = Minecraft.getInstance();
         if (mc.level == null || active && query(shadowPass)) return;
         if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_PARTICLES) {
-            if (!active) {
+            if (!active && !backgroundQueued) {
                 ArkEffects.render(event.getPoseStack(), event.getCamera().getPosition(), event.getPartialTick());
-            } else {
-                // AFTER_LEVEL receives GameRenderer's projection pose, not this world pose.
-                WORLD_POSE.last().pose().set(event.getPoseStack().last().pose());
-                WORLD_POSE.last().normal().set(event.getPoseStack().last().normal());
-                MODEL_VIEW.set(RenderSystem.getModelViewMatrix());
-                PROJECTION.set(event.getProjectionMatrix());
-                viewReady = true;
             }
+            // AFTER_LEVEL receives GameRenderer's projection pose, not this world pose.
+            WORLD_POSE.last().pose().set(event.getPoseStack().last().pose());
+            WORLD_POSE.last().normal().set(event.getPoseStack().last().normal());
+            MODEL_VIEW.set(RenderSystem.getModelViewMatrix());
+            PROJECTION.set(event.getProjectionMatrix());
+            viewReady = true;
         }
-        if (!active || !viewReady || event.getStage() != RenderLevelStageEvent.Stage.AFTER_LEVEL) return;
+        if ((!active && DEFERRED.isEmpty()) || !viewReady || event.getStage() != RenderLevelStageEvent.Stage.AFTER_LEVEL) return;
         mc.getMainRenderTarget().bindWrite(true);
         var shader = RenderSystem.getShader();
         boolean depth = org.lwjgl.opengl.GL11.glIsEnabled(org.lwjgl.opengl.GL11.GL_DEPTH_TEST);
@@ -115,11 +125,16 @@ public final class OculusShaderCompat {
         drawing = true;
         try {
             for (Runnable draw : DEFERRED) draw.run();
-            ArkEffects.render(WORLD_POSE, event.getCamera().getPosition(), event.getPartialTick());
-            net.everla.projectc.arkofcosmos.client.OdamaneHaloEffects.compositeFromOculus(event.getPartialTick());
+            if (active || backgroundQueued) {
+                ArkEffects.render(WORLD_POSE, event.getCamera().getPosition(), event.getPartialTick());
+            }
+            if (active) {
+                net.everla.projectc.arkofcosmos.client.OdamaneHaloEffects.compositeFromOculus(event.getPartialTick());
+            }
         } finally {
             drawing = false;
             viewReady = false;
+            backgroundQueued = false;
             DEFERRED.clear();
             modelView.popPose();
             RenderSystem.applyModelViewMatrix();

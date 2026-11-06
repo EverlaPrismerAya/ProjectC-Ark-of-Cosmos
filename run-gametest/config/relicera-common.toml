@@ -1,0 +1,416 @@
+
+[sculk_fruit]
+	#Sculk Catalyst charge consumed per growth stage.
+	#Range: 1 ~ 1000000
+	experiencePerStage = 30
+
+[forgotten_thread]
+	#Chance for Forgotten Thread to be added to village chest loot. 0.04 = 4%.
+	#Range: 0.0 ~ 1.0
+	villageChestChance = 0.06
+	#Chance for Forgotten Thread to be added to ancient city chest loot. 0.03 = 3%.
+	#Range: 0.0 ~ 1.0
+	ancientCityChestChance = 0.03
+	#Chance for Forgotten Thread to be added to cat morning gifts. 0.20 = 20%.
+	#Range: 0.0 ~ 1.0
+	catGiftChance = 0.2
+
+[revival_nectar]
+	#Duration in ticks for Iluthia's Blessing granted by Revival Nectar. 400 ticks = 20 seconds.
+	#Range: 1 ~ 72000
+	iluthiasBlessingDuration = 400
+
+[iluthias_blessing]
+	#Maximum total absorption amount Iluthia's Blessing can accumulate. 60 = 30 absorption hearts. Existing absorption above this value is not reduced.
+	#Range: 0 ~ 1024
+	maxAbsorption = 60
+
+[ephemeral_bloom]
+	#Chance for Ephemeral Bloom to be added to sniffer digging loot during a new moon.
+	#Range: 0.0 ~ 1.0
+	snifferDiggingNewMoonChance = 0.17
+	#Chance for Ephemeral Bloom to be added to stronghold library chest loot.
+	#Range: 0.0 ~ 1.0
+	strongholdLibraryChestChance = 0.52
+	#Interval of absorption grants from placed Ephemeral Blooms and Pendants. 120 ticks = 6 seconds.
+	#Range: > 1
+	absorptionIntervalTicks = 120
+	#Maximum absorption from Ephemeral Blooms and Pendants.
+	#Range: 0 ~ 1024
+	maxAbsorption = 20
+
+[warrior_belt]
+	#Knockback resistance bonus. 0.10 = +10%
+	#Range: 0.0 ~ 1.0
+	knockbackResistance = 0.1
+	#Movement speed bonus. 0.10 = +10%.
+	#Range: 0.0 ~ 10.0
+	movementSpeedBonus = 0.1
+	#Vanilla critical hit bonus. 0.08 = 1.50 -> 1.58.
+	#Range: 0.0 ~ 10.0
+	criticalDamageBonus = 0.08
+
+[brute_belt]
+	#Maximum health bonus. 0.20 = +20%.
+	#Range: 0.0 ~ 10.0
+	maxHealthBonus = 0.2
+	#Base chance for Piglin Brutes to drop Belt of Brute. Wearing Brutal Plunder Badge adds 0.15.
+	#Range: 0.0 ~ 1.0
+	piglinBruteDropChance = 0.024
+
+[verdant_scale_belt]
+	#Armor toughness bonus.
+	#Range: 0.0 ~ 1024.0
+	armorToughness = 2.0
+
+[night_gloves]
+	#Melee attack damage bonus while Night Gloves are equipped at night. 0.20 = 20%.
+	#Range: 0.0 ~ 10.0
+	nightAttackDamageBonus = 0.2
+
+[treasure_hunters_gloves]
+	#Luck gained for each first-opened loot container. 0.05 = +0.05 Luck.
+	#Range: 0.0 ~ 1024.0
+	luckPerChest = 0.05
+	#Max items that can be removed before refresh.
+	#Range: > 0
+	maxItemsTakenBeforeRefresh = 2
+
+[thousandweight_gauntlets]
+	#Attack speed reduction. 0.60 = -60%.
+	#Range: 0.0 ~ 0.9
+	attackSpeedReduction = 0.6
+	#Wind burst launch height in blocks.
+	#Range: 0.0 ~ 64.0
+	windBurstLaunchHeight = 12.0
+
+[astral_storybook]
+	#Chance for Astral Storybook to be added to certain chest. 0.016 = 1.6%.
+	#Range: 0.0 ~ 1.0
+	advancedChestChance = 0.016
+
+[warfire_fragment]
+	#Chance for Warfire Fragment to drop when an iron golem is killed during a raid by a raider, Vex, or eligible medal wearer. 0.42 = 42%.
+	#Range: 0.0 ~ 1.0
+	ironGolemDropChance = 0.42
+	#Range in blocks for Allays holding a Warfire Fragment to grant Strength II and Resistance I.
+	#Range: 0.0 ~ 128.0
+	allayAuraRange = 24.0
+
+[rotten_tusk]
+	#Range in blocks for players holding a Rotten Tusk to repel ordinary Piglins.
+	#Range: 0.0 ~ 64.0
+	piglinRepelRange = 12.0
+
+[feysilver_ingot]
+	#Chance for Feysilver Ingot to be added to selected overworld chest loot. 0.067 = 6.7%.
+	#Range: 0.0 ~ 1.0
+	overworldChestChance = 0.067
+
+[feysilver_forging_art_volume_one]
+	#Blacklist of feysilver coating.
+	itemBlacklist = ["twilightforest:glass_sword"]
+
+[master_smiths_brooch]
+	#Armor toughness added per trimmed armor.
+	#Range: 0.0 ~ 20.0
+	armorToughnessPerTrimmedArmor = 2.0
+	#Damage reduction per armor with feysilver coating. 0.06 = -6%.
+	#Range: 0.0 ~ 1.0
+	damageReductionPerCoatedArmor = 0.06
+
+[two_handed_sword_brooch]
+	#Attack damage bonus while holding #minecraft:swords. 0.40 = +40%.
+	#Range: 0.0 ~ 10.0
+	swordDamageBonus = 0.4
+	#Attack speed penalty while holding #minecraft:swords. 0.20 = -20%.
+	#Range: 0.0 ~ 1.0
+	attackSpeedPenalty = 0.2
+	#Entity reach bonus.
+	#Range: 0.0 ~ 64.0
+	entityReachBonus = 1.0
+
+[vindicators_medal]
+	#Attack speed bonus while holding #minecraft:axes. 0.20 = +20%.
+	#Range: 0.0 ~ 10.0
+	axeAttackSpeedBonus = 0.2
+	#Chance for Vindicator's Medal to be added to Vindicator loot. 0.031 = 3.1%.
+	#Range: 0.0 ~ 1.0
+	vindicatorDropChance = 0.031
+	#Chance for Vindicator's Medal to be added to Pillager Outpost or Woodland Mansion chest. 0.16 = 16%.
+	#Range: 0.0 ~ 1.0
+	structureChestChance = 0.16
+
+[turncoats_medal]
+	#Damage bonus per level of Hero of the Village. 0.25 = +25% per level.
+	#Range: 0.0 ~ 10.0
+	heroDamageBonusPerLevel = 0.25
+	#Life steal per level of Bad Omen. 0.15 = 15% per level.
+	#Range: 0.0 ~ 10.0
+	badOmenLifeStealPerLevel = 0.15
+	#Ticks added to Hero of the Village and Bad Omen when consuming an Ominous Banner. 12000 ticks = 600 seconds.
+	#Range: > 0
+	bannerEffectExtensionTicks = 12000
+	#Base interval in ticks between extra patrol spawn attempts for each Turncoat's Medal wearer. 18000 ticks = 15 minutes. Set to 0 to disable extra patrols.
+	#Range: > 0
+	patrolAttemptIntervalTicks = 18000
+
+[stormscale]
+	#Chance for Stormscale to drop when an Elder Guardian dies during a thunderstorm. 0.28 = 28%.
+	#Range: 0.0 ~ 1.0
+	elderGuardianThunderstormDropChance = 0.28
+
+[rippleheart_pearl]
+	#Chance for Rippleheart Pearl to drop when an Axolotl grants its assist Regeneration to a player. 0.06 = 6%.
+	#Range: 0.0 ~ 1.0
+	axolotlAssistChance = 0.06
+	#Chance for Rippleheart Pearl to be added to warm ocean ruin archaeology loot. 0.15 = 15%.
+	#Range: 0.0 ~ 1.0
+	warmOceanRuinArchaeologyChance = 0.15
+
+[pastoral_melody]
+	#Range in blocks for Pastoral Melody to put nearby adult animals into love mode.
+	#Range: 0.0 ~ 128.0
+	animalRange = 36.0
+
+[extinguished_solar_furnace]
+	#Chance for Extinguished Solar Furnace to be added to bastion treasure chest loot. 0.37 = 37%.
+	#Range: 0.0 ~ 1.0
+	bastionTreasureChestChance = 0.37
+	#Chance for Extinguished Solar Furnace to be added to nether fortress chest loot. 0.055 = 5.5%.
+	#Range: 0.0 ~ 1.0
+	netherFortressChestChance = 0.055
+	#Chance for Extinguished Solar Furnace to be added to village weaponsmith chest loot. 0.031 = 3.1%.
+	#Range: 0.0 ~ 1.0
+	weaponsmithChestChance = 0.031
+
+[withered_life_chalice]
+	#Chance for Withered Life Chalice to be added to each woodland mansion chest. 10.8%.
+	#Range: 0.0 ~ 1.0
+	woodlandMansionChestChance = 0.108
+	#Chance for Withered Life Chalice to be added to each desert pyramid chest. 4.2%
+	#Range: 0.0 ~ 1.0
+	desertPyramidChestChance = 0.042
+	#Chance for Withered Life Chalice to be added to each jungle temple chest. 10%
+	#Range: 0.0 ~ 1.0
+	jungleTempleChestChance = 0.1
+	#Chance for Withered Life Chalice to be added to each dungeon chest. 1.6%
+	#Range: 0.0 ~ 1.0
+	simpleDungeonChestChance = 0.016
+
+[sirens_eye]
+	#Chance for Siren's Eye to be added to each ocean chest. 0.014 = 1.4%.
+	#Range: 0.0 ~ 1.0
+	chestChance = 0.014
+
+[dried_crown]
+	#Chance for Dried Crown to be added to shipwreck treasure chest loot. 0.05 = 5%.
+	#Range: 0.0 ~ 1.0
+	shipwreckTreasureChestChance = 0.05
+	#Chance for Dried Crown to be added to big and small underwater ruin chest loot. 0.04 = 4%.
+	#Range: 0.0 ~ 1.0
+	underwaterRuinChestChance = 0.04
+	#Chance for Dried Crown to be added to buried treasure chest loot. 0.08 = 8%.
+	#Range: 0.0 ~ 1.0
+	buriedTreasureChestChance = 0.08
+	#Chance for Dried Crown to be added to cold and warm ocean ruin archaeology loot. 0.024 = 2.4%.
+	#Range: 0.0 ~ 1.0
+	oceanRuinArchaeologyChance = 0.024
+
+[weathered_mountain_covenant]
+	#Chance per suspicious gravel loot in Trail Ruins. 0.039 = 3.9%.
+	#Range: 0.0 ~ 1.0
+	trailRuinsArchaeologyChance = 0.039
+	#Chance for Weathered Mountain Covenant to be added to Pillager Outpost chest. 0.032 = 3.2%.
+	#Range: 0.0 ~ 1.0
+	pillagerOutpostChestChance = 0.032
+	#Chance for Weathered Mountain Covenant to be added to mineshaft minecart or dungeon chest. 0.019 = 1.9%.
+	#Range: 0.0 ~ 1.0
+	mineshaftDungeonChestChance = 0.019
+
+[divine_severance_ring]
+	#Head drops for Ring of Judgment when the wearer kills a glowing configured undead entity. Format: entity_id|item_id
+	headDrops = ["minecraft:zombie|minecraft:zombie_head", "minecraft:zombie_villager|minecraft:zombie_head", "minecraft:drowned|minecraft:zombie_head", "minecraft:husk|minecraft:zombie_head", "minecraft:skeleton|minecraft:skeleton_skull", "minecraft:stray|minecraft:skeleton_skull", "minecraft:wither_skeleton|minecraft:wither_skeleton_skull"]
+
+[ashen_touch]
+	#Damage bonus for melee attacks against targets that were already burning before being hit while Ashen Touch is equipped. 4.0 = +400%.
+	#Range: 0.0 ~ 100.0
+	burningTargetDamageBonus = 4.0
+
+[rippleheart_rings]
+	#Maximum distance in blocks for a matching pair of Rippleheart Rings to remain active.
+	#Range: 0.0 ~ 256.0
+	activationRange = 32.0
+	#Duration in ticks of Resistance/Strength granted. 160 ticks = 8 seconds.
+	#Range: 1 ~ 72000
+	combatEffectDurationTicks = 160
+	#Damage bonus of Red Ring. 0.20 = +20%.
+	#Range: 0.0 ~ 100.0
+	redDamageBonus = 0.2
+	#Attack speed bonus of Red Ring. 0.20 = +20%.
+	#Range: 0.0 ~ 100.0
+	redAttackSpeedBonus = 0.2
+	#Damage reduction of Blue Ring. 0.20 = -20%.
+	#Range: 0.0 ~ 1.0
+	blueDamageReduction = 0.2
+	#Healing bonus of Blue Ring. 0.20 = +20%.
+	#Range: 0.0 ~ 100.0
+	blueHealingBonus = 0.2
+
+[immortal_soul_ring]
+	#Additional indirect magic damage. 0.20 = 20%.
+	#Range: 0.0 ~ 10.0
+	magicDamageRatio = 0.2
+	#Fraction of maximum health restored when killing a mob.
+	#Range: 0.0 ~ 1.0
+	killHealRatio = 0.1
+	#Melee combo points needed for one shield.
+	#Range: 1.0 ~ 1000000.0
+	comboThreshold = 300.0
+	#Maximum gap between melee hits before combo points reset. 60 ticks = 3 seconds.
+	#Range: 1 ~ 72000
+	comboTimeoutTicks = 60
+	#Maximum shields gain from combo.
+	#Range: 0 ~ 64
+	maxShields = 3
+
+[little_tailors_belt]
+	#Range in blocks in which humanoids afraid the wearer, or witness a failed one-hit.
+	#Range: 0.0 ~ 128.0
+	reactionRange = 16.0
+	#Entity types auto killed within 4 blocks.
+	instantKillEntityTypes = ["alexsmobs:fly", "alexsmobs:crimson_mosquito"]
+
+[strider_spurs]
+	#Movement speed bonus for ridden Striders while the rider has Strider Spurs equipped and holds a Warped Fungus on a Stick. 1.5 = +150%.
+	#Range: 0.0 ~ 10.0
+	speedBonus = 1.5
+
+[brutal_plunder_badge]
+	#Looting level bonus while Brutal Plunder Badge is equipped.
+	#Range: 0 ~ 32
+	lootingBonus = 2
+	#Damage bonus per effective Looting level while Brutal Plunder Badge is equipped. 0.06D = 6%.
+	#Range: 0.0 ~ 10.0
+	damageBonusPerLootingLevel = 0.06
+	#Maximum total damage bonus from Brutal Plunder Badge. 6.0 = +600%, for up to 7x total damage.
+	#Range: 0.0 ~ 100.0
+	maxDamageBonus = 6.0
+
+[warp_crystal]
+	#Chance to dodge an eligible attack while Warp Crystal is equipped. 0.08 = 8%.
+	#Range: 0.0 ~ 1.0
+	dodgeChance = 0.08
+
+[covenant_tablet]
+	#Damage threshold for first task.
+	#Range: 0.0 ~ 1000000.0
+	damageTaskThreshold = 100.0
+	#Mining speed bonus for second task. 0.20 = +20%.
+	#Range: 0.0 ~ 10.0
+	miningSpeedBonus = 0.2
+	#Villager discount for third task. 0.15 = -15%.
+	#Range: 0.0 ~ 1.0
+	villagerTradeDiscount = 0.15
+
+[curative_talisman]
+	#Number of harmful effects per Regeneration level.
+	#Range: 1 ~ 1024
+	effectsPerRegenerationLevel = 2
+	#Number of harmful effects required to transform (while the wearer is burning).
+	#Range: 1 ~ 1024
+	transformationThreshold = 8
+	#Resistance duration in ticks.
+	#Range: 1 ~ 1000000
+	resistanceDurationTicks = 1200
+	#Number of harmful effects removal per Resistance upgrade.
+	#Range: 1 ~ 1024
+	removalsPerResistanceLevel = 2
+
+[sufferers_exultation]
+	#Healing multiplier for nearby poison/wither damage. For example, 1.5 = heal 1 * 1.5 when nearby poison/wither deal 1 damage.
+	#Range: 0.0 ~ 100.0
+	healingMultiplier = 1.0
+	#Damage bonus per harmful effect.
+	#Range: 0.0 ~ 10.0
+	damageBonusPerEffect = 0.18
+	#Vanilla critical hit bonus per harmful effect.
+	#Range: 0.0 ~ 10.0
+	criticalBonusPerEffect = 0.15
+	#Damage taken bonus per harmful effect.
+	#Range: 0.0 ~ 10.0
+	damageTakenPerEffect = 0.12
+
+[granbells_furnace]
+	#Attack damage attribute bonus while Granbell's Furnace is equipped.
+	#Range: 0.0 ~ 1024.0
+	damageBonus = 4.0
+	#If true, smithing templates are restored when players wearing Granbell's Furnace take a smithing table result.
+	preserveSmithingTemplates = true
+	#If true, players wearing Granbell's Furnace keep their inventory and curios when they die while in fire or lava.
+	keepInventoryInFireOrLava = true
+
+[iluthias_chalice]
+	#Damage bonus dealt to undead creatures while Iluthia's Chalice is equipped. 0.30 = +30%.
+	#Range: 0.0 ~ 10.0
+	undeadDamageBonus = 0.3
+	#Damage reduction against damage from undead creatures while Iluthia's Chalice is equipped. 0.30 = -30%.
+	#Range: 0.0 ~ 1.0
+	undeadDamageReduction = 0.3
+	#Duration in ticks for Iluthia's Blessing granted by Totems of Undying. 100 ticks = 5 seconds.
+	#Range: 1 ~ 72000
+	enhancedTotemIluthiasBlessingDuration = 100
+
+[nereias_crown]
+	#Damage reduction while Nereia's Crown is active in water or exposed rain. 0.40 = -40%.
+	#Range: 0.0 ~ 1.0
+	activeDamageReduction = 0.4
+	#Range in blocks for Nereia's Crown to count nearby aquatic creatures for its attribute aura.
+	#Range: 0.0 ~ 128.0
+	aquaticAuraRange = 24.0
+	#Share of nearby aquatic creatures' total attack damage added to the wearer. 0.30 = 30%.
+	#Range: 0.0 ~ 10.0
+	aquaticAttackDamageShare = 0.3
+	#Share of nearby aquatic creatures' total max health added as armor to the wearer. 0.10 = 10%.
+	#Range: 0.0 ~ 10.0
+	aquaticMaxHealthArmorShare = 0.1
+
+[baroms_covenant_stone]
+	#Volume multiplier for silverfish covenant, if mob volume < volumeMultiplier * wearer volume, the damage is ignored.
+	#Range: 0.0 ~ 1024.0
+	volumeMultiplier = 1.0
+	#Chance to gain 1 hunger after melee attack with the Husk covenant. 0.15 = 15%.
+	#Range: 0.0 ~ 1.0
+	huskHungerChance = 0.15
+	#Chance to preserve a potion with the Witch covenant. 0.50 = 50%.
+	#Range: 0.0 ~ 1.0
+	witchPotionPreservationChance = 0.5
+
+[dreamcatcher_box]
+	#Range in blocks for Dreamcatcher Boxes to react to nearby sleeping players and villagers.
+	#Range: 0.0 ~ 64.0
+	sleepRange = 8.0
+
+[tempest_sprint]
+	#Movement speed bonus for vanilla Horses under Tempest Sprint. 0.40 = +40%.
+	#Range: 0.0 ~ 10.0
+	speedBonus = 0.4
+	#Damage reduction for vanilla Horses under Tempest Sprint. 0.60 = -60%.
+	#Range: 0.0 ~ 1.0
+	damageReduction = 0.6
+	#Base knockback to hostile mobs when colliding.
+	#Range: 0.0 ~ 64.0
+	collisionKnockback = 2.0
+	#Base damage to hostile mobs when colliding.
+	#Range: 0.0 ~ 1024.0
+	collisionDamage = 8.0
+	#Range of full jump shockwave.
+	#Range: 0.0 ~ 64.0
+	fullJumpShockwaveRange = 12.0
+	#Damage applied when full jump under Tempest Sprint.
+	#Range: 0.0 ~ 1024.0
+	fullJumpShockwaveDamage = 18.0
+	#Knockback applied when full jump under Tempest Sprint.
+	#Range: 0.0 ~ 64.0
+	fullJumpShockwaveKnockback = 2.5
+

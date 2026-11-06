@@ -128,6 +128,7 @@ public final class ArkOfCosmos {
         context.registerConfig(net.minecraftforge.fml.config.ModConfig.Type.CLIENT,ProjectCClientConfig.SPEC,"projectc-client.toml");
         context.registerConfig(net.minecraftforge.fml.config.ModConfig.Type.COMMON,ProjectCCommonConfig.SPEC,"projectc-common.toml");
         IEventBus bus = context.getModEventBus();
+        CalamitasContent.register(bus);
         net.everla.projectc.arkofcosmos.combat.vanilla.VanillaCombat.register(bus);
         ITEMS.register(bus);
         ATTRIBUTES.register(bus);
@@ -163,5 +164,6 @@ public final class ArkOfCosmos {
         if (event.getTabKey() == CreativeModeTabs.INGREDIENTS) event.accept(ANNIHILATION_EMBER);
         if (event.getTabKey() == CreativeModeTabs.INGREDIENTS) event.accept(ASHES_OF_CALAMITY);
         if (event.getTabKey() == CreativeModeTabs.SPAWN_EGGS) event.accept(THE_PLAYER_SPAWN_EGG);
+        if (event.getTabKey() == CreativeModeTabs.SPAWN_EGGS && CalamitasContent.ENABLED) event.accept(CalamitasContent.SPAWN_EGG);
     }
 }

@@ -14,6 +14,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(value = LivingEntity.class, remap = false)
 abstract class LivingEntityMixin {
+    @Inject(method={"die","m_6667_"},at=@At("HEAD"),cancellable=true)
+    private void ark$calamitasDeath(DamageSource source,CallbackInfo ci){
+        if((Object)this instanceof net.everla.projectc.arkofcosmos.entity.SupremeCalamitasEntity boss&&boss.protectingCombat())ci.cancel();
+    }
     @Inject(method={"onSyncedDataUpdated","m_7350_"},at=@At("HEAD"))
     private void ark$healingData(net.minecraft.network.syncher.EntityDataAccessor<?> key,CallbackInfo ci){
         net.everla.projectc.arkofcosmos.combat.BossHealingLock.synced((LivingEntity)(Object)this,key);
@@ -23,8 +27,7 @@ abstract class LivingEntityMixin {
             org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable<Boolean> cir){
         LivingEntity target=(LivingEntity)(Object)this;
           if(target instanceof net.everla.projectc.arkofcosmos.entity.FourthCalamityEntity)return;
-        if((source.getEntity() instanceof net.everla.projectc.arkofcosmos.entity.MahouTsukaiEntity
-                ||net.everla.projectc.arkofcosmos.combat.CalamityAttackGuard.damageOwner(source)!=null)
+        if(net.everla.projectc.arkofcosmos.combat.BossDamage.owns(source)
                 &&!net.everla.projectc.arkofcosmos.combat.WeaponDamage.handling(target,source)){
             cir.setReturnValue(net.everla.projectc.arkofcosmos.combat.BossDamage.hurt(target,source,amount));return;
         }
@@ -53,6 +56,7 @@ abstract class LivingEntityMixin {
     private void ark$save(CompoundTag tag, CallbackInfo ci) {
         float health = ArkDamage.health(this);
         if (health >= 0) tag.putFloat("ArkHealth", health);
+        net.everla.projectc.arkofcosmos.calamity.CalamitasHexEffect.filterPlayerSave((LivingEntity)(Object)this, tag);
     }
 
     @Inject(method = {"readAdditionalSaveData", "m_7378_"}, at = @At("TAIL"))

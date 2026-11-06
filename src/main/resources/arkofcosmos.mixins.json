@@ -8,6 +8,8 @@
   "mixins": [
     "entity.combat.MistilteinnHurtSoundMixin",
     "world.SweetBerryBushMixin",
+    "entity.calamitas.CalamitasHitboxQueryMixin",
+    "entity.calamitas.CalamitasArenaCollisionMixin",
     "entity.domain.DomainCollisionMixin",
     "command.KillCommandMixin",
     "entity.combat.LivingEntityMixin",
@@ -34,6 +36,7 @@
     "world.CalamitySkullDropsMixin"
   ],
   "client": [
+    "client.calamitas.CalamitasDronePitchMixin",
     "client.gui.GoetyBossBarMixin",
     "client.gui.BossBarProgressAccessor",
     "client.biomeBlade.BiomeItemRendererMixin",

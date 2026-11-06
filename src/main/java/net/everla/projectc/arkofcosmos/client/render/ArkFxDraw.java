@@ -23,7 +23,8 @@ public final class ArkFxDraw {
     public static final VertexFormat FORMAT = new VertexFormat(ImmutableMap.of("Position", DefaultVertexFormat.ELEMENT_POSITION,
             "Color", DefaultVertexFormat.ELEMENT_COLOR, "UV0", UV3));
     public static ShaderInstance fracturedShader;
-    public static ShaderInstance spriteShader, trailShader, tintShader, moonShader, forcefieldShader, jujutsuShader;
+    public static ShaderInstance arenaMetaballShader;
+    public static ShaderInstance spriteShader, trailShader, tintShader, moonShader, forcefieldShader, jujutsuShader, primitiveShader, whiteSpriteShader, hellBallShader;
     /** Immutable per-draw BasicTint parameters, also captured by deferred Oculus draws. */
     public record Tint(float red, float green, float blue, float opacity) {}
     public static final Map<String, int[]> sizes = new HashMap<>();
@@ -57,6 +58,10 @@ public final class ArkFxDraw {
 
     public static void register(RegisterShadersEvent event) throws IOException {
         event.registerShader(shader(event,"fx_sprite"), shader -> spriteShader = shader);
+        event.registerShader(shader(event,"fx_primitive"), shader -> primitiveShader = shader);
+        event.registerShader(shader(event,"fx_white_sprite"), shader -> whiteSpriteShader = shader);
+        event.registerShader(shader(event,"calamitas_hell_ball"), shader -> hellBallShader = shader);
+        event.registerShader(shader(event,"calamitas_arena_metaball"), shader -> arenaMetaballShader = shader);
         event.registerShader(shader(event,"fractured_sprite"), shader -> fracturedShader = shader);
         event.registerShader(shader(event,"fx_trail"), shader -> trailShader = shader);
         event.registerShader(shader(event,"galaxia_tint"), shader -> tintShader = shader);
@@ -165,6 +170,7 @@ public final class ArkFxDraw {
             RenderSystem.setShaderTexture(1,texture("supreme_noise"));
             float[] color=phase==1?new float[]{.35f,.65f,1}:phase==2?new float[]{.06f,.07f,.09f}:new float[]{.05f,.85f,.8f};
             float[] edge=phase==1?new float[]{.45f,.75f,1}:phase==2?new float[]{.24f,.26f,.3f}:new float[]{.4f,1,1};
+            forcefieldShader.safeGetUniform("uSupremeSource").set(0f);
             forcefieldShader.safeGetUniform("uColor").set(color[0],color[1],color[2]);
             forcefieldShader.safeGetUniform("uSecondaryColor").set(edge[0],edge[1],edge[2]);
             forcefieldShader.safeGetUniform("uHealthRatio").set(healthRatio);

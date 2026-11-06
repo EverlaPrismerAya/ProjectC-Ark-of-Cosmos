@@ -39,14 +39,21 @@ public final class FourthCalamityBossBar {
         }
     }
     private static final Map<UUID,State> BARS=new HashMap<>();
+    private static final Set<UUID> CALAMITAS=new HashSet<>();
     private FourthCalamityBossBar() {}
     public static void update(UUID id,int phase,int bars) {
+        if(phase==4)CALAMITAS.add(id);else CALAMITAS.remove(id);
         if(phase==0)BARS.remove(id);else BARS.computeIfAbsent(id,key->new State(bars)).setBars(bars);
     }
-    @SubscribeEvent public static void logout(ClientPlayerNetworkEvent.LoggingOut event) { BARS.clear();net.everla.projectc.arkofcosmos.ProjectCCommonConfig.disconnected();ApollyonBossBar.clear();net.everla.projectc.arkofcosmos.combat.BerryTrip.clearClient(); }
+    @SubscribeEvent public static void logout(ClientPlayerNetworkEvent.LoggingOut event) { BARS.clear();CALAMITAS.clear();net.everla.projectc.arkofcosmos.ProjectCCommonConfig.disconnected();ApollyonBossBar.clear();net.everla.projectc.arkofcosmos.combat.BerryTrip.clearClient(); }
     @SubscribeEvent public static void render(CustomizeGuiOverlayEvent.BossEventProgress event) {
         State state=BARS.get(event.getBossEvent().getId());if(state==null)return;
         float progress=((BossBarProgressAccessor)event.getBossEvent()).arkofcosmos$targetProgress();
+        if (CALAMITAS.contains(event.getBossEvent().getId())) {
+            draw(event,state,progress,event.getBossEvent().getProgress(),1,"Lv.4444",
+                    Component.translatable("boss.arkofcosmos.calamitas.name"),Component.translatable("boss.arkofcosmos.calamitas.title"));
+            return;
+        }
         draw(event,state,progress,event.getBossEvent().getProgress(),net.everla.projectc.arkofcosmos.ProjectCCommonConfig.bars(),"Lv.19",
             Component.translatable("boss.arkofcosmos.the_player.name"),Component.translatable("boss.arkofcosmos.the_player.title"));
     }
