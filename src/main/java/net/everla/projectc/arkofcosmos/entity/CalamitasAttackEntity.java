@@ -30,6 +30,9 @@ public final class CalamitasAttackEntity extends Entity {
     private Vec3 velocity = Vec3.ZERO, planeX = new Vec3(1, 0, 0);
     private int age, remaining, variant = 2, still = 90;
     private long spawnedAt;
+    private boolean splitChild;
+    private long arenaFade = -1;
+    private float arenaFadeOpacity;
     private boolean witchAttack;
     private long witchSession;
     private long witchFade = -1;
@@ -59,7 +62,8 @@ public final class CalamitasAttackEntity extends Entity {
         if(boss instanceof BrimstoneWitchEntity witch)entity.witchSession=witch.combatSession();
         if(entity.witchAttack) CalamitasBattleData.get((ServerLevel)boss.level()).begin(entity.owner);
         if (boss instanceof Mob mob && mob.getTarget() != null) entity.target = mob.getTarget().getUUID();
-        entity.setPos(position); entity.velocity = velocity; entity.planeX = planeX;
+        entity.setPos(position);
+        entity.velocity = velocity; entity.planeX = planeX;
         entity.pixels = pixels; entity.damage = damage; entity.dartDamage = dartDamage;
         entity.movement = ProjectCCommonConfig.calamitasValue("movement_multiplier");
         entity.soulPhase = entity.getId() * 1.1;
@@ -109,7 +113,10 @@ public final class CalamitasAttackEntity extends Entity {
                 return;
             }
         }
-        simulate(level() instanceof ServerLevel server && CalamitasSimulation.managed(server, owner) ? 0 : 3);
+        // Resolve command-spawn ownership before choosing the clock. Otherwise the
+        // first native tick and the level scheduler can both advance three frames.
+        if (owner == null) simulate(0);
+        if (!isRemoved()) simulate(level() instanceof ServerLevel server && CalamitasSimulation.managed(server, owner) ? 0 : 3);
     }
     void sourceStep() { simulate(1); }
     private void simulate(int frames) {
@@ -141,7 +148,8 @@ public final class CalamitasAttackEntity extends Entity {
                 } finally { brotherSamples = null; }
             }
         }
-        if (!isRemoved()) publish();
+        // Managed one-frame calls are published together after all three frames.
+        if (frames > 1 && !isRemoved()) publish();
     }
     private int updatesPerFrame() {
         return switch (kind) {
@@ -171,14 +179,26 @@ public final class CalamitasAttackEntity extends Entity {
         return null;
     }
 
-    private boolean outsideArena(LivingEntity boss, Vec3 position) {
-        if (level().getGameTime() - spawnedAt <= 40 || !(boss instanceof SupremeCalamitasEntity calamitas)) return false;
+    private boolean arenaBoundary(LivingEntity boss, Vec3 next) {
+        if (!(boss instanceof SupremeCalamitasEntity calamitas)) return false;
         var bounds = calamitas.arenaBounds();
-        return bounds != null && !bounds.contains(position);
+        if (bounds == null) return false;
+        int action = net.everla.projectc.arkofcosmos.calamity.SupremeCalamitasArena.projectileBoundary(
+                bounds, position(), next, collisionRadius(), pixels, terminalStraight(), splitChild,
+                level().getGameTime() - spawnedAt);
+        if (action == 2) { discardAttack(); return true; }
+        if (arenaFade < 0 && action == 1) {
+            arenaFade = level().getGameTime(); arenaFadeOpacity = opacity; suppressSplit = true;
+        }
+        if (arenaFade < 0) return false;
+        opacity = arenaFadeOpacity * Math.max(0, 1 - (level().getGameTime() - arenaFade) / 5f);
+        setPos(next);
+        if (level().getGameTime() - arenaFade >= 5) discardAttack();
+        return true;
     }
     private void step(LivingEntity boss) {
         if(witchAttack && (witchFade>=0 || distanceToSqr(boss)>4096)) { fadeWitch(); return; }
-        if (outsideArena(boss, position())) { discardAttack(); return; }
+        if (arenaFade >= 0 && arenaBoundary(boss, position().add(velocity))) return;
         if (age == 0 && (kind == Kind.HELLBLAST || kind == Kind.FIREBLAST || kind == Kind.GIGABLAST)) flameSound();
         if (kind == Kind.MAELSTROM && age == 0) CalamitasContent.sound(this, "vortex_spawn");
         LivingEntity targetEntity = target(boss);
@@ -219,7 +239,7 @@ public final class CalamitasAttackEntity extends Entity {
         Vec3 previous = position();
         Vec3 next = previous.add(velocity);
         if(witchAttack && next.distanceToSqr(boss.position())>4096) { fadeWitch(); return; }
-        if (outsideArena(boss, next)) { discardAttack(); return; }
+        if (arenaBoundary(boss, next)) return;
         boolean canHit = kind == Kind.FIST ? opacity >= 1 || variant >= 3
                 : kind == Kind.SLASH ? opacity >= 1 && variant < 4 || slashExplode && variant >= 4 : opacity >= 1;
         if (canHit && damage > 0) collide(boss, previous, next);
@@ -381,8 +401,17 @@ public final class CalamitasAttackEntity extends Entity {
     }
 
     private double distanceSource(Vec3 other) { return position().distanceTo(other) * pixels; }
-    private void collide(LivingEntity boss, Vec3 from, Vec3 to) {
-        double radius = switch (kind) {
+    private boolean terminalStraight() {
+        return switch (kind) {
+            case HELLBLAST, HELLBLAST_BARRAGE, DART -> true;
+            case FIST -> variant < 3;
+            case SLASH -> variant < 4;
+            // Waves/souls change direction; fireballs, fist orbs and slash carriers emit attacks.
+            default -> false;
+        };
+    }
+    private double collisionRadius() {
+        return switch (kind) {
             case MAELSTROM -> 170 * scale * opacity / pixels;
             case DART -> 10 * scale / pixels;
             case FIREBLAST -> 18 / pixels;
@@ -391,7 +420,18 @@ public final class CalamitasAttackEntity extends Entity {
             case SLASH -> (hand == 5 ? 70 : variant >= 4 ? 100 : 43) / pixels;
             default -> 20 / pixels;
         };
+    }
+    private void collide(LivingEntity boss, Vec3 from, Vec3 to) {
+        double radius = collisionRadius();
         AABB sweep = new AABB(from, to).inflate(radius);
+        // Fireball impacts produce children: retain those collision events outside as well.
+        if (kind != Kind.FIREBLAST && kind != Kind.GIGABLAST
+                && boss instanceof SupremeCalamitasEntity calamitas) {
+            var bounds = calamitas.arenaBounds();
+            if (bounds != null && (sweep.maxX < bounds.minX || sweep.minX > bounds.maxX
+                    || sweep.maxY < bounds.minY || sweep.minY > bounds.maxY
+                    || sweep.maxZ < bounds.minZ || sweep.minZ > bounds.maxZ)) return;
+        }
         for (LivingEntity victim : level().getEntitiesOfClass(LivingEntity.class, sweep,
                 e -> (!witchAttack || e.getUUID().equals(target)) && e != boss && e.isAlive() && !boss.isAlliedTo(e) && !ownedAlly(e)
                     && (!(e instanceof Player p) || !p.isCreative() && !p.isSpectator()))) {
@@ -456,7 +496,9 @@ public final class CalamitasAttackEntity extends Entity {
             Vec3 direction = net.everla.projectc.arkofcosmos.calamity.CalamitasSpace.direction(random);
             var child=spawn(boss, Kind.DART, position(), direction.scale(speed), planeX, pixels, dartDamage,
                     dartDamage, speed * 1.5, variant);
-            if(witchAttack) { child.target=target; child.publish(); }
+            child.splitChild = true;
+            if(witchAttack) child.target=target;
+            child.publish();
         }
         if (variant == 2) flameParticles(boss, kind == Kind.FIREBLAST ? 2 : 3);
     }
@@ -479,7 +521,7 @@ public final class CalamitasAttackEntity extends Entity {
                 && owner != null && level() instanceof ServerLevel server && CalamitasBattleData.get(server).active(owner)) return;
         super.remove(reason);
     }
-    private void publish() {
+    void publish() {
         var tag = new CompoundTag();
         addAdditionalSaveData(tag); entityData.set(VIEW, tag);
     }
@@ -488,6 +530,8 @@ public final class CalamitasAttackEntity extends Entity {
         if (target != null) tag.putUUID("Target", target);
         tag.putLong("WitchSession",witchSession);tag.putBoolean("WitchAttack",witchAttack); tag.putLong("WitchFade",witchFade); tag.putFloat("WitchFadeOpacity",witchFadeOpacity);
         tag.putLong("SpawnedAt", spawnedAt);
+        tag.putBoolean("SplitChild", splitChild); tag.putLong("ArenaFade", arenaFade);
+        tag.putFloat("ArenaFadeOpacity", arenaFadeOpacity);
         tag.putString("Kind", kind.name()); tag.putInt("Age", age); tag.putInt("Remaining", remaining);
         tag.putInt("Variant", variant); tag.putDouble("Pixels", pixels);
         tag.putDouble("Movement", movement);
@@ -504,6 +548,8 @@ public final class CalamitasAttackEntity extends Entity {
     }
     @Override protected void readAdditionalSaveData(CompoundTag tag) {
         invalidSave = false;
+        splitChild = tag.getBoolean("SplitChild"); arenaFade = tag.contains("ArenaFade") ? tag.getLong("ArenaFade") : -1;
+        arenaFadeOpacity = tag.getFloat("ArenaFadeOpacity");
         witchSession=tag.getLong("WitchSession");witchAttack=tag.getBoolean("WitchAttack"); witchFade=tag.contains("WitchFade")?tag.getLong("WitchFade"):-1; witchFadeOpacity=tag.getFloat("WitchFadeOpacity");
         owner = tag.hasUUID("Owner") ? tag.getUUID("Owner") : null;
         target = tag.hasUUID("Target") ? tag.getUUID("Target") : null;

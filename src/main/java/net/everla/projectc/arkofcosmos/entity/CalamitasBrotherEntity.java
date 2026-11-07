@@ -98,6 +98,8 @@ public final class CalamitasBrotherEntity extends Monster {
     }
     @Override public void tick() {
         setDeltaMovement(Vec3.ZERO); super.tick();
+        if (owner == null) simulate(0);
+        if (isRemoved()) return;
         simulate(level() instanceof ServerLevel server && CalamitasSimulation.managed(server, owner) ? 0 : 3);
     }
     void sourceStep() { simulate(1); }
@@ -135,9 +137,9 @@ public final class CalamitasBrotherEntity extends Monster {
             setYRot((float)Math.toDegrees(Math.atan2(-aim.x, aim.z))); yBodyRot = getYRot(); yHeadRot = getYRot();
             journal.updateBrotherHealth(owner, getUUID(), getHealth() / getMaxHealth());
         }
-        publish();
+        if (frames > 1) publish();
     }
-    private void publish() {
+    void publish() {
         var tag = new CompoundTag(); tag.putString("Kind", kind.name()); tag.putInt("SourceAge", sourceAge);
         if (owner != null) tag.putUUID("Owner", owner);
         tag.putDouble("Pixels", pixels); tag.put("Combat", combat.save()); entityData.set(VIEW, tag);

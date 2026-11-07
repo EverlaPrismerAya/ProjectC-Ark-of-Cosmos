@@ -185,6 +185,7 @@ public final class SupremeCalamitasEntity extends Monster implements net.everla.
                     e -> e instanceof Player p && validTarget(p));
             if (nearest != null || !validTarget(getTarget())) setTarget(nearest);
         }
+        if (frames == 0) return;
         Random frameRandom = new Random(random.nextLong());
         for (int frame = 0; frame < frames && !finished; frame++) {
             if (!validTarget(getTarget())) {
@@ -299,7 +300,6 @@ public final class SupremeCalamitasEntity extends Monster implements net.everla.
                 CalamitasContent.sound(this, "transition_burst", getBoundingBox().getCenter(), 1.2f, 1);
         }
         bossBar.setProgress(Math.max(0, Math.min(1, getHealth() / getMaxHealth())));
-        publish();
     }
     void sendCastSparks() {
         if (castSparks.isEmpty()) return;
@@ -529,7 +529,7 @@ public final class SupremeCalamitasEntity extends Monster implements net.everla.
         tag.putString("Phase", s.phase().name()); tag.putInt("Round", s.round()); tag.putInt("Frame", s.phaseFrame()); tag.putInt("Hearts", s.heartSummons());
         tag.putBoolean("Brothers", s.brothersSummoned()); tag.putBoolean("Seekers", s.seekersSummoned()); tag.putBoolean("Second", s.secondStage()); tag.putInt("Despair", s.despair()); return tag;
     }
-    private void publish() {
+    void publish() {
         if (arena == null || !(level() instanceof ServerLevel server)) return;
         var tag = encounterTag(); tag.putInt("SourceAge", sourceAge); tag.put("Arena", arena.save()); tag.put("Combat", combat.save()); tag.put("Shield", shield.save()); tag.put("Animation", animation.save());
         tag.putBoolean("Invulnerable", damageProtected());

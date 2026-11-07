@@ -198,6 +198,7 @@ repositories {
 }
 
 dependencies {
+    runtimeOnly fg.deobf('maven.modrinth:spark:4FXHDE9F') // Forge 1.20.1 profiling; development runtime only.
     runtimeOnly fg.deobf('maven.modrinth:relicera:uUTChve3') // 1.2.5; combat Mixin compatibility coverage.
     runtimeOnly fg.deobf('maven.modrinth:endinglibrary:c92g58AC') // 2.2.3; required by RevelationFix.
     compileOnly 'io.github.llamalad7:mixinextras-common:0.5.0'

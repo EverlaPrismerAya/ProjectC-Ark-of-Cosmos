@@ -3,6 +3,7 @@ package net.everla.projectc.arkofcosmos.entity;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.LinkedHashSet;
 import java.util.UUID;
 import net.everla.projectc.arkofcosmos.ArkOfCosmos;
 import net.minecraft.server.level.ServerLevel;
@@ -44,11 +45,14 @@ public final class CalamitasSimulation {
         for (Entity entity : level.getAllEntities())
             if (entity instanceof SupremeCalamitasEntity boss && boss.isAlive() && !boss.isRemoved()) bosses.add(boss);
         bosses.sort(Comparator.comparingInt(Entity::getId));
+        var updated = new LinkedHashSet<Entity>();
         for (int frame = 0; frame < 3; frame++) {
             var active = new ArrayList<SupremeCalamitasEntity>();
-            for (var boss : bosses)
-                if (!boss.isRemoved() && boss.isAlive() && boss.sourceStep()
-                        && CalamitasBattleData.get(level).active(boss.getUUID())) active.add(boss);
+            for (var boss : bosses) if (!boss.isRemoved() && boss.isAlive()) {
+                boolean advanced = boss.sourceStep();
+                updated.add(boss);
+                if (advanced && CalamitasBattleData.get(level).active(boss.getUUID())) active.add(boss);
+            }
             for (var boss : active) {
                 var members = members(level, boss.getUUID(), false);
                 // The head alone advances all worm body/arm poses. Members created
@@ -57,6 +61,7 @@ public final class CalamitasSimulation {
                     if (entity instanceof CalamitasBrotherEntity brother) brother.sourceStep();
                     else if (entity instanceof CalamitasMinionEntity minion) minion.sourceStep(frame);
                     else if (entity instanceof CalamitasSepulcherEntity worm) worm.sourceStep(frame);
+                    updated.add(entity);
                 }
             }
             for (var boss : active) {
@@ -68,10 +73,27 @@ public final class CalamitasSimulation {
                 try {
                     while (!queue.isEmpty()) {
                         var attack = queue.removeFirst();
-                        if (!attack.isRemoved()) attack.sourceStep();
+                        if (!attack.isRemoved()) {
+                            attack.sourceStep();
+                            updated.add(attack);
+                        }
                     }
                 } finally { PROJECTILES.remove(); }
             }
+        }
+        // Keep simulation, collision and child-spawn order at 60 Hz, but build
+        // only the final 20 Hz metadata snapshot. Spawn snapshots stay immediate.
+        // A head can create and pose its segments after this frame's NPC snapshot.
+        for (var boss : bosses) for (var id : CalamitasBattleData.get(level).members(boss.getUUID(), false)) {
+            Entity entity = level.getEntity(id);
+            if (entity != null) updated.add(entity);
+        }
+        for (var entity : updated) if (!entity.isRemoved()) {
+            if (entity instanceof CalamitasAttackEntity attack) attack.publish();
+            else if (entity instanceof SupremeCalamitasEntity boss) boss.publish();
+            else if (entity instanceof CalamitasBrotherEntity brother) brother.publish();
+            else if (entity instanceof CalamitasMinionEntity minion) minion.publish();
+            else if (entity instanceof CalamitasSepulcherEntity worm) worm.publish();
         }
         for (var boss : bosses) if (!boss.isRemoved()) boss.sendCastSparks();
         net.everla.projectc.arkofcosmos.combat.CalamitasArenaBoundary.syncCarried(level);

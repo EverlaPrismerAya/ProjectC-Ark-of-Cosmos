@@ -11,6 +11,21 @@ public final class CalamitasArenaCheck {
         require(Math.abs(actual - expected) < 1e-8, message + ": " + actual + " != " + expected);
     }
     public static void main(String[] args) throws Exception {
+        AABB projectileArena = new AABB(-10, -10, -10, 10, 10, 10);
+        for (int axis = 0; axis < 3; axis++) for (int sign : new int[]{-1, 1}) {
+            Vec3 wall = new Vec3(axis == 0 ? sign * 12 : 0, axis == 1 ? sign * 12 : 0, axis == 2 ? sign * 12 : 0);
+            Vec3 outward = wall.scale(1.1), inward = wall.scale(.9);
+            require(SupremeCalamitasArena.projectileBoundary(projectileArena, Vec3.ZERO, wall, 1, 16, true, false, 100) == 0, "preserve crossing sweep");
+            require(SupremeCalamitasArena.projectileBoundary(projectileArena, wall, inward, 1, 16, true, false, 100) == 0, "preserve incoming shots");
+            require(SupremeCalamitasArena.projectileBoundary(projectileArena, wall, outward, 3, 16, true, false, 100) == 0, "preserve radius overlapping arena");
+            require(SupremeCalamitasArena.projectileBoundary(projectileArena, wall, outward, 1, 16, true, false, 0) == 1, "fade separating straight shot");
+            require(SupremeCalamitasArena.projectileBoundary(projectileArena, wall, outward, 1, 16, false, false, 100) == 0, "preserve curving shots and emitters");
+            require(SupremeCalamitasArena.projectileBoundary(projectileArena, wall, outward, 1, 16, true, true, 19) == 0, "split grace period");
+            require(SupremeCalamitasArena.projectileBoundary(projectileArena, wall, outward, 1, 16, true, true, 20) == 1, "split grace expires at 20 MC ticks");
+            require(SupremeCalamitasArena.projectileBoundary(projectileArena, wall.scale(20), outward.scale(20), 1, 16, true, false, 0) == 2, "retire separating straight shot beyond outer wall");
+            require(SupremeCalamitasArena.projectileBoundary(projectileArena, wall.scale(20), inward.scale(20), 1, 16, true, false, 100) == 0, "preserve distant incoming shots");
+            require(SupremeCalamitasArena.projectileBoundary(projectileArena, wall.scale(20), outward.scale(20), 1, 16, false, false, 100) == 0, "no arbitrary range cap for returning shots");
+        }
         CalamitasBarrageCheck.main(args);
         CalamitasEncounterCheck.main(args);
         CalamitasBattleCheck.main(args);

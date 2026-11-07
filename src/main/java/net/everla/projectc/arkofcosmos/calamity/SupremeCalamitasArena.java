@@ -60,6 +60,23 @@ public final class SupremeCalamitasArena {
                 origin.y + up / pixelsPerBlock, origin.z + right / pixelsPerBlock);
     }
 
+    /** Only a fixed-direction shot whose whole sweep is outside and separating can be retired.
+     * Curving shots and projectile emitters keep their native lifetime, even outside the wall. */
+    public static int projectileBoundary(AABB bounds, Vec3 from, Vec3 to, double radius,
+            double pixels, boolean terminalStraight, boolean splitChild, long elapsedTicks) {
+        if (!terminalStraight) return 0;
+        boolean escaping = from.x - radius > bounds.maxX && to.x > from.x
+                || from.x + radius < bounds.minX && to.x < from.x
+                || from.y - radius > bounds.maxY && to.y > from.y
+                || from.y + radius < bounds.minY && to.y < from.y
+                || from.z - radius > bounds.maxZ && to.z > from.z
+                || from.z + radius < bounds.minZ && to.z < from.z;
+        if (!escaping) return 0;
+        // The visible wall strip extends 1999 source pixels beyond the collision planes.
+        if (!bounds.inflate(1999 / pixels).contains(from)) return 2;
+        return !splitChild || elapsedTicks >= 20 ? 1 : 0;
+    }
+
     /** One source-frame interpolation, preserving upstream growth/shrink rates. */
     public void step(boolean wormAlive, boolean seekersAlive, boolean brothersAlive,
                      boolean fourthBarrageStarted, boolean accepting, AABB targetBounds) {

@@ -80,6 +80,8 @@ public final class CalamitasMinionEntity extends Monster {
     @Override public void tick() {
         setDeltaMovement(Vec3.ZERO);
         super.tick();
+        if (owner == null) simulate(0, 0);
+        if (isRemoved()) return;
         simulate(level() instanceof ServerLevel server && CalamitasSimulation.managed(server, owner) ? 0 : 3, 0);
     }
     void sourceStep(int phase) { simulate(1, phase); }
@@ -145,9 +147,9 @@ public final class CalamitasMinionEntity extends Monster {
             setYRot((float)Math.toDegrees(Math.atan2(-aim.x, aim.z))); yBodyRot = getYRot(); yHeadRot = getYRot();
             angle = (angle + .5) % 360;
         }
-        publish();
+        if (frames > 1) publish();
     }
-    private void publish() {
+    void publish() {
         var tag = new CompoundTag();
         if (owner != null) tag.putUUID("Owner", owner);
         tag.putInt("Timer", timer); tag.putInt("SourceAge", sourceAge);

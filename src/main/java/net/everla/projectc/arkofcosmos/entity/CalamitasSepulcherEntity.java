@@ -108,6 +108,8 @@ public final class CalamitasSepulcherEntity extends Monster {
     @Override public void tick() {
         setDeltaMovement(Vec3.ZERO);
         super.tick();
+        if (owner == null) simulate(0, 0);
+        if (isRemoved()) return;
         simulate(level() instanceof ServerLevel server && CalamitasSimulation.managed(server, owner) ? 0 : 3, 0);
     }
     void sourceStep(int phase) { simulate(1, phase); }
@@ -182,8 +184,10 @@ public final class CalamitasSepulcherEntity extends Monster {
             }
 
         }
-        publish();
-        for (var child : loaded) if (child != null) child.publish();
+        if (frames > 1) {
+            publish();
+            for (var child : loaded) if (child != null) child.publish();
+        }
     }
     private void follow(Vec3 center, Vec3 direction, int age, float alpha) {
         centerAt(center); forward = direction; sourceAge = age; opacity = alpha; orient(direction);
@@ -243,7 +247,7 @@ public final class CalamitasSepulcherEntity extends Monster {
     @Override public boolean removeWhenFarAway(double distance) { return false; }
     @Override public boolean shouldRenderAtSqrDistance(double distance) { return distance < 256 * 256; }
     @Override public boolean isPushable() { return false; }
-    private void publish() {
+    void publish() {
         var tag = new CompoundTag();
         if (owner != null) tag.putUUID("Owner", owner);
         if (head != null) tag.putUUID("Head", head);
