@@ -23,6 +23,10 @@ public final class CalamitasBrotherRenderer extends EntityRenderer<CalamitasBrot
         super(context); pillager = context.bakeLayer(ModelLayers.PILLAGER); vindicator = context.bakeLayer(ModelLayers.VINDICATOR); shadowRadius = .5f;
     }
     @Override public ResourceLocation getTextureLocation(CalamitasBrotherEntity entity) { return entity.kind() == Kind.CATACLYSM ? PILLAGER : VINDICATOR; }
+    @Override public boolean shouldRender(CalamitasBrotherEntity entity, net.minecraft.client.renderer.culling.Frustum frustum, double x, double y, double z) {
+        return entity.shouldRenderAtSqrDistance(entity.distanceToSqr(x,y,z))
+                && frustum.isVisible(entity.getBoundingBox().inflate(entity.getBbHeight()*1.5));
+    }
     @Override public void render(CalamitasBrotherEntity entity, float yaw, float partial, PoseStack pose, MultiBufferSource buffers, int light) {
         ModelPart root = entity.kind() == Kind.CATACLYSM ? pillager : vindicator;
         root.getAllParts().forEach(ModelPart::resetPose);
@@ -35,6 +39,6 @@ public final class CalamitasBrotherRenderer extends EntityRenderer<CalamitasBrot
         pose.mulPose(Axis.YP.rotationDegrees(180 - Mth.rotLerp(partial, entity.yRotO, entity.getYRot())));
         pose.scale(-1, -1, 1); pose.translate(0, -1.5, 0);
         root.render(pose, buffers.getBuffer(RenderType.entityCutoutNoCull(getTextureLocation(entity))), light, OverlayTexture.NO_OVERLAY);
-        pose.popPose(); super.render(entity, yaw, partial, pose, buffers, light);
+        pose.popPose(); CalamitasShieldRenderer.renderBrother(entity,partial,pose); super.render(entity, yaw, partial, pose, buffers, light);
     }
 }

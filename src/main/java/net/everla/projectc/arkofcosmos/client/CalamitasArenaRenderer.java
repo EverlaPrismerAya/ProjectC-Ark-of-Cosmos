@@ -147,8 +147,9 @@ public final class CalamitasArenaRenderer {
         float r = (arena.color() >> 16 & 255) / 255f, g = (arena.color() >> 8 & 255) / 255f, b = (arena.color() & 255) / 255f;
         if (band) box(out, arena.bounds(), 0, 0, 0, 38 / 255f);
         else {
-            frame(out, arena.bounds().inflate(4 / arena.pixels()), 1 / arena.pixels(), r, g, b, 38 / 255f);
-            frame(out, arena.bounds().inflate((arena.thickness() - 2) / arena.pixels()), 1 / arena.pixels(), r, g, b, 1);
+            // The guide marks the collision planes, not the outer edge of the
+            // source's 2000-pixel decorative wall band.
+            frame(out, arena.bounds(), 1 / arena.pixels(), r, g, b, 1);
         }
         BufferUploader.drawWithShader(out.end());
     }

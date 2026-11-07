@@ -15,6 +15,7 @@ import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -44,18 +45,25 @@ public final class CalamitasMinionRenderer extends EntityRenderer<CalamitasMinio
             Vec3 base = entity.getPosition(partial), center = base.add(0, entity.getBbHeight() / 2, 0);
             ArkFxDraw.matrix = pose.last().pose(); ArkFxDraw.camera = base; ArkFxDraw.fadeEye = null;
             double time = ((entity.level().getGameTime() % 72000) + partial) / 20d;
-            for (Tag raw : state.getCompound("Connections").getList("Endpoints", Tag.TAG_COMPOUND)) {
-                var endpoint = (net.minecraft.nbt.CompoundTag) raw;
-                tendril(center, new Vec3(endpoint.getDouble("X"), endpoint.getDouble("Y"), endpoint.getDouble("Z")), pixels, time, entity.getId());
-            }
-            int[] size = ArkFxDraw.size(HEART); int frameHeight = size[1] / 6;
-            int frame = Math.min(5, (int)Math.rint(Math.pow(Math.sin(time * 2.6 + entity.getId() * 1.3), 6) * 6));
-            float opacity = (float)Math.min(1, (state.getInt("SourceAge") + partial * 3) * 42 / 255d);
-            ArkFxDraw.litSprite(HEART, center, NativeSprites.billboard(), 0, 16 / pixels,
-                    size[0] / 2d, frameHeight / 2d, new float[]{opacity, opacity, opacity, opacity},
-                    0, frame * frameHeight, size[0], frameHeight, light, 0);
+            renderHeart(center, state, pixels, time, partial, entity.getId(), light);
         }
         super.render(entity, yaw, partial, pose, buffers, light);
+    }
+    private static void renderHeart(Vec3 center, CompoundTag state, double pixels, double time, float partial, int id, int light) {
+        // The arena composites after the world even without a shader pack. Keep
+        // the whole heart above that backdrop, with the captured entity transform
+        // and normal world-depth testing, rather than covering it with the arena.
+        if (OculusShaderCompat.defer(() -> renderHeart(center, state, pixels, time, partial, id, light), true)) return;
+        for (Tag raw : state.getCompound("Connections").getList("Endpoints", Tag.TAG_COMPOUND)) {
+            var endpoint = (CompoundTag) raw;
+            tendril(center, new Vec3(endpoint.getDouble("X"), endpoint.getDouble("Y"), endpoint.getDouble("Z")), pixels, time, id);
+        }
+        int[] size = ArkFxDraw.size(HEART); int frameHeight = size[1] / 6;
+        int frame = Math.min(5, (int)Math.rint(Math.pow(Math.sin(time * 2.6 + id * 1.3), 6) * 6));
+        float opacity = (float)Math.min(1, (state.getInt("SourceAge") + partial * 3) * 42 / 255d);
+        ArkFxDraw.litSprite(HEART, center, NativeSprites.billboard(), 0, 16 / pixels,
+                size[0] / 2d, frameHeight / 2d, new float[]{opacity, opacity, opacity, opacity},
+                0, frame * frameHeight, size[0], frameHeight, light, 0);
     }
     private void renderSeeker(CalamitasMinionEntity entity, float partial, PoseStack pose, MultiBufferSource buffers) {
         vex.getAllParts().forEach(ModelPart::resetPose);

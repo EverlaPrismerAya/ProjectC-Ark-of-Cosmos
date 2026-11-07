@@ -423,6 +423,10 @@ public final class SupremeCalamitasEntity extends Monster implements net.everla.
         if (!net.everla.projectc.arkofcosmos.combat.WeaponUser.playerOwnedDamage(source)) amount = Math.min(amount, 50f);
         return super.hurt(source, amount);
     }
+    /** Phase protection, excluding the brief non-player hit cooldown. */
+    public boolean phaseInvulnerable() {
+        return level().isClientSide ? view().getBoolean("Invulnerable") : damageProtected();
+    }
     private boolean damageProtected() {
         return finished || !(level() instanceof ServerLevel server) || pending != null
                 || CalamitasBattleData.get(server).living(getUUID(), "worm") > 0
@@ -493,8 +497,7 @@ public final class SupremeCalamitasEntity extends Monster implements net.everla.
     private void publish() {
         if (arena == null || !(level() instanceof ServerLevel server)) return;
         var tag = encounterTag(); tag.putInt("SourceAge", sourceAge); tag.put("Arena", arena.save()); tag.put("Combat", combat.save()); tag.put("Shield", shield.save()); tag.put("Animation", animation.save());
-        tag.putBoolean("Invulnerable", pending != null || CalamitasBattleData.get(server).living(getUUID(), "worm") > 0
-                || encounter.invulnerable(CalamitasBattleData.get(server).living(getUUID(), "heart"), CalamitasBattleData.get(server).living(getUUID(), "seeker")));
+        tag.putBoolean("Invulnerable", damageProtected());
         if (validTarget(getTarget())) {
             var target = getTarget(); var center = target.getBoundingBox().getCenter();
             tag.putUUID("Target", target.getUUID()); tag.putInt("TargetId", target.getId());

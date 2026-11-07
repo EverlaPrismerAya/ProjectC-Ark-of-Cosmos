@@ -119,7 +119,7 @@ public final class TrueBiomeEntity extends Entity {
                 double angle=frame.angle(direction);
                 if(angle>-3*Math.PI/4&&angle<-Math.PI/4&&spinSound)spinSound=false;
                 else if(angle>Math.PI/4&&angle<3*Math.PI/4&&!spinSound){spinSound=true;directFire=true;sound(p,"item71");}
-                if(charge>=300&&(charge+overCharge)%30==29){Vec3 dir=frame.direction(random.nextDouble()*Math.PI*2);if(target!=null&&target.isAlive())dir=turn(dir,center(target).subtract(c),Math.PI/2);beam(p,c,dir,damage*.5f,80);}
+                if(charge>=300&&(charge+overCharge)%30==29){Vec3 dir=frame.direction(random.nextDouble()*Math.PI*2);if(WeaponUser.canHit(p,target))dir=turn(dir,center(target).subtract(c),Math.PI/2);beam(p,c,dir,damage*.5f,80);}
                 if(charge>=450&&directFire&&direction.dot(aim(p))>Math.cos(.1)){beam(p,c,aim(p),damage*.5f,80);event("pride_direct",c.add(aim(p).scale(scale*1.88*78/16)));directFire=false;}
                 scale=1+charge/600f*1.5f;direction=rotate(direction,Math.max(.4,charge/600d)*Math.PI/4*.2).normalize();
                 setPos(c.add(direction.scale(scale*10/16d)));left=91;if(++charge>600){charge=600;overCharge++;}
@@ -202,8 +202,8 @@ public final class TrueBiomeEntity extends Entity {
         if(age==0)sound(p,"true_biome_beam_start");
         if(age>=15){scale+=beamGrowing?.02f:-.02f;if(scale<=.82f)beamGrowing=true;else if(scale>=1)beamGrowing=false;}
         if(target==null){for(TrueBiomeEntity e:TrueBiomeCombat.attacks(p))if(e.kind==SIGIL&&WeaponUser.canHit(p,e.target)){target=e.target;break;}}
-        else if(!target.isAlive())target=null;
-        if(target!=null&&target.isAlive()){
+        else if(!WeaponUser.canHit(p,target))target=null;
+        if(WeaponUser.canHit(p,target)){
             Vec3 to=center(target).subtract(position());
             if(to.length()>=to.subtract(velocity).length()&&velocity.normalize().dot(to.normalize())>Math.cos(Math.PI/4)){
                 left=70;double limit=Math.toRadians(lerp(15,2.5,clamp(to.length()*16/10)));velocity=turn(velocity,to,limit).scale(velocity.length());

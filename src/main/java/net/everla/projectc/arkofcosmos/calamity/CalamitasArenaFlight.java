@@ -12,31 +12,52 @@ import net.minecraftforge.fml.common.Mod;
 @Mod.EventBusSubscriber(modid = ArkOfCosmos.MOD_ID)
 public final class CalamitasArenaFlight {
     private static final String LEASE = "ArkCalamitasArenaFlight";
+    private static final String SPEED = "ArkCalamitasArenaFlightSpeed";
     private CalamitasArenaFlight() {}
 
     public static void update(ServerPlayer player) {
-        boolean inside = !player.isCreative() && !player.isSpectator() && player.isAlive()
+        boolean inside = player.isAlive()
                 && SupremeCalamitasEntity.loaded(player.level()).stream().anyMatch(boss -> {
                     var bounds = boss.arenaBounds();
                     return bounds != null && bounds.contains(player.getBoundingBox().getCenter());
                 });
         if (!inside) { release(player); return; }
         var abilities = player.getAbilities();
-        if (!abilities.mayfly) {
+        boolean changed = false;
+        if (!player.isCreative() && !player.isSpectator() && !abilities.mayfly) {
             player.getPersistentData().putBoolean(LEASE, true);
             abilities.mayfly = true;
-            player.onUpdateAbilities();
+            changed = true;
         }
+        var data = player.getPersistentData();
+        if (!data.contains(SPEED)) data.putFloat(SPEED, abilities.getFlyingSpeed());
+        float speed = data.getFloat(SPEED) * 2;
+        if (Float.compare(abilities.getFlyingSpeed(), speed) != 0) {
+            abilities.setFlyingSpeed(speed);
+            changed = true;
+        }
+        if (changed) player.onUpdateAbilities();
     }
 
     public static void release(ServerPlayer player) {
-        if (!player.getPersistentData().getBoolean(LEASE)) return;
-        player.getPersistentData().remove(LEASE);
-        if (player.isCreative() || player.isSpectator()) return;
-        player.getAbilities().mayfly = false;
-        player.getAbilities().flying = false;
-        player.fallDistance = 0;
-        player.onUpdateAbilities();
+        var data = player.getPersistentData();
+        var abilities = player.getAbilities();
+        boolean changed = false;
+        if (data.contains(SPEED)) {
+            abilities.setFlyingSpeed(data.getFloat(SPEED));
+            data.remove(SPEED);
+            changed = true;
+        }
+        if (data.getBoolean(LEASE)) {
+            data.remove(LEASE);
+            if (!player.isCreative() && !player.isSpectator()) {
+                abilities.mayfly = false;
+                abilities.flying = false;
+                player.fallDistance = 0;
+                changed = true;
+            }
+        }
+        if (changed) player.onUpdateAbilities();
     }
 
     @SubscribeEvent public static void tick(TickEvent.PlayerTickEvent event) {

@@ -39,9 +39,14 @@ public final class WeaponUser {
         if(owner instanceof MahouTsukaiEntity boss && canHit(boss,boss.getTarget()))return boss.getTarget().getBoundingBox().getCenter();
         return owner.getBoundingBox().getCenter().add(owner.getLookAngle().scale(20));
     }
+    public static boolean targetable(LivingEntity target) {
+        return target != null && !target.isInvulnerable()
+                && (!(target instanceof net.everla.projectc.arkofcosmos.entity.SupremeCalamitasEntity boss)
+                    || !boss.phaseInvulnerable());
+    }
     public static boolean canHit(LivingEntity owner,LivingEntity target) {
         if(owner instanceof Player player)return ArkCombat.canHit(player,target);
-        return target!=null && target!=owner && target.isAlive() && !target.isRemoved() && !owner.isAlliedTo(target)
+        return targetable(target) && target!=owner && target.isAlive() && !target.isRemoved() && !owner.isAlliedTo(target)
                 && (!(target instanceof Player player)||!player.isCreative()&&!player.isSpectator());
     }
     public static boolean enemy(LivingEntity owner,LivingEntity target) {

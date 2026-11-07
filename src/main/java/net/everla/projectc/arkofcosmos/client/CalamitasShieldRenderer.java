@@ -6,6 +6,7 @@ import net.everla.projectc.arkofcosmos.client.render.ArkFxDraw;
 import net.everla.projectc.arkofcosmos.client.render.NativeSprites;
 import net.everla.projectc.arkofcosmos.client.render.OculusShaderCompat;
 import net.everla.projectc.arkofcosmos.entity.SupremeCalamitasEntity;
+import net.everla.projectc.arkofcosmos.entity.CalamitasBrotherEntity;
 import net.everla.projectc.arkofcosmos.util.AttackFrame;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.phys.Vec3;
@@ -13,6 +14,17 @@ import net.minecraft.world.phys.Vec3;
 /** Pinned forcefield/skull draw parameters, independent of the mob's native damage policy. */
 final class CalamitasShieldRenderer {
     private CalamitasShieldRenderer() {}
+    static void renderBrother(CalamitasBrotherEntity entity,float partial,PoseStack pose) {
+        ArkFxDraw.matrix=pose.last().pose();ArkFxDraw.camera=entity.getPosition(partial);ArkFxDraw.fadeEye=null;
+        Vec3 center=entity.getPosition(partial).add(0,entity.getBbHeight()/2,0);
+        double scale=entity.getBbHeight()*32/ArkFxDraw.size("calamitas_forcefield")[0];
+        brotherField(center,scale,((entity.level().getGameTime()%72000)+partial)/20d);
+    }
+    private static void brotherField(Vec3 center,double scale,double time) {
+        if(OculusShaderCompat.defer(()->brotherField(center,scale,time),true))return;
+        field("calamitas_forcefield",center,NativeSprites.billboard(),0,scale,
+                palette(148,0,211,.75f),palette(255,0,0,.75f),time);
+    }
     static void render(SupremeCalamitasEntity entity,float partial,PoseStack pose) {
         var view=entity.view();var state=view.getCompound("Shield");double pixels=view.getDouble("Pixels");
         if(state.isEmpty() || pixels<=0)return;
@@ -40,19 +52,16 @@ final class CalamitasShieldRenderer {
                 scale*(immune?1.35:3)*pure*16/pixels,main,secondary,time);
         float shieldAlpha=state.getFloat("ShieldOpacity");if(shieldAlpha<=0)return;
         Vec3 direction=vector(state,"Direction");
-        // Source sprites rotate in the screen plane. A world plane containing the
-        // dash direction becomes edge-on when the boss charges toward the camera.
-        AttackFrame skull=skullFrame(face,direction);Vec3 down=skull.right();
-        Vec3 skullAt=at.add(direction.scale(24/pixels));
+        Vec3 down=new Vec3(0,-1,0).subtract(direction.scale(-direction.y));
+        if(down.lengthSqr()<1e-12)down=face.forward().subtract(direction.scale(face.forward().dot(direction)));
+        if(down.lengthSqr()<1e-12)down=direction.cross(new Vec3(1,0,0));
+        down=down.normalize();
+        // Local X follows the locked 3D charge; local Y is the source perpendicular adapted to world up.
+        AttackFrame skull=new AttackFrame(direction,down);Vec3 skullAt=at.add(direction.scale(24/pixels));
         double jaw=charging?.71:preparing?-(.04+(-.82-.04)*(Math.sin(time*17.2)*.5+.5)):0;
         float alpha=(int)(255*shieldAlpha)/255f;float[] color={alpha,alpha,alpha,alpha};
         ArkFxDraw.centered("calamitas_shield_bottom",skullAt.add(down.scale(42/pixels)),skull,jaw,16/pixels,16/pixels,color,ArkFxDraw.Blend.ALPHA);
         ArkFxDraw.centered("calamitas_shield_top",skullAt,skull,0,16/pixels,16/pixels,color,ArkFxDraw.Blend.ALPHA);
-    }
-    private static AttackFrame skullFrame(AttackFrame face,Vec3 direction) {
-        double x=direction.dot(face.forward()),y=direction.dot(face.right());
-        double angle=x*x+y*y>1e-8?Math.atan2(y,x):0;
-        return new AttackFrame(face.direction(angle),face.direction(angle+Math.PI/2));
     }
     private static float[] palette(int r,int g,int b,float opacity){return new float[]{(int)(r*opacity)/255f,(int)(g*opacity)/255f,(int)(b*opacity)/255f};}
     private static void field(String texture,Vec3 at,AttackFrame face,double angle,double scale,float[] main,float[] secondary,double time) {

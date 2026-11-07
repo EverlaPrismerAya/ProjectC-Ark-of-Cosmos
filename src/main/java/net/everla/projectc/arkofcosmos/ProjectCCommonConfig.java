@@ -52,7 +52,7 @@ public final class ProjectCCommonConfig {
         b.pop();
         b.pop().push("calamitas");
         define(b,"health_multiplier",.002,.0002,100,"Source health conversion; shared by Calamitas and her summons. Calamitas maximum health is at least 100");
-        define(b,"damage_multiplier",.06,0,100,"Source damage conversion: original / 1000 * 60; before the shared Mahou damage policy");
+        define(b,"damage_multiplier",.24,0,100,"Source damage conversion: original / 1000 * 240; before the shared Mahou damage policy");
         define(b,"armor_multiplier",.1,0,1,"Source defense conversion to native Minecraft armor points");
         define(b,"movement_multiplier",1,.01,100,"Movement conversion after pixels_per_block; does not change the source clock");
         define(b,"pixels_per_block",16,1,256,"Source pixels per Minecraft block; captured at encounter creation");

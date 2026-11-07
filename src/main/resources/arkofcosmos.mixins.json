@@ -29,6 +29,7 @@
     "entity.fourthCalamity.CalamityAttackRemovalMixin",
     "entity.combat.VanillaLivingCombatMixin",
     "compact.goetyRevelation.GoetyApollyonMixin",
+    "compact.goetyRevelation.CalamitasHexHaloMixin",
     "weapon.brokenBiome.BrokenBiomeFrozenAiMixin",
     "weapon.brokenBiome.BrokenBiomeFrozenTravelMixin",
     "world.CalamityWitherMixin",

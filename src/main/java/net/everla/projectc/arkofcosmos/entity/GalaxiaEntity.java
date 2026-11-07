@@ -292,7 +292,7 @@ public final class GalaxiaEntity extends Entity {
         if(bossStraight&&bossAcceleration>1&&velocity.length()<1.25)velocity=velocity.normalize().scale(Math.min(1.25,velocity.length()*bossAcceleration));
         if(bossStraight)target=null;
         else if(target==null) target=WeaponUser.nearest(p,position(),812/16d);
-        else if(!target.isAlive()) target=null;
+        else if(!WeaponUser.canHit(p,target)) target=null;
         else if(velocity.dot(target.getBoundingBox().getCenter().subtract(position()))>0)
             velocity=ArkGeometry.turn(velocity,target.getBoundingBox().getCenter().subtract(position()),homing,frame.normal());
         Vec3 old=position(),next=old.add(velocity);
