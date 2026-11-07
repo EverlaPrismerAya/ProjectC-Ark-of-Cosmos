@@ -545,6 +545,8 @@ public final class SupremeCalamitasEntity extends Monster implements net.everla.
         super.addAdditionalSaveData(tag);
         if(witchAfterBattle!=null)tag.putUUID("WitchAfterBattle",witchAfterBattle); tag.putBoolean("WitchBorn",witchBorn);
         tag.putBoolean("Initialized", initialized); tag.putBoolean("Finished", finished);
+        // The summon windup saves the boss before its first tick; retain the pending cleanup.
+        tag.putBoolean("ClearNearbyWitches", clearNearbyWitches);
         if (!initialized) return;
         tag.put("CalamitasEncounter", encounterTag()); tag.put("CalamitasArena", arena.save()); tag.put("CalamitasCombat", combat.save()); tag.put("CalamitasShield", shield.save()); tag.put("CalamitasAnimation", animation.save());
         tag.putInt("BarrageFrames", barrage.completedFrames()); tag.putInt("BarrageGate", barrage.shotGate()); tag.putInt("VortexTelegraph", barrage.maelstromTelegraph());
@@ -559,7 +561,7 @@ public final class SupremeCalamitasEntity extends Monster implements net.everla.
         castSparks.clear();
         healthWriteDepth++;
         try { super.readAdditionalSaveData(tag); } finally { healthWriteDepth--; }
-        setNoGravity(true); clearNearbyWitches=false; witchBorn=tag.getBoolean("WitchBorn"); witchAfterBattle=tag.hasUUID("WitchAfterBattle")?tag.getUUID("WitchAfterBattle"):null; initialized = tag.getBoolean("Initialized"); finished = tag.getBoolean("Finished");
+        setNoGravity(true); clearNearbyWitches=tag.getBoolean("ClearNearbyWitches"); witchBorn=tag.getBoolean("WitchBorn"); witchAfterBattle=tag.hasUUID("WitchAfterBattle")?tag.getUUID("WitchAfterBattle"):null; initialized = tag.getBoolean("Initialized"); finished = tag.getBoolean("Finished");
         nonPlayerInvulnerableUntil = level().getGameTime() + net.minecraft.util.Mth.clamp(tag.getInt("NonPlayerInvulnerabilityTicks"), 0, 10);
         if (!initialized) return;
         var s = tag.getCompound("CalamitasEncounter");
