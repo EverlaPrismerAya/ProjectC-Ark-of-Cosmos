@@ -51,6 +51,7 @@ public final class ProjectCCommonConfig {
             define(b,skill,1,0,100,"Damage multiplier for this attack type, multiplied by skill_damage_multiplier");
         b.pop();
         b.pop().push("calamitas");
+        define(b,"apollyon_replacement_chance",.01,0,1,"Chance to replace a newly summoned Apollyon in the Nether with Calamitas; 0 disables replacement, 1 always replaces. Loaded entities are never rerolled");
         define(b,"health_multiplier",.002,.0002,100,"Source health conversion; shared by Calamitas and her summons. Calamitas maximum health is at least 100");
         define(b,"damage_multiplier",.24,0,100,"Source damage conversion: original / 1000 * 240; before the shared Mahou damage policy");
         define(b,"armor_multiplier",.1,0,1,"Source defense conversion to native Minecraft armor points");

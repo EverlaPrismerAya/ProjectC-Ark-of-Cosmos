@@ -285,5 +285,6 @@
   "commands.projectc.calamitas.summon_failed": "至尊唤魔者，灾厄召唤失败",
   "boss.arkofcosmos.calamitas.name": "灾厄",
   "boss.arkofcosmos.calamitas.title": "至尊唤魔者",
-  "effect.arkofcosmos.vulnerability_hex": "孱弱巫咒"
+  "effect.arkofcosmos.vulnerability_hex": "孱弱巫咒",
+  "jei.arkofcosmos.annihilation_ember.source": "在Goety安息仪式的4个基座各放置1个湮灭余烬，使用下界合金锭激活以召唤至尊唤魔者，灾厄。正常完成战斗后掉落32–48个湮灭余烬。"
 }

@@ -1,0 +1,34 @@
+{
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "goety"
+    }
+  ],
+  "type": "goety:ritual",
+  "ritual_type": "goety:summon",
+  "activation_item": {
+    "tag": "forge:ingots/netherite"
+  },
+  "craftType": "sabbath",
+  "entity_to_summon": "arkofcosmos:supreme_calamitas",
+  "soulCost": 1,
+  "duration": 5,
+  "ingredients": [
+    {
+      "item": "arkofcosmos:annihilation_ember"
+    },
+    {
+      "item": "arkofcosmos:annihilation_ember"
+    },
+    {
+      "item": "arkofcosmos:annihilation_ember"
+    },
+    {
+      "item": "arkofcosmos:annihilation_ember"
+    }
+  ],
+  "result": {
+    "item": "goety:jei_dummy/none"
+  }
+}

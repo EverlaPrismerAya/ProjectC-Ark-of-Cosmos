@@ -29,6 +29,7 @@ public final class CalamitasAttackEntity extends Entity {
     private UUID owner, target;
     private Vec3 velocity = Vec3.ZERO, planeX = new Vec3(1, 0, 0);
     private int age, remaining, variant = 2, still = 90;
+    private long spawnedAt;
     private double pixels = 16, movement = 1, damage, dartDamage, maximumSpeed, speedAdd, speedLimit = 23, soulPhase;
     private float opacity, scale = 1;
     private boolean withinRange, ending, suppressSplit, invalidSave;
@@ -41,6 +42,7 @@ public final class CalamitasAttackEntity extends Entity {
     public CalamitasAttackEntity(EntityType<? extends CalamitasAttackEntity> type, Level level, Kind kind) {
         super(type, level);
         this.kind = kind;
+        spawnedAt = level.getGameTime();
         noPhysics = true;
         setNoGravity(true);
     }
@@ -147,7 +149,13 @@ public final class CalamitasAttackEntity extends Entity {
         return null;
     }
 
+    private boolean outsideArena(LivingEntity boss, Vec3 position) {
+        if (level().getGameTime() - spawnedAt <= 40 || !(boss instanceof SupremeCalamitasEntity calamitas)) return false;
+        var bounds = calamitas.arenaBounds();
+        return bounds != null && !bounds.contains(position);
+    }
     private void step(LivingEntity boss) {
+        if (outsideArena(boss, position())) { discardAttack(); return; }
         if (age == 0 && (kind == Kind.HELLBLAST || kind == Kind.FIREBLAST || kind == Kind.GIGABLAST)) flameSound();
         if (kind == Kind.MAELSTROM && age == 0) CalamitasContent.sound(this, "vortex_spawn");
         LivingEntity targetEntity = target(boss);
@@ -187,6 +195,7 @@ public final class CalamitasAttackEntity extends Entity {
         }
         Vec3 previous = position();
         Vec3 next = previous.add(velocity);
+        if (outsideArena(boss, next)) { discardAttack(); return; }
         boolean canHit = kind == Kind.FIST ? opacity >= 1 || variant >= 3
                 : kind == Kind.SLASH ? opacity >= 1 && variant < 4 || slashExplode && variant >= 4 : opacity >= 1;
         if (canHit && damage > 0) collide(boss, previous, next);
@@ -452,6 +461,7 @@ public final class CalamitasAttackEntity extends Entity {
     @Override protected void addAdditionalSaveData(CompoundTag tag) {
         if (owner != null) tag.putUUID("Owner", owner);
         if (target != null) tag.putUUID("Target", target);
+        tag.putLong("SpawnedAt", spawnedAt);
         tag.putString("Kind", kind.name()); tag.putInt("Age", age); tag.putInt("Remaining", remaining);
         tag.putInt("Variant", variant); tag.putDouble("Pixels", pixels);
         tag.putDouble("Movement", movement);
@@ -487,6 +497,8 @@ public final class CalamitasAttackEntity extends Entity {
         }
         age = Math.max(0, tag.getInt("Age")); remaining = tag.getInt("Remaining");
         variant = tag.getInt("Variant"); pixels = tag.getDouble("Pixels");
+        spawnedAt = tag.contains("SpawnedAt") ? tag.getLong("SpawnedAt")
+                : level().getGameTime() - age / (3L * updatesPerFrame());
         movement = tag.contains("Movement") ? tag.getDouble("Movement") : 1;
         soulPhase = tag.getDouble("SoulPhase");
         velocity = new Vec3(tag.getDouble("VX"), tag.getDouble("VY"), tag.getDouble("VZ"));

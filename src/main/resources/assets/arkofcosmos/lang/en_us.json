@@ -285,5 +285,6 @@
   "commands.projectc.calamitas.summon_failed": "Failed to summon Supreme Evoker, Calamitas",
   "boss.arkofcosmos.calamitas.name": "Calamitas",
   "boss.arkofcosmos.calamitas.title": "Supreme Evoker",
-  "effect.arkofcosmos.vulnerability_hex": "Vulnerability Hex"
+  "effect.arkofcosmos.vulnerability_hex": "Vulnerability Hex",
+  "jei.arkofcosmos.annihilation_ember.source": "Place one Ashes of Annihilation on each of four pedestals in a Goety Sabbath ritual and activate with a Netherite Ingot to summon Calamitas. Completing the battle drops 32-48 Ashes of Annihilation."
 }
