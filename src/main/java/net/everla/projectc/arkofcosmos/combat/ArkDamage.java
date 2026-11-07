@@ -127,6 +127,8 @@ public final class ArkDamage {
         return target instanceof ApollyonCompatTarget apollyon && apollyon.arkofcosmos$isNetherApollyon()
                 || target instanceof net.everla.projectc.arkofcosmos.entity.MahouTsukaiEntity
                 || target instanceof net.everla.projectc.arkofcosmos.entity.FourthCalamityEntity
+                || target instanceof net.everla.projectc.arkofcosmos.entity.WitchCurseEntity
+                || target instanceof net.everla.projectc.arkofcosmos.entity.BrimstoneWitchEntity
                 || target instanceof net.everla.projectc.arkofcosmos.entity.CalamitasMinionEntity
                 || target instanceof net.everla.projectc.arkofcosmos.entity.CalamitasBrotherEntity
                 || target instanceof net.everla.projectc.arkofcosmos.entity.SupremeCalamitasEntity
@@ -240,6 +242,7 @@ public final class ArkDamage {
         if (!validHit(target, amount)) return false;
         if (ordinaryTarget(target)) return WeaponDamage.handling(target,source)
                 ? target.hurt(source,amount) : WeaponDamage.hurt(target, source, amount);
+        amount = net.everla.projectc.arkofcosmos.enchant.CurseCombat.modify(target,source,amount);
         amount = net.everla.projectc.arkofcosmos.calamity.CalamitasHexEffect.outgoing(source, amount);
         // The authority bypasses LivingHurtEvent; its native fallback still receives this bonus there.
         if(unmitigated&&source.getEntity() instanceof LivingEntity attacker&&OldOneEffects.has(attacker,OldOneEffects.Status.WRATH))amount*=1.1f;
@@ -253,9 +256,11 @@ public final class ArkDamage {
         if (target instanceof net.minecraft.world.entity.boss.wither.WitherBoss && CalamityVariants.variant(target)) amount *= .75f;
         boolean seagull = seagull(target);
         if (seagull) amount = Float.MAX_VALUE;
+        if(target instanceof Player player)amount=net.everla.projectc.arkofcosmos.enchant.CurseCombat.incoming(player,amount);
         float after = Math.max(0, before - amount);
         target.getEntityData().set(HEALTH, after);
         target.getCombatTracker().recordDamage(source, Math.min(before, amount));
+        net.everla.projectc.arkofcosmos.enchant.CurseCombat.hit(target,source,Math.min(before,amount));
         if (source.getEntity() instanceof LivingEntity attacker) target.setLastHurtByMob(attacker);
         if (source.getEntity() instanceof Player attacker) {
             target.setLastHurtByPlayer(attacker);
@@ -265,6 +270,7 @@ public final class ArkDamage {
         target.level().broadcastDamageEvent(target, source);
         if (after == 0) {
             if (!seagull && useTotem(target, source)) return true;
+            net.everla.projectc.arkofcosmos.enchant.WitchFlames.clear(target);
             // Vanilla plays this in hurt(), which the authoritative damage path bypasses.
             var deathSound = target.getDeathSound();
             if (deathSound != null) target.playSound(deathSound, target.getSoundVolume(), target.getVoicePitch());

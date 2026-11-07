@@ -18,7 +18,8 @@ public final class BossDamage {
     }
 
     public static boolean calamitas(DamageSource source) {
-        return source.getEntity() instanceof net.everla.projectc.arkofcosmos.entity.SupremeCalamitasEntity
+        return source.getEntity() instanceof net.everla.projectc.arkofcosmos.entity.BrimstoneWitchEntity
+                || source.getEntity() instanceof net.everla.projectc.arkofcosmos.entity.SupremeCalamitasEntity
                 || source.getEntity() instanceof net.everla.projectc.arkofcosmos.entity.CalamitasBrotherEntity
                 || source.getEntity() instanceof net.everla.projectc.arkofcosmos.entity.CalamitasMinionEntity
                 || source.getEntity() instanceof net.everla.projectc.arkofcosmos.entity.CalamitasSepulcherEntity

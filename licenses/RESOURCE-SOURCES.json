@@ -260,7 +260,8 @@
       ],
       "source_rgba_sha256": "8d0103d2899b0467cc15d10db43de84c30976d4536449bd6668bc5cc0419d216",
       "used_by": [
-        "Vulnerability Hex native Dust 235/261"
+        "Vulnerability Hex native Dust 235/261",
+        "Necromantic infusion weapons"
       ]
     },
     {
@@ -279,7 +280,8 @@
       ],
       "source_rgba_sha256": "3f20824fea7cdb965149b225248277de9becfe2325efd95d52e8c4d27f1fb1af",
       "used_by": [
-        "Vulnerability Hex native Dust 235/261"
+        "Vulnerability Hex native Dust 235/261",
+        "Necromantic infusion weapons"
       ]
     },
     {
@@ -298,7 +300,8 @@
       ],
       "source_rgba_sha256": "970b01c6355cbd93c45d246658ba6d6dabb5521442d155e40c8b99c26cb439f4",
       "used_by": [
-        "Vulnerability Hex native Dust 235/261"
+        "Vulnerability Hex native Dust 235/261",
+        "Necromantic infusion weapons"
       ]
     },
     {
@@ -5397,6 +5400,943 @@
       "license": "Terraria original terms / ARR",
       "used_by": [
         "Supreme Calamitas seeker and Sepulcher BrimstoneBarrage variant3 native Dust trail"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/item/brimstone_locus.png",
+      "sha256": "c03ecd7b4a18c3e9b3db5b030922a2806a94b3781a3036cca0f6f9e56a46dcb6",
+      "project": "CalamityMod",
+      "path": "Items/BrimstoneLocus.png",
+      "license": "Calamity original resource terms; see THIRD_PARTY_NOTICES.md",
+      "used_by": [
+        "Brimstone witch curses"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/witch_enchant.ogg",
+      "sha256": "3d22c4e15a061eae780a0fc5ebaeaf8e50a05f08e035579229fcd5fe473658e3",
+      "project": "CalamityMod",
+      "path": "Sounds/Custom/WeaponEnchant.ogg",
+      "license": "Calamity original resource terms; see THIRD_PARTY_NOTICES.md",
+      "used_by": [
+        "Brimstone witch curses"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/gui/witch/calamitascursebackground.png",
+      "sha256": "41b0246b7fadad6a7dd56885bae38c9963d5ee9b0b90d34570a980662b656bc3",
+      "project": "CalamityMod",
+      "path": "UI/CalamitasEnchantments/CalamitasCurseBackground.png",
+      "license": "Calamity original resource terms; see THIRD_PARTY_NOTICES.md",
+      "used_by": [
+        "Brimstone witch curses"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/gui/witch/calamitascurseitemslot.png",
+      "sha256": "d5e122379f9b2fb00821bcc87ae10154ef9ad70dfa5ed983b1491a1a1ce37a66",
+      "project": "CalamityMod",
+      "path": "UI/CalamitasEnchantments/CalamitasCurseItemSlot.png",
+      "license": "Calamity original resource terms; see THIRD_PARTY_NOTICES.md",
+      "used_by": [
+        "Brimstone witch curses"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/gui/witch/calamitascurseui_button.png",
+      "sha256": "88531177b04f9fbb73d6111623b10fd4b05cf3a27ffcefb49ec32d341e2dbbfd",
+      "project": "CalamityMod",
+      "path": "UI/CalamitasEnchantments/CalamitasCurseUI_Button.png",
+      "license": "Calamity original resource terms; see THIRD_PARTY_NOTICES.md",
+      "used_by": [
+        "Brimstone witch curses"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/gui/witch/calamitascurseui_buttonhovered.png",
+      "sha256": "050d1974b03f0aeab45a33042733540c4e664f5316d196e6b9b0e2e4f5259533",
+      "project": "CalamityMod",
+      "path": "UI/CalamitasEnchantments/CalamitasCurseUI_ButtonHovered.png",
+      "license": "Calamity original resource terms; see THIRD_PARTY_NOTICES.md",
+      "used_by": [
+        "Brimstone witch curses"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/gui/witch/curseicon_aflame.png",
+      "sha256": "c38f3bdbaf3baa2ff2f7c079a5d8ba32820ad22eba0a720361e079a07230c434",
+      "project": "CalamityMod",
+      "path": "UI/CalamitasEnchantments/CurseIcon_Aflame.png",
+      "license": "Calamity original resource terms; see THIRD_PARTY_NOTICES.md",
+      "used_by": [
+        "Brimstone witch curses"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/gui/witch/curseicon_bloodthirsty.png",
+      "sha256": "703d6da9f871f3bcec1935af5709ee7e8dd9dd0edf74bee7bcbd60831bdb9337",
+      "project": "CalamityMod",
+      "path": "UI/CalamitasEnchantments/CurseIcon_Bloodthirsty.png",
+      "license": "Calamity original resource terms; see THIRD_PARTY_NOTICES.md",
+      "used_by": [
+        "Brimstone witch curses"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/gui/witch/curseicon_ephemeral.png",
+      "sha256": "11f2ce71ed683b5046cd2079cf29dd253c6f1f6b2a43ea58aa19e3f39acdb9fc",
+      "project": "CalamityMod",
+      "path": "UI/CalamitasEnchantments/CurseIcon_Ephemeral.png",
+      "license": "Calamity original resource terms; see THIRD_PARTY_NOTICES.md",
+      "used_by": [
+        "Brimstone witch curses"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/gui/witch/curseicon_hellbound.png",
+      "sha256": "04c373f4f942a887476c65cce52b57858afa6095ce8a8cd7f77c05703782d20e",
+      "project": "CalamityMod",
+      "path": "UI/CalamitasEnchantments/CurseIcon_Hellbound.png",
+      "license": "Calamity original resource terms; see THIRD_PARTY_NOTICES.md",
+      "used_by": [
+        "Brimstone witch curses"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/gui/witch/curseicon_indignant.png",
+      "sha256": "1da545548551e61f02c276e674ea99d7080ac41cf009de8a2daf89bb01b4f2d6",
+      "project": "CalamityMod",
+      "path": "UI/CalamitasEnchantments/CurseIcon_Indignant.png",
+      "license": "Calamity original resource terms; see THIRD_PARTY_NOTICES.md",
+      "used_by": [
+        "Brimstone witch curses"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/gui/witch/curseicon_lecherous.png",
+      "sha256": "7a88e30973372055fe4072e3edea01c43721f783d431fe8663147b00e5b7fdee",
+      "project": "CalamityMod",
+      "path": "UI/CalamitasEnchantments/CurseIcon_Lecherous.png",
+      "license": "Calamity original resource terms; see THIRD_PARTY_NOTICES.md",
+      "used_by": [
+        "Brimstone witch curses"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/gui/witch/curseicon_oblatory.png",
+      "sha256": "286817f6e3e7eee65450ac8ba6d02611c4c29e16560d0d2f99da423a79f45bb4",
+      "project": "CalamityMod",
+      "path": "UI/CalamitasEnchantments/CurseIcon_Oblatory.png",
+      "license": "Calamity original resource terms; see THIRD_PARTY_NOTICES.md",
+      "used_by": [
+        "Brimstone witch curses"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/gui/witch/curseicon_persecuted.png",
+      "sha256": "6ca218d37a2addea58d9603055a32208bf5c4a49be61cc6428d63e53e4598426",
+      "project": "CalamityMod",
+      "path": "UI/CalamitasEnchantments/CurseIcon_Persecuted.png",
+      "license": "Calamity original resource terms; see THIRD_PARTY_NOTICES.md",
+      "used_by": [
+        "Brimstone witch curses"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/gui/witch/curseicon_resentful.png",
+      "sha256": "38347b86013c849dffc631741d5b4b9260ee831d3c79997e2b4f4b33bd79fe52",
+      "project": "CalamityMod",
+      "path": "UI/CalamitasEnchantments/CurseIcon_Resentful.png",
+      "license": "Calamity original resource terms; see THIRD_PARTY_NOTICES.md",
+      "used_by": [
+        "Brimstone witch curses"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/gui/witch/curseicon_tainted.png",
+      "sha256": "87619ad5555e2a34f42e0f481ceb25abb8799061077e1469a101dd6b9d76fc64",
+      "project": "CalamityMod",
+      "path": "UI/CalamitasEnchantments/CurseIcon_Tainted.png",
+      "license": "Calamity original resource terms; see THIRD_PARTY_NOTICES.md",
+      "used_by": [
+        "Brimstone witch curses"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/gui/witch/curseicon_traitorous.png",
+      "sha256": "a9fc4a133818f5e39efc70097f535742beba8a51c30a25db8dc9728cdc16a2db",
+      "project": "CalamityMod",
+      "path": "UI/CalamitasEnchantments/CurseIcon_Traitorous.png",
+      "license": "Calamity original resource terms; see THIRD_PARTY_NOTICES.md",
+      "used_by": [
+        "Brimstone witch curses"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/gui/witch/curseicon_withered.png",
+      "sha256": "fd32a1c7bf187a7ccffae5096abbc32519dd212c764cb715ff582ee7b8705f1b",
+      "project": "CalamityMod",
+      "path": "UI/CalamitasEnchantments/CurseIcon_Withered.png",
+      "license": "Calamity original resource terms; see THIRD_PARTY_NOTICES.md",
+      "used_by": [
+        "Brimstone witch curses"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/witch_demon.png",
+      "sha256": "115a153391008352ac501fa9827d92fa3b5cc1b27a3416ff954a05bf9f57b500",
+      "project": "CalamityMod",
+      "path": "NPCs/Other/CalamitasEnchantDemon.png",
+      "license": "Calamity original resource terms; see THIRD_PARTY_NOTICES.md",
+      "used_by": [
+        "Brimstone witch curses"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/witch_portal.png",
+      "sha256": "09332f1620c32cd8adcf487d4b27c114d53c5d54b1122387bf229bd43736e8ff",
+      "project": "CalamityMod",
+      "path": "NPCs/Other/DemonPortal.png",
+      "license": "Calamity original resource terms; see THIRD_PARTY_NOTICES.md",
+      "used_by": [
+        "Brimstone witch curses"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/witch_orb.png",
+      "sha256": "507a6215e36eb64f6fc1d3626b87a98105ebb594b2c7cc27823540546c0ea628",
+      "project": "CalamityMod",
+      "path": "NPCs/Other/LecherousOrb.png",
+      "license": "Calamity original resource terms; see THIRD_PARTY_NOTICES.md",
+      "used_by": [
+        "Brimstone witch curses"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/witch_mana.png",
+      "sha256": "ade6f684da007dcac740bd37c99004bb8414c14100a1767b84f754cfdbc8677e",
+      "project": "CalamityMod",
+      "path": "Projectiles/Magic/ManaMonster.png",
+      "license": "Calamity original resource terms; see THIRD_PARTY_NOTICES.md",
+      "used_by": [
+        "Brimstone witch curses"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/witch_bomber.png",
+      "sha256": "8f6c6862fa37245076e7c6701a6144274807cf20a95391dcc78c167c69f17159",
+      "project": "CalamityMod",
+      "path": "Projectiles/Typeless/SuicideBomberDemon.png",
+      "license": "Calamity original resource terms; see THIRD_PARTY_NOTICES.md",
+      "used_by": [
+        "Brimstone witch curses"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/witch_arm.png",
+      "sha256": "ee672ce42408501807d60495154a0f7ceab33d917f33d3d14afd60c1a7ae3d6e",
+      "project": "CalamityMod",
+      "path": "Projectiles/Melee/TaintedArm.png",
+      "license": "Calamity original resource terms; see THIRD_PARTY_NOTICES.md",
+      "used_by": [
+        "Brimstone witch curses"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/witch_forearm.png",
+      "sha256": "557b14613974b2262d127c4f7db5b6af5d7f2c26a92c29f58a66176e838a69e7",
+      "project": "CalamityMod",
+      "path": "Projectiles/Melee/TaintedForearm.png",
+      "license": "Calamity original resource terms; see THIRD_PARTY_NOTICES.md",
+      "used_by": [
+        "Brimstone witch curses"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/witch_hand.png",
+      "sha256": "4d9b1e3420aed1f3b698aba27025983b4a1ac47a32a22c199cfd4900ecde5fbb",
+      "project": "CalamityMod",
+      "path": "Projectiles/Melee/TaintedHand.png",
+      "license": "Calamity original resource terms; see THIRD_PARTY_NOTICES.md",
+      "used_by": [
+        "Brimstone witch curses"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/witch_hand2.png",
+      "sha256": "fc66708651d97c68bdcdb6cd298efa5a55a36d794b42d76f1ed7395a43e799af",
+      "project": "CalamityMod",
+      "path": "Projectiles/Melee/TaintedHand2.png",
+      "license": "Calamity original resource terms; see THIRD_PARTY_NOTICES.md",
+      "used_by": [
+        "Brimstone witch curses"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/witch_explosion.png",
+      "sha256": "b321d88bef5ece728e3ed73427e8d6333bb9f912e6ca29df34305d50ed62f638",
+      "project": "CalamityMod",
+      "path": "Projectiles/Summon/SummonBrimstoneExplosion.png",
+      "license": "ARR; see THIRD_PARTY_NOTICES.md",
+      "used_by": [
+        "Witch curse actors"
+      ],
+      "source_aliases": [
+        "Projectiles/Summon/SummonBrimstoneExplosion.png",
+        "Projectiles/Summon/SummonBrimstoneExplosionSmall.png"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/witch_bomber_friendly.png",
+      "sha256": "1bfb35cedd6f3b227c19821a4c48ce2fd7682c2dd78899e15895c6cf953e63bd",
+      "project": "CalamityMod",
+      "path": "Projectiles/Typeless/SuicideBomberDemonFriendly.png",
+      "license": "ARR; see THIRD_PARTY_NOTICES.md",
+      "used_by": [
+        "Witch curse actors"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/witch_bomber_glowmask.png",
+      "sha256": "f15d6ac5c03e98fed9dd046953a2882a29fdf8967e770d51ec1d876ac5ceb123",
+      "project": "CalamityMod",
+      "path": "Projectiles/Typeless/SuicideBomberDemonGlowmask.png",
+      "license": "ARR; see THIRD_PARTY_NOTICES.md",
+      "used_by": [
+        "Witch curse actors"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/witch_bomber_glowmaskfriendly.png",
+      "sha256": "ad02ee4596f3961c2f3215dfdbaad2849df5cfb023e14ff18ae8487182b387d0",
+      "project": "CalamityMod",
+      "path": "Projectiles/Typeless/SuicideBomberDemonGlowmaskFriendly.png",
+      "license": "ARR; see THIRD_PARTY_NOTICES.md",
+      "used_by": [
+        "Witch curse actors"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/witch_bomber_orb.png",
+      "sha256": "8d6c3e303938fb61066a71790c576b7f72c907f09ba7ca97c61aea32138ea53c",
+      "project": "CalamityMod",
+      "path": "Projectiles/Typeless/SuicideBomberDemonOrb.png",
+      "license": "ARR; see THIRD_PARTY_NOTICES.md",
+      "used_by": [
+        "Witch curse actors"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/witch_bomber_orbfriendly.png",
+      "sha256": "fb741b052fd316554524daebb4461cbf7877194fa70af6f60162cc0190b3660b",
+      "project": "CalamityMod",
+      "path": "Projectiles/Typeless/SuicideBomberDemonOrbFriendly.png",
+      "license": "ARR; see THIRD_PARTY_NOTICES.md",
+      "used_by": [
+        "Witch curse actors"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/mob_effect/witch_withered.png",
+      "sha256": "ada787cb8b49ed1dcdb9c8ca84f1a0a1ab514ec359156e9dd09d72bedaa0e312",
+      "project": "CalamityMod",
+      "path": "Buffs/Cooldowns/Withered.png",
+      "license": "ARR; see THIRD_PARTY_NOTICES.md",
+      "used_by": [
+        "Withering curse status"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/gui/witch/ephemeral_bar.png",
+      "sha256": "dc505edcc03dadfe0b784c298b7cd73a7a4a4466f27566be0eaf2af931578978",
+      "project": "CalamityMod",
+      "path": "UI/MiscTextures/EphemeralBar.png",
+      "source_sha256": "dc505edcc03dadfe0b784c298b7cd73a7a4a4466f27566be0eaf2af931578978",
+      "license": "ARR (Calamity original terms)",
+      "conversion": "Unmodified source PNG",
+      "used_by": [
+        "WitchScreen / Ephemeral charge HUD"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/gui/witch/ephemeral_bar_border.png",
+      "sha256": "18f783b5ca09d9b270dd5cbf80ce261ea17888ceaba2da002190e37f412a4caa",
+      "project": "CalamityMod",
+      "path": "UI/MiscTextures/EphemeralBarBorder.png",
+      "source_sha256": "18f783b5ca09d9b270dd5cbf80ce261ea17888ceaba2da002190e37f412a4caa",
+      "license": "ARR (Calamity original terms)",
+      "conversion": "Unmodified source PNG",
+      "used_by": [
+        "WitchScreen / Ephemeral charge HUD"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/gui/witch/calamitascurseui_arrowup.png",
+      "sha256": "3e219d437de846c3cf70b497960f000c3c686878ecf1dd79e41a78b785bcb1da",
+      "project": "CalamityMod",
+      "path": "UI/CalamitasEnchantments/CalamitasCurseUI_ArrowUp.png",
+      "source_sha256": "3e219d437de846c3cf70b497960f000c3c686878ecf1dd79e41a78b785bcb1da",
+      "license": "ARR (Calamity original terms)",
+      "conversion": "Unmodified source PNG",
+      "used_by": [
+        "WitchScreen / Ephemeral charge HUD"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/gui/witch/calamitascurseui_arrowdown.png",
+      "sha256": "50ff2134cb00808795c1c7022437417c6a18c41eed9fb1415842fc93c4c980e1",
+      "project": "CalamityMod",
+      "path": "UI/CalamitasEnchantments/CalamitasCurseUI_ArrowDown.png",
+      "source_sha256": "50ff2134cb00808795c1c7022437417c6a18c41eed9fb1415842fc93c4c980e1",
+      "license": "ARR (Calamity original terms)",
+      "conversion": "Unmodified source PNG",
+      "used_by": [
+        "WitchScreen / Ephemeral charge HUD"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/item/rancor.png",
+      "sha256": "255e0b64bf4e8b46b00e7c11ae6b21e945576dc3b6f9d31add862cace4b8babc",
+      "project": "Calamity Mod",
+      "path": "E:\\工具\\tModUnpacker\\CalamityMod\\Items\\Weapons\\Magic\\Rancor.png",
+      "source_sha256": "255e0b64bf4e8b46b00e7c11ae6b21e945576dc3b6f9d31add862cace4b8babc",
+      "license": "ARR (see THIRD_PARTY_NOTICES.md)",
+      "used_by": [
+        "Necromantic infusion weapons"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/item/gruesome_eminence.png",
+      "sha256": "d28c9b324f8be75497e10d9f10a843e201b18f11fd59e8dc7983e0f9ac84b79a",
+      "project": "Calamity Mod",
+      "path": "E:\\工具\\tModUnpacker\\CalamityMod\\Items\\Weapons\\Magic\\GruesomeEminence.png",
+      "source_sha256": "d28c9b324f8be75497e10d9f10a843e201b18f11fd59e8dc7983e0f9ac84b79a",
+      "license": "ARR (see THIRD_PARTY_NOTICES.md)",
+      "used_by": [
+        "Necromantic infusion weapons"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/rancor_circle.png",
+      "sha256": "d0580143322245e4b92a04a1efee7911380c3c96bfaf2d072b9b48029d93833c",
+      "project": "Calamity Mod",
+      "path": "E:\\工具\\tModUnpacker\\CalamityMod\\Projectiles\\Magic\\RancorMagicCircle.png",
+      "source_sha256": "d0580143322245e4b92a04a1efee7911380c3c96bfaf2d072b9b48029d93833c",
+      "license": "ARR (see THIRD_PARTY_NOTICES.md)",
+      "used_by": [
+        "Necromantic infusion weapons"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/rancor_circle_glow.png",
+      "sha256": "738c67d82a639d5aa5b2e6a02c8160837b392490e32b41480890e69355f8914e",
+      "project": "Calamity Mod",
+      "path": "E:\\工具\\tModUnpacker\\CalamityMod\\Projectiles\\Magic\\RancorMagicCircleGlowmask.png",
+      "source_sha256": "738c67d82a639d5aa5b2e6a02c8160837b392490e32b41480890e69355f8914e",
+      "license": "ARR (see THIRD_PARTY_NOTICES.md)",
+      "used_by": [
+        "Necromantic infusion weapons"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/rancor_circle_inner.png",
+      "sha256": "a1f376244dfec1d7e767c0fbe032097339f4fe6526262dd3f648ba7998b024aa",
+      "project": "Calamity Mod",
+      "path": "E:\\工具\\tModUnpacker\\CalamityMod\\Projectiles\\Magic\\RancorMagicCircleInner.png",
+      "source_sha256": "a1f376244dfec1d7e767c0fbe032097339f4fe6526262dd3f648ba7998b024aa",
+      "license": "ARR (see THIRD_PARTY_NOTICES.md)",
+      "used_by": [
+        "Necromantic infusion weapons"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/rancor_circle_inner_glow.png",
+      "sha256": "9f3b536fd07185eccc730ba911be244cb37aba993107a7952e5795da3b25cb41",
+      "project": "Calamity Mod",
+      "path": "E:\\工具\\tModUnpacker\\CalamityMod\\Projectiles\\Magic\\RancorMagicCircleInnerGlowmask.png",
+      "source_sha256": "9f3b536fd07185eccc730ba911be244cb37aba993107a7952e5795da3b25cb41",
+      "license": "ARR (see THIRD_PARTY_NOTICES.md)",
+      "used_by": [
+        "Necromantic infusion weapons"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/rancor_arm.png",
+      "sha256": "082cf1b13a83a465250df3e17a43a938004daadf0dcef106d1c28cdca19291d3",
+      "project": "Calamity Mod",
+      "path": "E:\\工具\\tModUnpacker\\CalamityMod\\Projectiles\\Magic\\RancorArm.png",
+      "source_sha256": "082cf1b13a83a465250df3e17a43a938004daadf0dcef106d1c28cdca19291d3",
+      "license": "ARR (see THIRD_PARTY_NOTICES.md)",
+      "used_by": [
+        "Necromantic infusion weapons"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/rancor_small_cinder.png",
+      "sha256": "e0217383444c12a761dbadef43dd827e1ed69faca7ff0f22b3e10ec40048fbfb",
+      "project": "Calamity Mod",
+      "path": "E:\\工具\\tModUnpacker\\CalamityMod\\Projectiles\\Magic\\RancorSmallCinder.png",
+      "source_sha256": "e0217383444c12a761dbadef43dd827e1ed69faca7ff0f22b3e10ec40048fbfb",
+      "license": "ARR (see THIRD_PARTY_NOTICES.md)",
+      "used_by": [
+        "Necromantic infusion weapons"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/rancor_fog.png",
+      "sha256": "26542b48454cebdcb47419229825e90b539528ce18cce34ee396d92714b894f0",
+      "project": "Calamity Mod",
+      "path": "E:\\工具\\tModUnpacker\\CalamityMod\\Projectiles\\Magic\\RancorFog.png",
+      "source_sha256": "26542b48454cebdcb47419229825e90b539528ce18cce34ee396d92714b894f0",
+      "license": "ARR (see THIRD_PARTY_NOTICES.md)",
+      "used_by": [
+        "Necromantic infusion weapons"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/gruesome_book.png",
+      "sha256": "97107b95499a69b377e46b26122c540433b5f6fb9f6a35b2ba72c16236be6709",
+      "project": "Calamity Mod",
+      "path": "E:\\工具\\tModUnpacker\\CalamityMod\\Projectiles\\Magic\\GruesomeEminenceHoldout.png",
+      "source_sha256": "97107b95499a69b377e46b26122c540433b5f6fb9f6a35b2ba72c16236be6709",
+      "license": "ARR (see THIRD_PARTY_NOTICES.md)",
+      "used_by": [
+        "Necromantic infusion weapons"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/spirit_head.png",
+      "sha256": "940651e9a06785fd6e770d2a2d4f951b110e8250f78ae3082f538de3f788a098",
+      "project": "Calamity Mod",
+      "path": "E:\\工具\\tModUnpacker\\CalamityMod\\Projectiles\\Magic\\SpiritCongregation.png",
+      "source_sha256": "940651e9a06785fd6e770d2a2d4f951b110e8250f78ae3082f538de3f788a098",
+      "license": "ARR (see THIRD_PARTY_NOTICES.md)",
+      "used_by": [
+        "Necromantic infusion weapons"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/spirit_head_big.png",
+      "sha256": "a4d21997d70b6940ab744230bc5aa08e611bab41096730ef7922e44bf56a8d07",
+      "project": "Calamity Mod",
+      "path": "E:\\工具\\tModUnpacker\\CalamityMod\\Projectiles\\Magic\\SpiritCongregationBig.png",
+      "source_sha256": "a4d21997d70b6940ab744230bc5aa08e611bab41096730ef7922e44bf56a8d07",
+      "license": "ARR (see THIRD_PARTY_NOTICES.md)",
+      "used_by": [
+        "Necromantic infusion weapons"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/spirit_back.png",
+      "sha256": "66b9b981e96596fd6cf7f016f3417a3c73ba8e6924c96025e7640815c24cf19f",
+      "project": "Calamity Mod",
+      "path": "E:\\工具\\tModUnpacker\\CalamityMod\\Projectiles\\Magic\\SpiritCongregationBack.png",
+      "source_sha256": "66b9b981e96596fd6cf7f016f3417a3c73ba8e6924c96025e7640815c24cf19f",
+      "license": "ARR (see THIRD_PARTY_NOTICES.md)",
+      "used_by": [
+        "Necromantic infusion weapons"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/spirit_back_big.png",
+      "sha256": "5a64160afd68fc744b6ddf4fd43e25f30435e477e335ebd6849c7ff60c8f2a37",
+      "project": "Calamity Mod",
+      "path": "E:\\工具\\tModUnpacker\\CalamityMod\\Projectiles\\Magic\\SpiritCongregationBackBig.png",
+      "source_sha256": "5a64160afd68fc744b6ddf4fd43e25f30435e477e335ebd6849c7ff60c8f2a37",
+      "license": "ARR (see THIRD_PARTY_NOTICES.md)",
+      "used_by": [
+        "Necromantic infusion weapons"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/necro_circle.png",
+      "sha256": "4b6ef1a440bcbc7550328fb7b7eb46a079012aaca971b9c8811505b032790c71",
+      "project": "Calamity Mod",
+      "path": "E:\\工具\\tModUnpacker\\CalamityMod\\ExtraTextures\\BasicCircle.png",
+      "source_sha256": "4b6ef1a440bcbc7550328fb7b7eb46a079012aaca971b9c8811505b032790c71",
+      "license": "ARR (see THIRD_PARTY_NOTICES.md)",
+      "used_by": [
+        "Necromantic infusion weapons"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/light.png",
+      "sha256": "c63c8daf47b899af3eadeadf1579af25133efb441379afca07f8b098b3382622",
+      "project": "Calamity Mod",
+      "path": "E:\\工具\\tModUnpacker\\CalamityMod\\ExtraTextures\\SmallGreyscaleCircle.png",
+      "source_sha256": "c63c8daf47b899af3eadeadf1579af25133efb441379afca07f8b098b3382622",
+      "license": "ARR (see THIRD_PARTY_NOTICES.md)",
+      "used_by": [
+        "Necromantic infusion weapons"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/gruesome_layer_1.png",
+      "sha256": "d3181440c7968f127186fa9e4a7bb23cec35a199c0fddbc31aa834671a0ae9a4",
+      "project": "Calamity Mod",
+      "path": "E:\\工具\\tModUnpacker\\CalamityMod\\Graphics\\Metaballs\\GruesomeEminence_Ghost_Layer1.png",
+      "source_sha256": "d3181440c7968f127186fa9e4a7bb23cec35a199c0fddbc31aa834671a0ae9a4",
+      "license": "ARR (see THIRD_PARTY_NOTICES.md)",
+      "used_by": [
+        "Necromantic infusion weapons"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/gruesome_layer_2.png",
+      "sha256": "31cea7c4e0c806d39fe8b0f9cbd57ea6dced04f872454111c179574f49813ab7",
+      "project": "Calamity Mod",
+      "path": "E:\\工具\\tModUnpacker\\CalamityMod\\Graphics\\Metaballs\\GruesomeEminence_Ghost_Layer2.png",
+      "source_sha256": "31cea7c4e0c806d39fe8b0f9cbd57ea6dced04f872454111c179574f49813ab7",
+      "license": "ARR (see THIRD_PARTY_NOTICES.md)",
+      "used_by": [
+        "Necromantic infusion weapons"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/gruesome_layer_3.png",
+      "sha256": "41d00025d24bdc621f55caae6a5185fa0cb3ffbd78b7814b75f70ae804c82912",
+      "project": "Calamity Mod",
+      "path": "E:\\工具\\tModUnpacker\\CalamityMod\\Graphics\\Metaballs\\GruesomeEminence_Ghost_Layer3.png",
+      "source_sha256": "41d00025d24bdc621f55caae6a5185fa0cb3ffbd78b7814b75f70ae804c82912",
+      "license": "ARR (see THIRD_PARTY_NOTICES.md)",
+      "used_by": [
+        "Necromantic infusion weapons"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/gruesome_layer_4.png",
+      "sha256": "31b3d17f88e4b8ec43c8d1bfd1a2564e44203a032fedae1151500177eaa09389",
+      "project": "Calamity Mod",
+      "path": "E:\\工具\\tModUnpacker\\CalamityMod\\Graphics\\Metaballs\\GruesomeEminence_Ghost_Layer4.png",
+      "source_sha256": "31b3d17f88e4b8ec43c8d1bfd1a2564e44203a032fedae1151500177eaa09389",
+      "license": "ARR (see THIRD_PARTY_NOTICES.md)",
+      "used_by": [
+        "Necromantic infusion weapons"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/gruesome_layer_5.png",
+      "sha256": "a05f0657b9405fd1b1cbee0bc834b444a63fbc46811b33911f0616e02a4c14a4",
+      "project": "Calamity Mod",
+      "path": "E:\\工具\\tModUnpacker\\CalamityMod\\Graphics\\Metaballs\\GruesomeEminence_Ghost_Layer5.png",
+      "source_sha256": "a05f0657b9405fd1b1cbee0bc834b444a63fbc46811b33911f0616e02a4c14a4",
+      "license": "ARR (see THIRD_PARTY_NOTICES.md)",
+      "used_by": [
+        "Necromantic infusion weapons"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/rancor_cast_0.ogg",
+      "sha256": "c2a306118d8671b1b5316cf856b87dbe778e39d1c57a4fe0744084d1e9b10ddb",
+      "project": "Terraria / Re-Logic",
+      "path": "G:\\SteamLibrary\\steamapps\\common\\Terraria\\Content\\Sounds\\Item_117.xnb",
+      "source_sha256": "6d890c03d096729c436dde40fbff8f27d97ee6cc90aff23f185a5a1695c222d5",
+      "license": "ARR (see THIRD_PARTY_NOTICES.md)",
+      "used_by": [
+        "Necromantic infusion weapons"
+      ],
+      "conversion": {
+        "source_format": "XNB SoundEffectReader PCM16",
+        "source_pcm_sha256": "f5e684d703ae36a1ef56d18e0ebda55a5b748d835196518d46a08dad1c0b015c",
+        "channels": 1,
+        "sample_rate": 44100,
+        "pcm_frames": 44100,
+        "output_codec": "Vorbis quality 8; lossy encode of original PCM, not byte-identical"
+      }
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/rancor_fire_0.ogg",
+      "sha256": "026966de7787f625ff1a2acbdf6a755e3ae0d46ec3abeaf49de36f8a350dd5ac",
+      "project": "Terraria / Re-Logic",
+      "path": "G:\\SteamLibrary\\steamapps\\common\\Terraria\\Content\\Sounds\\Zombie_104.xnb",
+      "source_sha256": "5a38474e79c0aa680e5ecdd90ff5184f164828ab2705ea0b3c6052ab7c41909f",
+      "license": "ARR (see THIRD_PARTY_NOTICES.md)",
+      "used_by": [
+        "Necromantic infusion weapons"
+      ],
+      "conversion": {
+        "source_format": "XNB SoundEffectReader PCM16",
+        "source_pcm_sha256": "85b21ab8f5c1d0fae41e1c670b78384f022f7e624604c0c3abf518f12f914e5b",
+        "channels": 1,
+        "sample_rate": 44100,
+        "pcm_frames": 143133,
+        "output_codec": "Vorbis quality 8; lossy encode of original PCM, not byte-identical"
+      }
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/rancor_arm_0.ogg",
+      "sha256": "0a418914f2f8d49b1fc39bdc2a09a2db6b60e58968fa6a0c505236aa9bc293d0",
+      "project": "Terraria / Re-Logic",
+      "path": "G:\\SteamLibrary\\steamapps\\common\\Terraria\\Content\\Sounds\\NPC_Killed_52.xnb",
+      "source_sha256": "6b12ec2b8904e34a3fbc2944e7b9ce890350302617b1af6d0bcdb588d517b2f3",
+      "license": "ARR (see THIRD_PARTY_NOTICES.md)",
+      "used_by": [
+        "Necromantic infusion weapons"
+      ],
+      "conversion": {
+        "source_format": "XNB SoundEffectReader PCM16",
+        "source_pcm_sha256": "e1cbeb6aeb25ab93c8524059cc9edb3600970aa94d59be1c393c79594d5a96f5",
+        "channels": 1,
+        "sample_rate": 44100,
+        "pcm_frames": 44100,
+        "output_codec": "Vorbis quality 8; lossy encode of original PCM, not byte-identical"
+      }
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/rancor_loop_0.ogg",
+      "sha256": "a8da10675a2ad2ff016ecf5fcb03d094df0b9098bb8aedfaa160382e9c374ab1",
+      "project": "Terraria / Re-Logic",
+      "path": "G:\\SteamLibrary\\steamapps\\common\\Terraria\\Content\\Sounds\\Custom\\dd2_etherian_portal_idle_loop.xnb",
+      "source_sha256": "ec8360811e3c29049cba57de346f980346e529ec82bd046a54bff87d1547baf1",
+      "license": "ARR (see THIRD_PARTY_NOTICES.md)",
+      "used_by": [
+        "Necromantic infusion weapons"
+      ],
+      "conversion": {
+        "source_format": "XNB SoundEffectReader PCM16",
+        "source_pcm_sha256": "0b99a8286e251acc768b033b99948740ee0127843cedf9e0f43b5fe88098cafe",
+        "channels": 1,
+        "sample_rate": 48000,
+        "pcm_frames": 855436,
+        "output_codec": "Vorbis quality 8; lossy encode of original PCM, not byte-identical"
+      }
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/spirit_open_0.ogg",
+      "sha256": "58fadd11fc690b4441112b5bf922918336bbd010127fcd728916d98656f9f122",
+      "project": "Terraria / Re-Logic",
+      "path": "G:\\SteamLibrary\\steamapps\\common\\Terraria\\Content\\Sounds\\Custom\\dd2_etherian_portal_open.xnb",
+      "source_sha256": "0954cb3fe2fe0a3bcbcd88ba42c58b01d5f60cebbb13830613d9a7ceb40dd339",
+      "license": "ARR (see THIRD_PARTY_NOTICES.md)",
+      "used_by": [
+        "Necromantic infusion weapons"
+      ],
+      "conversion": {
+        "source_format": "XNB SoundEffectReader PCM16",
+        "source_pcm_sha256": "c00467ff3951f9366618eb8f8add02c7557b2c2d4cc6c9e12c5f1ef838d1abcf",
+        "channels": 2,
+        "sample_rate": 48000,
+        "pcm_frames": 382220,
+        "output_codec": "Vorbis quality 8; lossy encode of original PCM, not byte-identical"
+      }
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/spirit_grow_0.ogg",
+      "sha256": "4d4b4ab51ee76dec23d183f0f3af52a3c63e320ce196f97a085ee657ca299b57",
+      "project": "Terraria / Re-Logic",
+      "path": "G:\\SteamLibrary\\steamapps\\common\\Terraria\\Content\\Sounds\\Custom\\dd2_betsy_flying_circle_attack.xnb",
+      "source_sha256": "712721b8f3f6ec2c7035203449541da7d3463f83a75f89202312bae977e493eb",
+      "license": "ARR (see THIRD_PARTY_NOTICES.md)",
+      "used_by": [
+        "Necromantic infusion weapons"
+      ],
+      "conversion": {
+        "source_format": "XNB SoundEffectReader PCM16",
+        "source_pcm_sha256": "632ef23be8e5a3de28b09a399349f54adc91d5ceacc7271cde0b8030e8daab9e",
+        "channels": 2,
+        "sample_rate": 48000,
+        "pcm_frames": 91394,
+        "output_codec": "Vorbis quality 8; lossy encode of original PCM, not byte-identical"
+      }
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/spirit_release_0.ogg",
+      "sha256": "5bf91ff7bfc19b356f987450612c26de891db14c4b126e2d57848cabbade5df4",
+      "project": "Terraria / Re-Logic",
+      "path": "G:\\SteamLibrary\\steamapps\\common\\Terraria\\Content\\Sounds\\Custom\\dd2_etherian_portal_spawn_enemy_0.xnb",
+      "source_sha256": "521862f2c7afd5aacd428336a860c2f55599e45c5ef558a221e5bdc7bb1fc22a",
+      "license": "ARR (see THIRD_PARTY_NOTICES.md)",
+      "used_by": [
+        "Necromantic infusion weapons"
+      ],
+      "conversion": {
+        "source_format": "XNB SoundEffectReader PCM16",
+        "source_pcm_sha256": "a9abe3d198ec04165f709455ccbfc976ef1c59d53155e4d0713274f09233b2c1",
+        "channels": 2,
+        "sample_rate": 48000,
+        "pcm_frames": 50755,
+        "output_codec": "Vorbis quality 8; lossy encode of original PCM, not byte-identical"
+      }
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/spirit_release_1.ogg",
+      "sha256": "b64bedf2ae2e84a9157335bef823216fc1a98df8b0d0ca9f81d1fbb1ba0a4244",
+      "project": "Terraria / Re-Logic",
+      "path": "G:\\SteamLibrary\\steamapps\\common\\Terraria\\Content\\Sounds\\Custom\\dd2_etherian_portal_spawn_enemy_1.xnb",
+      "source_sha256": "6c2a97a5bfb677c15d898dd7306d13cfea27b3b7e4550dcc857471cfe0e62158",
+      "license": "ARR (see THIRD_PARTY_NOTICES.md)",
+      "used_by": [
+        "Necromantic infusion weapons"
+      ],
+      "conversion": {
+        "source_format": "XNB SoundEffectReader PCM16",
+        "source_pcm_sha256": "9073aaa4cd28548ecb9190425af336e4dcc99547904243ce1a20f19b85ca79c2",
+        "channels": 2,
+        "sample_rate": 48000,
+        "pcm_frames": 54468,
+        "output_codec": "Vorbis quality 8; lossy encode of original PCM, not byte-identical"
+      }
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/spirit_release_2.ogg",
+      "sha256": "f013dec244d508e691adc436ef4ff4b3b9dd944abfe3d1d7c6c7908da0198453",
+      "project": "Terraria / Re-Logic",
+      "path": "G:\\SteamLibrary\\steamapps\\common\\Terraria\\Content\\Sounds\\Custom\\dd2_etherian_portal_spawn_enemy_2.xnb",
+      "source_sha256": "0c96bc574db3fec60b6417f56ab4a61a2ac61c6002ffd9e1321c41804a2a0ef4",
+      "license": "ARR (see THIRD_PARTY_NOTICES.md)",
+      "used_by": [
+        "Necromantic infusion weapons"
+      ],
+      "conversion": {
+        "source_format": "XNB SoundEffectReader PCM16",
+        "source_pcm_sha256": "e28c36c861aaf1d1aa905938895967cbbc54e37e90d6beaf1dcacc7e03691a53",
+        "channels": 2,
+        "sample_rate": 48000,
+        "pcm_frames": 59272,
+        "output_codec": "Vorbis quality 8; lossy encode of original PCM, not byte-identical"
+      }
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/rancor_charge.ogg",
+      "sha256": "ffd44097044c7d6786845de7ed086ec5f9d969eebad2f2f10d089797e6ef8fd6",
+      "project": "Calamity Mod",
+      "path": "E:\\工具\\tModUnpacker\\CalamityMod\\Sounds\\Custom\\MoonLordLaserCharge.ogg",
+      "source_sha256": "ffd44097044c7d6786845de7ed086ec5f9d969eebad2f2f10d089797e6ef8fd6",
+      "license": "ARR (see THIRD_PARTY_NOTICES.md)",
+      "used_by": [
+        "Necromantic infusion weapons"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/necro_dust_234.png",
+      "sha256": "1f15203f13098590bacc303faff96d222e1e1be2ec03c851c8cd6983e0d6d401",
+      "project": "Terraria / Re-Logic",
+      "path": "G:/SteamLibrary/steamapps/common/tModLoader/Content/Images/Dust.xnb",
+      "source_sha256": "b7d68955a87e3a7d77ebf0f7c7e4da75c04877d704db1db1355d228aba97a8a6",
+      "license": "ARR (Terraria original terms)",
+      "conversion": "Lossless 8x8 native dust atlas frame crop",
+      "source_rect": [
+        340,
+        60,
+        8,
+        8
+      ],
+      "used_by": [
+        "Necromantic weapon dust"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/necro_dust_267.png",
+      "sha256": "2685a7d65da46c39199a8794e30dd7e56caaec5c25a5ec49781ebb8bf77cdb05",
+      "project": "Terraria / Re-Logic",
+      "path": "G:/SteamLibrary/steamapps/common/tModLoader/Content/Images/Dust.xnb",
+      "source_sha256": "b7d68955a87e3a7d77ebf0f7c7e4da75c04877d704db1db1355d228aba97a8a6",
+      "license": "ARR (Terraria original terms)",
+      "conversion": "Lossless 8x8 native dust atlas frame crop",
+      "source_rect": [
+        670,
+        60,
+        8,
+        8
+      ],
+      "used_by": [
+        "Necromantic weapon dust"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/necro_dust_234_1.png",
+      "sha256": "88e20f086075c101320cc976c89772ead77f9a6b8d59585ea13f94e81de74939",
+      "project": "Terraria / Re-Logic",
+      "path": "G:/SteamLibrary/steamapps/common/tModLoader/Content/Images/Dust.xnb",
+      "source_sha256": "b7d68955a87e3a7d77ebf0f7c7e4da75c04877d704db1db1355d228aba97a8a6",
+      "license": "ARR (Terraria original terms)",
+      "conversion": "Lossless 8x8 native dust atlas frame crop",
+      "source_rect": [
+        340,
+        70,
+        8,
+        8
+      ],
+      "used_by": [
+        "Necromantic weapon dust"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/necro_dust_234_2.png",
+      "sha256": "26370381e48de31716c0548aca463f60f5198005534b56c92b44a3b0a587d8b4",
+      "project": "Terraria / Re-Logic",
+      "path": "G:/SteamLibrary/steamapps/common/tModLoader/Content/Images/Dust.xnb",
+      "source_sha256": "b7d68955a87e3a7d77ebf0f7c7e4da75c04877d704db1db1355d228aba97a8a6",
+      "license": "ARR (Terraria original terms)",
+      "conversion": "Lossless 8x8 native dust atlas frame crop",
+      "source_rect": [
+        340,
+        80,
+        8,
+        8
+      ],
+      "used_by": [
+        "Necromantic weapon dust"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/necro_dust_267_1.png",
+      "sha256": "1f6d8cf9a9eaa4db245f93e73c08de4e671cb4cd65a96bc6eab5ee5470ead74c",
+      "project": "Terraria / Re-Logic",
+      "path": "G:/SteamLibrary/steamapps/common/tModLoader/Content/Images/Dust.xnb",
+      "source_sha256": "b7d68955a87e3a7d77ebf0f7c7e4da75c04877d704db1db1355d228aba97a8a6",
+      "license": "ARR (Terraria original terms)",
+      "conversion": "Lossless 8x8 native dust atlas frame crop",
+      "source_rect": [
+        670,
+        70,
+        8,
+        8
+      ],
+      "used_by": [
+        "Necromantic weapon dust"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/necro_dust_267_2.png",
+      "sha256": "b9b67233904874b1e33f3ac2c961c284b5d1851e3fe027025b8602e15f5da019",
+      "project": "Terraria / Re-Logic",
+      "path": "G:/SteamLibrary/steamapps/common/tModLoader/Content/Images/Dust.xnb",
+      "source_sha256": "b7d68955a87e3a7d77ebf0f7c7e4da75c04877d704db1db1355d228aba97a8a6",
+      "license": "ARR (Terraria original terms)",
+      "conversion": "Lossless 8x8 native dust atlas frame crop",
+      "source_rect": [
+        670,
+        80,
+        8,
+        8
+      ],
+      "used_by": [
+        "Necromantic weapon dust"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/shaders/core/rancor.fsh",
+      "sha256": "b011bb31df8b7f4c72d729eebcf1003c30443c9ad2d10ecf4b658bf4cf1442ab",
+      "project": "Calamity Mod",
+      "path": "E:\\工具\\tModUnpacker\\CalamityMod\\Effects\\RancorMagicCircle.fx",
+      "source_sha256": "444334ce8335e4e248b5616fb1f694e9ce9082d4f8fdd6b3a087eb0c6230b7fc",
+      "license": "ARR (see THIRD_PARTY_NOTICES.md)",
+      "conversion": "HLSL fragment math adapted to GLSL 150 and 3D geometry",
+      "used_by": [
+        "Necromantic infusion weapons"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/shaders/core/rancor.fsh",
+      "sha256": "b011bb31df8b7f4c72d729eebcf1003c30443c9ad2d10ecf4b658bf4cf1442ab",
+      "project": "Calamity Mod",
+      "path": "E:\\工具\\tModUnpacker\\CalamityMod\\Effects\\Flame.fx",
+      "source_sha256": "41cc6b3aaa83f0b440ce948c46f8bec51aab1c96acd1b06511233419487338e8",
+      "license": "ARR (see THIRD_PARTY_NOTICES.md)",
+      "conversion": "HLSL fragment math adapted to GLSL 150 and 3D geometry",
+      "used_by": [
+        "Necromantic infusion weapons"
       ]
     }
   ],

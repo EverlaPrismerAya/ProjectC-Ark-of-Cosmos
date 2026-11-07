@@ -3,6 +3,10 @@
     {
       "type": "minecraft:single",
       "resource": "arkofcosmos:galaxia/galaxia"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "arkofcosmos:fx/gruesome_book"
     }
   ]
 }

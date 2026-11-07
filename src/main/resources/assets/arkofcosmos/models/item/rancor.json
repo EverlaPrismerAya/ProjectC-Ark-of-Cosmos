@@ -1,0 +1,14 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "arkofcosmos:item/rancor"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "arkofcosmos:channeling": 1
+      },
+      "model": "arkofcosmos:item/necromantic_hidden"
+    }
+  ]
+}

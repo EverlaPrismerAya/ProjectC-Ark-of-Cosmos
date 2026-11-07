@@ -803,5 +803,52 @@
         "stream": true
       }
     ]
+  },
+  "witch_enchant": {
+    "sounds": [
+      "arkofcosmos:witch_enchant"
+    ]
+  },
+  "rancor_cast": {
+    "sounds": [
+      "arkofcosmos:rancor_cast_0"
+    ]
+  },
+  "rancor_fire": {
+    "sounds": [
+      "arkofcosmos:rancor_fire_0"
+    ]
+  },
+  "rancor_arm": {
+    "sounds": [
+      "arkofcosmos:rancor_arm_0"
+    ]
+  },
+  "rancor_loop": {
+    "sounds": [
+      "arkofcosmos:rancor_loop_0"
+    ]
+  },
+  "spirit_open": {
+    "sounds": [
+      "arkofcosmos:spirit_open_0"
+    ]
+  },
+  "spirit_grow": {
+    "sounds": [
+      "arkofcosmos:spirit_grow_0"
+    ]
+  },
+  "spirit_release": {
+    "sounds": [
+      "arkofcosmos:spirit_release_0",
+      "arkofcosmos:spirit_release_1",
+      "arkofcosmos:spirit_release_2"
+    ]
+  },
+  "rancor_charge": {
+    "sounds": [
+      "arkofcosmos:rancor_charge"
+    ]
   }
 }

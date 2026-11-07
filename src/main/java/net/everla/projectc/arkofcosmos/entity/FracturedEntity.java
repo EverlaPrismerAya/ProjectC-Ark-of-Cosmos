@@ -57,6 +57,7 @@ public final class FracturedEntity extends Entity {
     public static boolean hurting(LivingEntity t) { return HURTING.get() == t; }
     public int kind() { return level().isClientSide ? view().getInt("Kind") : kind; }
     public int ownerId() { return level().isClientSide ? view().getInt("Owner") : ownerId; }
+    public LivingEntity curseOwner(){return net.everla.projectc.arkofcosmos.combat.WeaponUser.resolve(level(),ownerUuid);}
     public ItemStack weapon() { return weapon; }
     public Player owner() { return ownerUuid == null ? null : level().getPlayerByUUID(ownerUuid); }
     @Override protected void defineSynchedData() { entityData.define(VIEW, new CompoundTag()); }

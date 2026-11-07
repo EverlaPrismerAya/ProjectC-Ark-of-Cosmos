@@ -129,6 +129,7 @@ public final class ArkOfCosmos {
         context.registerConfig(net.minecraftforge.fml.config.ModConfig.Type.COMMON,ProjectCCommonConfig.SPEC,"projectc-common.toml");
         IEventBus bus = context.getModEventBus();
         CalamitasContent.register(bus);
+        net.everla.projectc.arkofcosmos.enchant.WitchEnchanting.register(bus);
         net.everla.projectc.arkofcosmos.combat.vanilla.VanillaCombat.register(bus);
         ITEMS.register(bus);
         ATTRIBUTES.register(bus);
@@ -160,6 +161,8 @@ public final class ArkOfCosmos {
             event.accept(ARK_OF_THE_ANCIENTS);
             if (MISTILTEINN != null) event.accept(MISTILTEINN);
         }
+        if (event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES && CalamitasContent.ENABLED) event.accept(CalamitasContent.LOCUS);
+        if(event.getTabKey()==CreativeModeTabs.COMBAT&&CalamitasContent.ENABLED){event.accept(CalamitasContent.RANCOR);event.accept(CalamitasContent.GRUESOME_EMINENCE);}
         if (event.getTabKey() == CreativeModeTabs.INGREDIENTS) event.accept(AURIC_BAR);
         if (event.getTabKey() == CreativeModeTabs.INGREDIENTS) event.accept(ANNIHILATION_EMBER);
         if (event.getTabKey() == CreativeModeTabs.INGREDIENTS) event.accept(ASHES_OF_CALAMITY);

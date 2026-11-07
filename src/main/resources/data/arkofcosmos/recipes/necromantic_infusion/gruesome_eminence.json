@@ -1,0 +1,15 @@
+{
+  "type": "arkofcosmos:necromantic_infusion",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "goety"
+    }
+  ],
+  "ingredient": {
+    "item": "goety:soul_light_focus"
+  },
+  "result": {
+    "item": "arkofcosmos:gruesome_eminence"
+  }
+}

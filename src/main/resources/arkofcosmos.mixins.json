@@ -34,7 +34,9 @@
     "weapon.brokenBiome.BrokenBiomeFrozenTravelMixin",
     "world.CalamityWitherMixin",
     "world.BeaconSummonMixin",
-    "world.CalamitySkullDropsMixin"
+    "world.CalamitySkullDropsMixin",
+    "compact.goetyRevelation.WitchWandSoulMixin",
+    "compact.goetyRevelation.WitchSoulDebitMixin"
   ],
   "client": [
     "client.calamitas.CalamitasDronePitchMixin",

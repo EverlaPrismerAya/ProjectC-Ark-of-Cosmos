@@ -19,6 +19,10 @@ public final class CalamitasArenaMaterial {
         composite(mask, mask, rgb, seconds, sourceScreenX, sourceScreenY);
     }
     public static void composite(RenderTarget mask, RenderTarget visible, int rgb, double seconds, double sourceScreenX, double sourceScreenY) {
+        composite(mask,visible,rgb,seconds,sourceScreenX,sourceScreenY,false);
+    }
+    public static void compositeGhost(RenderTarget mask,RenderTarget visible,double seconds,double sourceScreenX,double sourceScreenY){composite(mask,visible,0x3D0602,seconds,sourceScreenX,sourceScreenY,true);}
+    private static void composite(RenderTarget mask,RenderTarget visible,int rgb,double seconds,double sourceScreenX,double sourceScreenY,boolean ghost) {
         var shader = ArkFxDraw.arenaMetaballShader;
         if (shader == null) return;
         var previousShader = RenderSystem.getShader();
@@ -42,8 +46,8 @@ public final class CalamitasArenaMaterial {
             // Current camera offset already incorporates the source single-frame camera correction.
             shader.safeGetUniform("SingleFrameScreenOffset").set(0f, 0f);
             double time = seconds % 3600;
-            for (int layer = 0; layer < 2; layer++) {
-                String name = layer == 0 ? "calamitas_arena_smoke" : "calamitas_arena_wave";
+            for (int layer = 0; layer < (ghost?5:2); layer++) {
+                String name = ghost?"gruesome_layer_"+(layer+1):layer == 0 ? "calamitas_arena_smoke" : "calamitas_arena_wave";
                 var texture = ArkFxDraw.texture(name);
                 var image = Minecraft.getInstance().getTextureManager().getTexture(texture);
                 image.setFilter(true, false);
@@ -56,10 +60,19 @@ public final class CalamitasArenaMaterial {
                 shader.safeGetUniform("LayerSize").set((float)size[0], (float)size[1]);
                 double x = layer == 0 ? Math.sin(time * .03) * 10 : 0;
                 double y = layer == 0 ? Math.cos(time * .1) * 17 : time * .03;
+                if(ghost){
+                    switch(layer){
+                        case 0->{x=time*.03;y=0;}
+                        case 1->{double amount=Math.cos(time*.041)*2,angle=Math.cos(time*.08)*.97;x=amount*(Math.cos(angle)-Math.sin(angle));y=amount*(Math.sin(angle)+Math.cos(angle));}
+                        case 2->{x=Math.cos(time*2.02)*.036;y=Math.sin(time*2.02)*.036+Math.cos(time*.161)*.5+.5;}
+                        case 3->{x=-time*.04+Math.cos(time*1.89)*.03;y=Math.sin(time*1.89)*.03+noise(time*.187,time*.193,466920161)*.025;}
+                        default->{x=time*.037+Math.cos(time*1.77)*.04725;y=Math.sin(time*1.77)*.04725+noise(time*.187,time*.193,577215664)*.05;}
+                    }
+                }
                 shader.safeGetUniform("LayerOffset").set((float)(sourceScreenX / mask.width + x),
                         (float)(sourceScreenY / mask.height + y));
-                shader.safeGetUniform("WaveLayer").set((float)layer);
-                shader.safeGetUniform("LayerColor").set(layer == 0 ? 1f : r, layer == 0 ? 1f : g, layer == 0 ? 1f : b, 1f);
+                shader.safeGetUniform("WaveLayer").set(ghost?0f:(float)layer);
+                shader.safeGetUniform("LayerColor").set(ghost||layer == 0 ? 1f : r, ghost||layer == 0 ? 1f : g, ghost||layer == 0 ? 1f : b, 1f);
                 RenderSystem.setShader(() -> shader);
                 var out = Tesselator.getInstance().getBuilder(); out.begin(VertexFormat.Mode.QUADS, ArkFxDraw.FORMAT);
                 vertex(out, -1, -1, 0, 0); vertex(out, 1, -1, 1, 0);
@@ -84,4 +97,7 @@ public final class CalamitasArenaMaterial {
         out.putFloat(0, u); out.putFloat(4, v); out.putFloat(8, 1);
         out.nextElement(); out.endVertex();
     }
+    // CalamityUtils.PerlinNoise2D, two octaves, including the signed integer hash.
+    private static double noise(double x,double y,int seed){x*=4;y*=4;int ix=(int)x,iy=(int)y;double fx=x-ix,fy=y-iy,sx=fx*fx*(3-2*fx),sy=fy*fy*(3-2*fy);double a=gradient(seed,ix,iy,fx,fy)*(1-sx)+gradient(seed,ix+1,iy,fx-1,fy)*sx,b=gradient(seed,ix,iy+1,fx,fy-1)*(1-sx)+gradient(seed,ix+1,iy+1,fx-1,fy-1)*sx;return a+(b-a)*sy;}
+    private static double gradient(int seed,int x,int y,double dx,double dy){int hash=seed^(1619*x)^(31337*y);hash=hash*hash*hash*60493;hash=(hash>>13)^hash;double[][] directions={{-1,-1},{1,-1},{-1,1},{1,1},{0,-1},{-1,0},{0,1},{1,0}};var d=directions[hash&7];return dx*d[0]+dy*d[1];}
 }

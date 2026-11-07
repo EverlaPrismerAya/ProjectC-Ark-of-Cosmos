@@ -18,9 +18,9 @@ public final class WeaponUser {
     private static boolean playerOwned(net.minecraft.world.entity.Entity entity) {
         var seen=new java.util.HashSet<net.minecraft.world.entity.Entity>();
         while(entity!=null && seen.add(entity)) {
-            if(entity instanceof Player)return true;
+            if(entity instanceof Player || entity.getPersistentData().hasUUID("ArkWitchOwner"))return true;
             if(entity instanceof net.minecraft.world.entity.projectile.Projectile projectile)entity=projectile.getOwner();
-            else if(entity instanceof net.minecraft.world.entity.OwnableEntity owned)entity=owned.getOwner();
+            else if(entity instanceof net.minecraft.world.entity.OwnableEntity owned){if(owned.getOwner()==null && owned.getOwnerUUID()!=null)return true;entity=owned.getOwner();}
             else return false;
         }
         return false;

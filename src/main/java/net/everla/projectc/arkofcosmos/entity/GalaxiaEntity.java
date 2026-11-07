@@ -107,6 +107,7 @@ public final class GalaxiaEntity extends Entity {
     public int ownerId() { return level().isClientSide?view().getInt("Owner"):ownerId; }
     public int kind() { return level().isClientSide?view().getInt("Kind"):kind; }
     public CompoundTag view() { return entityData.get(VIEW); }
+    public LivingEntity curseOwner(){return net.everla.projectc.arkofcosmos.combat.WeaponUser.resolve(level(),ownerUuid);}
     public ItemStack weapon() { return weapon; }
     private LivingEntity owner() { return WeaponUser.resolve(level(),ownerUuid); }
     @Override protected void defineSynchedData() { entityData.define(VIEW,new CompoundTag()); }

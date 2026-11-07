@@ -1,0 +1,96 @@
+{
+  "uniforms": [
+    {
+      "values": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1
+      ],
+      "count": 16,
+      "type": "matrix4x4",
+      "name": "ModelViewMat"
+    },
+    {
+      "values": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1
+      ],
+      "count": 16,
+      "type": "matrix4x4",
+      "name": "ProjMat"
+    },
+    {
+      "name": "FadeEye",
+      "type": "float",
+      "count": 3,
+      "values": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "uTime",
+      "type": "float",
+      "count": 1,
+      "values": [
+        0
+      ]
+    },
+    {
+      "name": "Mode",
+      "type": "float",
+      "count": 1,
+      "values": [
+        0
+      ]
+    },
+    {
+      "name": "ImageRatio",
+      "type": "float",
+      "count": 1,
+      "values": [
+        1
+      ]
+    }
+  ],
+  "samplers": [
+    {
+      "name": "Sampler0"
+    }
+  ],
+  "fragment": "arkofcosmos:rancor",
+  "vertex": "arkofcosmos:fx_sprite",
+  "attributes": [
+    "Position",
+    "Color",
+    "UV0"
+  ]
+}

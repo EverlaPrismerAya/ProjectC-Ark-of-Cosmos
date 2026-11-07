@@ -6,29 +6,18 @@ import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 
-/** User-selected Minecraft Hex: fixed health loss, 15% armor and outgoing damage penalty. */
+/** Display-only Hex potion; WitchFlames owns Java timers, damage and penalties. */
 @net.minecraftforge.fml.common.Mod.EventBusSubscriber(modid = net.everla.projectc.arkofcosmos.ArkOfCosmos.MOD_ID)
 public final class CalamitasHexEffect extends MobEffect {
-    private static final java.util.UUID ARMOR_MODIFIER = java.util.UUID.fromString("0c44e525-4704-44dd-ad96-bddcdff536bc");
+    public static final java.util.UUID ARMOR_MODIFIER = java.util.UUID.fromString("0c44e525-4704-44dd-ad96-bddcdff536bc");
     public CalamitasHexEffect() {
         super(MobEffectCategory.HARMFUL, 0x79154D);
-        addAttributeModifier(Attributes.ARMOR, ARMOR_MODIFIER.toString(), -.15, AttributeModifier.Operation.MULTIPLY_TOTAL);
     }
-
-    @Override public double getAttributeModifierValue(int amplifier, AttributeModifier modifier) {
-        return modifier.getAmount();
-    }
-
-    @Override public boolean isDurationEffectTick(int duration, int amplifier) { return true; }
 
     private static boolean active(LivingEntity entity) {
-        return CalamitasContent.ENABLED
-                && CalamitasContent.VULNERABILITY_HEX.isPresent()
-                && entity.hasEffect(CalamitasContent.VULNERABILITY_HEX.get());
+        return net.everla.projectc.arkofcosmos.enchant.WitchFlames.weakened(entity);
     }
 
     public static float outgoing(net.minecraft.world.damagesource.DamageSource source, float amount) {
@@ -49,7 +38,7 @@ public final class CalamitasHexEffect extends MobEffect {
             var effect = MobEffectInstance.load(effects.getCompound(i));
             if (effect != null && effect.getEffect() == CalamitasContent.VULNERABILITY_HEX.get()) effects.remove(i);
         }
-        // Native potion attribute modifiers are permanent and saved independently of ActiveEffects.
+        // Also remove permanent modifiers from saves made by the previous potion implementation.
         var attributes = tag.getList("Attributes", net.minecraft.nbt.Tag.TAG_COMPOUND);
         for (int i = 0; i < attributes.size(); i++) {
             var modifiers = attributes.getCompound(i).getList("Modifiers", net.minecraft.nbt.Tag.TAG_COMPOUND);
@@ -58,13 +47,6 @@ public final class CalamitasHexEffect extends MobEffect {
                 if (modifier.hasUUID("UUID") && ARMOR_MODIFIER.equals(modifier.getUUID("UUID"))) modifiers.remove(j);
             }
         }
-    }
-
-    @Override public void applyEffectTick(LivingEntity entity, int amplifier) {
-        // Refreshing a hit must not restart the cadence and turn frequent hits into extra DoT.
-        if (!entity.level().isClientSide && entity instanceof Player && entity.isAlive() && entity.tickCount % 20 == 0)
-            net.everla.projectc.arkofcosmos.combat.ArkDamage.hurtUnmitigated(entity, entity.damageSources().magic(),
-                    entity.hasEffect(net.minecraft.world.effect.MobEffects.FIRE_RESISTANCE) ? 1.5f : 3f);
     }
 
     public static int duration(CalamitasAttackEntity.Kind kind) {

@@ -81,6 +81,7 @@ public final class ArkAttackEntity extends CalamityAttackEntity {
     @Override protected void defineSynchedData() { entityData.define(VIEW, new CompoundTag()); }
     public CompoundTag view() { return entityData.get(VIEW); }
     public Kind kind() { return level().isClientSide ? Kind.values()[Math.max(0, Math.min(Kind.values().length - 1, view().getInt("Kind")))] : attackKind; }
+    public LivingEntity curseOwner(){return net.everla.projectc.arkofcosmos.combat.WeaponUser.resolve(level(),ownerUuid);}
     public ItemStack weapon() { return weapon; }
     public int ownerId() { return level().isClientSide ? view().getInt("Owner") : ownerEntityId; }
     public AttackFrame attackFrame() { return level().isClientSide ? new AttackFrame(vector(view(), "F"), vector(view(), "R")) : frame; }

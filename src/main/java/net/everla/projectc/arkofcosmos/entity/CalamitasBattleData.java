@@ -16,6 +16,12 @@ import net.minecraft.world.level.saveddata.SavedData;
  */
 public final class CalamitasBattleData extends SavedData {
     private final Map<UUID, Battle> battles = new HashMap<>();
+    private final Map<UUID,UUID> conversions=new HashMap<>();
+    private final Set<UUID> settlements=new HashSet<>();
+    public boolean converted(UUID boss){return conversions.containsKey(boss);}
+    public void converted(UUID boss,UUID npc){if(npc!=null && conversions.putIfAbsent(boss,npc)==null)setDirty();}
+    public boolean settled(UUID boss){return settlements.contains(boss);}
+    public void settle(UUID boss){if(settlements.add(boss))setDirty();}
     private boolean defeated;
     private boolean acceptanceMusicPlayed;
     public static boolean beginAcceptanceMusic(ServerLevel level, UUID owner) {
@@ -183,6 +189,7 @@ public final class CalamitasBattleData extends SavedData {
         var data = new CalamitasBattleData();
         data.defeated = root.getBoolean("Defeated");
         data.acceptanceMusicPlayed = root.getBoolean("AcceptanceMusicPlayed");
+        for(Tag raw:root.getList("WitchConversions",Tag.TAG_COMPOUND)){CompoundTag entry=(CompoundTag)raw;if(entry.hasUUID("Boss")&&entry.hasUUID("NPC")){UUID boss=entry.getUUID("Boss");data.conversions.put(boss,entry.getUUID("NPC"));if(entry.getBoolean("Settled"))data.settlements.add(boss);}}
         for (Tag raw : root.getList("Battles", Tag.TAG_COMPOUND)) {
             CompoundTag tag = (CompoundTag) raw;
             if (!tag.hasUUID("Owner")) continue;
@@ -207,6 +214,7 @@ public final class CalamitasBattleData extends SavedData {
         return data;
     }
     @Override public CompoundTag save(CompoundTag root) {
+        var conversionsTag=new ListTag();conversions.forEach((boss,npc)->{var entry=new CompoundTag();entry.putUUID("Boss",boss);entry.putUUID("NPC",npc);entry.putBoolean("Settled",settlements.contains(boss));conversionsTag.add(entry);});root.put("WitchConversions",conversionsTag);
         root.putBoolean("Defeated", defeated);
         root.putBoolean("AcceptanceMusicPlayed", acceptanceMusicPlayed);
         var entries = new ListTag();

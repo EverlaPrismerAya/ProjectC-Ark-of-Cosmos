@@ -30,12 +30,23 @@ public final class CalamitasContent {
     private static final DeferredRegister<SoundEvent> SOUNDS = DeferredRegister.create(ForgeRegistries.SOUND_EVENTS, ArkOfCosmos.MOD_ID);
     private static final DeferredRegister<net.minecraft.world.effect.MobEffect> EFFECTS = DeferredRegister.create(ForgeRegistries.MOB_EFFECTS, ArkOfCosmos.MOD_ID);
     public static final RegistryObject<net.minecraft.world.effect.MobEffect> VULNERABILITY_HEX = ENABLED ? EFFECTS.register("vulnerability_hex", net.everla.projectc.arkofcosmos.calamity.CalamitasHexEffect::new) : null;
+    public static final RegistryObject<net.minecraft.world.effect.MobEffect> WITCH_WITHERED=ENABLED?EFFECTS.register("witch_withered",()->new net.minecraft.world.effect.MobEffect(net.minecraft.world.effect.MobEffectCategory.HARMFUL,0x635C68){}):null;
     private static final java.util.Map<String, RegistryObject<SoundEvent>> AUDIO = new java.util.HashMap<>();
+    private static final java.util.Map<String,RegistryObject<SoundEvent>> NECROMANTIC_AUDIO=new java.util.HashMap<>();
+    public static final RegistryObject<net.minecraft.world.item.Item> RANCOR=ENABLED?ITEMS.register("rancor",()->new net.everla.projectc.arkofcosmos.item.NecromanticWeaponItem(true)):null;
+    public static final RegistryObject<net.minecraft.world.item.Item> GRUESOME_EMINENCE=ENABLED?ITEMS.register("gruesome_eminence",()->new net.everla.projectc.arkofcosmos.item.NecromanticWeaponItem(false)):null;
+    public static final RegistryObject<EntityType<net.everla.projectc.arkofcosmos.entity.NecromanticAttackEntity>> NECROMANTIC_ATTACK=ENABLED?ENTITIES.register("necromantic_attack",()->EntityType.Builder.of(net.everla.projectc.arkofcosmos.entity.NecromanticAttackEntity::new,MobCategory.MISC).sized(.25f,.25f).clientTrackingRange(160).updateInterval(1).build(ArkOfCosmos.MOD_ID+":necromantic_attack")):null;
     public static final RegistryObject<Attribute> MAX_HEALTH = ENABLED ? ATTRIBUTES.register("calamitas_max_health",
             () -> new RangedAttribute("attribute.name.generic.max_health", 100, 1, 1000000000).setSyncable(true)) : null;
     public static final RegistryObject<EntityType<SupremeCalamitasEntity>> BOSS = ENABLED ? ENTITIES.register("supreme_calamitas",
             () -> EntityType.Builder.<SupremeCalamitasEntity>of(SupremeCalamitasEntity::new, MobCategory.MONSTER)
-                    .sized(.6f, 1.8f).clientTrackingRange(160).updateInterval(1).build(ArkOfCosmos.MOD_ID + ":supreme_calamitas")) : null;
+                    .fireImmune().sized(.6f, 1.8f).clientTrackingRange(160).updateInterval(1).build(ArkOfCosmos.MOD_ID + ":supreme_calamitas")) : null;
+    public static final RegistryObject<EntityType<net.everla.projectc.arkofcosmos.entity.BrimstoneWitchEntity>> WITCH = ENABLED ? ENTITIES.register("brimstone_witch",
+        () -> EntityType.Builder.of(net.everla.projectc.arkofcosmos.entity.BrimstoneWitchEntity::new,MobCategory.CREATURE).sized(.6f,1.8f).clientTrackingRange(96).build(ArkOfCosmos.MOD_ID+":brimstone_witch")) : null;
+    public static final RegistryObject<EntityType<net.everla.projectc.arkofcosmos.entity.WitchCurseEntity>> CURSE_ACTOR = ENABLED ? ENTITIES.register("witch_curse_actor",
+        () -> EntityType.Builder.of(net.everla.projectc.arkofcosmos.entity.WitchCurseEntity::new,MobCategory.MONSTER).sized(1,1).clientTrackingRange(128).updateInterval(1).build(ArkOfCosmos.MOD_ID+":witch_curse_actor")) : null;
+    public static final RegistryObject<SoundEvent> WITCH_ENCHANT=ENABLED?SOUNDS.register("witch_enchant",()->SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(ArkOfCosmos.MOD_ID,"witch_enchant"))):null;
+    public static final RegistryObject<net.minecraft.world.item.Item> LOCUS = ENABLED ? ITEMS.register("brimstone_locus",net.everla.projectc.arkofcosmos.item.BrimstoneLocusItem::new) : null;
     public static final RegistryObject<net.minecraft.world.item.Item> SPAWN_EGG = ENABLED ? ITEMS.register("supreme_calamitas_spawn_egg",
             () -> new net.minecraftforge.common.ForgeSpawnEggItem(BOSS, 0x36132E, 0xE83A37, new net.minecraft.world.item.Item.Properties())) : null;
     public static final EnumMap<CalamitasMinionEntity.Kind, RegistryObject<EntityType<CalamitasMinionEntity>>> MINIONS = new EnumMap<>(CalamitasMinionEntity.Kind.class);
@@ -43,6 +54,7 @@ public final class CalamitasContent {
     public static final EnumMap<CalamitasSepulcherEntity.Kind, RegistryObject<EntityType<CalamitasSepulcherEntity>>> SEPULCHER = new EnumMap<>(CalamitasSepulcherEntity.Kind.class);
     public static final EnumMap<SupremeCalamitasBrothers.Kind, RegistryObject<EntityType<CalamitasBrotherEntity>>> BROTHERS = new EnumMap<>(SupremeCalamitasBrothers.Kind.class);
     static {
+        if(ENABLED)for(String name:new String[]{"rancor_cast","rancor_charge","rancor_fire","rancor_loop","rancor_arm","spirit_open","spirit_grow","spirit_release"})NECROMANTIC_AUDIO.put(name,SOUNDS.register(name,()->SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(ArkOfCosmos.MOD_ID,name))));
         if (ENABLED) for (String name : new String[]{"shot", "big_shot", "hellblast", "dash", "fireblast_impact",
                 "gigablast_impact", "vortex_spawn", "sepulcher_spawn", "barrage_end", "vortex_drone",
                 "brother_hurt", "brother_death", "shield_hurt", "transition_burst", "cataclysm_spawn", "catastrophe_spawn",
@@ -87,12 +99,15 @@ public final class CalamitasContent {
         ENTITIES.register(bus); ATTRIBUTES.register(bus); ITEMS.register(bus); SOUNDS.register(bus); EFFECTS.register(bus);
         bus.addListener((net.minecraftforge.event.entity.EntityAttributeCreationEvent event) -> {
             event.put(BOSS.get(), SupremeCalamitasEntity.createAttributes().build());
+            event.put(WITCH.get(), net.everla.projectc.arkofcosmos.entity.BrimstoneWitchEntity.attributes().build());
+            event.put(CURSE_ACTOR.get(), net.everla.projectc.arkofcosmos.entity.WitchCurseEntity.attributes().build());
             MINIONS.values().forEach(type -> event.put(type.get(), CalamitasMinionEntity.createAttributes().build()));
             SEPULCHER.values().forEach(type -> event.put(type.get(), CalamitasSepulcherEntity.createAttributes().build()));
             BROTHERS.values().forEach(type -> event.put(type.get(), CalamitasBrotherEntity.createAttributes().build()));
         });
     }
     public static SoundEvent sound(String name) { return AUDIO.get(name).get(); }
+    public static SoundEvent necromanticSound(String name){return NECROMANTIC_AUDIO.get(name).get();}
     public static void sound(net.minecraft.world.entity.Entity entity, String name) {
         var at = entity instanceof CalamitasAttackEntity ? entity.position() : entity.getBoundingBox().getCenter();
         sound(entity, name, at, 1, 1);

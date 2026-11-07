@@ -68,6 +68,7 @@ public final class BrokenBiomeEntity extends Entity {
     public boolean activeBlade(){return kind()==BLADE&&(level().isClientSide?view().getInt("Left"):left)>0;}
     public int ownerId(){return level().isClientSide?view().getInt("Owner"):ownerId;}
     public int kind(){return level().isClientSide?view().getInt("Kind"):kind;}
+    public LivingEntity curseOwner(){return net.everla.projectc.arkofcosmos.combat.WeaponUser.resolve(level(),ownerUuid);}
     public ItemStack weapon(){return weapon;}
     private Player owner(){return WeaponUser.resolve(level(),ownerUuid) instanceof Player p?p:null;}
     private boolean valid(Player p){return WeaponUser.active(p)&&!BrokenBiomeFreeze.frozen(p)&&BrokenBiomeCombat.holding(p)&&p.getMainHandItem()==heldStack;}

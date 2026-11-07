@@ -72,6 +72,7 @@ public final class TrueBiomeEntity extends Entity {
     }
     public int ownerId(){return level().isClientSide?view().getInt("Owner"):ownerId;}
     public int kind(){return level().isClientSide?view().getInt("Kind"):kind;}
+    public LivingEntity curseOwner(){return net.everla.projectc.arkofcosmos.combat.WeaponUser.resolve(level(),ownerUuid);}
     public ItemStack weapon(){return weapon;}
     private Player owner(){return WeaponUser.resolve(level(),ownerUuid) instanceof Player p?p:null;}
     private boolean valid(Player p){return WeaponUser.active(p)&&TrueBiomeCombat.holding(p)&&p.getMainHandItem()==heldStack&&TrueBiomeBladeItem.main(heldStack)==selectedMain&&TrueBiomeBladeItem.secondary(heldStack)==selectedSecondary;}

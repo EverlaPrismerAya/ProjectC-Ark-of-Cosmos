@@ -79,6 +79,7 @@ public final class ElementsEntity extends Entity {
     }
     public int ownerId(){return entityData.get(VIEW).getInt("Owner");}
     public int kind(){return entityData.get(VIEW).getInt("Kind");}
+    public LivingEntity curseOwner(){return net.everla.projectc.arkofcosmos.combat.WeaponUser.resolve(level(),ownerUuid);}
     public ItemStack weapon(){return weapon;}
     public LivingEntity owner(){return WeaponUser.resolve(level(),ownerUuid);}
     @Override protected void defineSynchedData(){entityData.define(VIEW,new CompoundTag());}

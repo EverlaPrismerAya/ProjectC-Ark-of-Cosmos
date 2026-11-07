@@ -19,7 +19,9 @@ public final class WeaponDamage {
         if(amount<=0)return false;
         // Calamitas summons retain native hurt frames and mitigation even when
         // struck by an Ark weapon; do not install this dispatcher's 35% floor.
-        if(target instanceof net.everla.projectc.arkofcosmos.entity.CalamitasMinionEntity
+        if(target instanceof net.everla.projectc.arkofcosmos.entity.WitchCurseEntity
+                || target instanceof net.everla.projectc.arkofcosmos.entity.BrimstoneWitchEntity
+                || target instanceof net.everla.projectc.arkofcosmos.entity.CalamitasMinionEntity
                 || target instanceof net.everla.projectc.arkofcosmos.entity.CalamitasBrotherEntity
                 || target instanceof net.everla.projectc.arkofcosmos.entity.SupremeCalamitasEntity
                 || target instanceof net.everla.projectc.arkofcosmos.entity.CalamitasSepulcherEntity)
@@ -77,7 +79,7 @@ public final class WeaponDamage {
         Hit hit = CURRENT.get();
         if (hit == null || hit.target != target || hit.source != source)
             return amount;
-        float minimum = hit.minimum;
+        float minimum = net.everla.projectc.arkofcosmos.enchant.CurseCombat.modify(target,source,hit.minimum);
         if (target instanceof net.everla.projectc.arkofcosmos.entity.MahouTsukaiEntity boss)
             minimum *= boss.damageMultiplier();
         return Math.max(amount, minimum);

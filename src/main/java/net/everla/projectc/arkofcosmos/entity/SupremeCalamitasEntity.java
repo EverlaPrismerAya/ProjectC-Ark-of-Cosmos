@@ -1,4 +1,5 @@
 package net.everla.projectc.arkofcosmos.entity;
+import java.util.UUID;
 
 import java.util.Random;
 import net.everla.projectc.arkofcosmos.CalamitasContent;
@@ -46,6 +47,8 @@ public final class SupremeCalamitasEntity extends Monster implements net.everla.
     private final SupremeCalamitasBarrage barrage = new SupremeCalamitasBarrage();
     private final SupremeCalamitasShield shield = new SupremeCalamitasShield();
     private final ServerBossEvent bossBar = new ServerBossEvent(Component.translatable("entity.arkofcosmos.supreme_calamitas"), BossEvent.BossBarColor.RED, BossEvent.BossBarOverlay.PROGRESS);
+    private UUID witchAfterBattle;
+    private boolean witchBorn, clearNearbyWitches=true;
     private SupremeCalamitasArena arena;
     private net.minecraft.world.phys.AABB clientArenaBounds;
     private CalamitasSummons pending, brotherCast;
@@ -156,6 +159,13 @@ public final class SupremeCalamitasEntity extends Monster implements net.everla.
     }
     @Override public void tick() {
         if (vitalityReady && !level().isClientSide) syncVitality();
+        if(level() instanceof ServerLevel server) {
+            if(clearNearbyWitches) {
+                clearNearbyWitches=false;
+                for(var npc:server.getEntitiesOfClass(BrimstoneWitchEntity.class,getBoundingBox().inflate(128),n->distanceToSqr(n)<=128*128)) npc.vanish();
+            }
+            if(witchAfterBattle!=null && !finished && tickCount%20==0) endBattle(true);
+        }
         castSparks.clear();
         setDeltaMovement(Vec3.ZERO); super.tick();
         simulate(0);
@@ -165,7 +175,7 @@ public final class SupremeCalamitasEntity extends Monster implements net.everla.
         framePaused = false; simulate(1); return !framePaused;
     }
     private void simulate(int frames) {
-        if (!(level() instanceof ServerLevel server) || isDeadOrDying() || finished) return;
+        if (!(level() instanceof ServerLevel server) || isDeadOrDying() || finished || witchAfterBattle!=null) return;
         initialize();
         var journal = CalamitasBattleData.get(server);
         if (!journal.active(getUUID())) { endBattle(false); return; }
@@ -381,9 +391,25 @@ public final class SupremeCalamitasEntity extends Monster implements net.everla.
     }
     /** Administrative cleanup and natural acceptance use the same isolated ownership end. */
     public void endBattle(boolean accepted) {
+        if(accepted && !finished && level() instanceof ServerLevel server && !witchBorn) {
+            if(witchAfterBattle==null) witchAfterBattle=UUID.nameUUIDFromBytes(("brimstone-witch:"+getUUID()).getBytes(java.nio.charset.StandardCharsets.UTF_8));
+            if(CalamitasBattleData.get(server).converted(getUUID()) || server.getEntity(witchAfterBattle) instanceof BrimstoneWitchEntity) witchBorn=true;
+            else {
+                var npc=CalamitasContent.WITCH.get().create(server);
+                if(npc==null) return;
+                npc.setUUID(witchAfterBattle); npc.setPos(position());
+                if(!server.addFreshEntity(npc)) return;
+                witchBorn=true;
+            }
+        }
+        if(accepted && level() instanceof ServerLevel server){
+            var journal=CalamitasBattleData.get(server);
+            if(journal.settled(getUUID())){cleanupBattle();discard();return;}
+            journal.converted(getUUID(),witchAfterBattle);
+        }
         if (!cleanupBattle()) return;
         if (!accepted) net.everla.projectc.arkofcosmos.network.ArkNetwork.calamitasMusic(getUUID(), false);
-        if (accepted) { CalamitasBattleData.markDefeated((ServerLevel)level()); setHealth(0); super.die(damageSources().genericKill()); }
+        if (accepted) { CalamitasBattleData.get((ServerLevel)level()).settle(getUUID()); CalamitasBattleData.markDefeated((ServerLevel)level()); setHealth(0); super.die(damageSources().genericKill()); }
         else discard();
     }
     private boolean cleanupBattle() {
@@ -417,8 +443,16 @@ public final class SupremeCalamitasEntity extends Monster implements net.everla.
         shieldHurtDelay = 5 + random.nextInt(3);
         if (!isSilent()) CalamitasContent.sound(this, "shield_hurt");
     }
+    private static final net.minecraft.tags.TagKey<net.minecraft.world.damagesource.DamageType> FIRE_DAMAGE=net.minecraft.tags.TagKey.create(net.minecraft.core.registries.Registries.DAMAGE_TYPE,net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("arkofcosmos","is_fire"));
+    private static final net.minecraft.tags.TagKey<net.minecraft.world.damagesource.DamageType> COLD_DAMAGE=net.minecraft.tags.TagKey.create(net.minecraft.core.registries.Registries.DAMAGE_TYPE,net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("arkofcosmos","is_cold"));
+    private static float elementalDamage(DamageSource source,float amount){return source.is(FIRE_DAMAGE)?0:source.is(COLD_DAMAGE)?amount*1.5f:amount;}
+    @Override public boolean isInvulnerableTo(DamageSource source){return source.is(FIRE_DAMAGE)||super.isInvulnerableTo(source);}
+    @Override public boolean canBeAffected(net.minecraft.world.effect.MobEffectInstance effect){
+        return effect.getEffect()!=CalamitasContent.VULNERABILITY_HEX.get()&&super.canBeAffected(effect);
+    }
     @Override public boolean hurt(DamageSource source, float amount) {
-        if (Float.isNaN(amount) || damageProtected() || blocksNonPlayerDamage(source)
+        amount=elementalDamage(source,amount);
+        if (!(amount>0) || Float.isNaN(amount) || damageProtected() || blocksNonPlayerDamage(source)
                 || source.getEntity() != null && isAlliedTo(source.getEntity())) return false;
         if (!net.everla.projectc.arkofcosmos.combat.WeaponUser.playerOwnedDamage(source)) amount = Math.min(amount, 50f);
         return super.hurt(source, amount);
@@ -449,6 +483,7 @@ public final class SupremeCalamitasEntity extends Monster implements net.everla.
         return false;
     }
     @Override public void ordinaryDamage(DamageSource source, float amount) {
+        amount=elementalDamage(source,amount);
         if (!(amount > 0) || Float.isNaN(amount)) return;
         hurt(new DamageSource(damageSources().generic().typeHolder(), source.getDirectEntity(), source.getEntity()), Math.min(amount, 50f));
     }
@@ -464,7 +499,7 @@ public final class SupremeCalamitasEntity extends Monster implements net.everla.
         syncVitality();
     }
     @Override protected void actuallyHurt(DamageSource source, float amount) {
-        if (Float.isNaN(amount) || damageProtected() || blocksNonPlayerDamage(source)) return;
+        if (source.is(FIRE_DAMAGE) || Float.isNaN(amount) || damageProtected() || blocksNonPlayerDamage(source)) return;
         float before = getHealth(), previousFloor = damageHealthFloor;
         boolean nonPlayer = !net.everla.projectc.arkofcosmos.combat.WeaponUser.playerOwnedDamage(source);
         damageHealthFloor = Math.max(previousFloor, (float)encounter.damageFloor(getMaxHealth()));
@@ -507,7 +542,9 @@ public final class SupremeCalamitasEntity extends Monster implements net.everla.
         tag.putFloat("Opacity", opacity); tag.putBoolean("ProtectionBoost", protectionBoost); tag.putBoolean("PendingSummon", pending != null); entityData.set(VIEW, tag);
     }
     @Override public void addAdditionalSaveData(CompoundTag tag) {
-        super.addAdditionalSaveData(tag); tag.putBoolean("Initialized", initialized); tag.putBoolean("Finished", finished);
+        super.addAdditionalSaveData(tag);
+        if(witchAfterBattle!=null)tag.putUUID("WitchAfterBattle",witchAfterBattle); tag.putBoolean("WitchBorn",witchBorn);
+        tag.putBoolean("Initialized", initialized); tag.putBoolean("Finished", finished);
         if (!initialized) return;
         tag.put("CalamitasEncounter", encounterTag()); tag.put("CalamitasArena", arena.save()); tag.put("CalamitasCombat", combat.save()); tag.put("CalamitasShield", shield.save()); tag.put("CalamitasAnimation", animation.save());
         tag.putInt("BarrageFrames", barrage.completedFrames()); tag.putInt("BarrageGate", barrage.shotGate()); tag.putInt("VortexTelegraph", barrage.maelstromTelegraph());
@@ -522,7 +559,7 @@ public final class SupremeCalamitasEntity extends Monster implements net.everla.
         castSparks.clear();
         healthWriteDepth++;
         try { super.readAdditionalSaveData(tag); } finally { healthWriteDepth--; }
-        setNoGravity(true); initialized = tag.getBoolean("Initialized"); finished = tag.getBoolean("Finished");
+        setNoGravity(true); clearNearbyWitches=false; witchBorn=tag.getBoolean("WitchBorn"); witchAfterBattle=tag.hasUUID("WitchAfterBattle")?tag.getUUID("WitchAfterBattle"):null; initialized = tag.getBoolean("Initialized"); finished = tag.getBoolean("Finished");
         nonPlayerInvulnerableUntil = level().getGameTime() + net.minecraft.util.Mth.clamp(tag.getInt("NonPlayerInvulnerabilityTicks"), 0, 10);
         if (!initialized) return;
         var s = tag.getCompound("CalamitasEncounter");

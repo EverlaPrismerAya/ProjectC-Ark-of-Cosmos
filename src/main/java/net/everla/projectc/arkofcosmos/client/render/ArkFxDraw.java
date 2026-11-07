@@ -22,8 +22,8 @@ public final class ArkFxDraw {
     public static final VertexFormatElement UV3 = new VertexFormatElement(0, VertexFormatElement.Type.FLOAT, VertexFormatElement.Usage.UV, 3);
     public static final VertexFormat FORMAT = new VertexFormat(ImmutableMap.of("Position", DefaultVertexFormat.ELEMENT_POSITION,
             "Color", DefaultVertexFormat.ELEMENT_COLOR, "UV0", UV3));
-    public static ShaderInstance fracturedShader;
-    public static ShaderInstance arenaMetaballShader;
+    public static ShaderInstance fracturedShader, witchFlamesShader;
+    public static ShaderInstance arenaMetaballShader, rancorShader;
     public static ShaderInstance spriteShader, trailShader, tintShader, moonShader, forcefieldShader, jujutsuShader, primitiveShader, whiteSpriteShader, hellBallShader;
     /** Immutable per-draw BasicTint parameters, also captured by deferred Oculus draws. */
     public record Tint(float red, float green, float blue, float opacity) {}
@@ -62,12 +62,16 @@ public final class ArkFxDraw {
         event.registerShader(shader(event,"fx_white_sprite"), shader -> whiteSpriteShader = shader);
         event.registerShader(shader(event,"calamitas_hell_ball"), shader -> hellBallShader = shader);
         event.registerShader(shader(event,"calamitas_arena_metaball"), shader -> arenaMetaballShader = shader);
+        event.registerShader(shader(event,"rancor"), shader -> rancorShader=shader);
         event.registerShader(shader(event,"fractured_sprite"), shader -> fracturedShader = shader);
         event.registerShader(shader(event,"fx_trail"), shader -> trailShader = shader);
         event.registerShader(shader(event,"galaxia_tint"), shader -> tintShader = shader);
         event.registerShader(shader(event,"mahou_jujutsu"), shader -> jujutsuShader = shader);
         event.registerShader(shader(event,"mahou_moon"), shader -> moonShader = shader);
         event.registerShader(shader(event,"mahou_forcefield"), shader -> forcefieldShader = shader);
+        witchFlamesShader=null;
+        try{event.registerShader(shader(event,"witch_flames"),value->witchFlamesShader=value);}
+        catch(IOException error){com.mojang.logging.LogUtils.getLogger().warn("Witch flames shader unavailable; using flame particles",error);}
         SpriteImages.clear();
     }
     private static ShaderInstance shader(RegisterShadersEvent event,String name)throws IOException{
@@ -187,6 +191,33 @@ public final class ArkFxDraw {
             vertex(buffer,at.add(x).add(y),rgba,1,1,1);vertex(buffer,at.add(x).subtract(y),rgba,1,0,1);
             BufferUploader.drawWithShader(buffer.end());
         }finally{end();}
+    }
+    /** Depth-tested procedural brimstone envelope, using the shared Oculus deferred pass. */
+    public static void witchFlames(Vec3 at,double width,double height,float time){
+        if(witchFlamesShader==null)return;
+        if(OculusShaderCompat.defer(()->witchFlames(at,width,height,time)))return;
+        var previous=RenderSystem.getShader();int texture=RenderSystem.getShaderTexture(0);
+        boolean depth=org.lwjgl.opengl.GL11.glIsEnabled(org.lwjgl.opengl.GL11.GL_DEPTH_TEST);
+        boolean blend=org.lwjgl.opengl.GL11.glIsEnabled(org.lwjgl.opengl.GL11.GL_BLEND);
+        boolean cull=org.lwjgl.opengl.GL11.glIsEnabled(org.lwjgl.opengl.GL11.GL_CULL_FACE);
+        boolean write=org.lwjgl.opengl.GL11.glGetBoolean(org.lwjgl.opengl.GL11.GL_DEPTH_WRITEMASK);
+        int src=org.lwjgl.opengl.GL11.glGetInteger(org.lwjgl.opengl.GL14.GL_BLEND_SRC_RGB),dst=org.lwjgl.opengl.GL11.glGetInteger(org.lwjgl.opengl.GL14.GL_BLEND_DST_RGB);
+        int srcAlpha=org.lwjgl.opengl.GL11.glGetInteger(org.lwjgl.opengl.GL14.GL_BLEND_SRC_ALPHA),dstAlpha=org.lwjgl.opengl.GL11.glGetInteger(org.lwjgl.opengl.GL14.GL_BLEND_DST_ALPHA);
+        begin("supreme_noise",Blend.NONPREMULTIPLIED,false);
+        try{
+            witchFlamesShader.safeGetUniform("uTime").set(time);RenderSystem.setShader(()->witchFlamesShader);
+            var plane=NativeSprites.billboard();var x=plane.forward().scale(width);var y=plane.right().scale(height);
+            var buffer=Tesselator.getInstance().getBuilder();buffer.begin(VertexFormat.Mode.QUADS,FORMAT);float[] color={1,1,1,.85f};
+            vertex(buffer,at.subtract(x).subtract(y),color,0,0,0);vertex(buffer,at.subtract(x).add(y),color,0,1,0);
+            vertex(buffer,at.add(x).add(y),color,1,1,0);vertex(buffer,at.add(x).subtract(y),color,1,0,0);
+            BufferUploader.drawWithShader(buffer.end());
+        }finally{
+            RenderSystem.setShader(()->previous);RenderSystem.setShaderTexture(0,texture);RenderSystem.depthMask(write);
+            RenderSystem.blendFuncSeparate(src,dst,srcAlpha,dstAlpha);
+            if(depth)RenderSystem.enableDepthTest();else RenderSystem.disableDepthTest();
+            if(blend)RenderSystem.enableBlend();else RenderSystem.disableBlend();
+            if(cull)RenderSystem.enableCull();else RenderSystem.disableCull();
+        }
     }
     public static void vertex(BufferBuilder buffer, Vec3 point, float[] color, float u, float v, float width) {
         Vec3 local = point.subtract(camera);
