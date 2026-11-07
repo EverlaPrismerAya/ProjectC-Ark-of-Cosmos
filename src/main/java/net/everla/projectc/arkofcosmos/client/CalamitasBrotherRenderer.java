@@ -25,7 +25,7 @@ public final class CalamitasBrotherRenderer extends EntityRenderer<CalamitasBrot
     @Override public ResourceLocation getTextureLocation(CalamitasBrotherEntity entity) { return entity.kind() == Kind.CATACLYSM ? PILLAGER : VINDICATOR; }
     @Override public boolean shouldRender(CalamitasBrotherEntity entity, net.minecraft.client.renderer.culling.Frustum frustum, double x, double y, double z) {
         return entity.shouldRenderAtSqrDistance(entity.distanceToSqr(x,y,z))
-                && frustum.isVisible(entity.getBoundingBox().inflate(entity.getBbHeight()*1.5));
+                && frustum.isVisible(entity.getBoundingBox().inflate(CalamitasShieldRenderer.brotherRadius(entity)));
     }
     @Override public void render(CalamitasBrotherEntity entity, float yaw, float partial, PoseStack pose, MultiBufferSource buffers, int light) {
         ModelPart root = entity.kind() == Kind.CATACLYSM ? pillager : vindicator;

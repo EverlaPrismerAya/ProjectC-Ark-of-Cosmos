@@ -140,7 +140,7 @@ public final class CalamitasBrotherEntity extends Monster {
     private void publish() {
         var tag = new CompoundTag(); tag.putString("Kind", kind.name()); tag.putInt("SourceAge", sourceAge);
         if (owner != null) tag.putUUID("Owner", owner);
-        tag.put("Combat", combat.save()); entityData.set(VIEW, tag);
+        tag.putDouble("Pixels", pixels); tag.put("Combat", combat.save()); entityData.set(VIEW, tag);
     }
     @Override public boolean isAlliedTo(Entity other) {
         return owner != null && (owner.equals(other.getUUID())

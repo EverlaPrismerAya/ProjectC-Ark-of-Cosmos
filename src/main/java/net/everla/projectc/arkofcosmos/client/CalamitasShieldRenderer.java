@@ -17,8 +17,17 @@ final class CalamitasShieldRenderer {
     static void renderBrother(CalamitasBrotherEntity entity,float partial,PoseStack pose) {
         ArkFxDraw.matrix=pose.last().pose();ArkFxDraw.camera=entity.getPosition(partial);ArkFxDraw.fadeEye=null;
         Vec3 center=entity.getPosition(partial).add(0,entity.getBbHeight()/2,0);
-        double scale=entity.getBbHeight()*32/ArkFxDraw.size("calamitas_forcefield")[0];
+        double scale=brotherScale(entity);
         brotherField(center,scale,((entity.level().getGameTime()%72000)+partial)/20d);
+    }
+    private static double brotherScale(CalamitasBrotherEntity entity) {
+        double pixels=entity.view().getDouble("Pixels");
+        // 75% of Calamitas's normal forcefield, independent of the illager model size.
+        return 3*.75*16/(pixels>0?pixels:16);
+    }
+    static double brotherRadius(CalamitasBrotherEntity entity) {
+        int[] size=ArkFxDraw.size("calamitas_forcefield");
+        return Math.max(size[0],size[1])*brotherScale(entity)/32;
     }
     private static void brotherField(Vec3 center,double scale,double time) {
         if(OculusShaderCompat.defer(()->brotherField(center,scale,time),true))return;
