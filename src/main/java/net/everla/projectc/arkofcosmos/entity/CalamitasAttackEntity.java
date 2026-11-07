@@ -371,7 +371,7 @@ public final class CalamitasAttackEntity extends Entity {
         opacity = remaining < 90 ? remaining / 90f : Mth.clamp(1 - (remaining - 35910) / 90f, 0, 1);
         if (scale >= 1.9f) still--;
         if (still > 0) return;
-        double inertia = 5 + speedAdd, speed = 2.9 + speedAdd * .25;
+        double inertia = 5 + speedAdd, speed = (2.9 + speedAdd * .25) * .8;
         var journal = CalamitasBattleData.get((ServerLevel) level());
         if (journal.living(owner, "heart") > 0 || journal.living(owner, "seeker") > 0) { inertia *= 1.5; speed *= .8; }
         if (targetPosition != null && distanceSource(targetPosition) > 160)

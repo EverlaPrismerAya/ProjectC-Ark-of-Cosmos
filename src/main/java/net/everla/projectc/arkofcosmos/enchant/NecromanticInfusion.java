@@ -22,7 +22,7 @@ public record NecromanticInfusion(ResourceLocation id, Ingredient ingredient, It
     private static final DeferredRegister<RecipeSerializer<?>> SERIALIZERS=DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS,ArkOfCosmos.MOD_ID);
     public static final RegistryObject<RecipeType<NecromanticInfusion>> TYPE=TYPES.register("necromantic_infusion",()->new RecipeType<>() {public String toString(){return "arkofcosmos:necromantic_infusion";}});
     public static final RegistryObject<RecipeSerializer<NecromanticInfusion>> SERIALIZER=SERIALIZERS.register("necromantic_infusion",Serializer::new);
-    public static void register(IEventBus bus){TYPES.register(bus);SERIALIZERS.register(bus);}
+    public static void register(IEventBus bus){if(!net.everla.projectc.arkofcosmos.CalamitasContent.ENABLED)return;TYPES.register(bus);SERIALIZERS.register(bus);}
     public static List<NecromanticInfusion> options(Level level,ItemStack input){
         if(input.isEmpty()||Curse.of(input)!=null||product(level,input))return List.of();
         return level.getRecipeManager().getAllRecipesFor(TYPE.get()).stream().filter(r->r.ingredient.test(input)).sorted(Comparator.comparing(r->r.id.toString())).toList();

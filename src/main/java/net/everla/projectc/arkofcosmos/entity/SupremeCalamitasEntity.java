@@ -75,7 +75,7 @@ public final class SupremeCalamitasEntity extends Monster implements net.everla.
         vitality = super.getHealth(); vitalityReady = true;
     }
     public static AttributeSupplier.Builder createAttributes() {
-        return Monster.createMonsterAttributes().add(CalamitasContent.MAX_HEALTH.get(), 2300)
+        return Monster.createMonsterAttributes().add(CalamitasContent.MAX_HEALTH.get(), 4444)
                 .add(Attributes.ATTACK_DAMAGE, 0).add(Attributes.MOVEMENT_SPEED, 0)
                 .add(Attributes.KNOCKBACK_RESISTANCE, 1).add(Attributes.FOLLOW_RANGE, 256);
     }
@@ -132,8 +132,8 @@ public final class SupremeCalamitasEntity extends Monster implements net.everla.
     public static SupremeCalamitasEntity spawn(ServerLevel level, Vec3 position, LivingEntity target) {
         var boss = CalamitasContent.BOSS.get().create(level);
         if (boss == null) return null;
-        boss.setPos(position); boss.setTarget(target); boss.initialize();
-        if (!level.addFreshEntity(boss)) { boss.endBattle(false); return null; }
+        boss.setPos(position); boss.setTarget(target);
+        if (!level.addFreshEntity(boss) && !boss.getPersistentData().getBoolean("ArkSummoningQueued")) { boss.endBattle(false); return null; }
         return boss;
     }
     private Vec3 horizontalAim() {
@@ -146,7 +146,7 @@ public final class SupremeCalamitasEntity extends Monster implements net.everla.
         initialized = true;
         pixels = ProjectCCommonConfig.calamitasValue("pixels_per_block");
         movement = ProjectCCommonConfig.calamitasValue("movement_multiplier");
-        getAttribute(Attributes.MAX_HEALTH).setBaseValue(Math.max(100, 1150000 * ProjectCCommonConfig.calamitasValue("health_multiplier")));
+        getAttribute(Attributes.MAX_HEALTH).setBaseValue(Math.max(100, 2222000 * ProjectCCommonConfig.calamitasValue("health_multiplier")));
         getAttribute(Attributes.ARMOR).setBaseValue(100 * ProjectCCommonConfig.calamitasValue("armor_multiplier"));
         setHealth(getMaxHealth());
         arena = new SupremeCalamitasArena(getBoundingBox().getCenter(), pixels);

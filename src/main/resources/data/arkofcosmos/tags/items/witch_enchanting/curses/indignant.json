@@ -1,0 +1,10 @@
+{
+  "values": [
+    "#arkofcosmos:witch_enchanting/summon",
+    {
+      "required": false,
+      "id": "#goety:wands"
+    }
+  ],
+  "replace": false
+}

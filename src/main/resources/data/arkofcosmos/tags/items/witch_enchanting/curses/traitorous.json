@@ -1,0 +1,10 @@
+{
+  "values": [
+    {
+      "required": false,
+      "id": "#goety:wands"
+    },
+    "#arkofcosmos:witch_enchanting/magic"
+  ],
+  "replace": false
+}

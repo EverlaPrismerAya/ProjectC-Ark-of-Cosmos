@@ -29,7 +29,7 @@ public final class WitchEnchanting {
         if(player instanceof net.minecraft.server.level.ServerPlayer server)CHANNEL.send(PacketDistributor.PLAYER.with(()->server),new Flames(entity.getId(),entity.getUUID(),ticks));
     }
     public static void register(IEventBus bus) {
-        MENUS.register(bus);
+        if(net.everla.projectc.arkofcosmos.CalamitasContent.ENABLED) MENUS.register(bus);
         NecromanticInfusion.register(bus);
         CHANNEL.messageBuilder(NecromanticVisual.class,3,NetworkDirection.PLAY_TO_CLIENT)
             .encoder((p,b)->{b.writeVarInt(p.kind);b.writeVarInt(p.entity);b.writeUUID(p.uuid);b.writeDouble(p.position.x);b.writeDouble(p.position.y);b.writeDouble(p.position.z);})

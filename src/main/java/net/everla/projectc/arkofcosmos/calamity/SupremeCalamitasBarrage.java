@@ -61,7 +61,8 @@ public final class SupremeCalamitasBarrage {
             emit.accept(new Shot(Kind.WAVE, 1000, offset, -5 * speedMultiplier, 0));
             emit.accept(new Shot(Kind.WAVE, -1000, -offset, 5 * speedMultiplier, 0));
         }
-        int gate = 8 + switch (round) { case 1 -> 0; case 2 -> 1; case 3 -> 4; case 4 -> 6; default -> 8; };
+        // Denser bullet hell: halve the main hellblast interval, preserving special attack timing.
+        int gate = (8 + switch (round) { case 1 -> 0; case 2 -> 1; case 3 -> 4; case 4 -> 6; default -> 8; }) / 2;
         if (++shotGate < gate) return;
         shotGate = 0;
         if (frame % (gate * 6) == 0) {

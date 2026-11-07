@@ -66,7 +66,7 @@ public final class CalamitasMinionEntity extends Monster {
         minion.setUUID(id);
         minion.owner = boss.getUUID(); minion.pixels = pixels; minion.angle = degrees; minion.planeX = planeX;
         minion.setPos(position);
-        minion.getAttribute(Attributes.MAX_HEALTH).setBaseValue((kind == Kind.HEART ? 15000 : 28000) * ProjectCCommonConfig.calamitasValue("health_multiplier"));
+        minion.getAttribute(Attributes.MAX_HEALTH).setBaseValue((kind == Kind.HEART ? 30000 : 66500) * ProjectCCommonConfig.calamitasValue("health_multiplier"));
         minion.setHealth(minion.getMaxHealth());
         minion.getAttribute(Attributes.ARMOR).setBaseValue((kind == Kind.SEEKER ? 60 : 0) * ProjectCCommonConfig.calamitasValue("armor_multiplier"));
         minion.publish();
@@ -89,7 +89,7 @@ public final class CalamitasMinionEntity extends Monster {
         if (owner == null) {
             pixels = ProjectCCommonConfig.calamitasValue("pixels_per_block");
             owner = CalamitasSummons.commandOwner(this, kind == Kind.HEART ? "heart" : "seeker").getUUID();
-            getAttribute(Attributes.MAX_HEALTH).setBaseValue((kind == Kind.HEART ? 15000 : 28000) * ProjectCCommonConfig.calamitasValue("health_multiplier"));
+            getAttribute(Attributes.MAX_HEALTH).setBaseValue((kind == Kind.HEART ? 30000 : 66500) * ProjectCCommonConfig.calamitasValue("health_multiplier"));
             setHealth(getMaxHealth()); publish();
         }
         if (owner.equals(getUUID())) CalamitasSummons.commandTarget(this);

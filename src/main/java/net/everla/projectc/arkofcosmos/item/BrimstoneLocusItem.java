@@ -8,6 +8,9 @@ import net.minecraft.world.item.context.UseOnContext;
 
 public final class BrimstoneLocusItem extends Item {
     public BrimstoneLocusItem() { super(new Properties().stacksTo(1).rarity(net.minecraft.world.item.Rarity.EPIC)); }
+    @Override public net.minecraft.network.chat.Component getName(net.minecraft.world.item.ItemStack stack) {
+        return net.minecraft.network.chat.Component.translatable(getDescriptionId(stack)).withStyle(style -> style.withColor(0x6C2DC7));
+    }
     @Override public InteractionResult useOn(UseOnContext context) {
         if(!(context.getLevel() instanceof ServerLevel level)) return InteractionResult.SUCCESS;
         var npc=CalamitasContent.WITCH.get().create(level); if(npc==null) return InteractionResult.FAIL;

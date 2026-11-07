@@ -1,4 +1,6 @@
 {
+  "dialogue.arkofcosmos.calamitas.summoning": "Hellfire descends upon you...",
+  "item.goety_revelation.atonement_voucher.desc": "Removes nearby Apollyon or Supreme Calamitas bosses",
   "entity.arkofcosmos.mahoraga_warden": "Mahoraga Warden",
   "advancements.arkofcosmos.fly_swatter.title": "Expert Fly Swatter",
   "advancements.arkofcosmos.fly_swatter.description": "Kill a fly with the Ark of the Cosmos",
@@ -323,8 +325,8 @@
   "item.arkofcosmos.gruesome_eminence": "Gruesome Eminence",
   "item.arkofcosmos.rancor.description": "Casts a magic circle that charges energy and eventually releases a powerful laser burst of controlled maleficent magic\nThe laser causes arms and searing lava to appear on surfaces it touches",
   "item.arkofcosmos.gruesome_eminence.description": "Summons a gaseous conglomeration of spirits near the cursor that fly around wildly\nOver time, the spirits accumulate to create a single, controllable monstrosity",
-  "item.arkofcosmos.necromantic.souls": "Uses %s Soul Energy",
-  "item.arkofcosmos.necromantic.damage": "Base damage: %s",
+  "item.arkofcosmos.necromantic.souls": " %s soul energy cost",
+  "item.arkofcosmos.necromantic.damage": " %s magic damage",
   "menu.arkofcosmos.necromantic_infusion": "Necromantic Infusion",
   "menu.arkofcosmos.necromantic_infusion.description": "Consumes 64 emeralds to create a new item. Input data is discarded. This conversion cannot be disenchanted.",
   "item.arkofcosmos.rancor.description.1": "Casts a magic circle that charges energy and eventually releases a powerful laser burst of controlled maleficent magic",

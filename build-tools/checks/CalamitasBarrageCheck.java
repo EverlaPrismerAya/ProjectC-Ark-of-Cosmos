@@ -12,10 +12,10 @@ public final class CalamitasBarrageCheck {
     public static void main(String[] args) {
         var barrage = new SupremeCalamitasBarrage();
         var random = new Random(971);
-        // Independent counts from the pinned C# gates, including the carried gate counter.
-        int[][] expected = {{243,0,0,0,0}, {133,5,0,0,0}, {100,5,4,0,0},
-                {85,5,4,0,1}, {112,3,2,60,0}};
-        int[] carry = {4,4,4,8,12};
+        // Counts from halved hellblast gates; special attacks retain their source timing.
+        int[][] expected = {{489,0,0,0,0}, {339,5,0,0,0}, {226,5,4,0,0},
+                {171,5,4,0,1}, {227,3,2,60,0}};
+        int[] carry = {0,0,0,4,0};
         for (int round = 1; round <= 5; round++) {
             int[] counts = new int[5];
             for (int tick = 0; tick < 300; tick++) {

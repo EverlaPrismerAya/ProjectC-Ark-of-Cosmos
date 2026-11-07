@@ -19,5 +19,6 @@ public final class WitchSouls {
     public static boolean active(Player p){return SEHelper.getSoulsContainer(p)&&current(p)>0&&capacity(p)>0;}
     public static double ratio(Player p){return active(p)?Math.min(1,(double)current(p)/capacity(p)):0;}
     public static int drain(Player p){int before=current(p);if(before>0)SEHelper.decreaseSoulsNoDiscount(p,before);return Math.max(0,before-current(p));}
-    public static boolean pay(Player p,int amount){if(amount<=0||!active(p)||current(p)<amount)return false;SEHelper.decreaseSoulsNoDiscount(p,amount);return true;}
+    /** Shared magic-weapon debit: creative casting needs no soul container or balance. */
+    public static boolean pay(Player p,int amount){if(p.getAbilities().instabuild)return true;if(amount<=0||!active(p)||current(p)<amount)return false;SEHelper.decreaseSoulsNoDiscount(p,amount);return true;}
 }

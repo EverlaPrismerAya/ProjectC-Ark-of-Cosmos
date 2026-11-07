@@ -1,4 +1,6 @@
 {
+  "dialogue.arkofcosmos.calamitas.summoning": "狱焰降临于你……",
+  "item.goety_revelation.atonement_voucher.desc": "可清除附近的亚波伦或至尊灾厄Boss",
   "entity.arkofcosmos.mahoraga_warden": "魔虚罗·监守者",
   "advancements.arkofcosmos.fly_swatter.title": "消灭苍蝇的小能手",
   "advancements.arkofcosmos.fly_swatter.description": "使用鸿蒙方舟消灭一只苍蝇",
@@ -323,8 +325,8 @@
   "item.arkofcosmos.gruesome_eminence": "异端僭越",
   "item.arkofcosmos.rancor.description": "召唤一个圆形法阵，法阵会逐渐蓄力，最终会发射出一束强大的怨戾激光\n被激光接触的物块表面会出现亡魂之手和炽热岩浆",
   "item.arkofcosmos.gruesome_eminence.description": "在光标附近召唤一团气态的灵魂聚合体，不受控制地飞行\n随时间推移，灵魂会聚集成单个，可控的怪物",
-  "item.arkofcosmos.necromantic.souls": "消耗 %s 灵魂能量",
-  "item.arkofcosmos.necromantic.damage": "基础伤害：%s",
+  "item.arkofcosmos.necromantic.souls": " %s 灵魂消耗",
+  "item.arkofcosmos.necromantic.damage": " %s 魔法伤害",
   "menu.arkofcosmos.necromantic_infusion": "死灵炼注",
   "menu.arkofcosmos.necromantic_infusion.description": "将输入转换为全新物品。",
   "item.arkofcosmos.rancor.description.1": "召唤一个圆形法阵，法阵会逐渐蓄力，最终会发射出一束强大的怨戾激光",

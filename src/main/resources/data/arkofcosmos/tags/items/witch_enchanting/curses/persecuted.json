@@ -1,0 +1,19 @@
+{
+  "values": [
+    "minecraft:bow",
+    "minecraft:crossbow",
+    "minecraft:trident",
+    "#arkofcosmos:witch_enchanting/projectile",
+    {
+      "required": false,
+      "id": "#goety:wands"
+    },
+    "#arkofcosmos:witch_enchanting/magic",
+    "#arkofcosmos:witch_enchanting/summon",
+    {
+      "required": false,
+      "id": "#goety:wands"
+    }
+  ],
+  "replace": false
+}

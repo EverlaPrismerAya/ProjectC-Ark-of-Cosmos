@@ -1,0 +1,21 @@
+{
+  "values": [
+    "minecraft:bow",
+    "minecraft:crossbow",
+    "minecraft:trident",
+    "#arkofcosmos:witch_enchanting/projectile",
+    {
+      "required": false,
+      "id": "#goety:wands"
+    },
+    "#arkofcosmos:witch_enchanting/magic",
+    "#arkofcosmos:witch_enchanting/summon",
+    {
+      "required": false,
+      "id": "#goety:wands"
+    },
+    {"required": false,"id": "goety_revelation:gungnir"},
+    {"required": false,"id": "goety_revelation:bow_of_revelation"}
+  ],
+  "replace": false
+}

@@ -71,7 +71,7 @@ public final class CalamitasBrotherEntity extends Monster {
         brother.setUUID(id); brother.owner = boss.getUUID(); brother.planeX = planeX; brother.pixels = pixels;
         brother.movement = ProjectCCommonConfig.calamitasValue("movement_multiplier");
         brother.combat = new SupremeCalamitasBrothers(kind, movingUp); brother.setPos(position);
-        brother.getAttribute(Attributes.MAX_HEALTH).setBaseValue(138000 * ProjectCCommonConfig.calamitasValue("health_multiplier"));
+        brother.getAttribute(Attributes.MAX_HEALTH).setBaseValue(388500 * ProjectCCommonConfig.calamitasValue("health_multiplier"));
         brother.setHealth(brother.getMaxHealth());
         brother.getAttribute(Attributes.ARMOR).setBaseValue(80 * ProjectCCommonConfig.calamitasValue("armor_multiplier"));
         brother.publish();
@@ -107,7 +107,7 @@ public final class CalamitasBrotherEntity extends Monster {
         if (owner == null) {
             pixels = ProjectCCommonConfig.calamitasValue("pixels_per_block");
             owner = CalamitasSummons.commandOwner(this, role()).getUUID();
-            getAttribute(Attributes.MAX_HEALTH).setBaseValue(138000 * ProjectCCommonConfig.calamitasValue("health_multiplier"));
+            getAttribute(Attributes.MAX_HEALTH).setBaseValue(388500 * ProjectCCommonConfig.calamitasValue("health_multiplier"));
             getAttribute(Attributes.ARMOR).setBaseValue(80 * ProjectCCommonConfig.calamitasValue("armor_multiplier"));
             setHealth(getMaxHealth()); publish();
         }
