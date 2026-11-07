@@ -12,6 +12,9 @@ public final class CalamitasEncounterCheck {
     public static void main(String[] args) {
         runEncounter(2300, true);
         runEncounter(100, false);
+        runEncounter(4444, false);
+        runEncounter(1234.5678f, false);
+        floatDespairGates();
         secondSummonAtTenPercent();
         rematchAcceptance();
         System.out.println("PASS: mandatory phases under burst damage, both brothers, casts, surrender, save/restore");
@@ -60,7 +63,7 @@ public final class CalamitasEncounterCheck {
                 default -> { }
             }
             if (externalBurst) health = 1;
-            else if (!encounter.invulnerable(hearts)) health = encounter.damageFloor(maxHealth);
+            else if (!encounter.invulnerable(hearts)) health = (float)encounter.damageFloor(maxHealth);
             Event event = encounter.advance(health, maxHealth, hearts, brothers);
             Event afterReload = loaded.advance(health, maxHealth, hearts, brothers);
             require(event == afterReload && loaded.save().equals(encounter.save()), "resume diverged at " + frame);
@@ -88,6 +91,19 @@ public final class CalamitasEncounterCheck {
             require(encounter.advance(1, maxHealth, 0, 0) == Event.NONE, "duplicate settlement");
     }
 
+    private static void floatDespairGates() {
+        for (float maximum : new float[]{100, 4444, 1234.5678f, 9000.3f}) {
+            double[] fractions = {.06, .04, .02};
+            Event[] expected = {Event.DESPAIR_6, Event.DESPAIR_4, Event.DESPAIR_2};
+            for (int index = 0; index < fractions.length; index++) {
+                var encounter = new SupremeCalamitasEncounter();
+                encounter.restore(new SupremeCalamitasEncounter.State(Phase.COMBAT, 5, 0, 2, true, true, true, index));
+                float floor = (float)encounter.damageFloor(maximum);
+                require(encounter.advance(Math.nextUp(floor), maximum, 0, 0) == Event.NONE, "dialogue triggered above native float floor");
+                require(encounter.advance(floor, maximum, 0, 0) == expected[index], "float floor stalled at " + maximum + " * " + fractions[index]);
+            }
+        }
+    }
     private static void secondSummonAtTenPercent() {
         var encounter = new SupremeCalamitasEncounter();
         encounter.restore(new SupremeCalamitasEncounter.State(Phase.COMBAT, 5, 0, 1, true, true, true, 0));

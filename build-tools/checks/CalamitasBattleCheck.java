@@ -24,6 +24,18 @@ public final class CalamitasBattleCheck {
         load.setAccessible(true);
         data = (CalamitasBattleData) load.invoke(null, data.save(new CompoundTag()));
         require(data.living(first, "heart") == 1, "unloaded heart lost at restart");
+        UUID seeker = UUID.randomUUID(), cataclysm = UUID.randomUUID(), catastrophe = UUID.randomUUID();
+        data.add(first, seeker, "seeker"); data.add(first, cataclysm, "cataclysm"); data.add(first, catastrophe, "catastrophe");
+        data.reconcileSummons(first, java.util.Set.of(heart, seeker, cataclysm, catastrophe));
+        require(data.living(first, "heart") == 1 && data.livingBrothers(first) == 2, "nearby living summons retired");
+        data.reconcileSummons(first, java.util.Set.of(catastrophe));
+        require(data.living(first, "seeker") == 0 && data.livingBrothers(first) == 1, "missing summons retained");
+        data.reconcileSummons(first, java.util.Set.of());
+        require(data.livingBrothers(first) == 0, "missing brothers still block transition");
+        require(data.living(first, "heart") == 0 && data.living(second, "heart") == 1, "boss heart completion crossed ownership");
+        require(data.living(first, "attack") == 1, "heart completion retired another role");
+        data = (CalamitasBattleData) load.invoke(null, data.save(new CompoundTag()));
+        require(data.confirmedDead(first, heart), "boss heart completion lost across restart");
         data.died(first, heart);
         require(data.living(first, "heart") == 0 && data.living(second, "heart") == 1, "death belongs to wrong battle");
         require(!data.add(first, heart, "heart"), "confirmed dead member resurrected by replay");

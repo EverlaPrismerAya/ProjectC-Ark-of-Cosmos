@@ -129,12 +129,12 @@ public final class CalamitasSummons {
             if (journal.knownMember(boss.getUUID(), ids[i])) { accepted[i] = true; continue; }
             if (kind == Kind.BROTHERS) {
                 var type = i == 0 ? SupremeCalamitasBrothers.Kind.CATACLYSM : SupremeCalamitasBrothers.Kind.CATASTROPHE;
-                var entity = CalamitasBrotherEntity.spawn(boss, type, centers[i].subtract(0, 1.95 / 2, 0), planeX, pixels,
+                var entity = CalamitasBrotherEntity.spawn(boss, type, centers[i].subtract(0, CalamitasBrotherEntity.shieldDiameter(pixels) / 2, 0), planeX, pixels,
                         i == 0 ? cataclysmUp : !cataclysmUp, ids[i]);
                 if (entity == null) return false;
             } else {
                 var type = kind == Kind.HEARTS ? CalamitasMinionEntity.Kind.HEART : CalamitasMinionEntity.Kind.SEEKER;
-                double height = kind == Kind.HEARTS ? 1.5 : .8;
+                double height = kind == Kind.HEARTS ? 1.5 : 2.5;
                 var entity = CalamitasMinionEntity.spawn(boss, type, centers[i].subtract(0, height / 2, 0), planeX, pixels, i * 36, ids[i]);
                 if (entity == null) return false;
                 if (kind == Kind.HEARTS) entity.setConnections(connections[i]);

@@ -36,6 +36,7 @@ public final class CalamitasBrotherRenderer extends EntityRenderer<CalamitasBrot
         float swing = Mth.sin((float)(combat.getDouble("Counter") / 50 * Math.PI)) * .8f;
         root.getChild(combat.getBoolean("Hand") ? "right_arm" : "left_arm").xRot = -swing;
         pose.pushPose();
+        pose.translate(0, (entity.getBbHeight() - 1.95) / 2, 0);
         pose.mulPose(Axis.YP.rotationDegrees(180 - Mth.rotLerp(partial, entity.yRotO, entity.getYRot())));
         pose.scale(-1, -1, 1); pose.translate(0, -1.5, 0);
         root.render(pose, buffers.getBuffer(RenderType.entityCutoutNoCull(getTextureLocation(entity))), light, OverlayTexture.NO_OVERLAY);

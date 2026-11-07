@@ -46,6 +46,7 @@ public final class SupremeCalamitasEntity extends Monster implements net.everla.
     private final net.minecraft.nbt.ListTag castSparks = new net.minecraft.nbt.ListTag();
     private final SupremeCalamitasBarrage barrage = new SupremeCalamitasBarrage();
     private final SupremeCalamitasShield shield = new SupremeCalamitasShield();
+    private final SupremeCalamitasDynamicReduction dynamicReduction = new SupremeCalamitasDynamicReduction();
     private final ServerBossEvent bossBar = new ServerBossEvent(Component.translatable("entity.arkofcosmos.supreme_calamitas"), BossEvent.BossBarColor.RED, BossEvent.BossBarOverlay.PROGRESS);
     private UUID witchAfterBattle;
     private boolean witchBorn, clearNearbyWitches=true;
@@ -65,7 +66,7 @@ public final class SupremeCalamitasEntity extends Monster implements net.everla.
     private boolean initialized, protectionBoost, finished, framePaused;
     private boolean vitalityReady;
     private float vitality;
-    private int healthWriteDepth, healthSyncDepth;
+    private int healthWriteDepth, healthSyncDepth, damageCommitDepth;
     private float damageHealthFloor = Float.NEGATIVE_INFINITY;
     private long nonPlayerInvulnerableUntil;
     private java.util.UUID targetId;
@@ -204,6 +205,14 @@ public final class SupremeCalamitasEntity extends Monster implements net.everla.
             CalamitasBrotherEntity.retryRevival(this);
             if (sourceAge == 0) say("SCalSummonText");
             sourceAge++;
+            if (encounter.phase() == SupremeCalamitasEncounter.Phase.COMBAT
+                    || encounter.phase() == SupremeCalamitasEncounter.Phase.BROTHERS) {
+                // The boss owns completion; special kills need not dispatch the summon's die().
+                var nearby = server.getEntitiesOfClass(LivingEntity.class, getBoundingBox().inflate(256),
+                        entity -> entity.isAlive() && (entity instanceof CalamitasMinionEntity minion && getUUID().equals(minion.ownerUUID())
+                                || entity instanceof CalamitasBrotherEntity brother && getUUID().equals(brother.ownerUUID())));
+                journal.reconcileSummons(getUUID(), nearby.stream().map(Entity::getUUID).collect(java.util.stream.Collectors.toSet()));
+            }
             int hearts = journal.living(getUUID(), "heart"), seekers = journal.living(getUUID(), "seeker");
             if (hearts == 0 && journal.living(getUUID(), "worm") > 0) {
                 // A head whose chunk is unloaded cannot run its own retirement
@@ -495,6 +504,8 @@ public final class SupremeCalamitasEntity extends Monster implements net.everla.
         if (!vitalityReady || level().isClientSide) { super.setHealth(health); return; }
         if (redirectHealthWrite(health) || Float.isNaN(health) || blocksHealthWrite(health)) return;
         if (!finished && encounter != null && health < vitality && healthWriteDepth == 0) health = Math.max(health, (float)encounter.damageFloor(getMaxHealth()));
+        if (!finished && damageCommitDepth > 0 && healthSyncDepth == 0 && health < vitality)
+            health = vitality - (float)dynamicReduction.apply(level().getGameTime(), Math.max(0, vitality - Math.max(health, damageHealthFloor)));
         vitality = net.minecraft.util.Mth.clamp(Math.max(health, damageHealthFloor), 0, getMaxHealth());
         syncVitality();
     }
@@ -505,8 +516,9 @@ public final class SupremeCalamitasEntity extends Monster implements net.everla.
         damageHealthFloor = Math.max(previousFloor, (float)encounter.damageFloor(getMaxHealth()));
         if (nonPlayer) { amount = Math.min(amount, 50f); damageHealthFloor = Math.max(damageHealthFloor, before - 50f); }
         healthWriteDepth++;
+        damageCommitDepth++;
         try { super.actuallyHurt(source, amount); }
-        finally { healthWriteDepth--; damageHealthFloor = previousFloor; }
+        finally { damageCommitDepth--; healthWriteDepth--; damageHealthFloor = previousFloor; }
         if (nonPlayer && getHealth() < before) nonPlayerInvulnerableUntil = level().getGameTime() + 10;
     }
     @Override protected float getDamageAfterMagicAbsorb(DamageSource source, float damage) {

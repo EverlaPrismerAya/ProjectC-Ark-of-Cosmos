@@ -11,6 +11,7 @@ public final class CalamitasArenaCheck {
         require(Math.abs(actual - expected) < 1e-8, message + ": " + actual + " != " + expected);
     }
     public static void main(String[] args) throws Exception {
+        CalamitasDynamicReductionCheck.main(args);
         AABB projectileArena = new AABB(-10, -10, -10, 10, 10, 10);
         for (int axis = 0; axis < 3; axis++) for (int sign : new int[]{-1, 1}) {
             Vec3 wall = new Vec3(axis == 0 ? sign * 12 : 0, axis == 1 ? sign * 12 : 0, axis == 2 ? sign * 12 : 0);

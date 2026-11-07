@@ -96,6 +96,7 @@ public final class CalamitasMinionEntity extends Monster {
         }
         if (owner.equals(getUUID())) CalamitasSummons.commandTarget(this);
         if (owner == null || !journal.active(owner)) { discardMinion(); return; }
+        if (journal.confirmedDead(owner, getUUID())) { discardMinion(); return; }
         if (!(server.getEntity(owner) instanceof LivingEntity boss) || !boss.isAlive()) return;
         if (frames == 0) return;
         LivingEntity target = boss instanceof Mob mob ? mob.getTarget() : null;

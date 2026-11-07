@@ -1,8 +1,8 @@
 package net.everla.projectc.arkofcosmos.calamity;
 
 /** Server-side encounter gates for the ordinary-world death-mode port (Calamity 1a8cebd).
- * Each advance is one source frame. The entity supplies battle-owned living add counts;
- * unloaded or unresolved adds must not be reported as dead.
+ * Each advance is one source frame. After the summon batch completes, the entity
+ * supplies battle-owned living add counts reconciled against its nearby summons.
  */
 public final class SupremeCalamitasEncounter {
     public enum Phase { BARRAGE, HEART_CAST, COMBAT, BROTHERS_WARNING, BROTHERS_CAST, BROTHERS, TRANSITION, ACCEPTANCE, FINISHED }
@@ -131,19 +131,18 @@ public final class SupremeCalamitasEncounter {
             return Event.HEART_CAST_STARTED;
         }
         if (livingHearts > 0) return Event.NONE;
-        double ratio = health / maximumHealth;
-        if (round == 1 && ratio <= .75 || round == 2 && ratio <= .5)
+        if (round == 1 && reachedHealthGate(health, maximumHealth, .75) || round == 2 && reachedHealthGate(health, maximumHealth, .5))
             return beginBarrage();
         if (round >= 3 && !brothersSummoned) {
             enter(Phase.BROTHERS_WARNING);
             return Event.BROTHERS_WARNING;
         }
-        if (round == 3 && ratio <= .3) return beginBarrage();
-        if (round >= 4 && ratio <= .2 && !seekersSummoned) {
+        if (round == 3 && reachedHealthGate(health, maximumHealth, .3)) return beginBarrage();
+        if (round >= 4 && reachedHealthGate(health, maximumHealth, .2) && !seekersSummoned) {
             seekersSummoned = true;
             return Event.SUMMON_SEEKERS;
         }
-        if (round == 4 && ratio <= .1) return beginBarrage();
+        if (round == 4 && reachedHealthGate(health, maximumHealth, .1)) return beginBarrage();
         if (round == 5 && heartSummons == 1) {
             enter(Phase.HEART_CAST);
             return Event.HEART_CAST_STARTED;
@@ -151,9 +150,9 @@ public final class SupremeCalamitasEncounter {
         if (round == 5 && heartSummons == 2) {
             // Queue mandatory dialogue even if an externally altered health value crossed
             // multiple thresholds. Normal damage is held at the next gate by the entity.
-            if (despair == 0 && ratio <= .06) { despair = 1; return Event.DESPAIR_6; }
-            if (despair == 1 && ratio <= .04) { despair = 2; return Event.DESPAIR_4; }
-            if (despair == 2 && ratio <= .02) { despair = 3; return Event.DESPAIR_2; }
+            if (despair == 0 && reachedHealthGate(health, maximumHealth, .06)) { despair = 1; return Event.DESPAIR_6; }
+            if (despair == 1 && reachedHealthGate(health, maximumHealth, .04)) { despair = 2; return Event.DESPAIR_4; }
+            if (despair == 2 && reachedHealthGate(health, maximumHealth, .02)) { despair = 3; return Event.DESPAIR_2; }
             if (health < 2 && despair == 3) {
                 enter(Phase.ACCEPTANCE);
                 return Event.SURRENDER;
@@ -162,6 +161,10 @@ public final class SupremeCalamitasEncounter {
         return Event.NONE;
     }
 
+    private static boolean reachedHealthGate(double health, double maximumHealth, double fraction) {
+        // Match the float rounding used when the entity commits damageFloor().
+        return health <= (float)(maximumHealth * fraction);
+    }
     private Event beginBarrage() {
         round++;
         enter(Phase.BARRAGE);

@@ -76,6 +76,7 @@ public final class CalamitasMinionRenderer extends EntityRenderer<CalamitasMinio
         left.yRot = 1.0995574f + Mth.cos(age * .8f) * Mth.DEG_TO_RAD * 16.2f; right.yRot = -left.yRot;
         left.xRot = right.xRot = .47123888f; left.zRot = -.47123888f; right.zRot = .47123888f;
         pose.pushPose();
+        pose.translate(0, (entity.getBbHeight() - .8) / 2, 0);
         pose.mulPose(Axis.YP.rotationDegrees(180 - Mth.rotLerp(partial, entity.yRotO, entity.getYRot())));
         pose.scale(-1, -1, 1); pose.translate(0, -1.501, 0);
         vex.render(pose, buffers.getBuffer(RenderType.entityTranslucent(VEX)), 15728880, OverlayTexture.NO_OVERLAY);

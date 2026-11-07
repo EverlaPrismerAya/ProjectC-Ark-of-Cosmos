@@ -66,7 +66,7 @@ public final class CalamitasContent {
             String id = "calamitas_" + kind.name().toLowerCase(java.util.Locale.ROOT);
             BROTHERS.put(kind, ENTITIES.register(id, () -> EntityType.Builder
                     .<CalamitasBrotherEntity>of((type, level) -> new CalamitasBrotherEntity(type, level, kind), MobCategory.MONSTER)
-                    .sized(.6f, 1.95f).clientTrackingRange(160).updateInterval(1).build(ArkOfCosmos.MOD_ID + ":" + id)));
+                    .sized(10.125f, 10.125f).clientTrackingRange(160).updateInterval(1).build(ArkOfCosmos.MOD_ID + ":" + id)));
         }
         if (ENABLED) for (var kind : CalamitasSepulcherEntity.Kind.values()) {
             String id = "calamitas_sepulcher_" + kind.name().toLowerCase(java.util.Locale.ROOT);
@@ -83,7 +83,7 @@ public final class CalamitasContent {
             String id = "calamitas_" + kind.name().toLowerCase(java.util.Locale.ROOT);
             MINIONS.put(kind, ENTITIES.register(id, () -> EntityType.Builder
                     .<CalamitasMinionEntity>of((type, level) -> new CalamitasMinionEntity(type, level, kind), MobCategory.MONSTER)
-                    .sized(kind == CalamitasMinionEntity.Kind.HEART ? 1.5f : .6f, kind == CalamitasMinionEntity.Kind.HEART ? 1.5f : .8f)
+                    .sized(kind == CalamitasMinionEntity.Kind.HEART ? 1.5f : 2.5f, kind == CalamitasMinionEntity.Kind.HEART ? 1.5f : 2.5f)
                     .clientTrackingRange(160).updateInterval(1).build(ArkOfCosmos.MOD_ID + ":" + id)));
         }
         if (ENABLED) for (var kind : CalamitasAttackEntity.Kind.values()) {

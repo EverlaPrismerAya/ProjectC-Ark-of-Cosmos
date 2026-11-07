@@ -44,6 +44,28 @@ public final class CalamitasBrotherEntity extends Monster {
     public Kind kind() { return kind; }
     public UUID ownerUUID() { return owner; }
     public CompoundTag view() { return entityData.get(VIEW); }
+    /** 72px forcefield at the renderer's 3 * .75 scale. */
+    public static double shieldDiameter(double pixels) { return 162 / pixels; }
+    public double shieldDiameter() {
+        double units = level().isClientSide ? view().getDouble("Pixels") : pixels;
+        return shieldDiameter(units > 0 ? units : 16);
+    }
+    @Override public net.minecraft.world.entity.EntityDimensions getDimensions(net.minecraft.world.entity.Pose pose) {
+        if (kind == null) return super.getDimensions(pose);
+        float diameter = (float)shieldDiameter();
+        return net.minecraft.world.entity.EntityDimensions.fixed(diameter, diameter);
+    }
+    private void refreshShieldDimensions() {
+        var size = getDimensions(getPose());
+        if (size.width == getBbWidth() && size.height == getBbHeight()) return;
+        Vec3 center = getBoundingBox().getCenter();
+        refreshDimensions();
+        setPos(center.x, center.y - getBbHeight() / 2, center.z);
+    }
+    @Override public void onSyncedDataUpdated(EntityDataAccessor<?> key) {
+        super.onSyncedDataUpdated(key);
+        if (kind != null && VIEW.equals(key)) refreshShieldDimensions();
+    }
     private String role() { return kind == Kind.CATACLYSM ? "cataclysm" : "catastrophe"; }
     private String partnerRole() { return kind == Kind.CATACLYSM ? "catastrophe" : "cataclysm"; }
     public static AttributeSupplier.Builder createAttributes() {
@@ -70,7 +92,7 @@ public final class CalamitasBrotherEntity extends Monster {
         if (brother == null) return null;
         brother.setUUID(id); brother.owner = boss.getUUID(); brother.planeX = planeX; brother.pixels = pixels;
         brother.movement = ProjectCCommonConfig.calamitasValue("movement_multiplier");
-        brother.combat = new SupremeCalamitasBrothers(kind, movingUp); brother.setPos(position);
+        brother.combat = new SupremeCalamitasBrothers(kind, movingUp); brother.refreshDimensions(); brother.setPos(position);
         brother.getAttribute(Attributes.MAX_HEALTH).setBaseValue(388500 * ProjectCCommonConfig.calamitasValue("health_multiplier"));
         brother.setHealth(brother.getMaxHealth());
         brother.getAttribute(Attributes.ARMOR).setBaseValue(80 * ProjectCCommonConfig.calamitasValue("armor_multiplier"));
@@ -108,6 +130,7 @@ public final class CalamitasBrotherEntity extends Monster {
         var journal = CalamitasBattleData.get(server);
         if (owner == null) {
             pixels = ProjectCCommonConfig.calamitasValue("pixels_per_block");
+            refreshShieldDimensions();
             owner = CalamitasSummons.commandOwner(this, role()).getUUID();
             getAttribute(Attributes.MAX_HEALTH).setBaseValue(388500 * ProjectCCommonConfig.calamitasValue("health_multiplier"));
             getAttribute(Attributes.ARMOR).setBaseValue(80 * ProjectCCommonConfig.calamitasValue("armor_multiplier"));
@@ -208,6 +231,7 @@ public final class CalamitasBrotherEntity extends Monster {
         if (!Double.isFinite(pixels) || pixels <= 0 || !Double.isFinite(movement) || movement <= 0 || sourceAge < 0
                 || !Double.isFinite(planeX.lengthSqr()) || Math.abs(planeX.lengthSqr() - 1) > 1e-6)
             throw new IllegalArgumentException("Invalid Calamitas brother save");
+        refreshDimensions();
         publish();
     }
 }

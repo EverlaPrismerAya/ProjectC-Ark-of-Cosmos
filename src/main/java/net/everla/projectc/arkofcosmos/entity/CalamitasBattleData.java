@@ -11,8 +11,8 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.saveddata.SavedData;
 
-/** Calamitas-only ownership journal. Unloaded members remain alive until an observed
- * native death; ended battles also clean members which load after the boss is gone.
+/** Calamitas-only ownership journal. The boss reconciles summon survival against
+ * nearby entities; retired/ended battles clean members which subsequently load.
  */
 public final class CalamitasBattleData extends SavedData {
     private final Map<UUID, Battle> battles = new HashMap<>();
@@ -142,6 +142,15 @@ public final class CalamitasBattleData extends SavedData {
             if ("attack".equals(role) == projectiles && !battle.dead.contains(id)) ids.add(id);
         });
         return ids;
+    }
+    /** Boss-observed nearby living summons are authoritative, rather than death callbacks.
+     * Missing/unloaded summons retire and are cleaned if they subsequently load again. */
+    public void reconcileSummons(UUID owner, Set<UUID> nearby) {
+        Battle battle = battles.get(owner);
+        if (battle == null || battle.ended) return;
+        for (var member : battle.members.entrySet())
+            if (("heart".equals(member.getValue()) || "seeker".equals(member.getValue()) || isBrother(member.getValue()))
+                    && !nearby.contains(member.getKey())) died(owner, member.getKey());
     }
     /** Heart-controlled retirement also records unloaded worm slots. They must
      * disappear when loaded rather than keep the boss shielded indefinitely. */
