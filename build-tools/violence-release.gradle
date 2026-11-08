@@ -1,4 +1,0 @@
-// Keep release verification separate from other work happening in the shared checkout.
-gradle.beforeProject { project ->
-    project.layout.buildDirectory.set(new File(project.projectDir,'reference/violence/release-build'))
-}
