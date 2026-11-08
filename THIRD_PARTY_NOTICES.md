@@ -20,9 +20,10 @@ GPL 声明不授予第三方内容的额外权利，也不证明现有第三方�
 
 以下路径相对于上述 Java 根目录：
 
-| 文件 | Calamity 来源／派生内容 |
+| 文件 | 来源／派生内容 |
 | `textures/item/ashes_of_calamity.png` | Calamity Team：`Items/Materials/AshesofCalamity.png` 原图五帧动画；源 `AshesofCalamity.SetStaticDefaults` 每帧6 Terraria tick映射为2 Minecraft tick。ARR，非GPL授权；散列见资源清单。 |
 | --- | --- |
+| `combat/LegacyApollyonDamageWindow.java`、`mixin/compact/goetyAndGoetyRevelation/LegacyApollyon*.java`，以及 `ArkMixinPlugin` 的旧版冷却回调适配 | 从本机 RevelationFix 4.9 的 `ApollyonDamageWindow`、`advanced/invul/LivingEntityMixin`、`advanced/invul/goety/ApostleMixin`、`goety/ApollyonMixin` 回移伤害窗口、实际扣血结算与冷却提交逻辑；适配旧 GR 2.3／RF 4.0 的独立生命与双冷却计时器。原始 JAR `[Forge]RevelationFix-1.20.1-4.9.jar` SHA-256：`cbb8a0fbf7f9c1f9926f17616861e1bcaddb4c23d3e2b487a637eac484f9af31`。原作者保留全部权利（上游元数据许可 `ARR`），来源算法及其派生部分不作 GPL-3.0-only 重新授权；未复制或内嵌上游 JAR。 |
 | `enchant/CurseCombat.java`、`CurseMath.java`、`TaintedGeometry.java`、`entity/WitchCurseEntity.java`、`client/WitchCurseRenderer.java`、硫火魔珠与炼注界面原图／音效 | Calamity Team：固定提交 `1a8cebd27ec5615316b78f71973446b5528d2b78` 的 `UI/CalamitasEnchantments`、`CalPlayer`、`CalamityGlobalItem/Projectile`、`NPCs/Other` 及相关魔法、近战、召唤、治疗弹幕源码；中文名称来自 CalamityCN `Mods.CalamityMod.UI.hjson`，说明按 Minecraft / Goety 适配行为调整。原始纹理与 `WeaponEnchant.ogg` 逐字节复制并按 SHA-256 去重，来源散列见资源清单；来源算法、资源及派生部分 ARR，不作 GPL-3.0-only 重新授权。Forge 菜单、NBT、灵魂适配、网络与三维坐标为本项目适配。 |
 | `client/CalamitasVortexSound.java`、`mixin/client/calamitas/CalamitasDronePitchMixin.java` | 固定 CalamityModPublic 提交 `1a8cebd27ec5615316b78f71973446b5528d2b78` 的 `BrimstoneMonster.cs` 持续音、距离参数和退场条件；Calamity Team ARR。只读核对本机 Terraria `Utils.GetLerpValue`／`Audio.ActiveSound` 与 FNA `SoundEffectInstance.UpdatePitch` 的默认插值、2500源像素衰减和八度换算；API及原始实现归各原权利人，原条款不变，不由本项目重新授权。含本项目的三维监听距离、原生流式通道与限定声音事件的音调适配；未复制运行库。运行库散列见资源清单。 |
 | `calamity/SupremeCalamitasBarrage.java`、`calamity/SupremeCalamitasEncounter.java`、`calamity/SupremeCalamitasArena.java` | Calamity Team：公开源码提交 `1a8cebd27ec5615316b78f71973446b5528d2b78` 的 `NPCs/SupremeCalamitas/SupremeCalamitas.cs` 五轮弹幕、阶段条件、施法／投降计时、战场尺寸及越界加速，和 `Systems/Mechanic/ArenaWallSystem.cs` 的边界方向语义。Java／Forge 三维坐标、存档及强制流程防跳过属于本项目适配；原算法及其派生部分遵循 Calamity 原许可，ARR，不作 GPL-3.0-only 重新授权。未引入特殊种子、Permafrost 或 Boss Rush 流程 |

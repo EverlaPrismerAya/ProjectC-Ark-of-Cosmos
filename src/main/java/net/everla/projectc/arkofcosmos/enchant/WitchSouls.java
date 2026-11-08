@@ -18,7 +18,18 @@ public final class WitchSouls {
     public static int capacity(Player p){return SEHelper.getSEActive(p)?MainConfig.MaxArcaSouls.get():ITotem.maximumSouls(TotemFinder.FindTotem(p));}
     public static boolean active(Player p){return SEHelper.getSoulsContainer(p)&&current(p)>0&&capacity(p)>0;}
     public static double ratio(Player p){return active(p)?Math.min(1,(double)current(p)/capacity(p)):0;}
-    public static int drain(Player p){int before=current(p);if(before>0)SEHelper.decreaseSoulsNoDiscount(p,before);return Math.max(0,before-current(p));}
+    private static final boolean LEGACY = java.util.Arrays.stream(SEHelper.class.getDeclaredMethods())
+            .noneMatch(method -> method.getName().equals("decreaseSoulsNoDiscount"));
+    private static void debit(Player p,int amount){
+        if(!LEGACY){SEHelper.decreaseSoulsNoDiscount(p,amount);return;}
+        WitchSoulEvents.begin(p);
+        try{
+            amount=com.Polarice3.Goety.common.events.spell.GoetyEventFactory.onSoulEnergyLoss(p,amount);
+            if(SEHelper.getSEActive(p)){SEHelper.decreaseSESouls(p,amount);SEHelper.sendSEUpdatePacket(p);}
+            else {var totem=TotemFinder.FindTotem(p);if(totem!=null)ITotem.decreaseSouls(totem,amount);}
+        }finally{WitchSoulEvents.complete(p);}
+    }
+    public static int drain(Player p){int before=current(p);if(before>0)debit(p,before);return Math.max(0,before-current(p));}
     /** Same general attribute, armor/halo discount and integer rounding as Goety casting. */
     public static int cost(Player p,int amount){
         var discount=p.getAttribute(com.Polarice3.Goety.init.ModAttributes.SOUL_DISCOUNT.get());
@@ -27,5 +38,5 @@ public final class WitchSouls {
         return net.everla.projectc.arkofcosmos.combat.HaloCompat.equipped(p,"halo_of_the_end")?Math.min(1,cost):cost;
     }
     /** Shared magic-weapon debit: creative casting needs no soul container or balance. */
-    public static boolean pay(Player p,int amount){if(p.getAbilities().instabuild)return true;amount=cost(p,amount);if(amount==0)return true;if(!active(p)||current(p)<amount)return false;SEHelper.decreaseSoulsNoDiscount(p,amount);return true;}
+    public static boolean pay(Player p,int amount){if(p.getAbilities().instabuild)return true;amount=cost(p,amount);if(amount==0)return true;if(!active(p)||current(p)<amount)return false;debit(p,amount);return true;}
 }

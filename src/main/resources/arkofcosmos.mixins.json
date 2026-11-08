@@ -31,6 +31,8 @@
     "entity.fourthCalamity.CalamityAttackRemovalMixin",
     "entity.combat.VanillaLivingCombatMixin",
     "compact.goetyAndGoetyRevelation.GoetyApollyonMixin",
+    "compact.goetyAndGoetyRevelation.LegacyApollyonMixin",
+    "compact.goetyAndGoetyRevelation.LegacyApollyonLivingMixin",
     "compact.goetyAndGoetyRevelation.NecromanticFocusEnchantmentMixin",
     "compact.goetyAndGoetyRevelation.CalamitasSummonMixin",
     "compact.goetyAndGoetyRevelation.AtonementVoucherMixin",
@@ -41,6 +43,8 @@
     "world.BeaconSummonMixin",
     "world.CalamitySkullDropsMixin",
     "compact.goetyAndGoetyRevelation.WitchWandSoulMixin",
+    "compact.goetyAndGoetyRevelation.WitchModernTouchSoulMixin",
+    "compact.goetyAndGoetyRevelation.WitchLegacyTouchSoulMixin",
     "compact.goetyAndGoetyRevelation.WitchSoulDebitMixin"
   ],
   "client": [

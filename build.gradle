@@ -214,6 +214,8 @@ dependencies {
     clientRuntimeOnly fg.deobf('maven.modrinth:embeddium:UTbfe5d1')
     compileOnly fg.deobf('maven.modrinth:jei:6E4ps2ER')
     runtimeOnly fg.deobf('maven.modrinth:jei:6E4ps2ER')
+    compileOnly fg.deobf('maven.modrinth:goety-revelation:BAH9TQcK')
+    compileOnly fg.deobf('local:[Forge]RevelationFix-1.20.1:4.9') // Optional legacy damage-window backport APIs only.
     compileOnly fg.deobf('maven.modrinth:goety:AIxkLaCV')
     runtimeOnly fg.deobf('maven.modrinth:goety:AIxkLaCV') // 2.5.60.4
     runtimeOnly fg.deobf('maven.modrinth:goety-revelation:BAH9TQcK') // 2.3.6

@@ -20,11 +20,6 @@ public abstract class WitchWandSoulMixin {
         if(caster instanceof Player player)WitchSoulEvents.spell(player,item,()->original.call(item,level,caster,spell));
         else original.call(item,level,caster,spell);
     }
-    @WrapMethod(method="canCastTouch",require=1)
-    private boolean touchPayment(ItemStack item,Level level,LivingEntity caster,LivingEntity target,Operation<Boolean> original){
-        if(caster instanceof Player player)return WitchSoulEvents.casting(player,item,()->original.call(item,level,caster,target));
-        return original.call(item,level,caster,target);
-    }
     @WrapMethod(method={"onUseTick","m_5929_"},require=1)
     private void channelPayment(Level level,LivingEntity caster,ItemStack item,int time,Operation<Void> original){
         if(caster instanceof Player player)WitchSoulEvents.spell(player,item,()->original.call(level,caster,item,time));
