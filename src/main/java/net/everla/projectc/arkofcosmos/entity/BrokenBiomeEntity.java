@@ -29,7 +29,7 @@ public final class BrokenBiomeEntity extends Entity {
     public static final int BLADE=0,BEAM=1;
     private static final EntityDataAccessor<CompoundTag> VIEW=SynchedEntityData.defineId(BrokenBiomeEntity.class,EntityDataSerializers.COMPOUND_TAG);
     private final AttackRenderSnapshot clientSnapshot=new AttackRenderSnapshot();
-    private static final Map<LivingEntity,Map<UUID,Long>> NPC_IMMUNITY=new WeakHashMap<>();
+    static final Map<LivingEntity,Map<UUID,Long>> NPC_IMMUNITY=new WeakHashMap<>();
     private static final SpriteBlade SHAPE=new SpriteBlade("item/broken_biome_blade");
     private final Map<UUID,Integer> immunity=new HashMap<>();
     private int subframe;

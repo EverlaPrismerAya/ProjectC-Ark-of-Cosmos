@@ -29,7 +29,7 @@ public final class OldOneEntity extends Entity {
         Kind(int id){nativeId=id;}
     }
     private static final EntityDataAccessor<CompoundTag> VIEW=SynchedEntityData.defineId(OldOneEntity.class,EntityDataSerializers.COMPOUND_TAG);
-    private static final Map<LivingEntity,Map<UUID,Long>> OWNER_IMMUNITY=new WeakHashMap<>();
+    static final Map<LivingEntity,Map<UUID,Long>> OWNER_IMMUNITY=new WeakHashMap<>();
     private final Map<Integer,Integer> hitUntil=new HashMap<>();
     private final AttackRenderSnapshot clientView=new AttackRenderSnapshot();
     private net.minecraft.world.item.ItemStack weapon=net.minecraft.world.item.ItemStack.EMPTY;

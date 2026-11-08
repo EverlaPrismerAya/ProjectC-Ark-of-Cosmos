@@ -26,8 +26,8 @@ public final class BiomeEntity extends Entity {
     public static final int BLADE=0,BEAM=1,HOT_SHOT=2,MIST=3,VINE=4,DASH=5,MONOLITH=6,ORB=7,SIGIL=8;
     private static final EntityDataAccessor<CompoundTag> VIEW=SynchedEntityData.defineId(BiomeEntity.class,EntityDataSerializers.COMPOUND_TAG);
     private final AttackRenderSnapshot clientSnapshot=new AttackRenderSnapshot();
-    private static final Map<LivingEntity,Map<UUID,Long>> NPC_IMMUNITY=new WeakHashMap<>();
-    private static final Map<LivingEntity,Long> MIST_IMMUNITY=new WeakHashMap<>();
+    static final Map<LivingEntity,Map<UUID,Long>> NPC_IMMUNITY=new WeakHashMap<>();
+    static final Map<LivingEntity,Long> MIST_IMMUNITY=new WeakHashMap<>();
     private final Map<UUID,Integer> immunity=new HashMap<>();
     private int subframe;
     private long startTick;

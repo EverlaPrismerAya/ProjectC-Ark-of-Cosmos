@@ -36,7 +36,7 @@ public final class TrueBiomeEntity extends Entity {
     private TrueBiomeEntity wheel;
     private LivingEntity target,from;
     private final Map<UUID,Integer> immunity=new HashMap<>();
-    private static final Map<LivingEntity,Map<UUID,Long>> NPC_IMMUNITY=new WeakHashMap<>();
+    static final Map<LivingEntity,Map<UUID,Long>> NPC_IMMUNITY=new WeakHashMap<>();
     private final double[] seeds=new double[3],angles=new double[3];
     private final List<Vec3[]> chains=new ArrayList<>();
     private ListTag samples=new ListTag(),trail=new ListTag();
