@@ -33,3 +33,5 @@ forge*changelog.txt
 /src/test/
 /logs/
 /src/test/java/
+/build-tools/
+/run-gametest/
