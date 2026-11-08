@@ -124,7 +124,7 @@ public final class FracturedEntity extends Entity {
         for (LivingEntity t : level().getEntitiesOfClass(LivingEntity.class, new AABB(from, to).inflate(width / 2 + 2), e -> ArkCombat.canHit(p, e))) {
             if (hit.contains(t.getId()) || !ArkGeometry.line(t.getBoundingBox(), from, to, width, frame)) continue;
             float multiplier = damage / FracturedRules.baseDamage();
-            float amount = damage + EnchantmentHelper.getDamageBonus(weapon, t.getMobType()) * multiplier;
+            float amount = PlayerWeaponDamage.scale(p, weapon, damage) + EnchantmentHelper.getDamageBonus(weapon, t.getMobType()) * multiplier;
             LivingEntity previous = HURTING.get(); HURTING.set(t);
             boolean success;
             try { success = WeaponDamage.hurt(t, WeaponUser.source(this, p), amount); }

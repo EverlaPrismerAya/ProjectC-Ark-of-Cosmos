@@ -1,0 +1,11 @@
+// Run: gradlew -I gradle/weapon-attributes.gradle weaponAttributeCheck --offline
+allprojects {
+    afterEvaluate {
+        sourceSets.test.java.srcDir 'gradle/weapon-attributes'
+        tasks.register('weaponAttributeCheck', JavaExec) {
+            dependsOn testClasses
+            classpath = sourceSets.test.runtimeClasspath
+            mainClass = 'net.everla.projectc.arkofcosmos.combat.WeaponAttributeCheck'
+        }
+    }
+}

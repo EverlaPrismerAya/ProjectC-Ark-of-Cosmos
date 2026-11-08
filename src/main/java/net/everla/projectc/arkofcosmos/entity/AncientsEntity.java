@@ -177,7 +177,7 @@ public final class AncientsEntity extends Entity {
     private boolean hurt(Player p, LivingEntity t) {
         if(hit.contains(t.getId()))return false;
         float falloff=kind==BLAST ? (float)Math.pow(.25,numHits*.1) : 1;
-        float amount=(damage+EnchantmentHelper.getDamageBonus(weapon,t.getMobType())*damage/AncientsRules.baseDamage())*falloff;
+        float amount=(PlayerWeaponDamage.scale(p,weapon,damage)+EnchantmentHelper.getDamageBonus(weapon,t.getMobType())*damage/AncientsRules.baseDamage())*falloff;
         boolean success=WeaponDamage.hurt(t,WeaponUser.source(this,p),amount);
         if(!success)return false;
         hit.add(t.getId());numHits++;p.setLastHurtMob(t);

@@ -168,7 +168,7 @@ public final class BrokenBiomeEntity extends Entity {
         boolean ordinary=kind==BEAM||kind==BLADE&&(mode<=PURE||mode==COLD||mode==EVIL);
         long clock=sourceClock();if(ordinary&&NPC_IMMUNITY.getOrDefault(t,Map.of()).getOrDefault(ownerUuid,0L)>clock)return false;
         int fire=weapon.getEnchantmentLevel(Enchantments.FIRE_ASPECT);boolean started=fire>0&&!t.isOnFire();if(started)t.setSecondsOnFire(1);
-        float applied=amount+EnchantmentHelper.getDamageBonus(weapon,t.getMobType())*(critical?2:1);
+        float applied=PlayerWeaponDamage.scale(p,weapon,amount)+EnchantmentHelper.getDamageBonus(weapon,t.getMobType())*(critical?2:1);
         if(!WeaponDamage.hurt(t,WeaponUser.source(this,p),applied)){if(started)t.clearFire();return false;}
         immunity.put(t.getUUID(),cd);if(ordinary)NPC_IMMUNITY.computeIfAbsent(t,k->new HashMap<>()).put(ownerUuid,clock+60);p.setLastHurtMob(t);
         if(fire>0)t.setSecondsOnFire(4*fire);EnchantmentHelper.doPostHurtEffects(t,p);weapon.getAllEnchantments().forEach((e,l)->e.doPostAttack(p,t,l));

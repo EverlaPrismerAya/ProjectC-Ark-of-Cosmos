@@ -13,7 +13,7 @@ public class RageMobEffect extends MobEffect {
 		this.addAttributeModifier(
 				Attributes.ATTACK_DAMAGE,
 				RAGE_MELEE_UUID,
-				0.35, AttributeModifier.Operation.MULTIPLY_TOTAL
+				0.35, AttributeModifier.Operation.MULTIPLY_BASE
 		);
 	}
     @Override

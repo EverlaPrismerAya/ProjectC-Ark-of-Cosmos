@@ -81,7 +81,7 @@ public final class ProjectCCommonConfig {
         define(b,"end_halo_trip_chance",.05,0,1,"Chance for a player wearing the Halo of the End to trip when taking sweet berry bush damage, checked at most once every 10 ticks");
         b.pop().push("combat_boost");
         b.push("rage");
-        define(b,"damage_multiplier",1.35,0,100,"Total attack damage multiplier; 1 means no bonus");
+        define(b,"damage_multiplier",1.35,0,100,"Attack damage factor; excess over 1 adds to other MULTIPLY_BASE bonuses");
         define(b,"duration_ticks",180,1,72000,"Base duration before permanent upgrades; each upgrade adds 20 ticks");
         define(b,"required_charge",100,1,100,"Full meter and activation charge");
         define(b,"charge_ticks",900,1,720000,"Ticks to fill at maximum normal-enemy proximity; bosses divide this time by boss_charge_multiplier");
@@ -93,7 +93,7 @@ public final class ProjectCCommonConfig {
         define(b,"upgrade_count",3,0,3,"Permanent rage boosters already applied; each adds 20 ticks to duration_ticks, maximum 3");
         b.pop();
         b.push("adrenaline");
-        define(b,"damage_multiplier",3.1,0,100,"Total attack damage multiplier; stacks multiplicatively with rage");
+        define(b,"damage_multiplier",3.45,0,100,"Attack damage factor; excess over 1 adds to rage and other MULTIPLY_BASE bonuses");
         define(b,"duration_ticks",100,1,72000,"Effect duration in ticks");
         define(b,"required_charge",10000,1,10000,"Full meter and activation charge");
         define(b,"charge_ticks",600,1,720000,"Ticks to fill near a boss");

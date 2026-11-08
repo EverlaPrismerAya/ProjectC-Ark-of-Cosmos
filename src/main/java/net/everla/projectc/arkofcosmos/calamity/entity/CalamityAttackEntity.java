@@ -214,7 +214,7 @@ public abstract class CalamityAttackEntity extends Entity {
                 default -> Integer.MAX_VALUE / 2;
             };
             immunity.put(target.getId(), steps + cooldown);
-            float amount = damage;
+            float amount = net.everla.projectc.arkofcosmos.combat.PlayerWeaponDamage.scale(owner, weapon, damage);
             if (attackKind == Kind.BLADE && mode == 3) amount *= 1.2f;
             if (attackKind == Kind.BLAST) amount *= (float)Math.pow(.25, hits * .1f);
             // Damage enchantments follow this attack's original multiplier, including small derived bolts.

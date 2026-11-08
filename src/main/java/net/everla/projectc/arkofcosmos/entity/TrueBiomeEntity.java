@@ -296,7 +296,7 @@ public final class TrueBiomeEntity extends Entity {
     private boolean hit(Player p,LivingEntity t,int cd,float amount,double proc,boolean crit){
         if(isRemoved()||immunity.containsKey(t.getUUID()))return false;immunity.put(t.getUUID(),cd);
         int fire=weapon.getEnchantmentLevel(Enchantments.FIRE_ASPECT);boolean started=fire>0&&!t.isOnFire();if(started)t.setSecondsOnFire(1);
-        float enchanted=amount+EnchantmentHelper.getDamageBonus(weapon,t.getMobType())*(crit?2:1);
+        float enchanted=PlayerWeaponDamage.scale(p,weapon,amount)+EnchantmentHelper.getDamageBonus(weapon,t.getMobType())*(crit?2:1);
         if(!WeaponDamage.hurt(t,WeaponUser.source(this,p),enchanted)){if(started)t.clearFire();return false;}
         hits++;TrueBiomeCombat.proc(p,proc);p.setLastHurtMob(t);
         if(fire>0)t.setSecondsOnFire(4*fire);EnchantmentHelper.doPostHurtEffects(t,p);weapon.getAllEnchantments().forEach((e,l)->e.doPostAttack(p,t,l));

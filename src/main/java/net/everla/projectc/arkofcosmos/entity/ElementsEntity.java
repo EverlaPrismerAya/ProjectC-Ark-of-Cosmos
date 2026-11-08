@@ -207,6 +207,7 @@ public final class ElementsEntity extends Entity {
         if(isRemoved())return;
         Integer previous=hitAt.get(t.getId());if(previous!=null&&age-previous<cooldown)return;
         if(kind==BLAST)amount*=Math.pow(.25,hits*.1);
+        amount=PlayerWeaponDamage.scale(p,weapon,amount);
         amount+=EnchantmentHelper.getDamageBonus(weapon,t.getMobType());
         var source=WeaponUser.source(this,p);
         if(!WeaponDamage.hurt(t,source,amount))return;

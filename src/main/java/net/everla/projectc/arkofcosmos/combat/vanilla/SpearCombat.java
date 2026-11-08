@@ -62,7 +62,7 @@ public final class SpearCombat {
             boolean dismount=condition(active,m.dismountTicks(),speed,m.dismountSpeed(),factor);
             boolean knockback=condition(active,m.knockbackTicks(),speed,m.knockbackSpeed(),factor);
             boolean damage=active<=m.damageTicks();
-            if(dismount||knockback||damage)affected|=stab(attacker,target,stack,kineticDamage((float)attacker.getAttributeBaseValue(Attributes.ATTACK_DAMAGE),relative,m.multiplier(),m.relativeSpeed()*factor),damage,knockback,dismount);
+            if(dismount||knockback||damage)affected|=stab(attacker,target,stack,kineticDamage((float)attacker.getAttributeValue(Attributes.ATTACK_DAMAGE),relative,m.multiplier(),m.relativeSpeed()*factor),damage,knockback,dismount);
         }
         if(affected){sound(attacker,spear,"hit");net.everla.projectc.arkofcosmos.network.ArkNetwork.spearFeedback(attacker);}
     }

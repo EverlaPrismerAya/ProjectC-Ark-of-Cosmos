@@ -364,7 +364,7 @@ public final class GalaxiaEntity extends Entity {
         int fire=weapon.getEnchantmentLevel(net.minecraft.world.item.enchantment.Enchantments.FIRE_ASPECT);
         boolean startedFire=amount>0 && fire>0 && !t.isOnFire();
         if(startedFire)t.setSecondsOnFire(1);
-        float enchanted=amount>0?amount+net.minecraft.world.item.enchantment.EnchantmentHelper.getDamageBonus(weapon,t.getMobType()):0;
+        float enchanted=amount>0?PlayerWeaponDamage.scale(p,weapon,amount)+net.minecraft.world.item.enchantment.EnchantmentHelper.getDamageBonus(weapon,t.getMobType()):0;
         boolean success=amount==0 || WeaponDamage.hurt(t,WeaponUser.source(this,p),enchanted);
         if(!success && startedFire)t.clearFire();
         if(!success) return;
