@@ -24,8 +24,17 @@ public final class WeaponDamage {
                 || target instanceof net.everla.projectc.arkofcosmos.entity.CalamitasMinionEntity
                 || target instanceof net.everla.projectc.arkofcosmos.entity.CalamitasBrotherEntity
                 || target instanceof net.everla.projectc.arkofcosmos.entity.SupremeCalamitasEntity
-                || target instanceof net.everla.projectc.arkofcosmos.entity.CalamitasSepulcherEntity)
-            return target.hurt(source,amount);
+                || target instanceof net.everla.projectc.arkofcosmos.entity.CalamitasSepulcherEntity) {
+            // The LivingEntity hurt hook must recognize this native dispatch too.
+            Hit previous = CURRENT.get();
+            CURRENT.set(new Hit(target, source, 0));
+            try {
+                return target.hurt(source, amount);
+            } finally {
+                if (previous == null) CURRENT.remove();
+                else CURRENT.set(previous);
+            }
+        }
         // Keep native boss mitigation, but preserve player/servant weapons' hurt-frame bypass.
         if(target instanceof net.everla.projectc.arkofcosmos.entity.FourthCalamityEntity) {
             if(!WeaponUser.playerOwnedDamage(source))return target.hurt(source,amount);

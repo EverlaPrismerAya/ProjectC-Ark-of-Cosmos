@@ -1,117 +1,47 @@
 # ProjectC — Ark of Cosmos · 鸿蒙方舟
 
-将 Terraria 灾厄模组（Calamity Mod）的鸿蒙方舟带入 Minecraft 的 Forge 模组。包含五段连击、投掷剪合、星链、针弹、追踪弹、招架充能与时空撕裂，并将对应的二维特效适配到 Minecraft 三维场景。
+Minecraft Forge 1.20.1 模组，将 Terraria 灾厄系列武器与Boss适配到三维战斗，包含方舟与环境刃系列、银河、恣睢、怨戾、异端僭越，以及魔法使、第四天灾、至尊唤魔者和硫火女巫。
 
-其他武器还有：
-- Broken Biome Blade（残缺环境刃）：五种环境调谐、探索永久解锁和双环切换轮盘；[武器说明](docs/broken-biome-blade.md)。
-- Ark of The Old One（旧神方舟），为旧版鸿蒙方舟，纯粹的数值怪。
-- True Biome Blade（真·环境之刃）：四种主调谐、四种副调谐被动与双层选择盘；[武器说明](docs/true-biome-blade.md)。
-- Galaxia（银河），包含凤凰、白羊、北极星和仙女座四种攻击模式、星座选择盘及派生弹幕。
-- Ark of the Elements（元素方舟），包含五段连击、投掷剪合、太阳针与元素玻璃星、招架充能、裂缝剪击及元素谐鸣状态。
-- Fractured Ark（破碎方舟）：4 点基础伤害的交替挥砍、10 层招架充能及充能剑气。
-- Ark of the Ancients（远古方舟）：6 点基础伤害，交替挥砍、追踪星弹、充能剑气与能量爆发；使用共通格挡，物品防火。
+## 安装
 
-本项目由 EverlaPrismerAya 维护，与 Calamity Team、Re-Logic、Mojang 和 Minecraft Forge 项目没有官方隶属关系。原作品的代码、纹理和音效归各自权利人所有。
-
-## 原版战斗套件
-
-另提供 Minecraft 26.1.2 风格的七材质长矛、重锤与玩家风弹：长矛左键突刺、右键持续架矛，根据双方相对运动判定伤害、击退及卸乘；支持突进 III。重锤支持分段下落砸击、致密 V、突破 IV 和风爆 III。它们使用普通原版防御与受击冷却。
-
-普通长矛按“右上材料、中间木棍、左下木棍”合成；下界合金长矛通过钻石长矛锻造升级。重锤使用上方沉重核心、下方烈焰棒合成，以烈焰棒修理。普通古城宝箱额外独立提供 2.5% 沉重核心和 2.5% 风爆 I 附魔书，保留原有掉落；高等级风爆通过铁砧合并。长矛使用对应材质修理。
-
-手持火焰弹右键投出风弹物理的投射物，可推动实体与风跳，并触发门、活板门、按钮等方块；不会点火或破坏方块。火焰弹原配方与发射器火球行为保留。完整参数与附魔适用性见[战斗套件说明](docs/vanilla-combat.md)。
-
-## 环境与安装
-
-| 项目 | 版本／要求 |
+| 项目 | 要求 |
 | --- | --- |
 | Minecraft | 1.20.1 |
-| 加载器 | Forge；开发与回归使用 47.4.21 |
+| Forge | 47系列，开发使用47.4.21 |
 | Java | 17 |
-| 安装位置 | 客户端与服务端均需安装 |
-| 模组 ID | `arkofcosmos` |
+| 安装端 | 客户端与服务端 |
+| 模组ID | `arkofcosmos` |
 
-将构建得到的模组 JAR 放入对应游戏实例的 `mods` 目录。远古方舟通过下界合金升级锻造模板、破碎方舟与下界合金锭在锻造台升级获得。武器也可在创造模式的战斗物品栏获取，或使用命令：
+将构建JAR放入实例的 `mods/`。Goety启用至尊灾厄、女巫炼注和相关武器／仪式；Goety Revelation、RevelationFix与Curios提供相应可选联动。Oculus／Embeddium为可选光影兼容。
 
-```mcfunction
-/give @s arkofcosmos:ark_of_cosmos
-/give @s arkofcosmos:galaxia
-/give @s arkofcosmos:broken_biome_blade
-/give @s arkofcosmos:true_biome_blade
-/give @s arkofcosmos:ark_of_the_elements
-/give @s arkofcosmos:fractured_ark
-/give @s arkofcosmos:ark_of_the_ancients
-```
+已内置怒气与肾上腺素，默认V／B激活，可改键；不能同时安装独立Revengeance模组。
 
-### 代码目录
+## 功能导航
 
-Java 包：`net.everla.projectc.arkofcosmos`。
-
-灾厄系列武器通过 `WeaponDamage` 走原生伤害与死亡流程，并无视原版受击冷却；银河、元素方舟以及方舟对 `ignore_special_damage` 标签实体的伤害沿用此入口。各攻击自身的命中间隔仍按武器规则计算。方舟的独立血量与特殊致死机制由专用的 `ArkDamage` 提供。
-
-按职责分类，灾厄派生实现额外放入 `calamity` 来源分区：
-
-```text
-arkofcosmos/
-├─ ArkOfCosmos.java          模组入口与注册
-├─ item/                    武器物品、NBT 与工具提示接入
-├─ entity/                  实体生命周期、同步、插值、附魔和冲刺碰撞
-├─ combat/                  战斗事件、输入状态、目标选择、独立血量与死亡结算
-├─ mixin/                   原版／Forge 接入与通用 ASM 血量守卫
-├─ network/                 输入与特效数据包
-├─ client/                  按键、显示事件及客户端注册
-│  └─ render/               纹理、着色器绘制与 Oculus 光影合成后特效通道
-├─ util/                    三维攻击平面与几何工具
-└─ calamity/                Calamity 派生规则及其适配实现
-   ├─ combat/               武器连段规则、伤害换算、充能上限与提示配色
-   ├─ entity/               攻击阶段、运动、时序与命中规则
-   ├─ util/                 原攻击分段缓动曲线
-   └─ client/               刀刃绘制、粒子、震屏与拖尾算法
-```
-协议具体范围见 [许可范围说明](THIRD_PARTY_NOTICES.md)。
-
-### 资源目录
-
-资源命名空间为 `assets/arkofcosmos/`。
-
-| 目录／文件 | 内容 |
+| 功能 | 说明 |
 | --- | --- |
-| `textures/item/` | 物品主体、握柄与辉光纹理 |
-| `textures/entity/` | 左右刀刃、辉光、针弹与追踪弹等实体纹理 |
-| `textures/fx/` | 星芒、烟雾、光晕、连线、smear 和拖尾采样纹理；含独立绘制路径使用的刀刃纹理 |
-| `shaders/core/` | Minecraft 核心着色器 JSON、GLSL 顶点／片元程序 |
-| `sounds/`、`sounds.json` | 音频文件与音效事件映射 |
-| `models/item/` | 物品模型定义 |
-| `lang/` | 简体中文和英文名称、说明、按键名称 |
-| `src/main/resources/data/` | 剑与工具分类标签、实体伤害与死亡兼容标签 |
-| `META-INF/accesstransformer.cfg` | 摄像机平移与玩家击杀归属字段的访问配置 |
-| `src/main/resources/arkofcosmos.mixins.json` | Mixin 配置与 ASM 启动插件入口 |
+| 方舟系列 | [鸿蒙方舟](docs/ark-of-cosmos.md)、[旧神方舟](docs/ark-of-the-old-one.md)、[破碎方舟](docs/fractured-ark.md)、[远古方舟](docs/ark-of-the-ancients.md)、[元素方舟](docs/elements.md) |
+| 环境刃与银河 | [残缺环境刃](docs/broken-biome-blade.md)、[环境之刃](docs/biome-blade.md)、[真·环境之刃](docs/true-biome-blade.md)、[银河](docs/galaxia.md) |
+| 灾厄武器与炼注 | [恣睢](docs/violence.md)、[死灵炼注／怨戾／异端僭越](docs/necromantic-infusion.md)、[硫火女巫与普通炼注](docs/brimstone-witch.md) |
+| Boss与召唤 | [魔法使](docs/mahou.md)、[第四天灾](docs/fourth-calamity.md)、[至尊唤魔者，灾厄](docs/supreme-calamitas.md)、[天灾变体与信标召唤](docs/calamity-summoning.md) |
+| 原版战斗套件 | [七材质长矛、重锤与玩家风弹](docs/vanilla-combat.md) |
+| 配置与开发 | [公共配置与战斗增益](docs/COMBAT_CONFIGURATION.md)、[项目架构](docs/architecture.md)、[渲染与特效](docs/rendering.md) |
 
-实体类型标签 `arkofcosmos:ignore_death_remove` 保留实体自身的死亡流程、死亡演出与延迟掉落，不强制移除尸体；默认包含 Bosses of Mass Destruction 的四种 Boss。
-`arkofcosmos:ignore_special_damage` 使用与训练假人相同的普通物理伤害路径（保留 35% 伤害下限），不接管生命值与死亡逻辑，同时禁用方舟的强制尸体移除，无需再加入 `ignore_death_remove`；默认包含 `dummmmmmy:target_dummy` 和 `touhou_little_maid_spell:stellar_witch`。
-可通过数据包中的 `data/arkofcosmos/tags/entity_types/ignore_death_remove.json` 与 `ignore_special_damage.json` 增补或覆盖，未安装的模组实体为可选项。
+武器获取、配方与操作见对应页面。公共配置为 `config/projectc-common.toml`，支持热重载与同步；客户端选项位于 `config/projectc-client.toml`。管理命令 `/projectc` 要求权限等级2，详细行为见架构和Boss说明。
 
-素材逐项来源与散列记录见 [资源清单](licenses/RESOURCE-SOURCES.json)。清单只记录来源与文件对应关系，不授予第三方素材的使用或再分发许可。
+`docs/` 与 `AGENT.md` 按项目设置仅在本地维护，不随Git发布；本地完整开发入口见 [AGENT.md](AGENT.md)。
 
 ## 从源码构建
 
-安装 JDK 17，在项目根目录运行：
+安装JDK 17，在项目根目录运行：
 
 ```powershell
 .\gradlew.bat build
 ```
 
-Linux／macOS 可使用 `bash ./gradlew build`。构建产物位于 `build/libs/`。Gradle Wrapper 会下载所需依赖。
+Linux／macOS使用 `bash ./gradlew build`。产物位于 `build/libs/`；依赖由Gradle Wrapper获取。开发客户端使用 `runClient`。
 
-```powershell
-# 开发客户端
-.\gradlew.bat runClient
-
-# 服务端攻击行为回归
-
-# 曲线和粒子数值检查，也会随 build 执行
-.\gradlew.bat arkRegression arkFxRegression
-```
+`build` 通过 `check` 执行 `verifyMixinSrg` 与 `verifyMixinRefmap`。GameTest需按本地开发规则临时接入，日常构建不提供历史验证脚本中的任务。构建成功不代表游戏内视觉、音效、多人和整合包兼容已验收。
 
 ## 许可与致谢
 

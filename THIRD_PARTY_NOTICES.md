@@ -167,7 +167,7 @@ Calamity 来源的代码须保留 Calamity Team 署名及原条款。本项目�
 
 ## Calamity 原条款
 
-本地随原作品取得的许可原文保存在 `licenses/CALAGPL-3.0-onlyY-LICENSE.md`。其中包括：
+本地随原作品取得的许可原文保存在 `licenses/CALAMITY-LICENSE.md`。其中包括：
 
 > The Calamity Mod and all associated source code, visual assets and audio assets, is all rights reserved (ARR).
 
@@ -212,6 +212,6 @@ Java 移植、Minecraft 三维适配及项目维护：EverlaPrismerAya。
 
 | 文件 | 来源与许可 |
 | --- | --- |
-| `assets/arkofcosmos/textures/entity/supreme_calamitas.png` | 用户提供的 `sample/至尊女巫-灾厄.png`，64×64原图逐字节复制，SHA-256 `e4ff470dfa03bc89ea537dbab027f7be4796e5fdd4542718ab4da2aa7fd630f3`；供本次移植的Slim模型使用。原作者／原权利人保留权利，提供者未另行指定许可，不纳入GPL-3.0-only。 |
+| `assets/arkofcosmos/textures/entity/supreme_calamitas.png` | 用户提供的 `sample/至尊女巫-灾厄.png`，64×64原图逐字节复制，SHA-256 `e4ff470dfa03bc89ea537dbab027f7be4796e5fdd4542718ab4da2aa7fd630f3`；供至尊灾厄的Slim模型使用。原作者／原权利人保留权利，提供者未另行指定许可，不纳入GPL-3.0-only。 |
 
 怨戾与异端僭越物品Tooltip逐字保留Calamity固定提交的`Localization/en-US/Mods.CalamityMod.Items.Weapons.Magic.hjson`英文原文；中文优先采用本地CalamityCN同名Magic条目，与固定英文对照后保留汉化文本。原文快照、中文源文件散列及选择说明见`reference/necromantic-infusion/localization-sources.json`；相关文本权利归Calamity Team／汉化作者，未重新按GPL授权。
