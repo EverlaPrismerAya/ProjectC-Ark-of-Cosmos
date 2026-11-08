@@ -47,7 +47,22 @@ public final class DomainEffects {
             if(entity instanceof MahouAttackEntity attack&&attack.kind()==MahouAttackEntity.DOMAIN
                     &&!attack.isRemoved()&&attack.distanceToSqr(eye)<32*32){inside=true;break;}
     }
-    public static void reset(){if(chain!=null)chain.close();chain=null;failed=false;inside=false;}
+    public static void reset(){if(chain!=null)chain.close();chain=null;failed=false;inside=false;DomainTerrain.clear();}
+    private static net.minecraft.client.multiplayer.ClientLevel effectLevel;
+    @net.minecraftforge.eventbus.api.SubscribeEvent
+    public static void tick(net.minecraftforge.event.TickEvent.ClientTickEvent event){
+        if(event.phase!=net.minecraftforge.event.TickEvent.Phase.END)return;
+        var current=Minecraft.getInstance().level;
+        if(effectLevel!=current){reset();OdamaneHaloEffects.reset();effectLevel=current;}
+    }
+    @net.minecraftforge.eventbus.api.SubscribeEvent
+    public static void unload(net.minecraftforge.event.level.LevelEvent.Unload event){
+        if(event.getLevel()==effectLevel){reset();OdamaneHaloEffects.reset();effectLevel=null;}
+    }
+    @net.minecraftforge.eventbus.api.SubscribeEvent
+    public static void logout(net.minecraftforge.client.event.ClientPlayerNetworkEvent.LoggingOut event){
+        reset();OdamaneHaloEffects.reset();effectLevel=null;
+    }
     public static void grayscale(float partial){
         if(!inside||failed)return;
         var mc=Minecraft.getInstance();
@@ -63,6 +78,7 @@ public final class DomainEffects {
             RenderSystem.disableBlend();RenderSystem.disableDepthTest();RenderSystem.depthMask(false);
             chain.process(partial);
         }catch(java.io.IOException|com.google.gson.JsonSyntaxException error){
+            if(chain!=null){chain.close();chain=null;}
             failed=true;com.mojang.logging.LogUtils.getLogger().error("Cannot load domain shader",error);
         }finally{
             mc.getMainRenderTarget().bindWrite(true);

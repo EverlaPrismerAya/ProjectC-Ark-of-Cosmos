@@ -18,6 +18,9 @@ import java.util.*;
 /** Dust/Gore used by the sixteen legacy Galaxia2 derivatives. Source: Terraria 1.3.5.3 and AstralOrange. */
 @Mod.EventBusSubscriber(modid=ArkOfCosmos.MOD_ID,value=Dist.CLIENT)
 public final class OldOneParticles {
+    // Reuse native storage across frames, including frames after a large particle burst.
+    private static final net.minecraft.client.renderer.MultiBufferSource.BufferSource BUFFERS=
+            net.minecraft.client.renderer.MultiBufferSource.immediate(new com.mojang.blaze3d.vertex.BufferBuilder(256));
     @Mod.EventBusSubscriber(modid=ArkOfCosmos.MOD_ID,value=Dist.CLIENT,bus=Mod.EventBusSubscriber.Bus.MOD)
     public static final class Registration {
         @SubscribeEvent public static void setup(net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent e){
@@ -259,7 +262,7 @@ public final class OldOneParticles {
         return new float[]{d.gore&&(d.type==16||d.type==17)?1:value,d.gore&&(d.type==16||d.type==17)?1:value,d.gore&&(d.type==16||d.type==17)?1:value,value};
     }
     @SubscribeEvent public static void render(RenderLevelStageEvent e){
-        if(e.getStage()!=RenderLevelStageEvent.Stage.AFTER_PARTICLES)return;
+        if(e.getStage()!=RenderLevelStageEvent.Stage.AFTER_PARTICLES||DISPLAY.isEmpty())return;
         var pose=new com.mojang.blaze3d.vertex.PoseStack();
         pose.last().pose().set(e.getPoseStack().last().pose());
         pose.last().normal().set(e.getPoseStack().last().normal());
@@ -268,7 +271,9 @@ public final class OldOneParticles {
         renderParticles(pose,camera,partial);
     }
     private static void renderParticles(com.mojang.blaze3d.vertex.PoseStack pose,Vec3 camera,float partial){
-        var buffers=net.minecraft.client.renderer.MultiBufferSource.immediate(new com.mojang.blaze3d.vertex.BufferBuilder(256));double phase=partial*3;int index=Math.min(2,(int)phase);double t=phase-index;
+        if(DISPLAY.isEmpty())return;
+        var buffers=BUFFERS;double phase=partial*3;int index=Math.min(2,(int)phase);double t=phase-index;
+        try {
         for(Dust d:DISPLAY){if(partial<d.born||partial>d.died)continue;State a=d.states[index],b=d.states[index+1];if(a==null||b==null)continue;
             double scale=a.scale+(b.scale-a.scale)*t;float[] color=tint(d,(int)(a.alpha+(b.alpha-a.alpha)*t));
             String texture=d.gore?(d.type==16||d.type==17?"elements/gore_":"old_one/gore_")+d.type:d.type==ASTRAL?"old_one/astral_orange":"old_one/dust";
@@ -280,6 +285,7 @@ public final class OldOneParticles {
                 float[] overlay=new float[4];for(int i=0;i<4;i++)overlay[i]=Math.max(0,d.color[i]-(1-color[i]));
                 OldOneRenderer.region(pose,buffers,camera,texture,at,NativeSprites.billboard(),rotation,scale,scale,tx,ty,width,height,overlay);
             }
-        }buffers.endBatch();
+        }
+        } finally { buffers.endBatch(); }
     }
 }

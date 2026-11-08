@@ -1,6 +1,6 @@
 package net.everla.projectc.arkofcosmos.client;
 
-import com.mojang.blaze3d.pipeline.TextureTarget;
+import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.*;
 import net.everla.projectc.arkofcosmos.ArkOfCosmos;
@@ -30,7 +30,12 @@ public final class NecromanticEffects {
     private static final Map<UUID,Loop> loops=new HashMap<>();
     private static final Set<UUID> grown=new HashSet<>();
     private static net.minecraft.client.multiplayer.ClientLevel level;
-    private static TextureTarget mask,visible;
+    private static RenderTarget mask,visible;
+    private static void releaseTargets(){
+        if(mask!=null){mask.destroyBuffers();mask=null;}
+        if(visible!=null){visible.destroyBuffers();visible=null;}
+        Minecraft.getInstance().getMainRenderTarget().bindWrite(true);
+    }
     private static final Random random=new Random();
     private static final class Particle {
         Vec3 at,velocity;double size,rotation;int owner=-1;int age,lifetime,mode,variant=random.nextInt(3);float[] color;
@@ -45,7 +50,7 @@ public final class NecromanticEffects {
     }
     @SubscribeEvent public static void tick(TickEvent.ClientTickEvent event){
         if(event.phase!=TickEvent.Phase.END)return;var mc=Minecraft.getInstance();
-        if(level!=mc.level){for(var loop:loops.values())mc.getSoundManager().stop(loop);loops.clear();NecromanticAshRenderer.clear();particles.clear();burned.clear();burnAges.clear();ages.clear();grown.clear();level=mc.level;if(mask!=null){mask.destroyBuffers();visible.destroyBuffers();mask=visible=null;}}
+        if(level!=mc.level){for(var loop:loops.values())mc.getSoundManager().stop(loop);loops.clear();NecromanticAshRenderer.clear();particles.clear();burned.clear();burnAges.clear();ages.clear();grown.clear();level=mc.level;releaseTargets();}
         if(level==null||mc.isPaused())return;
         NecromanticAshRenderer.tick();
         List<NecromanticAttackEntity> entities=new ArrayList<>();Set<UUID> alive=new HashSet<>();
@@ -58,6 +63,7 @@ public final class NecromanticEffects {
         ages.keySet().retainAll(alive);grown.retainAll(alive);
         for(var e:entities)if(e.kind()==Kind.RANCOR&&e.age()>=180&&!loops.containsKey(e.getUUID())){var loop=new Loop(e);loops.put(e.getUUID(),loop);mc.getSoundManager().play(loop);}
         loops.entrySet().removeIf(entry->{if(alive.contains(entry.getKey()))return false;mc.getSoundManager().stop(entry.getValue());return true;});
+        if(particles.isEmpty()&&NecromanticAshRenderer.empty()&&(mask!=null||visible!=null))releaseTargets();
     }
     public static void visual(int kind,int id,UUID uuid,Vec3 at){
         var mc=Minecraft.getInstance();if(mc.level==null)return;
@@ -126,7 +132,12 @@ public final class NecromanticEffects {
     }
     private static void draw(float partial){
         if(particles.isEmpty()&&NecromanticAshRenderer.empty())return;var mc=Minecraft.getInstance();var main=mc.getMainRenderTarget();if(main.width<=0||main.height<=0)return;
-        if(mask==null||mask.width!=main.width||mask.height!=main.height){if(mask!=null){mask.destroyBuffers();visible.destroyBuffers();}mask=new TextureTarget(main.width,main.height,false,Minecraft.ON_OSX);visible=new TextureTarget(main.width,main.height,true,Minecraft.ON_OSX);mask.setClearColor(0,0,0,0);visible.setClearColor(0,0,0,0);}
+        if(mask==null||visible==null||mask.width!=main.width||mask.height!=main.height){
+            releaseTargets();
+            try{mask=EffectRenderTarget.create(main.width,main.height,false);visible=EffectRenderTarget.create(main.width,main.height,true);}
+            catch(RuntimeException|Error failure){releaseTargets();throw failure;}
+            finally{main.bindWrite(true);}
+        }
         var shader=RenderSystem.getShader();int texture=RenderSystem.getShaderTexture(0);boolean depth=org.lwjgl.opengl.GL11.glIsEnabled(org.lwjgl.opengl.GL11.GL_DEPTH_TEST),write=org.lwjgl.opengl.GL11.glGetBoolean(org.lwjgl.opengl.GL11.GL_DEPTH_WRITEMASK);
         boolean cull=org.lwjgl.opengl.GL11.glIsEnabled(org.lwjgl.opengl.GL11.GL_CULL_FACE),blend=org.lwjgl.opengl.GL11.glIsEnabled(org.lwjgl.opengl.GL11.GL_BLEND);
         int src=org.lwjgl.opengl.GL11.glGetInteger(org.lwjgl.opengl.GL14.GL_BLEND_SRC_RGB),dst=org.lwjgl.opengl.GL11.glGetInteger(org.lwjgl.opengl.GL14.GL_BLEND_DST_RGB),srcAlpha=org.lwjgl.opengl.GL11.glGetInteger(org.lwjgl.opengl.GL14.GL_BLEND_SRC_ALPHA),dstAlpha=org.lwjgl.opengl.GL11.glGetInteger(org.lwjgl.opengl.GL14.GL_BLEND_DST_ALPHA);

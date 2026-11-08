@@ -1,6 +1,6 @@
 package net.everla.projectc.arkofcosmos.client;
 
-import com.mojang.blaze3d.pipeline.TextureTarget;
+import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import java.util.*;
@@ -27,7 +27,12 @@ import net.minecraftforge.fml.common.Mod;
 public final class CalamitasArenaRenderer {
     private static final Map<UUID, CalamitasArenaVisual> ARENAS = new LinkedHashMap<>();
     private static Level level;
-    private static TextureTarget mask, visible;
+    private static RenderTarget mask, visible;
+    private static void releaseTargets(){
+        if(mask!=null){mask.destroyBuffers();mask=null;}
+        if(visible!=null){visible.destroyBuffers();visible=null;}
+        Minecraft.getInstance().getMainRenderTarget().bindWrite(true);
+    }
     private CalamitasArenaRenderer() {}
 
     @SubscribeEvent public static void tick(TickEvent.ClientTickEvent event) {
@@ -35,7 +40,7 @@ public final class CalamitasArenaRenderer {
         var current = Minecraft.getInstance().level;
         if (current != level) {
             ARENAS.clear(); level = current;
-            if (mask != null) { mask.destroyBuffers(); visible.destroyBuffers(); mask = visible = null; }
+            releaseTargets();
         }
         if (current == null) return;
         if (Minecraft.getInstance().isPaused()) return;
@@ -53,6 +58,7 @@ public final class CalamitasArenaRenderer {
             for (int source = 0; source < 3; source++) arena.step();
         });
         ARENAS.values().removeIf(CalamitasArenaVisual::empty);
+        if(ARENAS.isEmpty()&&(mask!=null||visible!=null))releaseTargets();
     }
 
     @SubscribeEvent public static void render(RenderLevelStageEvent event) {
@@ -67,11 +73,13 @@ public final class CalamitasArenaRenderer {
     private static void draw(double time) {
         var mc = Minecraft.getInstance(); var main = mc.getMainRenderTarget();
         if (main.width <= 0 || main.height <= 0) return;
-        if (mask == null || mask.width != main.width || mask.height != main.height) {
-            if (mask != null) { mask.destroyBuffers(); visible.destroyBuffers(); }
-            mask = new TextureTarget(main.width, main.height, false, Minecraft.ON_OSX);
-            visible = new TextureTarget(main.width, main.height, true, Minecraft.ON_OSX);
-            mask.setClearColor(0, 0, 0, 0); visible.setClearColor(0, 0, 0, 0);
+        if (mask == null || visible == null || mask.width != main.width || mask.height != main.height) {
+            releaseTargets();
+            try {
+                mask = EffectRenderTarget.create(main.width,main.height,false);
+                visible = EffectRenderTarget.create(main.width,main.height,true);
+            } catch(RuntimeException|Error failure){releaseTargets();throw failure;}
+            finally {main.bindWrite(true);}
         }
         var shader = RenderSystem.getShader();
         float[] color = RenderSystem.getShaderColor().clone();

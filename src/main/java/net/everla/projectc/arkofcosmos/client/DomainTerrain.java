@@ -19,6 +19,7 @@ final class DomainTerrain {
     private static Vec3 cachedCenter;
     private static long updated=Long.MIN_VALUE;
     private static Object cachedLevel;
+    static void clear(){cachedLevel=null;cachedCenter=null;updated=Long.MIN_VALUE;grid.clear();seam.clear();}
 
     static void render(Vec3 center){
         var level=Minecraft.getInstance().level;

@@ -18,6 +18,8 @@ import static net.everla.projectc.arkofcosmos.entity.OldOneEntity.Kind.*;
 
 /** Legacy SpriteBatch draws with XNA's premultiplied blend, using built-in Minecraft shaders. */
 public final class OldOneRenderer extends EntityRenderer<OldOneEntity> {
+    // BufferBuilder owns malloc memory without a GC cleaner. Keep one render-thread buffer.
+    private static final MultiBufferSource.BufferSource DEFERRED_BUFFERS=MultiBufferSource.immediate(new BufferBuilder(256));
     public OldOneRenderer(EntityRendererProvider.Context context){super(context);shadowRadius=0;}
     @Override public ResourceLocation getTextureLocation(OldOneEntity e){return NativeSprites.texture(texture(e.kind()));}
     @Override public boolean shouldRender(OldOneEntity e,Frustum f,double x,double y,double z){return e.shouldRenderAtSqrDistance(e.distanceToSqr(x,y,z));}
@@ -28,9 +30,8 @@ public final class OldOneRenderer extends EntityRenderer<OldOneEntity> {
         captured.last().pose().set(poses.last().pose());
         captured.last().normal().set(poses.last().normal());
         if(net.everla.projectc.arkofcosmos.client.render.OculusShaderCompat.defer(()->{
-            var deferred=MultiBufferSource.immediate(new BufferBuilder(256));
-            render(e,yaw,partial,captured,deferred,light);
-            deferred.endBatch();
+            try { render(e,yaw,partial,captured,DEFERRED_BUFFERS,light); }
+            finally { DEFERRED_BUFFERS.endBatch(); }
         },true))return;
         CompoundTag s=e.renderState(partial);if(s.isEmpty())return;
         OldOneEntity.Kind k=e.kind();Vec3 at=ElementsEntity.vector(s,"Position"),velocity=ElementsEntity.vector(s,"Velocity");
