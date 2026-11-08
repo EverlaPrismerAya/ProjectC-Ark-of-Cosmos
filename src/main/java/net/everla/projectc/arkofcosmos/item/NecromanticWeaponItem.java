@@ -14,7 +14,7 @@ import java.util.List;
 
 public final class NecromanticWeaponItem extends Item {
     public final boolean rancor;
-    public NecromanticWeaponItem(boolean rancor){super(new Properties().stacksTo(1).rarity(Rarity.EPIC));this.rancor=rancor;}
+    public NecromanticWeaponItem(boolean rancor){super(new Properties().stacksTo(1).rarity(Rarity.EPIC).fireResistant());this.rancor=rancor;}
     public int soulCost(){return (int)net.everla.projectc.arkofcosmos.ProjectCCommonConfig.value("weapons."+(rancor?"rancor":"gruesome_eminence")+".soul_cost");}
     public float damage(){return net.everla.projectc.arkofcosmos.ProjectCCommonConfig.damage(rancor?"rancor":"gruesome_eminence");}
     public int soulCost(ItemStack stack){return Math.max(1,(int)Math.ceil(soulCost()*Math.max(0,1-.1*EnchantmentHelper.getItemEnchantmentLevel(ModEnchantments.DURATION.get(),stack))));}

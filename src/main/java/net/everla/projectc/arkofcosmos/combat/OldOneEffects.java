@@ -101,12 +101,12 @@ public final class OldOneEffects {
         if(has(e,Status.INFERNO))for(var target:e.level().getEntitiesOfClass(LivingEntity.class,e.getBoundingBox().inflate(12.5),t->t.distanceToSqr(e)<=12.5*12.5&&e instanceof Player p&&ArkCombat.enemy(p,t))){target.setSecondsOnFire(2);dot(target,e.damageSources().inFire(),1);}
     }
     private static void dot(LivingEntity e,net.minecraft.world.damagesource.DamageSource source,float amount){hurt(e,source,amount);}
-    /** All Old One hits and effects deal 5% damage to Calamitas and her summons. */
+    /** All Old One hits and effects deal 10% damage to Calamitas and her summons. */
     public static boolean hurt(LivingEntity target,net.minecraft.world.damagesource.DamageSource source,float amount){
         if(target instanceof net.everla.projectc.arkofcosmos.entity.SupremeCalamitasEntity
                 || target instanceof net.everla.projectc.arkofcosmos.entity.CalamitasBrotherEntity
                 || target instanceof net.everla.projectc.arkofcosmos.entity.CalamitasMinionEntity
-                || target instanceof net.everla.projectc.arkofcosmos.entity.CalamitasSepulcherEntity)amount*=.05f;
+                || target instanceof net.everla.projectc.arkofcosmos.entity.CalamitasSepulcherEntity)amount*=.10f;
         return ArkDamage.hurtUnmitigated(target,source,amount);
     }
     @SubscribeEvent public static void end(TickEvent.ServerTickEvent e){if(e.phase==TickEvent.Phase.END)FROZEN.entrySet().removeIf(entry->{LivingEntity t=entry.getKey();if(t.isRemoved()||!t.isAlive()||!has(t,Status.GLACIAL))return true;t.setPos(entry.getValue());t.setDeltaMovement(Vec3.ZERO);t.hurtMarked=true;return false;});}

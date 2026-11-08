@@ -260,17 +260,25 @@ public final class OldOneParticles {
     }
     @SubscribeEvent public static void render(RenderLevelStageEvent e){
         if(e.getStage()!=RenderLevelStageEvent.Stage.AFTER_PARTICLES)return;
-        var buffers=Minecraft.getInstance().renderBuffers().bufferSource();double phase=e.getPartialTick()*3;int index=Math.min(2,(int)phase);double t=phase-index;
-        for(Dust d:DISPLAY){if(e.getPartialTick()<d.born||e.getPartialTick()>d.died)continue;State a=d.states[index],b=d.states[index+1];if(a==null||b==null)continue;
+        var pose=new com.mojang.blaze3d.vertex.PoseStack();
+        pose.last().pose().set(e.getPoseStack().last().pose());
+        pose.last().normal().set(e.getPoseStack().last().normal());
+        Vec3 camera=e.getCamera().getPosition();float partial=e.getPartialTick();
+        if(net.everla.projectc.arkofcosmos.client.render.OculusShaderCompat.defer(()->renderParticles(pose,camera,partial),true))return;
+        renderParticles(pose,camera,partial);
+    }
+    private static void renderParticles(com.mojang.blaze3d.vertex.PoseStack pose,Vec3 camera,float partial){
+        var buffers=net.minecraft.client.renderer.MultiBufferSource.immediate(new com.mojang.blaze3d.vertex.BufferBuilder(256));double phase=partial*3;int index=Math.min(2,(int)phase);double t=phase-index;
+        for(Dust d:DISPLAY){if(partial<d.born||partial>d.died)continue;State a=d.states[index],b=d.states[index+1];if(a==null||b==null)continue;
             double scale=a.scale+(b.scale-a.scale)*t;float[] color=tint(d,(int)(a.alpha+(b.alpha-a.alpha)*t));
             String texture=d.gore?(d.type==16||d.type==17?"elements/gore_":"old_one/gore_")+d.type:d.type==ASTRAL?"old_one/astral_orange":"old_one/dust";
             int tx=d.gore||d.type==ASTRAL?0:(d.type%100)*10,ty=d.gore?0:d.type==ASTRAL?d.variant*10:(d.type/100)*30+d.variant*10;
             int width=d.gore?NativeSprites.width(texture):8,height=d.gore?NativeSprites.height(texture):8;
             Vec3 at=a.at.lerp(b.at,t);if(d.gore)at=at.add(d.plane.forward().scale(width/32d)).add(d.plane.right().scale(height/32d));double rotation=a.rotation+(b.rotation-a.rotation)*t;
-            OldOneRenderer.region(e.getPoseStack(),buffers,e.getCamera().getPosition(),texture,at,NativeSprites.billboard(),rotation,scale,scale,tx,ty,width,height,color);
+            OldOneRenderer.region(pose,buffers,camera,texture,at,NativeSprites.billboard(),rotation,scale,scale,tx,ty,width,height,color);
             if(!d.gore&&(d.color[0]!=0||d.color[1]!=0||d.color[2]!=0||d.color[3]!=0)){
                 float[] overlay=new float[4];for(int i=0;i<4;i++)overlay[i]=Math.max(0,d.color[i]-(1-color[i]));
-                OldOneRenderer.region(e.getPoseStack(),buffers,e.getCamera().getPosition(),texture,at,NativeSprites.billboard(),rotation,scale,scale,tx,ty,width,height,overlay);
+                OldOneRenderer.region(pose,buffers,camera,texture,at,NativeSprites.billboard(),rotation,scale,scale,tx,ty,width,height,overlay);
             }
         }buffers.endBatch();
     }
