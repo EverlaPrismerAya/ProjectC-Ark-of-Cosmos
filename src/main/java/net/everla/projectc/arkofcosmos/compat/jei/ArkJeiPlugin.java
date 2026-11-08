@@ -29,9 +29,12 @@ public final class ArkJeiPlugin implements IModPlugin {
     private static final RecipeType<Summoning> SUMMONING=RecipeType.create(ArkOfCosmos.MOD_ID,"beacon_summoning",Summoning.class);
     @Override public ResourceLocation getPluginUid() { return ResourceLocation.fromNamespaceAndPath(ArkOfCosmos.MOD_ID,"jei"); }
     @Override public void registerCategories(IRecipeCategoryRegistration registration) {
-        registration.addRecipeCategories(new SummoningCategory(registration.getJeiHelpers().getGuiHelper()));
+        registration.addRecipeCategories(new SummoningCategory(registration.getJeiHelpers().getGuiHelper()),
+            new WitchJeiCategory(registration.getJeiHelpers().getGuiHelper(),false),
+            new WitchJeiCategory(registration.getJeiHelpers().getGuiHelper(),true));
     }
     @Override public void registerRecipes(IRecipeRegistration registration) {
+        WitchJeiCategory.register(registration);
         registration.addIngredientInfo(new ItemStack(ArkOfCosmos.ASHES_OF_CALAMITY.get()),VanillaTypes.ITEM_STACK,
             Component.translatable("jei.arkofcosmos.ashes_of_calamity.source"));
         if (net.everla.projectc.arkofcosmos.CalamitasContent.ENABLED)
