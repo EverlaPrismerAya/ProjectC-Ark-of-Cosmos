@@ -1,7 +1,0 @@
-
-[Compat]
-
-	[Compat.Tetra]
-		#Range: 0.0 ~ 1.0
-		MaxFadingEffectDecrease = 0.99999
-

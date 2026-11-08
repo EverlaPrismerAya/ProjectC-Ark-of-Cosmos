@@ -1,5 +1,0 @@
-#Set Edit box max length(for example in Chat Screen).
-maxEditLength = 512
-#if false, disable the "time stop" settings
-enableTimeStop = true
-
