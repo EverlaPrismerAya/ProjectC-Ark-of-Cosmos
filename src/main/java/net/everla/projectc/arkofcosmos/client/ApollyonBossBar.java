@@ -36,9 +36,8 @@ public final class ApollyonBossBar {
                 .getField("APOLLYON_HEALTH").get(null)).get()).floatValue();
             float health=boss.getHealth();
             try {
-                // This synchronized value is also used by RevelationFix's own bar.
-                Object context=boss.getClass().getMethod("revelaionfix$apollyonEC").invoke(boss);
-                health=context.getClass().getField("percent").getFloat(context)*max;
+                // RF's context percent is a pixel width, not a normalized health fraction.
+                health=((Number)boss.getClass().getMethod("revelaionfix$getApollyonHealth").invoke(boss)).floatValue();
             } catch(NoSuchMethodException ignored) { /* Goety Revelation without RevelationFix. */ }
             boolean second=(boolean)boss.getClass().getMethod("isSecondPhase").invoke(boss)
                 ||(boolean)boss.getClass().getMethod("isSettingUpSecond").invoke(boss);

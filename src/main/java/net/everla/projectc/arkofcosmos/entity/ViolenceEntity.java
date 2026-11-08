@@ -28,6 +28,7 @@ public final class ViolenceEntity extends Entity {
     private int ownerId,age,left,hitstop;
     private boolean javelin,returning;
     private boolean grinding,finalUpdate;
+    private boolean endingAttack;
     private LivingEntity grindTarget;
     private float damage,rotation,damageScale=1;
     private Vec3 velocity=Vec3.ZERO,normalVelocity=Vec3.ZERO;
@@ -48,6 +49,16 @@ public final class ViolenceEntity extends Entity {
         ArkOfCosmos.sound(e,"violence_swing",1);return e;
     }
     public Player owner(){return owner==null?null:level().getPlayerByUUID(owner);}
+    private void discardAttack(){
+        endingAttack=true;
+        try{discard();}finally{endingAttack=false;}
+    }
+    @Override public void remove(RemovalReason reason){
+        // Match Ark attacks: external cleanup cannot erase a live player's active attack.
+        if(!level().isClientSide&&reason==RemovalReason.DISCARDED&&!endingAttack&&left>0
+                &&WeaponUser.active(owner()))return;
+        super.remove(reason);
+    }
     public int ownerId(){return level().isClientSide?view().getInt("Owner"):ownerId;}
     public ItemStack weapon(){return weapon;}
     @Override protected void defineSynchedData(){entityData.define(VIEW,new CompoundTag());}
@@ -68,7 +79,7 @@ public final class ViolenceEntity extends Entity {
         if(level().isClientSide){render.tick(view(),"Age");return;}
         Player p=owner();
         if(!WeaponUser.active(p)){
-            discard();return;
+            discardAttack();return;
         }
         if(!javelin&&!sameWeapon(p))returning=true;
         samples=new ListTag();samples.add(snapshot());
@@ -108,11 +119,11 @@ public final class ViolenceEntity extends Entity {
         }
         if(isRemoved())return;
         setPos(position().add(velocity));
-        if(!level().hasChunkAt(blockPosition())){discard();return;}
+        if(!level().hasChunkAt(blockPosition())){discardAttack();return;}
         if(!javelin||!returning)collide(p,old,position());
         grinding=stopped;
         age++;left--;
-        if(left<=0)discard();
+        if(left<=0)discardAttack();
         samples.add(snapshot());
     }
     /** Same crosshair cone as Galaxia, with a weapon-specific 256-block lock range. */
@@ -123,7 +134,7 @@ public final class ViolenceEntity extends Entity {
         Vec3 center=p.getBoundingBox().getCenter();setPos(position().lerp(center,.02));
         velocity=center.subtract(position()).normalize().scale(22/16d);
         if(new AABB(position(),position()).inflate(142/32d).intersects(p.getBoundingBox())){
-            ArkNetwork.nearbyEffect(this,effect("violence_end",center,null,true));discard();
+            ArkNetwork.nearbyEffect(this,effect("violence_end",center,null,true));discardAttack();
         }
     }
     private void collide(Player p,Vec3 old,Vec3 at){
