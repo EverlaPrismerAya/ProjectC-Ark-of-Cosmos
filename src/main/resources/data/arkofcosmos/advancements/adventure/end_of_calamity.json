@@ -1,8 +1,11 @@
 {
+  "conditions": [
+    { "type": "forge:mod_loaded", "modid": "goety" }
+  ],
   "parent": "minecraft:adventure/root",
   "display": {
     "icon": {
-      "item": "arkofcosmos:supreme_calamitas_spawn_egg"
+      "item": "arkofcosmos:brimstone_locus"
     },
     "title": {
       "translate": "advancements.arkofcosmos.end_of_calamity.title"

@@ -25,7 +25,7 @@ final class WitchJeiCategory implements IRecipeCategory<WitchJeiCategory.Entry> 
     private final IDrawable background,icon,slot,arrow;
     WitchJeiCategory(IGuiHelper gui,boolean curses){
         this.curses=curses;background=gui.createBlankDrawable(180,148);
-        icon=gui.createDrawableItemStack(new ItemStack(Items.EMERALD));
+        icon=gui.createDrawableItemStack(new ItemStack(curses&&CalamitasContent.ENABLED?CalamitasContent.RANCOR.get():Items.EMERALD));
         slot=gui.getSlotDrawable();arrow=gui.getRecipeArrow();
     }
     static void register(IRecipeRegistration registration){

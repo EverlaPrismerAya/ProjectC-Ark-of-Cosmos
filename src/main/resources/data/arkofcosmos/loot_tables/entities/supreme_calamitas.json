@@ -24,8 +24,9 @@
       "rolls": 1,
       "entries": [
         {
-          "type": "minecraft:item",
-          "name": "arkofcosmos:violence"
+          "type": "minecraft:tag",
+          "name": "arkofcosmos:calamitas_weapon_drop",
+          "expand": true
         }
       ]
     }

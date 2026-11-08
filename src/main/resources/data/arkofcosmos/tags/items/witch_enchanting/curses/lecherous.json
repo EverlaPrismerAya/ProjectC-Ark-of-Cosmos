@@ -9,7 +9,7 @@
       "id": "#goety:wands"
     },
     "#arkofcosmos:witch_enchanting/magic",
-    "arkofcosmos:violence"
+    { "id": "arkofcosmos:violence", "required": false }
   ],
   "replace": false
 }

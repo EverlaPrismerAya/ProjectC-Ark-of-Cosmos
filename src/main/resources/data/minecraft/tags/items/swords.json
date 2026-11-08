@@ -9,6 +9,6 @@
     "arkofcosmos:ark_of_the_ancients",
     "arkofcosmos:true_biome_blade",
     "arkofcosmos:broken_biome_blade",
-    "arkofcosmos:violence"
+    { "id": "arkofcosmos:violence", "required": false }
   ]
 }

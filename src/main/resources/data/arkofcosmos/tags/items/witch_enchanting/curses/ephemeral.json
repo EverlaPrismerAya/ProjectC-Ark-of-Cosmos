@@ -17,7 +17,7 @@
       "required": false,
       "id": "goety_revelation:bow_of_revelation"
     },
-    "arkofcosmos:violence"
+    { "id": "arkofcosmos:violence", "required": false }
   ],
   "replace": false
 }

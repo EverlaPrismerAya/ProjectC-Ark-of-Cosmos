@@ -16,7 +16,7 @@ public final class ViolenceCombat {
     private ViolenceCombat() {}
     private static final Map<UUID,Controls> CONTROLS=new HashMap<>();
     private static final class Controls { boolean left,right; long heartbeat,nextUse; ViolenceEntity attack; }
-    public static boolean holding(Player p) { return p!=null && p.getMainHandItem().is(ArkOfCosmos.VIOLENCE.get()); }
+    public static boolean holding(Player p) { return net.everla.projectc.arkofcosmos.CalamitasContent.ENABLED && p!=null && p.getMainHandItem().is(ArkOfCosmos.VIOLENCE.get()); }
     public static boolean channeling(Player p) {
         Controls c=CONTROLS.get(p.getUUID());
         return c!=null && c.left && holding(p) && p.level().getGameTime()-c.heartbeat<=40;

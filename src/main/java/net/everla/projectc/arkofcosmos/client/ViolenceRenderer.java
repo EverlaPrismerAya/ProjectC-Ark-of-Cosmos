@@ -75,7 +75,7 @@ public final class ViolenceRenderer extends EntityRenderer<ViolenceEntity> {
     }
     @Mod.EventBusSubscriber(modid=ArkOfCosmos.MOD_ID,value=Dist.CLIENT,bus=Mod.EventBusSubscriber.Bus.MOD)
     public static final class Registration {
-        @SubscribeEvent public static void renderer(net.minecraftforge.client.event.EntityRenderersEvent.RegisterRenderers event){event.registerEntityRenderer(ArkOfCosmos.VIOLENCE_ATTACK.get(),ViolenceRenderer::new);}
-        @SubscribeEvent public static void setup(net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent event){event.enqueueWork(()->net.minecraft.client.renderer.item.ItemProperties.register(ArkOfCosmos.VIOLENCE.get(),ResourceLocation.fromNamespaceAndPath(ArkOfCosmos.MOD_ID,"active"),(stack,level,entity,seed)->entity instanceof net.minecraft.world.entity.player.Player p&&net.everla.projectc.arkofcosmos.combat.ViolenceCombat.active(p)?1:0));}
+        @SubscribeEvent public static void renderer(net.minecraftforge.client.event.EntityRenderersEvent.RegisterRenderers event){if(net.everla.projectc.arkofcosmos.CalamitasContent.ENABLED)event.registerEntityRenderer(ArkOfCosmos.VIOLENCE_ATTACK.get(),ViolenceRenderer::new);}
+        @SubscribeEvent public static void setup(net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent event){if(net.everla.projectc.arkofcosmos.CalamitasContent.ENABLED)event.enqueueWork(()->net.minecraft.client.renderer.item.ItemProperties.register(ArkOfCosmos.VIOLENCE.get(),ResourceLocation.fromNamespaceAndPath(ArkOfCosmos.MOD_ID,"active"),(stack,level,entity,seed)->entity instanceof net.minecraft.world.entity.player.Player p&&net.everla.projectc.arkofcosmos.combat.ViolenceCombat.active(p)?1:0));}
     }
 }

@@ -8,6 +8,6 @@
     "arkofcosmos:fractured_ark",
     "arkofcosmos:ark_of_the_ancients",
     "arkofcosmos:broken_biome_blade",
-    "arkofcosmos:violence"
+    { "id": "arkofcosmos:violence", "required": false }
   ]
 }

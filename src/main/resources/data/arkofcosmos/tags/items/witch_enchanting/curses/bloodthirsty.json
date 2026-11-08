@@ -1,6 +1,6 @@
 {
   "values": [
-    "arkofcosmos:violence",
+    { "id": "arkofcosmos:violence", "required": false },
     "minecraft:bow",
     "minecraft:crossbow",
     "minecraft:trident",

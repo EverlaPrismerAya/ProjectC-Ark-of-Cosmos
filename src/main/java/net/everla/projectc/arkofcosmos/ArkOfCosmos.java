@@ -55,10 +55,10 @@ public final class ArkOfCosmos {
     public static final RegistryObject<EntityType<net.everla.projectc.arkofcosmos.entity.ElementsEntity>> ELEMENTS_ATTACK = ENTITIES.register("elements_attack",
             () -> EntityType.Builder.<net.everla.projectc.arkofcosmos.entity.ElementsEntity>of(net.everla.projectc.arkofcosmos.entity.ElementsEntity::new, MobCategory.MISC)
                     .sized(.5f,.5f).noSave().noSummon().clientTrackingRange(128).updateInterval(1).build("arkofcosmos:elements_attack"));
-    public static final RegistryObject<Item> VIOLENCE=ITEMS.register("violence",net.everla.projectc.arkofcosmos.item.ViolenceItem::new);
-    public static final RegistryObject<EntityType<net.everla.projectc.arkofcosmos.entity.ViolenceEntity>> VIOLENCE_ATTACK=ENTITIES.register("violence_attack",
+    public static final RegistryObject<Item> VIOLENCE=net.minecraftforge.fml.ModList.get().isLoaded("goety") ? ITEMS.register("violence",net.everla.projectc.arkofcosmos.item.ViolenceItem::new) : null;
+    public static final RegistryObject<EntityType<net.everla.projectc.arkofcosmos.entity.ViolenceEntity>> VIOLENCE_ATTACK=net.minecraftforge.fml.ModList.get().isLoaded("goety") ? ENTITIES.register("violence_attack",
         ()->EntityType.Builder.<net.everla.projectc.arkofcosmos.entity.ViolenceEntity>of(net.everla.projectc.arkofcosmos.entity.ViolenceEntity::new,MobCategory.MISC)
-            .sized(.5f,.5f).noSave().noSummon().clientTrackingRange(128).updateInterval(1).build("arkofcosmos:violence_attack"));
+            .sized(.5f,.5f).noSave().noSummon().clientTrackingRange(128).updateInterval(1).build("arkofcosmos:violence_attack")) : null;
     public static final RegistryObject<Item> GALAXIA = ITEMS.register("galaxia", net.everla.projectc.arkofcosmos.item.GalaxiaItem::new);
     public static final RegistryObject<Item> BROKEN_BIOME_BLADE = ITEMS.register("broken_biome_blade", net.everla.projectc.arkofcosmos.item.BrokenBiomeBladeItem::new);
     public static final RegistryObject<EntityType<net.everla.projectc.arkofcosmos.entity.BrokenBiomeEntity>> BROKEN_BIOME_ATTACK = ENTITIES.register("broken_biome_attack",
@@ -169,7 +169,7 @@ public final class ArkOfCosmos {
             event.accept(ARK_OF_THE_ELEMENTS);
             event.accept(FRACTURED_ARK);
             event.accept(ARK_OF_THE_ANCIENTS);
-            event.accept(VIOLENCE);
+            if (CalamitasContent.ENABLED) event.accept(VIOLENCE);
             if (MISTILTEINN != null) event.accept(MISTILTEINN);
         }
         if (event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES && CalamitasContent.ENABLED) event.accept(CalamitasContent.LOCUS);
