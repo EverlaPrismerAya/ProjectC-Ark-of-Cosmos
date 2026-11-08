@@ -16,12 +16,8 @@ public final class CalamitasHexEffect extends MobEffect {
         super(MobEffectCategory.HARMFUL, 0x79154D);
     }
 
-    private static boolean active(LivingEntity entity) {
-        return net.everla.projectc.arkofcosmos.enchant.WitchFlames.weakened(entity);
-    }
-
     public static float outgoing(net.minecraft.world.damagesource.DamageSource source, float amount) {
-        return source.getEntity() instanceof LivingEntity attacker && active(attacker) ? amount * .85f : amount;
+        return source.getEntity() instanceof LivingEntity attacker ? amount * (1-.15f*net.everla.projectc.arkofcosmos.enchant.WitchFlames.strength(attacker)) : amount;
     }
 
     @net.minecraftforge.eventbus.api.SubscribeEvent(priority = net.minecraftforge.eventbus.api.EventPriority.LOWEST)

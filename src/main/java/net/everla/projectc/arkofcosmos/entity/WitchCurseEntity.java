@@ -37,7 +37,18 @@ public final class WitchCurseEntity extends Monster implements OwnableEntity {
     @Override public UUID getOwnerUUID(){return level().isClientSide && entityData.hasItem(VIEW) && view().hasUUID("Owner")?view().getUUID("Owner"):owner;}
     @Override public Player getOwner(){UUID id=getOwnerUUID();return id==null?null:level().getPlayerByUUID(id);}
     public static boolean exists(Player p,Kind kind){return !p.level().getEntitiesOfClass(WitchCurseEntity.class,p.getBoundingBox().inflate(256),e->p.getUUID().equals(e.owner)&&e.kind==kind&&!e.isRemoved()).isEmpty();}
-    public static boolean armExists(Player p,int hand){return !p.level().getEntitiesOfClass(WitchCurseEntity.class,p.getBoundingBox().inflate(16),e->p.getUUID().equals(e.owner)&&e.kind==Kind.ARM&&e.hand==hand).isEmpty();}
+    public static boolean armExists(Player p,int hand){
+        if(!(p.level() instanceof ServerLevel server))return false;
+        WitchCurseEntity existing=null;
+        var duplicates=new java.util.ArrayList<WitchCurseEntity>();
+        // The source arm swing and idle offsets extend well beyond 16 blocks.
+        for(var entity:server.getAllEntities())
+            if(entity instanceof WitchCurseEntity arm && p.getUUID().equals(arm.owner) && arm.kind==Kind.ARM && arm.hand==hand && !arm.isRemoved()){
+                if(existing==null && arm.isAlive())existing=arm;else duplicates.add(arm);
+            }
+        duplicates.forEach(WitchCurseEntity::finish);
+        return existing!=null;
+    }
     private static long count(Player p,Kind kind){long count=0;if(p.level() instanceof ServerLevel server)for(var entity:server.getAllEntities())if(entity instanceof WitchCurseEntity actor && actor.kind==kind && actor.isAlive())count++;return count;}
     public static void demon(Player p){if(count(p,Kind.DEMON)<2)spawn(p,Kind.DEMON,p.getEyePosition().add(p.getLookAngle().scale(12)),0,0);}
     public static void portal(Player p){if(count(p,Kind.PORTAL)<2){Vec3 v=new Vec3(p.getRandom().nextGaussian(),p.getRandom().nextGaussian(),p.getRandom().nextGaussian()).normalize();spawn(p,Kind.PORTAL,p.position().add(v.scale((270+p.getRandom().nextDouble()*150)/16)),0,0);}}

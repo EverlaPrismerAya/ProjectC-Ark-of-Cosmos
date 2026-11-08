@@ -36,7 +36,7 @@ public final class WeaponUser {
     }
     public static Vec3 aim(LivingEntity owner) {
         if(owner instanceof Player player)return ArkCombat.aim(player);
-        if(owner instanceof MahouTsukaiEntity boss && canHit(boss,boss.getTarget()))return boss.getTarget().getBoundingBox().getCenter();
+        if(owner instanceof MahouTsukaiEntity boss && canTrack(boss,boss.getTarget()))return boss.getTarget().getBoundingBox().getCenter();
         return owner.getBoundingBox().getCenter().add(owner.getLookAngle().scale(20));
     }
     public static boolean targetable(LivingEntity target) {
@@ -50,11 +50,14 @@ public final class WeaponUser {
                 && (!(target instanceof Player player)||!player.isCreative()&&!player.isSpectator());
     }
     public static boolean enemy(LivingEntity owner,LivingEntity target) {
-        return owner instanceof Player player?ArkCombat.enemy(player,target):canHit(owner,target);
+        return owner instanceof Player player?ArkCombat.enemy(player,target):canTrack(owner,target);
+    }
+    public static boolean canTrack(LivingEntity owner,LivingEntity target) {
+        return !(target instanceof net.everla.projectc.arkofcosmos.entity.CalamitasSepulcherEntity) && canHit(owner,target);
     }
     public static LivingEntity nearest(LivingEntity owner,Vec3 from,double radius) {
         if(owner instanceof Player player)return ArkCombat.nearest(player,from,radius);
-        if(owner instanceof MahouTsukaiEntity boss && canHit(boss,boss.getTarget())
+        if(owner instanceof MahouTsukaiEntity boss && canTrack(boss,boss.getTarget())
                 && from.distanceToSqr(boss.getTarget().getBoundingBox().getCenter())<radius*radius)return boss.getTarget();
         return null;
     }

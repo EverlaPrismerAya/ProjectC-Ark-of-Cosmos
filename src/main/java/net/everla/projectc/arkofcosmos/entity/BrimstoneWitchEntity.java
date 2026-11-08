@@ -2,7 +2,6 @@ package net.everla.projectc.arkofcosmos.entity;
 
 import java.util.UUID;
 import net.everla.projectc.arkofcosmos.*;
-import net.everla.projectc.arkofcosmos.calamity.SupremeCalamitasCombat;
 import net.everla.projectc.arkofcosmos.combat.*;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
@@ -15,14 +14,14 @@ import net.minecraft.world.entity.ai.attributes.*;
 import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.monster.RangedAttackMob;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.NetworkHooks;
 
 /** Public, persistent town NPC. Retaliation never follows a player ownership chain. */
-public final class BrimstoneWitchEntity extends PathfinderMob implements ProtectedBoss {
-    private SupremeCalamitasCombat combat = new SupremeCalamitasCombat();
+public final class BrimstoneWitchEntity extends PathfinderMob implements ProtectedBoss, RangedAttackMob {
     private long lastAttack,combatSession;
     public long combatSession(){return combatSession;}
     private UUID attacker;
@@ -37,6 +36,7 @@ public final class BrimstoneWitchEntity extends PathfinderMob implements Protect
     }
     @Override protected void registerGoals() {
         goalSelector.addGoal(0,new FloatGoal(this));
+        goalSelector.addGoal(2,new RangedAttackGoal(this,1,20,40,24));
         goalSelector.addGoal(5,new WaterAvoidingRandomStrollGoal(this,.6){@Override public boolean canUse(){return !fighting()&&!trading()&&super.canUse();}@Override public boolean canContinueToUse(){return !fighting()&&!trading()&&super.canContinueToUse();}});
         goalSelector.addGoal(6,new LookAtPlayerGoal(this,Player.class,8));
         goalSelector.addGoal(7,new RandomLookAroundGoal(this));
@@ -70,28 +70,29 @@ public final class BrimstoneWitchEntity extends PathfinderMob implements Protect
         if (attacker!=null && getTarget()==null && server.getEntity(attacker) instanceof LivingEntity living) setTarget(living);
         LivingEntity target=getTarget();
         if (target==null || !target.isAlive() || distanceToSqr(target)>4096 || server.getGameTime()-lastAttack>=200) {
-            if (attacker!=null) { combatSession++; fadeAttacks(); attacker=null; setTarget(null); combat=new SupremeCalamitasCombat(); }
-            setNoGravity(false); noPhysics=false; return;
+            if (attacker!=null) { combatSession++; fadeAttacks(); attacker=null; setTarget(null); getNavigation().stop(); }
+            return;
         }
         if (customer!=null) customer.closeContainer();
-        getNavigation().stop(); setNoGravity(true); noPhysics=true;
+    }
+    @Override public void performRangedAttack(LivingEntity target,float distanceFactor) {
+        if (!(level() instanceof ServerLevel) || target!=getTarget() || !target.isAlive()
+                || distanceToSqr(target)>4096 || level().getGameTime()-lastAttack>=200) return;
         double pixels=ProjectCCommonConfig.calamitasValue("pixels_per_block");
         Vec3 axis=target.position().subtract(position()).multiply(1,0,1).normalize();
         if (axis.lengthSqr()<.5) axis=new Vec3(1,0,0);
-        for(int i=0;i<3;i++) {
-            combat.step(getBoundingBox().getCenter().scale(pixels),target.getBoundingBox().getCenter().scale(pixels),
-                    target.getBbWidth()*pixels/2,axis,true,false,1,1,new java.util.Random(random.nextLong()),shot->{
-                var kind=CalamitasAttackEntity.Kind.valueOf(shot.kind().name());
-                String skill=kind.name().toLowerCase(java.util.Locale.ROOT);
-                int base=kind==CalamitasAttackEntity.Kind.DART?80:kind==CalamitasAttackEntity.Kind.GIGABLAST?105:95;
-                CalamitasAttackEntity.spawn(this,kind,shot.position().scale(1/pixels),shot.velocity().scale(ProjectCCommonConfig.calamitasValue("movement_multiplier")/pixels),shot.planeX(),pixels,
-                    ProjectCCommonConfig.calamitasDamage(skill,base),ProjectCCommonConfig.calamitasDamage("dart",80),shot.maximumSpeed()*ProjectCCommonConfig.calamitasValue("movement_multiplier")/pixels,shot.variant());
-            });
-            setPos(position().add(combat.velocity().scale(ProjectCCommonConfig.calamitasValue("movement_multiplier")/pixels)));
-            if(combat.contact() && getBoundingBox().intersects(target.getBoundingBox()))
-                WeaponDamage.hurt(target,damageSources().mobAttack(this),(float)ProjectCCommonConfig.calamitasDamage("contact",210));
-        }
-        getLookControl().setLookAt(target,30,30); setDeltaMovement(Vec3.ZERO);
+        Vec3 start=getEyePosition(),direction=target.getBoundingBox().getCenter().subtract(start).normalize();
+        var kind=switch(random.nextInt(4)) {
+            case 0 -> CalamitasAttackEntity.Kind.DART;
+            case 1 -> CalamitasAttackEntity.Kind.HELLBLAST;
+            case 2 -> CalamitasAttackEntity.Kind.FIREBLAST;
+            default -> CalamitasAttackEntity.Kind.GIGABLAST;
+        };
+        String skill=kind.name().toLowerCase(java.util.Locale.ROOT);
+        int base=kind==CalamitasAttackEntity.Kind.DART?80:kind==CalamitasAttackEntity.Kind.GIGABLAST?105:95;
+        double movement=ProjectCCommonConfig.calamitasValue("movement_multiplier")/pixels;
+        CalamitasAttackEntity.spawn(this,kind,start.add(direction.scale(8/pixels)),direction.scale((kind==CalamitasAttackEntity.Kind.GIGABLAST?5:10)*movement),axis,pixels,
+                ProjectCCommonConfig.calamitasDamage(skill,base),ProjectCCommonConfig.calamitasDamage("dart",80),kind==CalamitasAttackEntity.Kind.DART?13*movement:0,kind==CalamitasAttackEntity.Kind.DART?4:2);
     }
     public void fadeAttacks() {
         if(level() instanceof ServerLevel server) for(Entity e:server.getAllEntities())
@@ -118,12 +119,13 @@ public final class BrimstoneWitchEntity extends PathfinderMob implements Protect
         return true;
     }
     @Override public void addAdditionalSaveData(CompoundTag tag) {
-        super.addAdditionalSaveData(tag); tag.put("WitchCombat",combat.save()); tag.putLong("LastAttack",lastAttack);tag.putLong("CombatSession",combatSession);
+        super.addAdditionalSaveData(tag); tag.putLong("LastAttack",lastAttack);tag.putLong("CombatSession",combatSession);
         if(attacker!=null) tag.putUUID("Attacker",attacker);
     }
     @Override public void readAdditionalSaveData(CompoundTag tag) {
         super.readAdditionalSaveData(tag); lastAttack=tag.getLong("LastAttack");combatSession=tag.getLong("CombatSession");
         attacker=tag.hasUUID("Attacker")?tag.getUUID("Attacker"):null;
-        if(tag.contains("WitchCombat")) combat.load(tag.getCompound("WitchCombat"));
+        setNoGravity(false); noPhysics=false;
+        if(tag.contains("WitchCombat")) setDeltaMovement(Vec3.ZERO);
     }
 }

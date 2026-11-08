@@ -275,6 +275,8 @@ public final class ArkAttackEntity extends CalamityAttackEntity {
             dashPosition = owner.position();
             dashTarget = aim.subtract(0, owner.getBbHeight() / 2, 0);
         }
+        // Moving walls may have carried the player since the previous dash substep.
+        dashPosition = net.everla.projectc.arkofcosmos.combat.CalamitasArenaBoundary.constrainDestination(owner, dashPosition);
         // Walking packets and external movement must not redirect an active dash.
         Vec3 feetTarget = dashTarget;
         Vec3 offset = feetTarget.subtract(dashPosition);
@@ -290,6 +292,7 @@ public final class ArkAttackEntity extends CalamityAttackEntity {
             Vec3 allowed = Entity.collideBoundingBox(owner, movement, dashBox, level(), java.util.List.of());
             dashPosition = before.add(allowed);
         }
+        dashPosition = net.everla.projectc.arkofcosmos.combat.CalamitasArenaBoundary.constrainDestination(owner, dashPosition);
         owner.setPos(dashPosition);
         dashNeedsSync = true;
         owner.fallDistance = 0;
@@ -297,11 +300,11 @@ public final class ArkAttackEntity extends CalamityAttackEntity {
         owner.setDeltaMovement(Vec3.ZERO);
         owner.hurtMarked = true;
         boolean reached = owner.position().distanceTo(feetTarget) < 60 * ArkCombat.PIXEL;
-        boolean blocked = !clearDestination && owner.position().distanceToSqr(before.add(movement)) > 1e-6;
+        boolean blocked = owner.position().distanceToSqr(before.add(movement)) > 1e-6;
         if (reached || blocked) {
             if (reached) {
                 if (clearDestination) {
-                    dashPosition = feetTarget;
+                    dashPosition = net.everla.projectc.arkofcosmos.combat.CalamitasArenaBoundary.constrainDestination(owner, feetTarget);
                     owner.setPos(dashPosition);
                 }
                 owner.setDeltaMovement(offset.normalize().scale(60 * ArkCombat.PIXEL * 3 * .1));

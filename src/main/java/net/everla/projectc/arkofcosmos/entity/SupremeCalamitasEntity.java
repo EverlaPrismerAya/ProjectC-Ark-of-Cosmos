@@ -51,6 +51,8 @@ public final class SupremeCalamitasEntity extends Monster implements net.everla.
     private UUID witchAfterBattle;
     private boolean witchBorn, clearNearbyWitches=true;
     private SupremeCalamitasArena arena;
+    private Vec3 summonPosition;
+    public Vec3 summonPosition() { return summonPosition == null ? position() : summonPosition; }
     private net.minecraft.world.phys.AABB clientArenaBounds;
     private CalamitasSummons pending, brotherCast;
     private Vec3 velocity = Vec3.ZERO, combatPlane = new Vec3(1, 0, 0);
@@ -116,7 +118,10 @@ public final class SupremeCalamitasEntity extends Monster implements net.everla.
         if (shield != null && level().isClientSide && VIEW.equals(key)) {
             refreshShieldDimensions(false);
             var tag = view();
-            clientArenaBounds = tag.contains("Arena") ? SupremeCalamitasArena.load(tag.getCompound("Arena")).bounds() : null;
+            var nextBounds = tag.contains("Arena") ? SupremeCalamitasArena.load(tag.getCompound("Arena")).bounds() : null;
+            net.everla.projectc.arkofcosmos.combat.CalamitasArenaBoundary.clientBoundsChanged(level(), clientArenaBounds, nextBounds,
+                    tag.getList("ArenaPlayers", net.minecraft.nbt.Tag.TAG_INT_ARRAY));
+            clientArenaBounds = nextBounds;
         }
     }
     public boolean protectionBoost() { return protectionBoost; }
@@ -133,7 +138,7 @@ public final class SupremeCalamitasEntity extends Monster implements net.everla.
     public static SupremeCalamitasEntity spawn(ServerLevel level, Vec3 position, LivingEntity target) {
         var boss = CalamitasContent.BOSS.get().create(level);
         if (boss == null) return null;
-        boss.setPos(position); boss.setTarget(target);
+        boss.setPos(position); boss.summonPosition = position; boss.setTarget(target);
         if (!level.addFreshEntity(boss) && !boss.getPersistentData().getBoolean("ArkSummoningQueued")) { boss.endBattle(false); return null; }
         return boss;
     }
@@ -145,6 +150,7 @@ public final class SupremeCalamitasEntity extends Monster implements net.everla.
     private void initialize() {
         if (initialized || !(level() instanceof ServerLevel server)) return;
         initialized = true;
+        if (summonPosition == null) summonPosition = position();
         pixels = ProjectCCommonConfig.calamitasValue("pixels_per_block");
         movement = ProjectCCommonConfig.calamitasValue("movement_multiplier");
         getAttribute(Attributes.MAX_HEALTH).setBaseValue(Math.max(100, 2222000 * ProjectCCommonConfig.calamitasValue("health_multiplier")));
@@ -406,7 +412,7 @@ public final class SupremeCalamitasEntity extends Monster implements net.everla.
             else {
                 var npc=CalamitasContent.WITCH.get().create(server);
                 if(npc==null) return;
-                npc.setUUID(witchAfterBattle); npc.setPos(position());
+                npc.setUUID(witchAfterBattle); npc.setPos(summonPosition());
                 if(!server.addFreshEntity(npc)) return;
                 witchBorn=true;
             }
@@ -416,6 +422,8 @@ public final class SupremeCalamitasEntity extends Monster implements net.everla.
             if(journal.settled(getUUID())){cleanupBattle();discard();return;}
             journal.converted(getUUID(),witchAfterBattle);
         }
+        if (accepted && !finished) for (var player : bossBar.getPlayers())
+            net.everla.projectc.arkofcosmos.combat.HiddenAdvancements.award(player,"end_of_calamity");
         if (!cleanupBattle()) return;
         if (!accepted) net.everla.projectc.arkofcosmos.network.ArkNetwork.calamitasMusic(getUUID(), false);
         if (accepted) { CalamitasBattleData.get((ServerLevel)level()).settle(getUUID()); CalamitasBattleData.markDefeated((ServerLevel)level()); setHealth(0); super.die(damageSources().genericKill()); }
@@ -544,6 +552,7 @@ public final class SupremeCalamitasEntity extends Monster implements net.everla.
     void publish() {
         if (arena == null || !(level() instanceof ServerLevel server)) return;
         var tag = encounterTag(); tag.putInt("SourceAge", sourceAge); tag.put("Arena", arena.save()); tag.put("Combat", combat.save()); tag.put("Shield", shield.save()); tag.put("Animation", animation.save());
+        tag.put("ArenaPlayers", net.everla.projectc.arkofcosmos.combat.CalamitasArenaBoundary.participants(server, arena.bounds()));
         tag.putBoolean("Invulnerable", damageProtected());
         if (validTarget(getTarget())) {
             var target = getTarget(); var center = target.getBoundingBox().getCenter();
@@ -555,6 +564,9 @@ public final class SupremeCalamitasEntity extends Monster implements net.everla.
     }
     @Override public void addAdditionalSaveData(CompoundTag tag) {
         super.addAdditionalSaveData(tag);
+        if (summonPosition != null) {
+            tag.putDouble("SummonX", summonPosition.x); tag.putDouble("SummonY", summonPosition.y); tag.putDouble("SummonZ", summonPosition.z);
+        }
         if(witchAfterBattle!=null)tag.putUUID("WitchAfterBattle",witchAfterBattle); tag.putBoolean("WitchBorn",witchBorn);
         tag.putBoolean("Initialized", initialized); tag.putBoolean("Finished", finished);
         // The summon windup saves the boss before its first tick; retain the pending cleanup.
@@ -573,6 +585,7 @@ public final class SupremeCalamitasEntity extends Monster implements net.everla.
         castSparks.clear();
         healthWriteDepth++;
         try { super.readAdditionalSaveData(tag); } finally { healthWriteDepth--; }
+        summonPosition = tag.contains("SummonX") ? new Vec3(tag.getDouble("SummonX"), tag.getDouble("SummonY"), tag.getDouble("SummonZ")) : null;
         setNoGravity(true); clearNearbyWitches=tag.getBoolean("ClearNearbyWitches"); witchBorn=tag.getBoolean("WitchBorn"); witchAfterBattle=tag.hasUUID("WitchAfterBattle")?tag.getUUID("WitchAfterBattle"):null; initialized = tag.getBoolean("Initialized"); finished = tag.getBoolean("Finished");
         nonPlayerInvulnerableUntil = level().getGameTime() + net.minecraft.util.Mth.clamp(tag.getInt("NonPlayerInvulnerabilityTicks"), 0, 10);
         if (!initialized) return;
@@ -581,6 +594,7 @@ public final class SupremeCalamitasEntity extends Monster implements net.everla.
                 s.getInt("Hearts"), s.getBoolean("Brothers"), s.getBoolean("Seekers"), s.getBoolean("Second"), s.getInt("Despair")));
         noPhysics = encounter.phase() != SupremeCalamitasEncounter.Phase.ACCEPTANCE;
         arena = SupremeCalamitasArena.load(tag.getCompound("CalamitasArena")); pixels = arena.pixelsPerBlock();
+        if (summonPosition == null) summonPosition = arena.origin().add(0, -getType().getDimensions().height / 2, 0);
         animation.load(tag.getCompound("CalamitasAnimation")); combat.load(tag.getCompound("CalamitasCombat")); shield.load(tag.getCompound("CalamitasShield")); barrage.restore(tag.getInt("BarrageFrames"), tag.getInt("BarrageGate"), tag.getInt("VortexTelegraph"));
         sourceAge = tag.getInt("SourceAge"); shieldHurtDelay = tag.getInt("ShieldHurtDelay"); movement = tag.getDouble("Movement"); opacity = tag.getFloat("Opacity"); protectionBoost = tag.getBoolean("ProtectionBoost");
         velocity = new Vec3(tag.getDouble("VX"), tag.getDouble("VY"), tag.getDouble("VZ")); combatPlane = new Vec3(tag.getDouble("PlaneX"), 0, tag.getDouble("PlaneZ"));

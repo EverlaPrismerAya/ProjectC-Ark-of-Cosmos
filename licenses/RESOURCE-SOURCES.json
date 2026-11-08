@@ -4103,7 +4103,8 @@
       "license": "Re-Logic original terms",
       "used_by": [
         "Biome Blade",
-        "Broken Biome Blade"
+        "Broken Biome Blade",
+        "Violence"
       ]
     },
     {
@@ -5153,7 +5154,8 @@
       "license": "ARR (Calamity original terms)",
       "used_by": [
         "Supreme Calamitas original brothers Spark/VoidSpark warning and spawn burst",
-        "SCalBrimstoneFireblast and SCalBrimstoneGigablast flight SparkParticle"
+        "SCalBrimstoneFireblast and SCalBrimstoneGigablast flight SparkParticle",
+        "Violence"
       ]
     },
     {
@@ -6338,6 +6340,122 @@
       "used_by": [
         "Necromantic infusion weapons"
       ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/item/violence.png",
+      "sha256": "dfba869dfacecc480a5a9b58117ad74106fe4f0996ffb03d681e4dad49d23b82",
+      "project": "Calamity Mod",
+      "path": "E:\\工具\\tModUnpacker\\CalamityMod\\Items\\Weapons\\Melee\\Violence.png",
+      "source_sha256": "dfba869dfacecc480a5a9b58117ad74106fe4f0996ffb03d681e4dad49d23b82",
+      "license": "ARR (see THIRD_PARTY_NOTICES.md)",
+      "used_by": [
+        "Violence"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/violence_blood.png",
+      "sha256": "47b328abfbb7895b2a0d33f43c5926d4dab18e603d99ec9a44e731bd4456dac4",
+      "project": "Calamity Mod",
+      "path": "E:\\工具\\tModUnpacker\\CalamityMod\\Particles\\Blood.png",
+      "source_sha256": "47b328abfbb7895b2a0d33f43c5926d4dab18e603d99ec9a44e731bd4456dac4",
+      "license": "ARR (see THIRD_PARTY_NOTICES.md)",
+      "used_by": [
+        "Violence"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/violence_blood2.png",
+      "sha256": "861e064a7feeb7d4c4f7a296f9ac2cd0762f9adf5d39b08ecff794e8cdb6a283",
+      "project": "Calamity Mod",
+      "path": "E:\\工具\\tModUnpacker\\CalamityMod\\Particles\\Blood2.png",
+      "source_sha256": "861e064a7feeb7d4c4f7a296f9ac2cd0762f9adf5d39b08ecff794e8cdb6a283",
+      "license": "ARR (see THIRD_PARTY_NOTICES.md)",
+      "used_by": [
+        "Violence"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/violence_streak.png",
+      "sha256": "439b72d549753ee4c4f446e2992b6e1cae13cc83610b52480adf7293c5e7673c",
+      "project": "Calamity Mod",
+      "path": "E:\\工具\\tModUnpacker\\CalamityMod\\ExtraTextures\\Trails\\SylvestaffStreak.png",
+      "source_sha256": "439b72d549753ee4c4f446e2992b6e1cae13cc83610b52480adf7293c5e7673c",
+      "license": "ARR (see THIRD_PARTY_NOTICES.md)",
+      "used_by": [
+        "Violence"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/violence_impact_0.ogg",
+      "sha256": "949fea8c7d3024a6c30c034545c4df42088daf3a44a57b17e9e06ac40a2dd912",
+      "project": "Terraria / Re-Logic",
+      "path": "G:\\SteamLibrary\\steamapps\\common\\Terraria\\Content\\Sounds\\Custom\\dd2_crystal_cart_impact_0.xnb",
+      "source_sha256": "03f1294a38bc1f57f0539c79d096a9b9a7e67f12890cdfac8308dc15a9bce497",
+      "license": "ARR (see THIRD_PARTY_NOTICES.md)",
+      "used_by": [
+        "Violence"
+      ],
+      "conversion": {
+        "source_format": "XNB PCM16",
+        "source_pcm_sha256": "8011e0a9c57c6ff8f1862add199572836a641e1aada9cdd1767f3fcf44de8f07",
+        "channels": 2,
+        "sample_rate": 48000,
+        "output_codec": "Vorbis quality 8 (lossy)"
+      }
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/violence_impact_1.ogg",
+      "sha256": "b5d80b6ff53aef4d13f2b24fda14d140996336e678d2ce7f586ae3f14170f4d6",
+      "project": "Terraria / Re-Logic",
+      "path": "G:\\SteamLibrary\\steamapps\\common\\Terraria\\Content\\Sounds\\Custom\\dd2_crystal_cart_impact_1.xnb",
+      "source_sha256": "f095590eb9cd3c9a6c144b9292ebe5e1c7e55d9f430813083c08f9772ab663d7",
+      "license": "ARR (see THIRD_PARTY_NOTICES.md)",
+      "used_by": [
+        "Violence"
+      ],
+      "conversion": {
+        "source_format": "XNB PCM16",
+        "source_pcm_sha256": "e065d9ba92f53e60a20af91245044dfb1e87b5cdf859351fcf3903e047541d64",
+        "channels": 2,
+        "sample_rate": 48000,
+        "output_codec": "Vorbis quality 8 (lossy)"
+      }
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/violence_impact_2.ogg",
+      "sha256": "711d0873e47edb75626184f16619e0474835c94739da8eaa5b6efb49fe926303",
+      "project": "Terraria / Re-Logic",
+      "path": "G:\\SteamLibrary\\steamapps\\common\\Terraria\\Content\\Sounds\\Custom\\dd2_crystal_cart_impact_2.xnb",
+      "source_sha256": "2097517c2b1ff09b820895f54d7ee50d45e659e3e0f34d1f4591ce2632259191",
+      "license": "ARR (see THIRD_PARTY_NOTICES.md)",
+      "used_by": [
+        "Violence"
+      ],
+      "conversion": {
+        "source_format": "XNB PCM16",
+        "source_pcm_sha256": "661a7e9c58f5fc938e990cc70138f35eccd23a26a5fe21ba57cc0bfeabcb23ed",
+        "channels": 2,
+        "sample_rate": 48000,
+        "output_codec": "Vorbis quality 8 (lossy)"
+      }
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/violence_grind_0.ogg",
+      "sha256": "956ca289fa752bcf8d325c8c88fb5d7322c1eafab90e1cefb9d53fc4631964fe",
+      "project": "Terraria / Re-Logic",
+      "path": "G:\\SteamLibrary\\steamapps\\common\\Terraria\\Content\\Sounds\\NPC_Hit_18.xnb",
+      "source_sha256": "9fcd69248f67be8e9aeded1cf180acc6e3568c13692340e4f55fa8a1390539ec",
+      "license": "ARR (see THIRD_PARTY_NOTICES.md)",
+      "used_by": [
+        "Violence"
+      ],
+      "conversion": {
+        "source_format": "XNB PCM16",
+        "source_pcm_sha256": "ea02ea32ff6b999eba6fc509c3bca50005a04153112dc5d9993d64a10aca5fe9",
+        "channels": 2,
+        "sample_rate": 44100,
+        "output_codec": "Vorbis quality 8 (lossy)"
+      }
     }
   ],
   "supreme_calamitas_dialogue": [
@@ -6636,5 +6754,45 @@
     "terraria_active_sound_camera_attenuation_pixels": 2500,
     "fna_pitch_frequency_ratio": "2 ^ pitch (no one-octave clamp)",
     "minecraft_adaptation": "3D listener/camera distance, native HOSTILE category, streaming canonical drone OGG; dedicated pitch hook preserves drone high and paired-fist echo low source ratios"
+  },
+  "violence_source_verification": {
+    "revision": "1a8cebd27ec5615316b78f71973446b5528d2b78",
+    "textures": [
+      {
+        "resource": "src/main/resources/assets/arkofcosmos/textures/item/violence.png",
+        "pinned_source": "Items/Weapons/Melee/Violence.png",
+        "pinned_sha256": "f5c666776feca3e5218e55d462e8dd67692d227cea05c08531087af93fb55a86",
+        "visible_pixels_equal": true
+      },
+      {
+        "resource": "src/main/resources/assets/arkofcosmos/textures/fx/violence_blood.png",
+        "pinned_source": "Particles/Blood.png",
+        "pinned_sha256": "3264cb34643a765953854e1042cefe53d0020fc32399bf0628632d2347439301",
+        "visible_pixels_equal": true
+      },
+      {
+        "resource": "src/main/resources/assets/arkofcosmos/textures/fx/violence_blood2.png",
+        "pinned_source": "Particles/Blood2.png",
+        "pinned_sha256": "6f419252cfcff367e05cb3e22f8b346a67c0f840a4575899acd6a3760cced6fe",
+        "visible_pixels_equal": true
+      },
+      {
+        "resource": "src/main/resources/assets/arkofcosmos/textures/fx/calamitas_spark.png",
+        "pinned_source": "Projectiles/StarProj.png",
+        "pinned_sha256": "31a1d12be94e3a3ff42fdcac6079c61199c5e9d47e63336d04a3bddc30fddd95",
+        "visible_pixels_equal": true
+      },
+      {
+        "resource": "src/main/resources/assets/arkofcosmos/textures/fx/violence_streak.png",
+        "pinned_source": "ExtraTextures/Trails/SylvestaffStreak.png",
+        "pinned_sha256": "4c79bd28d925a2413fa2101e981e1106f3fb7735414c30ce4f8c9479f90ef1e8",
+        "visible_pixels_equal": true
+      }
+    ],
+    "note": "Local unpacked PNGs have identical nontransparent pixels to the pinned source. Differences are restricted to RGB at alpha zero.",
+    "chinese_localization": {
+      "path": "E:\\工具\\tModUnpacker\\CalamityCN\\Localization\\CalamityMod\\zh-Hans\\Mods.CalamityMod.Items.Weapons.Melee.hjson",
+      "sha256": "df94069d08fedebf8964e96d8e61f8c1d8e82dc6b46f81025f903776cec405f2"
+    }
   }
 }

@@ -79,7 +79,7 @@ public final class OldOneEffects {
     @SubscribeEvent public static void reflect(LivingDamageEvent e){
         if(REFLECTING.get()||e.getAmount()<=0||e.getSource().getDirectEntity()!=e.getSource().getEntity()||!(e.getSource().getEntity() instanceof LivingEntity attacker)||attacker instanceof Player)return;
         LivingEntity victim=e.getEntity();double thorns=has(victim,Status.THORNS)?1d/3:0;if(has(victim,Status.WARD)&&thorns<1)thorns+=.2;
-        if(thorns>0){REFLECTING.set(true);try{ArkDamage.hurtUnmitigated(attacker,attacker.damageSources().thorns(victim),(float)(e.getAmount()*thorns));}finally{REFLECTING.set(false);}}
+        if(thorns>0){REFLECTING.set(true);try{hurt(attacker,attacker.damageSources().thorns(victim),(float)(e.getAmount()*thorns));}finally{REFLECTING.set(false);}}
     }
     @SubscribeEvent public static void tick(LivingEvent.LivingTickEvent event){
         LivingEntity e=event.getEntity();if(e.level().isClientSide||!e.isAlive())return;
@@ -100,6 +100,14 @@ public final class OldOneEffects {
         if(has(e,Status.DEPTH))dot(e,e.damageSources().drown(),5);
         if(has(e,Status.INFERNO))for(var target:e.level().getEntitiesOfClass(LivingEntity.class,e.getBoundingBox().inflate(12.5),t->t.distanceToSqr(e)<=12.5*12.5&&e instanceof Player p&&ArkCombat.enemy(p,t))){target.setSecondsOnFire(2);dot(target,e.damageSources().inFire(),1);}
     }
-    private static void dot(LivingEntity e,net.minecraft.world.damagesource.DamageSource source,float amount){ArkDamage.hurtUnmitigated(e,source,amount);}
+    private static void dot(LivingEntity e,net.minecraft.world.damagesource.DamageSource source,float amount){hurt(e,source,amount);}
+    /** All Old One hits and effects deal 5% damage to Calamitas and her summons. */
+    public static boolean hurt(LivingEntity target,net.minecraft.world.damagesource.DamageSource source,float amount){
+        if(target instanceof net.everla.projectc.arkofcosmos.entity.SupremeCalamitasEntity
+                || target instanceof net.everla.projectc.arkofcosmos.entity.CalamitasBrotherEntity
+                || target instanceof net.everla.projectc.arkofcosmos.entity.CalamitasMinionEntity
+                || target instanceof net.everla.projectc.arkofcosmos.entity.CalamitasSepulcherEntity)amount*=.05f;
+        return ArkDamage.hurtUnmitigated(target,source,amount);
+    }
     @SubscribeEvent public static void end(TickEvent.ServerTickEvent e){if(e.phase==TickEvent.Phase.END)FROZEN.entrySet().removeIf(entry->{LivingEntity t=entry.getKey();if(t.isRemoved()||!t.isAlive()||!has(t,Status.GLACIAL))return true;t.setPos(entry.getValue());t.setDeltaMovement(Vec3.ZERO);t.hurtMarked=true;return false;});}
 }

@@ -14,8 +14,15 @@
       "required": false,
       "id": "#goety:wands"
     },
-    {"required": false,"id": "goety_revelation:gungnir"},
-    {"required": false,"id": "goety_revelation:bow_of_revelation"}
+    {
+      "required": false,
+      "id": "goety_revelation:gungnir"
+    },
+    {
+      "required": false,
+      "id": "goety_revelation:bow_of_revelation"
+    },
+    "arkofcosmos:violence"
   ],
   "replace": false
 }

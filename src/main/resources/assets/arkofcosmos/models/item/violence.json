@@ -1,0 +1,14 @@
+{
+  "parent": "minecraft:item/handheld",
+  "textures": {
+    "layer0": "arkofcosmos:item/violence"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "arkofcosmos:active": 1
+      },
+      "model": "arkofcosmos:item/violence_active"
+    }
+  ]
+}

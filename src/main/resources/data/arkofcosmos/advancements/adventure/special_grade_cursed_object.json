@@ -1,0 +1,23 @@
+{
+  "parent": "minecraft:adventure/root",
+  "display": {
+    "icon": {
+      "item": "arkofcosmos:gruesome_eminence"
+    },
+    "title": {
+      "translate": "advancements.arkofcosmos.special_grade_cursed_object.title"
+    },
+    "description": {
+      "translate": "advancements.arkofcosmos.special_grade_cursed_object.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": true
+  },
+  "criteria": {
+    "complete": {
+      "trigger": "minecraft:impossible"
+    }
+  }
+}

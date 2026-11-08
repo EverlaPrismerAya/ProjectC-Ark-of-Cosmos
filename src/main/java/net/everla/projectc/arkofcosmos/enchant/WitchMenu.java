@@ -30,6 +30,7 @@ public final class WitchMenu extends AbstractContainerMenu {
         var candidate=player.level().getRecipeManager().byKey(id).orElse(null);
         if(!(candidate instanceof NecromanticInfusion recipe)||!recipe.matches(input,player.level())||!ItemStack.matches(recipe.result(),output)||!pay(player,NecromanticInfusion.COST))return false;
         costs.set(2,(revision()+1)&0x7FFF);input.setItem(0,recipe.assemble(input,player.level().registryAccess()));
+        net.everla.projectc.arkofcosmos.combat.HiddenAdvancements.award(player,"special_grade_cursed_object");
         changed(player);return true;
     }
     private boolean pay(Player player,int cost){
@@ -55,7 +56,8 @@ public final class WitchMenu extends AbstractContainerMenu {
             ItemStack stack=player.getInventory().getItem(i);if(!stack.is(Items.EMERALD))continue;
             int used=Math.min(left,stack.getCount());stack.shrink(used);left-=used;
         }
-        Curse.apply(item,wanted);input.setChanged();broadcastChanges();
+        Curse.apply(item,wanted);
+        if(wanted==Curse.AFLAME)net.everla.projectc.arkofcosmos.combat.HiddenAdvancements.award(player,"on_fire");input.setChanged();broadcastChanges();
         var sound=net.minecraftforge.registries.ForgeRegistries.SOUND_EVENTS.getValue(net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("arkofcosmos","witch_enchant"));
         if(sound!=null)player.level().playSound(null,witch.blockPosition(),sound,net.minecraft.sounds.SoundSource.NEUTRAL,1,1);
         return true;

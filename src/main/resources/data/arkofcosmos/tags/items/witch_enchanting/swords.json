@@ -1,0 +1,14 @@
+{
+  "replace": false,
+  "values": [
+    "#minecraft:swords",
+    "arkofcosmos:mace",
+    "arkofcosmos:wooden_spear",
+    "arkofcosmos:stone_spear",
+    "arkofcosmos:copper_spear",
+    "arkofcosmos:iron_spear",
+    "arkofcosmos:golden_spear",
+    "arkofcosmos:diamond_spear",
+    "arkofcosmos:netherite_spear"
+  ]
+}

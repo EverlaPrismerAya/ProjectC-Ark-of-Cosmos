@@ -46,12 +46,14 @@ public final class CurseCombat {
         return null;
     }
     private static LivingEntity customOwner(Entity e){
+        if(e instanceof ViolenceEntity a)return a.owner();
         if(e instanceof OldOneEntity a)return a.owner();if(e instanceof ArkAttackEntity a)return a.curseOwner();if(e instanceof GalaxiaEntity a)return a.curseOwner();
         if(e instanceof ElementsEntity a)return a.curseOwner();if(e instanceof AncientsEntity a)return a.curseOwner();
         if(e instanceof FracturedEntity a)return a.curseOwner();if(e instanceof BrokenBiomeEntity a)return a.curseOwner();
         if(e instanceof BiomeEntity a)return a.curseOwner();if(e instanceof TrueBiomeEntity a)return a.curseOwner();return null;
     }
     private static ItemStack customWeapon(Entity e){
+        if(e instanceof ViolenceEntity a)return a.weapon();
         if(e instanceof OldOneEntity a)return a.weapon();if(e instanceof ArkAttackEntity a)return a.weapon();if(e instanceof GalaxiaEntity a)return a.weapon();
         if(e instanceof ElementsEntity a)return a.weapon();if(e instanceof AncientsEntity a)return a.weapon();
         if(e instanceof FracturedEntity a)return a.weapon();if(e instanceof BrokenBiomeEntity a)return a.weapon();

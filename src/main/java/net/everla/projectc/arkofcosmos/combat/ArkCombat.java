@@ -205,7 +205,7 @@ public final class ArkCombat {
                 && !ArkDamage.protectedPlayer(entity) && !entity.isSpectator();
     }
     public static boolean enemy(Player owner, LivingEntity entity) {
-        if (!canHit(owner, entity)) return false;
+        if (!WeaponUser.canTrack(owner, entity)) return false;
         if (entity.getType().is(IGNORE_ENEMY_FILTER)) return true;
         if (entity instanceof NeutralMob) return entity instanceof Mob mob && mob.getTarget() == owner;
         return entity instanceof Enemy || entity instanceof Mob mob && mob.getTarget() == owner;
@@ -222,6 +222,14 @@ public final class ArkCombat {
     }
 
     public static Vec3 aim(Player player) {
+        return aim(player, Double.POSITIVE_INFINITY, MAX_REACH);
+    }
+
+    public static Vec3 aim(Player player, double range) {
+        return aim(player, range, range);
+    }
+
+    private static Vec3 aim(Player player, double lockRange, double reach) {
         Vec3 origin = player.getEyePosition(), look = player.getLookAngle();
         LivingEntity best = null;
         double bestCos = Math.cos(Math.toRadians(12)), bestDistance = Double.MAX_VALUE;
@@ -229,7 +237,7 @@ public final class ArkCombat {
             if (!(candidate instanceof LivingEntity entity) || !enemy(player, entity)) continue;
             Vec3 offset = entity.getBoundingBox().getCenter().subtract(origin);
             double distance = offset.length();
-            if (distance < .001) continue;
+            if (distance < .001 || distance > lockRange) continue;
             double cos = offset.dot(look) / distance;
             if (cos > bestCos || (Math.abs(cos - bestCos) < 1e-6 && distance < bestDistance)) {
                 best = entity; bestCos = cos; bestDistance = distance;
@@ -237,7 +245,7 @@ public final class ArkCombat {
         }
         Vec3 center = player.getBoundingBox().getCenter();
         Vec3 offset = best == null ? look.scale(20) : best.getBoundingBox().getCenter().subtract(center);
-        return center.add(offset.length() > MAX_REACH ? offset.normalize().scale(MAX_REACH) : offset);
+        return center.add(offset.length() > reach ? offset.normalize().scale(reach) : offset);
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST) public static void looting(net.minecraftforge.event.entity.living.LootingLevelEvent event) {

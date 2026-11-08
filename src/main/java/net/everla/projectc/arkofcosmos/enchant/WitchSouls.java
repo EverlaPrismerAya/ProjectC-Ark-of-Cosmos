@@ -19,6 +19,13 @@ public final class WitchSouls {
     public static boolean active(Player p){return SEHelper.getSoulsContainer(p)&&current(p)>0&&capacity(p)>0;}
     public static double ratio(Player p){return active(p)?Math.min(1,(double)current(p)/capacity(p)):0;}
     public static int drain(Player p){int before=current(p);if(before>0)SEHelper.decreaseSoulsNoDiscount(p,before);return Math.max(0,before-current(p));}
+    /** Same general attribute, armor/halo discount and integer rounding as Goety casting. */
+    public static int cost(Player p,int amount){
+        var discount=p.getAttribute(com.Polarice3.Goety.init.ModAttributes.SOUL_DISCOUNT.get());
+        int cost=(int)(amount*Math.max(0,1-(discount==null?0:discount.getValue())));
+        cost=Math.max(0,(int)(cost*SEHelper.soulDiscount(p)));
+        return net.everla.projectc.arkofcosmos.combat.HaloCompat.equipped(p,"halo_of_the_end")?Math.min(1,cost):cost;
+    }
     /** Shared magic-weapon debit: creative casting needs no soul container or balance. */
-    public static boolean pay(Player p,int amount){if(p.getAbilities().instabuild)return true;if(amount<=0||!active(p)||current(p)<amount)return false;SEHelper.decreaseSoulsNoDiscount(p,amount);return true;}
+    public static boolean pay(Player p,int amount){if(p.getAbilities().instabuild)return true;amount=cost(p,amount);if(amount==0)return true;if(!active(p)||current(p)<amount)return false;SEHelper.decreaseSoulsNoDiscount(p,amount);return true;}
 }

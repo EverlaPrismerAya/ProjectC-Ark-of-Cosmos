@@ -167,7 +167,7 @@ public final class OldOneEntity extends Entity {
             case FLAIRON_BUBBLE->{
                 if(ai0==0){LivingEntity t=nearest(p,500,true,false);targetId=t==null?-1:t.getId();ai0=t==null?-15:1;
                     if(t!=null){Vec3 jitter=frame.forward().scale((random.nextInt(201)-100)/16d).add(frame.right().scale((random.nextInt(201)-100)/16d));velocity=velocity.scale(20).add(t.getBoundingBox().getCenter().subtract(position()).add(jitter).normalize().scale((35+random.nextInt(40))/30d/16)).scale(1d/21);}}
-                else if(ai0>0){Entity locked=level().getEntity(targetId);if(locked!=null)velocity=velocity.scale(40).add(locked.getBoundingBox().getCenter().subtract(position()).normalize().scale(12d/16)).scale(1d/41);}else{ai0++;alpha=Math.max(50,alpha-25);velocity=velocity.scale(.95);}
+                else if(ai0>0){Entity locked=level().getEntity(targetId);if(locked instanceof LivingEntity t&&ArkCombat.enemy(p,t))velocity=velocity.scale(40).add(locked.getBoundingBox().getCenter().subtract(position()).normalize().scale(12d/16)).scale(1d/41);}else{ai0++;alpha=Math.max(50,alpha-25);velocity=velocity.scale(.95);}
                 if(ai1==0)ai1=(80+random.nextInt(41))/100f;scale=ai1;
             }
             case RAINBOW_CRYSTAL->{
@@ -242,7 +242,7 @@ public final class OldOneEntity extends Entity {
         float amount=(float)Math.rint((net.everla.projectc.arkofcosmos.ProjectCCommonConfig.damage("ark_of_the_old_one")+net.minecraft.world.item.enchantment.EnchantmentHelper.getDamageBonus(weapon,t.getMobType()))*(1f+(random.nextInt(31)-15)*.01f));
         // Native melee base crit 4 plus the item's 15 percentage points; source critical multiplier is two.
         if(kind!=Kind.SOLAR_EXPLOSION&&random.nextInt(100)<19)amount*=2;
-        if(!ArkDamage.hurtUnmitigated(t,source,amount))return;
+        if(!OldOneEffects.hurt(t,source,amount))return;
         p.setLastHurtMob(t);
         int fire=weapon.getEnchantmentLevel(net.minecraft.world.item.enchantment.Enchantments.FIRE_ASPECT);if(fire>0)t.setSecondsOnFire(fire*4);
         Vec3 direction=kind==Kind.SWORD?frame.direction(rotation):velocity.normalize();

@@ -23,7 +23,7 @@ public final class InnateEnchantment {
     }
 
     private static int level(ItemStack stack) {
-        return stack.getItem() instanceof ArkItem ? 5 : stack.getItem() instanceof OldOneItem ? 255 : stack.getItem() instanceof net.everla.projectc.arkofcosmos.item.NecromanticWeaponItem ? 10 : 0;
+        return stack.getItem() instanceof ArkItem ? 5 : stack.getItem() instanceof OldOneItem ? 255 : stack.getItem() instanceof net.everla.projectc.arkofcosmos.item.NecromanticWeaponItem || stack.getItem() instanceof net.everla.projectc.arkofcosmos.item.ViolenceItem ? 10 : 0;
     }
 
     public static Map<Enchantment, Integer> combatEnchantments(ItemStack stack) {

@@ -81,7 +81,7 @@ public final class ElementsEffects {
     }
     public static void tick(){
         resetWorld();Minecraft mc=Minecraft.getInstance();if(mc.level==null||mc.isPaused())return;
-        ElementsVanillaParticles.beginFrame();FracturedEffects.beginFrame();AncientsEffects.beginFrame();
+        ElementsVanillaParticles.beginFrame();FracturedEffects.beginFrame();AncientsEffects.beginFrame();ViolenceEffects.beginFrame();
         FRAME.clear();FRAME.addAll(PARTICLES);for(ArkFxParticle p:FRAME)p.beginFrame();
         Set<Integer> live=new HashSet<>();List<ElementsEntity> entities=new ArrayList<>();for(var e:mc.level.entitiesForRendering())if(e instanceof ElementsEntity a){entities.add(a);live.add(a.getId());}
         for(int phase=1;phase<=3;phase++){
@@ -92,7 +92,7 @@ public final class ElementsEffects {
                     for(int j=before;j<PARTICLES.size();j++){ArkFxParticle p=PARTICLES.get(j);p.born=(phase-1)/3d;p.prepareFrame();FRAME.add(p);}
                 }
             }
-            FracturedEffects.tick(phase);AncientsEffects.tick(phase);
+            FracturedEffects.tick(phase);AncientsEffects.tick(phase);ViolenceEffects.tick(phase);
             ElementsVanillaParticles.update(phase);
             Iterator<ArkFxParticle> iterator=PARTICLES.iterator();while(iterator.hasNext()){ArkFxParticle p=iterator.next();p.update();p.capture(phase);if(p.time>=p.lifetime){p.died=phase/3d;iterator.remove();}}
         }
@@ -102,7 +102,7 @@ public final class ElementsEffects {
         var face=NativeSprites.billboard();
         ArkFxDraw.matrix=pose.last().pose();ArkFxDraw.camera=camera;
         try{for(ArkFxParticle p:FRAME){ArkFxDraw.ownerView(p.ownerId,Vec3.ZERO);p.draw(partial,face);}
-            ElementsVanillaParticles.render(partial,face);FracturedEffects.render(partial);AncientsEffects.render(partial,pose,buffers,camera);
+            ElementsVanillaParticles.render(partial,face);FracturedEffects.render(partial);AncientsEffects.render(partial,pose,buffers,camera);ViolenceEffects.render(partial,pose,buffers,camera);
         }finally{ArkFxDraw.fadeEye=null;}
     }
 }

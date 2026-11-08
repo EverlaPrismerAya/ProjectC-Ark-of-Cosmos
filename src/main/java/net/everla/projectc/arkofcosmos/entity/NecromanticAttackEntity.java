@@ -51,7 +51,7 @@ public final class NecromanticAttackEntity extends Entity implements OwnableEnti
     public boolean root(){return kind==Kind.RANCOR||kind==Kind.CONGREGATION;}
     public static boolean casting(Player player){return !player.level().getEntitiesOfClass(NecromanticAttackEntity.class,player.getBoundingBox().inflate(128),e->e.root()&&player.getUUID().equals(e.owner)&&!e.isRemoved()).isEmpty();}
     public static NecromanticAttackEntity cast(Player player,NecromanticWeaponItem item,InteractionHand hand){
-        var e=spawn(player,item.rancor?Kind.RANCOR:Kind.CONGREGATION,player.getBoundingBox().getCenter().add(0,.75,0),item.rancor?Vec3.ZERO:new Vec3(0,10/16d,0),item.damage(),null);
+        var e=spawn(player,item.rancor?Kind.RANCOR:Kind.CONGREGATION,player.getBoundingBox().getCenter().add(0,.75,0),item.rancor?Vec3.ZERO:new Vec3(0,10/16d,0),item.damage(player.getItemInHand(hand),player),null);
         e.hand=hand;e.weapon=player.getItemInHand(hand).copy();e.direction=player.getLookAngle();e.publish();
         if(!item.rancor)e.sound("spirit_open");return e;
     }
@@ -92,7 +92,7 @@ public final class NecromanticAttackEntity extends Entity implements OwnableEnti
     private boolean using(Player p){return p.isUsingItem()&&p.getUsedItemHand()==hand&&p.getItemInHand(hand)==p.getUseItem()&&p.getUseItem().is(weapon.getItem())&&p.getUseItem().getItem() instanceof NecromanticWeaponItem;}
     private void stop(Player p){if(using(p))p.stopUsingItem();if(kind==Kind.CONGREGATION)death=1;else finish();}
     private void rancor(Player p,long now){
-        if(age%12==11&&!WitchSouls.pay(p,25)){stop(p);return;}
+        if(age%12==11&&!WitchSouls.pay(p,((NecromanticWeaponItem)weapon.getItem()).soulCost(weapon))){stop(p);return;}
         if(age==15)sound("rancor_cast");if(age==30)sound("rancor_charge");if(age==179)sound("rancor_fire");
         scale=(float)(lerpValue(0,35,age)*1.4);opacity=(float)Math.pow(scale/1.4,2);rotation-=Math.toRadians(scale*4);
         Vec3 ideal=ArkCombat.aim(p).subtract(p.getBoundingBox().getCenter()).normalize();direction=moveTowards(direction,ideal,.05);
@@ -141,7 +141,7 @@ public final class NecromanticAttackEntity extends Entity implements OwnableEnti
         // Source damage uses the pre-increment power, while growth/side effects use the incremented timer.
         float hitDamage=(float)(damage*smooth(1,1.85,power));
         int nextAge=age+1;
-        if(nextAge%12==11&&!WitchSouls.pay(p,30)){stop(p);return;}
+        if(nextAge%12==11&&!WitchSouls.pay(p,((NecromanticWeaponItem)weapon.getItem()).soulCost(weapon))){stop(p);return;}
         double nextPower=Math.pow(lerpValue(15,840,nextAge),4);
         if(nextPower>.97)hover=Vec3.ZERO;
         if(!strong&&nextPower>.62){

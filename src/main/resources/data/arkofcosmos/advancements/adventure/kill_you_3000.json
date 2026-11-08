@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:adventure/root",
+  "display": {
+    "icon": {
+      "item": "arkofcosmos:rancor"
+    },
+    "title": {
+      "translate": "advancements.arkofcosmos.kill_you_3000.title"
+    },
+    "description": {
+      "translate": "advancements.arkofcosmos.kill_you_3000.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": true
+  },
+  "criteria": {
+    "complete": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "arkofcosmos:rancor"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

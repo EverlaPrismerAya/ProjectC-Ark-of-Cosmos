@@ -1,0 +1,23 @@
+{
+  "parent": "minecraft:adventure/root",
+  "display": {
+    "icon": {
+      "item": "arkofcosmos:supreme_calamitas_spawn_egg"
+    },
+    "title": {
+      "translate": "advancements.arkofcosmos.end_of_calamity.title"
+    },
+    "description": {
+      "translate": "advancements.arkofcosmos.end_of_calamity.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": true
+  },
+  "criteria": {
+    "complete": {
+      "trigger": "minecraft:impossible"
+    }
+  }
+}

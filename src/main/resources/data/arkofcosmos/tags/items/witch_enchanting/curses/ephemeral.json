@@ -1,6 +1,6 @@
 {
   "values": [
-    "#minecraft:swords",
+    "#arkofcosmos:witch_enchanting/swords",
     "#minecraft:axes",
     "minecraft:trident",
     "#arkofcosmos:witch_enchanting/melee",
@@ -9,8 +9,15 @@
       "id": "#goety:wands"
     },
     "#arkofcosmos:witch_enchanting/magic",
-    {"required": false,"id": "goety_revelation:gungnir"},
-    {"required": false,"id": "goety_revelation:bow_of_revelation"}
+    {
+      "required": false,
+      "id": "goety_revelation:gungnir"
+    },
+    {
+      "required": false,
+      "id": "goety_revelation:bow_of_revelation"
+    },
+    "arkofcosmos:violence"
   ],
   "replace": false
 }

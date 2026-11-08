@@ -850,5 +850,25 @@
     "sounds": [
       "arkofcosmos:rancor_charge"
     ]
+  },
+  "violence_swing": {
+    "sounds": [
+      {
+        "name": "arkofcosmos:biome_swing",
+        "type": "event"
+      }
+    ]
+  },
+  "violence_impact": {
+    "sounds": [
+      "arkofcosmos:violence_impact_0",
+      "arkofcosmos:violence_impact_1",
+      "arkofcosmos:violence_impact_2"
+    ]
+  },
+  "violence_grind": {
+    "sounds": [
+      "arkofcosmos:violence_grind_0"
+    ]
   }
 }

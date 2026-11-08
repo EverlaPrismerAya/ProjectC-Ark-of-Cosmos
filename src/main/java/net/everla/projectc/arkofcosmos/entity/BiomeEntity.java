@@ -83,7 +83,7 @@ public final class BiomeEntity extends Entity {
         samples=new ListTag();samples.add(snapshot());int count=steps(kind,mode);
         for(int i=0;i<count&&!isRemoved();i++){
             subframe=i*18/count;immunity.replaceAll((id,t)->t-1);immunity.values().removeIf(t->t<=0);cooldown--;
-            switch(kind){case BLADE->blade(p);case BEAM->beam(p);case HOT_SHOT->hotShot(p);case MIST->mist(p);case VINE->vine(p);case DASH->hitLine(p,start,end,0,60,damage,false);case MONOLITH->monolith(p);case ORB->orb(p);case SIGIL->{if(!WeaponUser.canHit(p,target))discardAttack();else setPos(center(target));}}
+            switch(kind){case BLADE->blade(p);case BEAM->beam(p);case HOT_SHOT->hotShot(p);case MIST->mist(p);case VINE->vine(p);case DASH->hitLine(p,start,end,0,60,damage,false);case MONOLITH->monolith(p);case ORB->orb(p);case SIGIL->{if(!WeaponUser.canTrack(p,target))discardAttack();else setPos(center(target));}}
             if(isRemoved())break;age++;remember();if(--left<=0&&!(kind==BLADE&&mode<=PURE))finish(p);samples.add(snapshot());
         }
         if(moved&&p instanceof ServerPlayer sp){if(sp.connection!=null)sp.connection.teleport(p.getX(),p.getY(),p.getZ(),p.getYRot(),p.getXRot());moved=false;}
@@ -149,7 +149,7 @@ public final class BiomeEntity extends Entity {
             if(next==null)break;excluded.add(next.getUUID());if(first){sound(p,"biome_vines");first=false;}BiomeEntity e=create(p,VINE,TROPICAL,center(next),frame,amount,20);e.target=next;e.from=root;e.start=center(root);e.end=center(next);e.spawn();
         }
     }
-    private void vine(Player p){if(!WeaponUser.canHit(p,target)||from==null||!from.isAlive()){discardAttack();return;}setPos(center(target));start=center(from);end=center(target);hit(p,target,30,damage,false);}
+    private void vine(Player p){if(!WeaponUser.canTrack(p,target)||from==null||!from.isAlive()){discardAttack();return;}setPos(center(target));start=center(from);end=center(target);hit(p,target,30,damage,false);}
     private void evil(Player p){
         if(charged&&dashTime==0){dashTime=1;origin=center(p);invulnerable(p,60);}
         if(dashTime>0&&dashTime<20){left=duration/2;boolean clear=movePlayer(p,direction.scale(30/16d));dashTime++;if(!clear)dashTime=20;}
@@ -212,8 +212,8 @@ public final class BiomeEntity extends Entity {
     private void beam(Player p){
         if(age==0)sound(p,"true_biome_beam_start");
         if(age>=15){scale+=state==0?-.02f:.02f;alpha+=state==0?30:-30;if(alpha>=250){alpha=255;state=1;}else if(alpha<=0){alpha=0;state=0;}}
-        if(target==null)for(BiomeEntity e:BiomeCombat.attacks(p))if(e.kind==SIGIL&&WeaponUser.canHit(p,e.target)){target=e.target;break;}
-        if(target!=null&&!WeaponUser.canHit(p,target))target=null;
+        if(target==null)for(BiomeEntity e:BiomeCombat.attacks(p))if(e.kind==SIGIL&&WeaponUser.canTrack(p,e.target)){target=e.target;break;}
+        if(target!=null&&!WeaponUser.canTrack(p,target))target=null;
         if(target!=null){Vec3 to=center(target).subtract(position());if(to.length()>=to.subtract(velocity).length()&&velocity.normalize().dot(to.normalize())>Math.cos(Math.PI/4)){left=30;velocity=turn(velocity,to,Math.toRadians(lerp(12.5,2.5,clamp(to.length()*16/10)))).scale(velocity.length());}}
         Vec3 next=position().add(velocity);if(left<85&&blockBetween(position(),next)){finish(p);return;}setPos(next);direction=velocity.normalize();rotation=(float)frame.angle(direction);
         for(LivingEntity t:targets(new AABB(position(),position()).inflate(1),p))if(hit(p,t,10,damage,false)){t.addEffect(new net.minecraft.world.effect.MobEffectInstance(ArkOfCosmos.ARMOR_CRUNCH.get(),30));finish(p);break;}
