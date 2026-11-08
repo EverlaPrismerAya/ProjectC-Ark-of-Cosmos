@@ -48,7 +48,18 @@ authors="${mod_authors}" #optional
 #accessTransformers = []
 
 # The description text for the mod (multi line!) (#mandatory)
-description='''${mod_description}'''
+description='''${mod_description}
+Includes Rage and Adrenaline. Incompatible with Revengeance (revengeance).
+已内置怒气与肾上腺素，与 Revengeance (revengeance) 冲突，不能同时安装。'''
+
+# Forge 1.20.1 has no incompatible dependency type. Reject released Revengeance versions
+# during dependency validation; the constructor also rejects any version, including 0.
+[[dependencies.${mod_id}]]
+    modId="revengeance"
+    mandatory=false
+    versionRange="[0]"
+    ordering="NONE"
+    side="BOTH"
 # A dependency - use the . to indicate dependency for a specific modid. Dependencies are optional.
 [[dependencies.${mod_id}]] #optional
     # the modid of the dependency

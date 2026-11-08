@@ -64,16 +64,43 @@ public final class ProjectCCommonConfig {
             define(b,skill,1,0,100,"Independent attack multiplier, multiplied by damage_multiplier");
         b.pop();
         b.pop().pop().push("weapons");
-        String[] ids={"fractured_ark","ark_of_the_ancients","ark_of_the_elements","ark_of_cosmos","ark_of_the_old_one","broken_biome_blade","biome_blade","true_biome_blade","galaxia"};
-        double[] damage={4,6,7,16,20,5,7,9.5,16};
+        String[] ids={"fractured_ark","ark_of_the_ancients","ark_of_the_elements","ark_of_cosmos","ark_of_the_old_one","broken_biome_blade","biome_blade","true_biome_blade","galaxia","violence","rancor","gruesome_eminence"};
+        double[] damage={4,6,7,16,20,5,7,9.5,16,24.25,18,36};
         for(int i=0;i<ids.length;i++) {
             b.push(ids[i]);
             define(b,"base_damage",damage[i],.01,1000000,"Base attack damage");
             define(b,"attack_speed",4,.01,1000,"Displayed attack speed");
             b.pop();
         }
+        b.push("rancor");
+        define(b,"soul_cost",25,1,1000000,"Base soul cost before enchantments and soul discounts");
+        b.pop().push("gruesome_eminence");
+        define(b,"soul_cost",30,1,1000000,"Base soul cost before enchantments and soul discounts");
+        b.pop();
         b.pop().push("integration");
         define(b,"end_halo_trip_chance",.05,0,1,"Chance for a player wearing the Halo of the End to trip when taking sweet berry bush damage, checked at most once every 10 ticks");
+        b.pop().push("combat_boost");
+        b.push("rage");
+        define(b,"damage_multiplier",1.35,0,100,"Total attack damage multiplier; 1 means no bonus");
+        define(b,"duration_ticks",180,1,72000,"Base duration before permanent upgrades; each upgrade adds 20 ticks");
+        define(b,"required_charge",100,1,100,"Full meter and activation charge");
+        define(b,"charge_ticks",900,1,720000,"Ticks to fill at maximum normal-enemy proximity; bosses divide this time by boss_charge_multiplier");
+        define(b,"decay_ticks",600,1,720000,"Ticks to drain a full meter");
+        define(b,"combat_delay_ticks",200,0,720000,"Ticks after dealing or taking damage before rage fades; proximity alone does not grant this delay");
+        define(b,"proximity_radius",50,1,256,"Maximum proximity rage distance from the enemy hitbox in blocks");
+        define(b,"full_charge_radius",10,0,256,"Hitbox distance for maximum proximity rage");
+        define(b,"boss_charge_multiplier",3,1,100,"Proximity charge multiplier for bosses; enemies never stack");
+        define(b,"upgrade_count",3,0,3,"Permanent rage boosters already applied; each adds 20 ticks to duration_ticks, maximum 3");
+        b.pop();
+        b.push("adrenaline");
+        define(b,"damage_multiplier",3.1,0,100,"Total attack damage multiplier; stacks multiplicatively with rage");
+        define(b,"duration_ticks",100,1,72000,"Effect duration in ticks");
+        define(b,"required_charge",10000,1,10000,"Full meter and activation charge");
+        define(b,"charge_ticks",600,1,720000,"Ticks to fill near a boss");
+        define(b,"decay_ticks",20,1,720000,"Ticks to drain without a boss");
+        define(b,"detection_radius",128,1,256,"Boss detection box half size in blocks");
+        define(b,"hurt_pause_ticks",20,0,720000,"Charging pause after damage in ticks");
+        b.pop();
         b.pop();SPEC=b.build();
         Map<String,Double> defaults=new LinkedHashMap<>();
         VALUES.forEach((key,value)->defaults.put(key,value.getDefault().doubleValue()));current=Map.copyOf(defaults);
@@ -83,6 +110,7 @@ public final class ProjectCCommonConfig {
         VALUES.put(String.join(".",entry.getPath()),entry);
     }
     public static double value(String key) { return current.get(key); }
+    public static double boost(String system,String key) { return value("combat_boost."+system+"."+key); }
     public static double calamitasValue(String key) { return value("boss.calamitas."+key); }
     public static double calamitasDamage(String skill,double sourceDamage) {
         return sourceDamage*calamitasValue("damage_multiplier")*calamitasValue("skills."+skill);
@@ -182,6 +210,13 @@ public final class ProjectCCommonConfig {
         if(entity instanceof net.everla.projectc.arkofcosmos.entity.MahouTsukaiEntity boss)boss.applyConfiguredHealth();
         if(entity instanceof net.everla.projectc.arkofcosmos.entity.FourthCalamityEntity boss)boss.applyConfiguredHealth();
         if(entity instanceof net.minecraft.world.entity.LivingEntity living) {
+            for(var effect:java.util.List.of(net.everla.projectc.arkofcosmos.revengeance.RevengeanceModMobEffects.RAGE_EFFECT.get(),net.everla.projectc.arkofcosmos.revengeance.RevengeanceModMobEffects.ADRENALINE_EFFECT.get())) {
+                var active=living.getEffect(effect);
+                if(active!=null) {
+                    effect.removeAttributeModifiers(living,living.getAttributes(),active.getAmplifier());
+                    effect.addAttributeModifiers(living,living.getAttributes(),active.getAmplifier());
+                }
+            }
             var stack=living.getMainHandItem();var id=ForgeRegistries.ITEMS.getKey(stack.getItem());
             if(id!=null&&id.getNamespace().equals(ArkOfCosmos.MOD_ID)&&current.containsKey("weapons."+id.getPath()+".base_damage")) {
                 var modifiers=stack.getAttributeModifiers(EquipmentSlot.MAINHAND);
@@ -197,7 +232,7 @@ public final class ProjectCCommonConfig {
         for(var modifier:java.util.List.copyOf(event.getModifiers().get(Attributes.ATTACK_SPEED)))
             if(modifier.getId().equals(java.util.UUID.fromString("FA233E1C-4180-4865-B01B-BCCE9785ACA3")))event.removeModifier(Attributes.ATTACK_SPEED,modifier);
         event.addModifier(Attributes.ATTACK_SPEED,new AttributeModifier(java.util.UUID.fromString("FA233E1C-4180-4865-B01B-BCCE9785ACA3"),"Weapon modifier",value("weapons."+id.getPath()+".attack_speed")-4,AttributeModifier.Operation.ADDITION));
-        if(id.getPath().equals("ark_of_the_old_one")) {
+        if(java.util.Set.of("ark_of_the_old_one","violence","rancor","gruesome_eminence").contains(id.getPath())) {
             for(var modifier:java.util.List.copyOf(event.getModifiers().get(Attributes.ATTACK_DAMAGE)))
                 if(modifier.getId().equals(java.util.UUID.fromString("CB3F55D3-645C-4F38-A497-9C13A33DB5CF")))event.removeModifier(Attributes.ATTACK_DAMAGE,modifier);
             event.addModifier(Attributes.ATTACK_DAMAGE,new AttributeModifier(java.util.UUID.fromString("CB3F55D3-645C-4F38-A497-9C13A33DB5CF"),"Weapon modifier",damage(id.getPath())-1,AttributeModifier.Operation.ADDITION));

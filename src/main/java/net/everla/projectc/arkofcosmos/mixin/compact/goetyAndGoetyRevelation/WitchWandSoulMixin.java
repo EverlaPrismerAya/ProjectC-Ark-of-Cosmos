@@ -1,4 +1,4 @@
-package net.everla.projectc.arkofcosmos.mixin.compact.goetyRevelation;
+package net.everla.projectc.arkofcosmos.mixin.compact.goetyAndGoetyRevelation;
 
 import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;

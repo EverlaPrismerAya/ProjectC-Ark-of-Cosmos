@@ -259,6 +259,9 @@ public final class ArkDamage {
         if(target instanceof Player player)amount=net.everla.projectc.arkofcosmos.enchant.CurseCombat.incoming(player,amount);
         float after = Math.max(0, before - amount);
         target.getEntityData().set(HEALTH, after);
+        if (target instanceof Player player && after < before)
+            net.everla.projectc.arkofcosmos.revengeance.AdrenalineSystemHandler.handleAdrenalineLossOnHurt(player, before - after);
+        net.everla.projectc.arkofcosmos.revengeance.RageSystemHandler.recordDamage(target,source,before-after);
         target.getCombatTracker().recordDamage(source, Math.min(before, amount));
         net.everla.projectc.arkofcosmos.enchant.CurseCombat.hit(target,source,Math.min(before,amount));
         if (source.getEntity() instanceof LivingEntity attacker) target.setLastHurtByMob(attacker);

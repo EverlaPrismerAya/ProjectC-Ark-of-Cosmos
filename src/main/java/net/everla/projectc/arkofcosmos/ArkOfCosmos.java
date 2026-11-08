@@ -127,11 +127,17 @@ public final class ArkOfCosmos {
             ? ITEMS.register("mistilteinn", net.everla.projectc.arkofcosmos.item.MistilteinnItem::new) : null;
 
     public ArkOfCosmos(FMLJavaModLoadingContext context) {
+        if (net.minecraftforge.fml.ModList.get().isLoaded("revengeance")) {
+            throw new IllegalStateException("ArkOfCosmos conflicts with Revengeance (revengeance): rage and adrenaline are included in ArkOfCosmos. Remove Revengeance. / 本模组已内置怒气与肾上腺素，请移除 Revengeance。");
+        }
         if(net.minecraftforge.fml.loading.FMLEnvironment.dist.isClient())
             ProjectCClientConfig.backupBeforeUpgrade(net.minecraftforge.fml.loading.FMLPaths.CONFIGDIR.get().resolve("projectc-client.toml"));
         context.registerConfig(net.minecraftforge.fml.config.ModConfig.Type.CLIENT,ProjectCClientConfig.SPEC,"projectc-client.toml");
         context.registerConfig(net.minecraftforge.fml.config.ModConfig.Type.COMMON,ProjectCCommonConfig.SPEC,"projectc-common.toml");
         IEventBus bus = context.getModEventBus();
+        net.everla.projectc.arkofcosmos.revengeance.RevengeanceModAttributes.REGISTRY.register(bus);
+        net.everla.projectc.arkofcosmos.revengeance.RevengeanceModMobEffects.register(bus);
+        net.everla.projectc.arkofcosmos.revengeance.RevengeanceModSounds.REGISTRY.register(bus);
         CalamitasContent.register(bus);
         net.everla.projectc.arkofcosmos.enchant.WitchEnchanting.register(bus);
         net.everla.projectc.arkofcosmos.combat.vanilla.VanillaCombat.register(bus);

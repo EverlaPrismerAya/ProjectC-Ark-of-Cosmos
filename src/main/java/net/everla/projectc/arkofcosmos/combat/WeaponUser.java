@@ -25,6 +25,11 @@ public final class WeaponUser {
         }
         return false;
     }
+    /** Give inventory/functional blocks their normal right-click before weapon skills. */
+    public static boolean blockUsePriority(Level level, net.minecraft.core.BlockPos pos) {
+        var state = level.getBlockState(pos);
+        return state.hasBlockEntity() || state.getMenuProvider(level, pos) != null;
+    }
     public static LivingEntity resolve(Level level, UUID uuid) {
         if(uuid==null)return null;
         if(level instanceof ServerLevel server && server.getEntity(uuid) instanceof LivingEntity living)return living;

@@ -23,14 +23,14 @@ public final class BrokenBiomeClient {
     @SubscribeEvent public static void tick(TickEvent.ClientTickEvent e){
         if(e.phase!=TickEvent.Phase.END)return;Minecraft mc=Minecraft.getInstance();
         if(mc.player==null||mc.getConnection()==null){left=right=holding=false;return;}
-        boolean held=BrokenBiomeCombat.holding(mc.player),active=held&&mc.screen==null&&mc.isWindowActive();boolean l=active&&mc.options.keyAttack.isDown(),r=active&&mc.options.keyUse.isDown();
+        boolean held=BrokenBiomeCombat.holding(mc.player),active=held&&mc.screen==null&&mc.isWindowActive();boolean l=active&&mc.options.keyAttack.isDown(),r=active&&!ArkClient.blockUsePriority() && mc.options.keyUse.isDown();
         if(l!=left||r!=right||held!=holding||held&&++heartbeat>=10){ArkNetwork.brokenBiome(l,-1,-1);heartbeat=0;}left=l;right=r;holding=held;
         if(active&&r)mc.setScreen(new Selector());
     }
-    @SubscribeEvent public static void click(InputEvent.InteractionKeyMappingTriggered e){Minecraft mc=Minecraft.getInstance();if(mc.player!=null&&BrokenBiomeCombat.holding(mc.player)&&(e.isAttack()||e.isUseItem())){e.setCanceled(true);e.setSwingHand(false);}}
+    @SubscribeEvent public static void click(InputEvent.InteractionKeyMappingTriggered e){Minecraft mc=Minecraft.getInstance();if(mc.player!=null&&BrokenBiomeCombat.holding(mc.player)&&(e.isAttack()||e.isUseItem() && !ArkClient.blockUsePriority())){e.setCanceled(true);e.setSwingHand(false);}}
     @SubscribeEvent public static void mouse(InputEvent.MouseButton.Pre e){
         var mc=Minecraft.getInstance();if(mc.player==null||mc.screen!=null||!BrokenBiomeCombat.holding(mc.player))return;
-        if(mc.options.keyUse.matchesMouse(e.getButton())&&e.getAction()==org.lwjgl.glfw.GLFW.GLFW_PRESS)mc.setScreen(new Selector());
+        if(!ArkClient.blockUsePriority() && mc.options.keyUse.matchesMouse(e.getButton())&&e.getAction()==org.lwjgl.glfw.GLFW.GLFW_PRESS)mc.setScreen(new Selector());
     }
     private static final class Selector extends Screen {
         private int selected=-1,slot=-1;

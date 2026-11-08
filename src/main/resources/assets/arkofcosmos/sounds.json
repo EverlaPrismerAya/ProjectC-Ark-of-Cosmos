@@ -870,5 +870,59 @@
     "sounds": [
       "arkofcosmos:violence_grind_0"
     ]
+  },
+  "rage_activite": {
+    "subtitle": "subtitles.arkofcosmos.rage_activite",
+    "sounds": [
+      {
+        "name": "arkofcosmos:rage_activite",
+        "stream": false
+      }
+    ]
+  },
+  "rage_end": {
+    "subtitle": "subtitles.arkofcosmos.rage_end",
+    "sounds": [
+      {
+        "name": "arkofcosmos:rage_end",
+        "stream": false
+      }
+    ]
+  },
+  "rage_full": {
+    "subtitle": "subtitles.arkofcosmos.rage_full",
+    "sounds": [
+      {
+        "name": "arkofcosmos:rage_full",
+        "stream": false
+      }
+    ]
+  },
+  "adrenaline_activite": {
+    "subtitle": "subtitles.arkofcosmos.adrenaline_activite",
+    "sounds": [
+      {
+        "name": "arkofcosmos:adrenaline_activite",
+        "stream": false
+      }
+    ]
+  },
+  "adrenaline_full": {
+    "subtitle": "subtitles.arkofcosmos.adrenaline_full",
+    "sounds": [
+      {
+        "name": "arkofcosmos:adrenaline_full",
+        "stream": false
+      }
+    ]
+  },
+  "adrenaline_charge_break": {
+    "subtitle": "subtitles.arkofcosmos.adrenaline_charge_break",
+    "sounds": [
+      {
+        "name": "arkofcosmos:adrenaline_charge_break",
+        "stream": false
+      }
+    ]
   }
 }

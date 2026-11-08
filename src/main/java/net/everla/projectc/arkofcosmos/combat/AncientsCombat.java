@@ -63,7 +63,7 @@ public final class AncientsCombat {
             e.setLootingLevel(attack.weapon().getEnchantmentLevel(net.minecraft.world.item.enchantment.Enchantments.MOB_LOOTING));
     }
     @SubscribeEvent public static void leftBlock(PlayerInteractEvent.LeftClickBlock e) { if (holding(e.getEntity())) e.setCanceled(true); }
-    @SubscribeEvent public static void rightBlock(PlayerInteractEvent.RightClickBlock e) { if (holding(e.getEntity())) e.setCanceled(true); }
+    @SubscribeEvent public static void rightBlock(PlayerInteractEvent.RightClickBlock e) { if (!WeaponUser.blockUsePriority(e.getLevel(), e.getPos()) && holding(e.getEntity())) e.setCanceled(true); }
     @SubscribeEvent public static void rightEntity(PlayerInteractEvent.EntityInteract e) { if (holding(e.getEntity())) e.setCanceled(true); }
     @SubscribeEvent public static void breakBlock(BlockEvent.BreakEvent e) { if (holding(e.getPlayer())) e.setCanceled(true); }
 }

@@ -1,0 +1,11 @@
+gradle.beforeProject { project -> project.layout.buildDirectory.set(new File(project.projectDir,'reference/revengeance/client')) }
+allprojects {
+    afterEvaluate {
+        sourceSets.main.java.srcDir 'build-tools/revengeance'
+        def runtime=project.file('reference/revengeance/client-run');runtime.mkdirs()
+        new File(runtime,'options.txt').text='onboardAccessibility:false\nskipMultiplayerWarning:true\npauseOnLostFocus:false\nguiScale:2\nlang:zh_cn\nmaxFps:30\nrenderDistance:4\nsimulationDistance:5\n'
+        configurations.configureEach { exclude group:'maven.modrinth',module:'oculus';exclude group:'maven.modrinth',module:'embeddium' }
+        minecraft.runs.client { workingDirectory runtime;args '--width','960','--height','540','--username','BoostHost' }
+        tasks.matching { it.name=='runClient' }.configureEach { maxHeapSize='1536m' }
+    }
+}

@@ -256,7 +256,7 @@ public final class ArkCombat {
     @SubscribeEvent public static void logout(PlayerEvent.PlayerLoggedOutEvent event) { CONTROLS.remove(event.getEntity().getUUID()); }
     @SubscribeEvent public static void clone(PlayerEvent.Clone event) { CONTROLS.remove(event.getEntity().getUUID()); }
     @SubscribeEvent public static void leftBlock(PlayerInteractEvent.LeftClickBlock event) { if (holding(event.getEntity())) event.setCanceled(true); }
-    @SubscribeEvent public static void rightBlock(PlayerInteractEvent.RightClickBlock event) { if (holding(event.getEntity())) event.setCanceled(true); }
+    @SubscribeEvent public static void rightBlock(PlayerInteractEvent.RightClickBlock event) { if (!WeaponUser.blockUsePriority(event.getLevel(), event.getPos()) && holding(event.getEntity())) event.setCanceled(true); }
     @SubscribeEvent public static void rightEntity(PlayerInteractEvent.EntityInteract event) { if (holding(event.getEntity())) event.setCanceled(true); }
     @SubscribeEvent public static void breakBlock(BlockEvent.BreakEvent event) { if (holding(event.getPlayer())) event.setCanceled(true); }
 }

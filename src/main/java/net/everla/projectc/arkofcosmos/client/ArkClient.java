@@ -32,13 +32,19 @@ public final class ArkClient {
     private static int heartbeat;
     private static final KeyMapping DASH = new KeyMapping("key.arkofcosmos.dash", KeyConflictContext.IN_GAME,
             InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_LEFT_ALT, "key.categories.arkofcosmos");
+    public static boolean blockUsePriority() {
+        Minecraft mc = Minecraft.getInstance();
+        return mc.level != null && mc.hitResult instanceof net.minecraft.world.phys.BlockHitResult hit
+                && hit.getType() == net.minecraft.world.phys.HitResult.Type.BLOCK
+                && net.everla.projectc.arkofcosmos.combat.WeaponUser.blockUsePriority(mc.level, hit.getBlockPos());
+    }
     @SubscribeEvent public static void tick(TickEvent.ClientTickEvent event) {
         if (event.phase != TickEvent.Phase.END) return;
         Minecraft mc = Minecraft.getInstance();
         ArkEffects.tick();
         boolean active = mc.player != null && mc.screen == null && mc.isWindowActive() && (ArkCombat.holding(mc.player) || net.everla.projectc.arkofcosmos.combat.ElementsCombat.holding(mc.player) || net.everla.projectc.arkofcosmos.combat.OldOneCombat.holding(mc.player) || net.everla.projectc.arkofcosmos.combat.FracturedCombat.holding(mc.player) || net.everla.projectc.arkofcosmos.combat.AncientsCombat.holding(mc.player) || net.everla.projectc.arkofcosmos.combat.ViolenceCombat.holding(mc.player));
         boolean left = active && mc.options.keyAttack.isDown();
-        boolean right = active && mc.options.keyUse.isDown();
+        boolean right = active && !blockUsePriority() && mc.options.keyUse.isDown();
         boolean alt = active && DASH.isDown();
         send(left, right, alt, active);
     }
@@ -58,7 +64,7 @@ public final class ArkClient {
 
     @SubscribeEvent public static void click(InputEvent.InteractionKeyMappingTriggered event) {
         Minecraft mc = Minecraft.getInstance();
-        if (mc.player != null && (ArkCombat.holding(mc.player) || net.everla.projectc.arkofcosmos.combat.ElementsCombat.holding(mc.player) || net.everla.projectc.arkofcosmos.combat.OldOneCombat.holding(mc.player) || net.everla.projectc.arkofcosmos.combat.FracturedCombat.holding(mc.player) || net.everla.projectc.arkofcosmos.combat.AncientsCombat.holding(mc.player) || net.everla.projectc.arkofcosmos.combat.ViolenceCombat.holding(mc.player)) && (event.isAttack() || event.isUseItem())) {
+        if (mc.player != null && (ArkCombat.holding(mc.player) || net.everla.projectc.arkofcosmos.combat.ElementsCombat.holding(mc.player) || net.everla.projectc.arkofcosmos.combat.OldOneCombat.holding(mc.player) || net.everla.projectc.arkofcosmos.combat.FracturedCombat.holding(mc.player) || net.everla.projectc.arkofcosmos.combat.AncientsCombat.holding(mc.player) || net.everla.projectc.arkofcosmos.combat.ViolenceCombat.holding(mc.player)) && (event.isAttack() || event.isUseItem() && !blockUsePriority())) {
             event.setCanceled(true);
             event.setSwingHand(false);
         }
@@ -74,7 +80,7 @@ public final class ArkClient {
         boolean pressed = event.getAction() == GLFW.GLFW_PRESS;
         // Deliver short clicks and releases between client ticks; also honor rebound keyboard controls in tick().
         boolean left = attack ? pressed : lastLeft;
-        boolean right = use ? pressed : lastRight;
+        boolean right = !blockUsePriority() && (use ? pressed : lastRight);
         boolean alt = dash ? pressed : DASH.isDown();
         send(left, right, alt, true);
     }

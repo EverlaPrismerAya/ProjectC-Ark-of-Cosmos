@@ -1,4 +1,4 @@
-package net.everla.projectc.arkofcosmos.mixin.compact.goetyRevelation;
+package net.everla.projectc.arkofcosmos.mixin.compact.goetyAndGoetyRevelation;
 
 import net.everla.projectc.arkofcosmos.calamity.CalamitasHexEffect;
 import net.minecraft.world.effect.MobEffect;

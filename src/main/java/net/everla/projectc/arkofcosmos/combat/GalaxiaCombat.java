@@ -62,7 +62,7 @@ public final class GalaxiaCombat {
     @SubscribeEvent public static void logout(PlayerEvent.PlayerLoggedOutEvent e) { INPUT.remove(e.getEntity().getUUID()); }
     @SubscribeEvent public static void clone(PlayerEvent.Clone e) { INPUT.remove(e.getEntity().getUUID()); }
     @SubscribeEvent public static void block(PlayerInteractEvent.LeftClickBlock e) { if(holding(e.getEntity())) e.setCanceled(true); }
-    @SubscribeEvent public static void useBlock(PlayerInteractEvent.RightClickBlock e) { if(holding(e.getEntity())) e.setCanceled(true); }
+    @SubscribeEvent public static void useBlock(PlayerInteractEvent.RightClickBlock e) { if (!WeaponUser.blockUsePriority(e.getLevel(), e.getPos()) && holding(e.getEntity())) e.setCanceled(true); }
     @SubscribeEvent public static void useEntity(PlayerInteractEvent.EntityInteract e) { if(holding(e.getEntity())) e.setCanceled(true); }
     @SubscribeEvent public static void looting(net.minecraftforge.event.entity.living.LootingLevelEvent e) {
         if(e.getDamageSource()!=null && e.getDamageSource().getDirectEntity() instanceof GalaxiaEntity attack)

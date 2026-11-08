@@ -74,7 +74,7 @@ public final class TrueBiomeCombat {
     @SubscribeEvent public static void clone(PlayerEvent.Clone e){INPUT.remove(e.getEntity().getUUID());cancel(e.getOriginal());}
     @SubscribeEvent public static void dimension(PlayerEvent.PlayerChangedDimensionEvent e){INPUT.remove(e.getEntity().getUUID());}
     @SubscribeEvent public static void block(PlayerInteractEvent.LeftClickBlock e){if(holding(e.getEntity()))e.setCanceled(true);}
-    @SubscribeEvent public static void useBlock(PlayerInteractEvent.RightClickBlock e){if(holding(e.getEntity()))e.setCanceled(true);}
+    @SubscribeEvent public static void useBlock(PlayerInteractEvent.RightClickBlock e){if (!WeaponUser.blockUsePriority(e.getLevel(), e.getPos()) && holding(e.getEntity()))e.setCanceled(true);}
     @SubscribeEvent public static void useEntity(PlayerInteractEvent.EntityInteract e){if(holding(e.getEntity()))e.setCanceled(true);}
     @SubscribeEvent public static void looting(net.minecraftforge.event.entity.living.LootingLevelEvent e){
         if(e.getDamageSource()!=null&&e.getDamageSource().getDirectEntity() instanceof TrueBiomeEntity a)e.setLootingLevel(a.weapon().getEnchantmentLevel(net.minecraft.world.item.enchantment.Enchantments.MOB_LOOTING));

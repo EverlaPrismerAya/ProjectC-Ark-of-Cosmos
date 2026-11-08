@@ -31,11 +31,11 @@ public final class GalaxiaClient {
         boolean active=holding && mc.screen==null && mc.isWindowActive();
         boolean left=active && mc.options.keyAttack.isDown();
         if(left!=last || holding!=wasHolding || holding && ++heartbeat>=10) {ArkNetwork.galaxia(left,-1);heartbeat=0;last=left;wasHolding=holding;}
-        if(active && mc.options.keyUse.isDown()) mc.setScreen(new Selector());
+        if(active && !ArkClient.blockUsePriority() && mc.options.keyUse.isDown()) mc.setScreen(new Selector());
     }
     @SubscribeEvent public static void click(InputEvent.InteractionKeyMappingTriggered e) {
         Minecraft mc=Minecraft.getInstance();
-        if(mc.player!=null && GalaxiaCombat.holding(mc.player) && (e.isAttack() || e.isUseItem())) {e.setCanceled(true);e.setSwingHand(false);}
+        if(mc.player!=null && GalaxiaCombat.holding(mc.player) && (e.isAttack() || e.isUseItem() && !ArkClient.blockUsePriority())) {e.setCanceled(true);e.setSwingHand(false);}
     }
     @SubscribeEvent public static void mouse(InputEvent.MouseButton.Pre e) {
         Minecraft mc=Minecraft.getInstance();
@@ -43,7 +43,7 @@ public final class GalaxiaClient {
         if(mc.options.keyAttack.matchesMouse(e.getButton())) {
             last=e.getAction()!=GLFW.GLFW_RELEASE;ArkNetwork.galaxia(last,-1);
         }
-        if(mc.options.keyUse.matchesMouse(e.getButton()) && e.getAction()==GLFW.GLFW_PRESS) mc.setScreen(new Selector());
+        if(!ArkClient.blockUsePriority() && mc.options.keyUse.matchesMouse(e.getButton()) && e.getAction()==GLFW.GLFW_PRESS) mc.setScreen(new Selector());
     }
     private static final class Selector extends Screen {
         private int selected=-1;

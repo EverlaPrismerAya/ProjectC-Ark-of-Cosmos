@@ -20,7 +20,7 @@ import net.minecraftforge.api.distmarker.Dist;
 public final class ArkNetwork {
     private ArkNetwork() {}
     private static final SimpleChannel CHANNEL = NetworkRegistry.newSimpleChannel(
-            ResourceLocation.fromNamespaceAndPath(ArkOfCosmos.MOD_ID, "input"), () -> "7", "7"::equals, "7"::equals);
+            ResourceLocation.fromNamespaceAndPath(ArkOfCosmos.MOD_ID, "input"), () -> "8", "8"::equals, "8"::equals);
     private record CommonConfig(CompoundTag data) {}
     public static void commonConfig(net.minecraft.server.level.ServerPlayer player,CompoundTag data) {
         CHANNEL.send(PacketDistributor.PLAYER.with(()->player),new CommonConfig(data));
@@ -49,7 +49,16 @@ public final class ArkNetwork {
     public static void spearFeedback(Entity entity) { CHANNEL.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(()->entity),new SpearFeedback(entity.getId())); }
     private record BrokenBiomeInput(boolean left,int slot,int mode) {}
     public static void brokenBiome(boolean left,int slot,int mode){CHANNEL.sendToServer(new BrokenBiomeInput(left,slot,mode));}
+    private record CombatBoost(boolean rage, boolean adrenaline) {}
+    public static void combatBoost(boolean rage, boolean adrenaline) { CHANNEL.sendToServer(new CombatBoost(rage, adrenaline)); }
     public static void register() {
+        CHANNEL.messageBuilder(CombatBoost.class,12,NetworkDirection.PLAY_TO_SERVER)
+            .encoder((p,b)->{b.writeBoolean(p.rage());b.writeBoolean(p.adrenaline());})
+            .decoder(b->new CombatBoost(b.readBoolean(),b.readBoolean()))
+            .consumerMainThread((p,c)->{var player=c.get().getSender();if(player==null || !player.isAlive() || player.isSpectator())return;
+                if(p.rage()) net.everla.projectc.arkofcosmos.revengeance.RageSystemHandler.activateRage(player);
+                if(p.adrenaline()) net.everla.projectc.arkofcosmos.revengeance.AdrenalineSystemHandler.activateAdrenaline(player);
+            }).add();
         CHANNEL.messageBuilder(CommonConfig.class,11,NetworkDirection.PLAY_TO_CLIENT)
             .encoder((p,b)->b.writeNbt(p.data())).decoder(b->new CommonConfig(b.readNbt()))
             .consumerMainThread((p,c)->net.everla.projectc.arkofcosmos.ProjectCCommonConfig.receive(p.data())).add();

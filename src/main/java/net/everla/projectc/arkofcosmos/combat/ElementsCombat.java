@@ -139,7 +139,7 @@ public final class ElementsCombat {
     @SubscribeEvent public static void logout(PlayerEvent.PlayerLoggedOutEvent e){CONTROLS.remove(e.getEntity().getUUID());}
     @SubscribeEvent public static void clone(PlayerEvent.Clone e){CONTROLS.remove(e.getEntity().getUUID());}
     @SubscribeEvent public static void leftBlock(PlayerInteractEvent.LeftClickBlock e){if(holding(e.getEntity()))e.setCanceled(true);}
-    @SubscribeEvent public static void rightBlock(PlayerInteractEvent.RightClickBlock e){if(holding(e.getEntity()))e.setCanceled(true);}
+    @SubscribeEvent public static void rightBlock(PlayerInteractEvent.RightClickBlock e){if (!WeaponUser.blockUsePriority(e.getLevel(), e.getPos()) && holding(e.getEntity()))e.setCanceled(true);}
     @SubscribeEvent public static void rightEntity(PlayerInteractEvent.EntityInteract e){if(holding(e.getEntity()))e.setCanceled(true);}
     @SubscribeEvent public static void breakBlock(BlockEvent.BreakEvent e){if(holding(e.getPlayer()))e.setCanceled(true);}
 }

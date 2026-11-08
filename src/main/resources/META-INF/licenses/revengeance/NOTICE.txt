@@ -1,0 +1,6 @@
+Rage and adrenaline ported from the local Revengeance-1.20.1 project by jsdtqhj and EverlaPrismerAya.
+Source license: GNU GPL version 3 (LICENSE included).
+Includes adapted Java, original HUD textures, effect icons and six sound files.
+Original resource provenance remains that of Revengeance; this notice does not claim authorship of its assets.
+Changes: ArkOfCosmos namespace and networking, physical-event shared bindings, server authority, lifecycle cleanup, adrenaline boss detection via server boss-event fields instead of boss tags.
+See SOURCES.json for source SHA-256 hashes.

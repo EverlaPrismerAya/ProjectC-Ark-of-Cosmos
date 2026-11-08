@@ -1,4 +1,4 @@
-package net.everla.projectc.arkofcosmos.mixin.compact.goetyRevelation;
+package net.everla.projectc.arkofcosmos.mixin.compact.goetyAndGoetyRevelation;
 import net.minecraft.world.entity.player.Player;
 import org.spongepowered.asm.mixin.*;
 import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;

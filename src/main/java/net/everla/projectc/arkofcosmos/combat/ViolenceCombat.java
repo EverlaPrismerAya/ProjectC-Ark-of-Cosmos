@@ -48,7 +48,7 @@ public final class ViolenceCombat {
     @SubscribeEvent public static void clone(PlayerEvent.Clone event){clear(event.getOriginal());}
     @SubscribeEvent public static void dimension(PlayerEvent.PlayerChangedDimensionEvent event){clear(event.getEntity());}
     @SubscribeEvent public static void leftBlock(PlayerInteractEvent.LeftClickBlock event){if(holding(event.getEntity()))event.setCanceled(true);}
-    @SubscribeEvent public static void rightBlock(PlayerInteractEvent.RightClickBlock event){if(holding(event.getEntity()))event.setCanceled(true);}
+    @SubscribeEvent public static void rightBlock(PlayerInteractEvent.RightClickBlock event){if (!WeaponUser.blockUsePriority(event.getLevel(), event.getPos()) && holding(event.getEntity()))event.setCanceled(true);}
     @SubscribeEvent public static void rightEntity(PlayerInteractEvent.EntityInteract event){if(holding(event.getEntity()))event.setCanceled(true);}
     @SubscribeEvent public static void breaking(net.minecraftforge.event.level.BlockEvent.BreakEvent event){if(holding(event.getPlayer()))event.setCanceled(true);}
     @SubscribeEvent public static void looting(net.minecraftforge.event.entity.living.LootingLevelEvent event){
