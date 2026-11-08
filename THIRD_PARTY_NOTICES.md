@@ -61,6 +61,7 @@ GPL 声明不授予第三方内容的额外权利，也不证明现有第三方�
 | `entity/ArkAttackEntity.java` | Minecraft 实体生命周期、同步、插值、附魔与冲刺碰撞接入；仍保留攻击寿命初始化、子步调度、派生效果触发与已有附加伤害行为，不能将整个混合文件理解为无例外的 GPL-3.0-only 代码 |
 | `client/ArkClient.java` | 原武器状态条配色及显示参数的客户端接入；震屏算法已移至 `calamity/client/ArkEffects.java` |
 | `client/render/ArkFxDraw.java` | 本项目的 OpenGL／Minecraft 绘制适配，保留 XNA 混合与绘制语义；原拖尾算法已移至 `calamity/client/CalamityTrail.java`；`shaders/core/fractured_sprite.*` 为原创 Minecraft 光照贴图与原版辉光混合适配，不是灾厄专属 .fx 的移植 |
+| 怨戾／异端僭越、DeathAshParticle模型表面灰烬的派生源码、PNG、OGG、原版音效及Dust裁片 | Calamity Mod提交`1a8cebd27ec5615316b78f71973446b5528d2b78`的Rancor、GruesomeEminence及派生射弹、粒子、融合材质和着色器；原始纹理／Calamity声音逐字节复用。Terraria音效从Re-Logic原始XNB PCM解码后转为Vorbis q8，属于有损编码；Dust为原始RGBA图集8×8无重采样裁片。源码与资源遵循各自上游许可／保留权利声明，不将美术音频纳入本项目GPL许可；详见本文件Calamity／Terraria既有声明及`licenses/RESOURCE-SOURCES.json`。 |
 
 `util/AttackFrame.java`、`util/ArkGeometry.java` 与 `network/ArkNetwork.java` 分别提供本项目的三维攻击平面、空间几何及 Forge 网络接入。来源分区便于维护与审阅，不应被用来将灾厄派生内容重新授权为 GPL-3.0-only，或把包含原创适配的派生文件整体视为第三方原文件。
 
@@ -199,7 +200,6 @@ Java 移植、Minecraft 三维适配及项目维护：EverlaPrismerAya。
 
 | 资源 | 来源与权利说明 |
 | --- | --- |
-| 怨戾／异端僭越、DeathAshParticle模型表面灰烬的派生源码、PNG、OGG、原版音效及Dust裁片 | Calamity Mod提交`1a8cebd27ec5615316b78f71973446b5528d2b78`的Rancor、GruesomeEminence及派生射弹、粒子、融合材质和着色器；原始纹理／Calamity声音逐字节复用。Terraria音效从Re-Logic原始XNB PCM解码后转为Vorbis q8，属于有损编码；Dust为原始RGBA图集8×8无重采样裁片。源码与资源遵循各自上游许可／保留权利声明，不将美术音频纳入本项目GPL许可；详见本文件Calamity／Terraria既有声明及`licenses/RESOURCE-SOURCES.json`。 |
 | `assets/arkofcosmos/sounds/fourth_calamity_death.ogg` | 用户提供的第四天灾消失音效，原文件未转码；来源路径与 SHA-256 见资源清单。作者及许可未随文件提供，权利归原作者／原权利人，不纳入 GPL-3.0-only 授权。 |
 | `assets/arkofcosmos/textures/entity/kira_official.png` | 正版玩家 `Kira_Official`，UUID `d150668b708846f8aa9d367bbd962d85` 的 slim 皮肤快照；来源为 Mojang Session Server 返回的 Minecraft Textures 地址，URL 与 SHA-256 见资源清单。皮肤权利归原作者／原权利人，不纳入 GPL-3.0-only 授权。 |
 
