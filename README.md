@@ -16,21 +16,6 @@ Minecraft Forge 1.20.1 模组，将 Terraria 灾厄系列武器与Boss适配到�
 
 已内置怒气与肾上腺素，默认V／B激活，可改键；不能同时安装独立Revengeance模组。
 
-## 功能导航
-
-| 功能 | 说明 |
-| --- | --- |
-| 方舟系列 | [鸿蒙方舟](docs/ark-of-cosmos.md)、[旧神方舟](docs/ark-of-the-old-one.md)、[破碎方舟](docs/fractured-ark.md)、[远古方舟](docs/ark-of-the-ancients.md)、[元素方舟](docs/elements.md) |
-| 环境刃与银河 | [残缺环境刃](docs/broken-biome-blade.md)、[环境之刃](docs/biome-blade.md)、[真·环境之刃](docs/true-biome-blade.md)、[银河](docs/galaxia.md) |
-| 灾厄武器与炼注 | [恣睢](docs/violence.md)、[死灵炼注／怨戾／异端僭越](docs/necromantic-infusion.md)、[硫火女巫与普通炼注](docs/brimstone-witch.md) |
-| Boss与召唤 | [魔法使](docs/mahou.md)、[第四天灾](docs/fourth-calamity.md)、[至尊唤魔者，灾厄](docs/supreme-calamitas.md)、[天灾变体与信标召唤](docs/calamity-summoning.md) |
-| 原版战斗套件 | [七材质长矛、重锤与玩家风弹](docs/vanilla-combat.md) |
-| 配置与开发 | [公共配置与战斗增益](docs/COMBAT_CONFIGURATION.md)、[项目架构](docs/architecture.md)、[渲染与特效](docs/rendering.md) |
-
-武器获取、配方与操作见对应页面。公共配置为 `config/projectc-common.toml`，支持热重载与同步；客户端选项位于 `config/projectc-client.toml`。管理命令 `/projectc` 要求权限等级2，详细行为见架构和Boss说明。
-
-`docs/` 与 `AGENT.md` 按项目设置仅在本地维护，不随Git发布；本地完整开发入口见 [AGENT.md](AGENT.md)。
-
 ## 从源码构建
 
 安装JDK 17，在项目根目录运行：
