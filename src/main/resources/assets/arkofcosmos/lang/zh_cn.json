@@ -15,6 +15,8 @@
   "title.arkofcosmos.satsuki_rin.13": "飞翔于空中程度的能力",
   "skill.arkofcosmos.satsuki_rin.fumo_shrine": "领域展开·Fumo御厨子",
   "entity.arkofcosmos.satsuki_rin": "冴月麟",
+  "entity.arkofcosmos.summon_satsuki_rin": "§k§4冴月麟",
+  "info.arkofcosmos.satsuki_rin.summon": "§4幻想于你眼前破碎...",
   "item.arkofcosmos.satsuki_rin_spawn_egg": "冴月麟刷怪蛋",
   "item.arkofcosmos.mahou_tsukai_spawn_egg": "魔法使刷怪蛋",
   "dialogue.arkofcosmos.calamitas.summoning": "狱焰降临于你……",
@@ -307,6 +309,7 @@
   "boss.arkofcosmos.calamitas.title": "至尊唤魔者",
   "effect.arkofcosmos.vulnerability_hex": "孱弱巫咒",
   "jei.arkofcosmos.annihilation_ember.source": "在Goety安息仪式的4个基座各放置1个湮灭余烬，使用下界合金锭激活以召唤至尊唤魔者，灾厄。正常完成战斗后掉落32–48个湮灭余烬。",
+  "jei.arkofcosmos.satsuki_rin.summon": "在Goety安息仪式的4个基座各放置1个圣金源锭，使用末日勋章激活（消耗10灵魂能量，耗时5秒）。仪式完成后经过与使徒相同的召唤前摇，召唤冴月麟。击败后固定掉落最初分形与璀璨权杖，另掉落附魔金苹果、神灵金属锭、黑暗金属锭、晋升之环、沉重核心、圣金源锭、湮灭余烬与维度意志。",
   "entity.arkofcosmos.brimstone_witch": "硫火女巫",
   "item.arkofcosmos.brimstone_locus": "硫火魔珠",
   "menu.arkofcosmos.witch": "咒术炼注",
@@ -394,8 +397,8 @@
   "item.arkofcosmos.bejeweled_staff": "璀璨权杖",
   "item.arkofcosmos.bejeweled_staff.description": "汲取众多宝石的力量",
   "entity.arkofcosmos.bejeweled_bolt": "璀璨权杖",
-  "item.arkofcosmos.first_fractal": "第一分形",
-  "entity.arkofcosmos.first_fractal_attack": "第一分形残影",
+  "item.arkofcosmos.first_fractal": "最初分形",
+  "entity.arkofcosmos.first_fractal_attack": "最初分形残影",
   "first_fractal.use": "按住%s，召唤持剑分身截击附近敌人。",
   "item.arkofcosmos.bejeweled_staff.controls": "按住%s发射随机同色的三枚宝石弹"
 }

@@ -129,7 +129,7 @@ public final class ArkClient {
         }
         @SubscribeEvent public static void renderers(EntityRenderersEvent.RegisterRenderers event) {
             if(net.everla.projectc.arkofcosmos.BejeweledContent.ENABLED) event.registerEntityRenderer(net.everla.projectc.arkofcosmos.BejeweledContent.BOLT.get(), net.minecraft.client.renderer.entity.NoopRenderer::new);
-            if(net.everla.projectc.arkofcosmos.SatsukiContent.ENABLED) event.registerEntityRenderer(net.everla.projectc.arkofcosmos.SatsukiContent.BOSS.get(),SatsukiRinRenderer::new);
+            if(net.everla.projectc.arkofcosmos.SatsukiContent.ENABLED){event.registerEntityRenderer(net.everla.projectc.arkofcosmos.SatsukiContent.BOSS.get(),SatsukiRinRenderer::new);event.registerEntityRenderer(net.everla.projectc.arkofcosmos.SatsukiContent.SUMMON.get(),com.Polarice3.Goety.client.render.SummonApostleRenderer::new);}
             if (net.everla.projectc.arkofcosmos.CalamitasContent.ENABLED)
                 net.everla.projectc.arkofcosmos.CalamitasContent.ATTACKS.values().forEach(type -> event.registerEntityRenderer(type.get(), CalamitasAttackRenderer::new));
             if (net.everla.projectc.arkofcosmos.CalamitasContent.ENABLED)

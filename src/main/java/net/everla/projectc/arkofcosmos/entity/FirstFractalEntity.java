@@ -46,6 +46,25 @@ public final class FirstFractalEntity extends Entity implements OwnableEntity {
         for(int i=0;i<30;i++){offset=offset.add(velocity);velocity=rotate(velocity,plane,curve);}
         return aim.subtract(offset);
     }
+    private static final double LOCK_RANGE=64,LOCK_COS=Math.cos(Math.toRadians(15));
+    /** Visible enemy nearest the crosshair (smallest angle, then distance) within a 15° cone. */
+    private static LivingEntity crosshairTarget(Player p,Vec3 look){
+        Vec3 eye=p.getEyePosition();LivingEntity best=null;double bestCos=LOCK_COS,bestDistance=Double.MAX_VALUE;
+        for(var t:p.level().getEntitiesOfClass(LivingEntity.class,p.getBoundingBox().expandTowards(look.scale(LOCK_RANGE)).inflate(LOCK_RANGE*Math.tan(Math.toRadians(15))),t->WeaponUser.enemy(p,t))){
+            Vec3 offset=t.getBoundingBox().getCenter().subtract(eye);double distance=offset.length();
+            if(distance<.001||distance>LOCK_RANGE)continue;
+            double cos=offset.dot(look)/distance;
+            if((cos>bestCos+1e-6||Math.abs(cos-bestCos)<=1e-6&&distance<bestDistance)&&visible(p,t)){best=t;bestCos=cos;bestDistance=distance;}
+        }
+        return best;
+    }
+    /** Tall or partly buried targets (emerging obsidian monoliths) may have their eye point inside blocks: accept any of centre, top or eye. */
+    private static boolean visible(Player p,LivingEntity t){
+        var box=t.getBoundingBox();Vec3 eye=p.getEyePosition();
+        for(Vec3 point:new Vec3[]{box.getCenter(),new Vec3(box.getCenter().x,box.maxY-.1,box.getCenter().z),t.getEyePosition()})
+            if(p.level().clip(new net.minecraft.world.level.ClipContext(eye,point,net.minecraft.world.level.ClipContext.Block.COLLIDER,net.minecraft.world.level.ClipContext.Fluid.NONE,p)).getType()==net.minecraft.world.phys.HitResult.Type.MISS)return true;
+        return false;
+    }
     public static FirstFractalEntity launch(Player p,double hue,int delay){
         var e=new FirstFractalEntity(ArkOfCosmos.FIRST_FRACTAL_ATTACK.get(),p.level());var random=p.getRandom();
         e.owner=p.getUUID();e.ownerId=p.getId();e.sourceItem=p.getMainHandItem();e.weapon=e.sourceItem.copy();
@@ -59,8 +78,10 @@ public final class FirstFractalEntity extends Entity implements OwnableEntity {
         Vec3 side=view.right().scale(Math.cos(roll)).add(view.normal().scale(Math.sin(roll)));
         e.frame=new AttackFrame(axis,side);
         Vec3 direction=e.frame.direction(random.nextDouble()*Math.PI*2);
-        if(!targets.isEmpty()){
-            var target=targets.get(random.nextInt(targets.size()));
+        // Crosshair lock first; nearby enemies are only a self-defence fallback when nothing is under the crosshair.
+        LivingEntity locked=crosshairTarget(p,axis);
+        if(locked!=null||!targets.isEmpty()){
+            var target=locked!=null?locked:targets.get(random.nextInt(targets.size()));
             // Minecraft velocity is blocks/tick; Terraria predicts 20 of its 60 Hz frames.
             aim=target.getBoundingBox().getCenter().add(target.getDeltaMovement().scale(20d/3));
         }else{

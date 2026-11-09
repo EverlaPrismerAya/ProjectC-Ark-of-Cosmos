@@ -1,0 +1,38 @@
+{
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "goety"
+    },
+    {
+      "type": "forge:mod_loaded",
+      "modid": "goety_revelation"
+    }
+  ],
+  "type": "goety:ritual",
+  "ritual_type": "goety:summon",
+  "activation_item": {
+    "item": "goety_revelation:doom_medal"
+  },
+  "craftType": "sabbath",
+  "entity_to_summon": "arkofcosmos:summon_satsuki_rin",
+  "soulCost": 10,
+  "duration": 5,
+  "ingredients": [
+    {
+      "item": "arkofcosmos:auric_bar"
+    },
+    {
+      "item": "arkofcosmos:auric_bar"
+    },
+    {
+      "item": "arkofcosmos:auric_bar"
+    },
+    {
+      "item": "arkofcosmos:auric_bar"
+    }
+  ],
+  "result": {
+    "item": "goety:jei_dummy/none"
+  }
+}

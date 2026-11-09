@@ -16,6 +16,8 @@ import org.spongepowered.asm.mixin.injection.At;
 public abstract class SatsukiFumoRenderMixin {
     @WrapOperation(method="render",at=@At(value="INVOKE",target="Lnet/minecraft/client/renderer/entity/EntityRenderer;render(Lnet/minecraft/world/entity/Entity;FFLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V"))
     private <E extends Entity> void ark$fumo(EntityRenderer<E> renderer,E entity,float yaw,float partial,PoseStack pose,MultiBufferSource buffers,int light,Operation<Void> original){
+        // Satsuki's native arrows are drawn as Bejeweled gem dust instead (also skips RF's arrow trail).
+        if(net.everla.projectc.arkofcosmos.client.SatsukiArrowVisuals.hides(entity))return;
         if(!SatsukiFumoClient.render(entity,partial,pose,buffers,light))original.call(renderer,entity,yaw,partial,pose,buffers,light);
     }
 }

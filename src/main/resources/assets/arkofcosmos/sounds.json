@@ -941,5 +941,23 @@
       "arkofcosmos:bejeweled_hit_1",
       "arkofcosmos:bejeweled_hit_2"
     ]
+  },
+  "satsuki_rin_battle_theme": {
+    "sounds": [
+      {
+        "name": "arkofcosmos:satsuki_rin_battle_theme",
+        "stream": true
+      }
+    ]
+  },
+  "satsuki_rin_hurt": {
+    "sounds": [
+      "arkofcosmos:satsuki_rin_hurt"
+    ]
+  },
+  "satsuki_rin_death": {
+    "sounds": [
+      "arkofcosmos:satsuki_rin_death"
+    ]
   }
 }

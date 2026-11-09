@@ -67,7 +67,7 @@ public final class ProjectCCommonConfig {
         SatsukiConfig.define(b);
         b.push("weapons");
         String[] ids={"fractured_ark","ark_of_the_ancients","ark_of_the_elements","ark_of_cosmos","ark_of_the_old_one","broken_biome_blade","biome_blade","true_biome_blade","galaxia","violence","rancor","gruesome_eminence","bejeweled_staff","first_fractal"};
-        double[] damage={4,6,7,16,20,5,7,9.5,16,24.25,18,36,1.35,8};
+        double[] damage={4,6,7,16,20,5,7,9.5,16,24.25,18,36,8,16};
         for(int i=0;i<ids.length;i++) {
             b.push(ids[i]);
             define(b,"base_damage",damage[i],.01,1000000,"Base attack damage");
@@ -243,7 +243,7 @@ public final class ProjectCCommonConfig {
         event.addModifier(Attributes.ATTACK_SPEED,new AttributeModifier(java.util.UUID.fromString("FA233E1C-4180-4865-B01B-BCCE9785ACA3"),"Weapon modifier",value("weapons."+id.getPath()+".attack_speed")-4,AttributeModifier.Operation.ADDITION));
         // These two items already provide live damage with Item's canonical UUID instance.
         // Vanilla's green total-damage tooltip compares that UUID by identity.
-        if(java.util.Set.of("ark_of_the_old_one","rancor","gruesome_eminence","bejeweled_staff").contains(id.getPath())) {
+        if("ark_of_the_old_one".equals(id.getPath())) {
             for(var modifier:java.util.List.copyOf(event.getModifiers().get(Attributes.ATTACK_DAMAGE)))
                 if(modifier.getId().equals(java.util.UUID.fromString("CB3F55D3-645C-4F38-A497-9C13A33DB5CF")))event.removeModifier(Attributes.ATTACK_DAMAGE,modifier);
             event.addModifier(Attributes.ATTACK_DAMAGE,new AttributeModifier(java.util.UUID.fromString("CB3F55D3-645C-4F38-A497-9C13A33DB5CF"),"Weapon modifier",damage(id.getPath())-1,AttributeModifier.Operation.ADDITION));

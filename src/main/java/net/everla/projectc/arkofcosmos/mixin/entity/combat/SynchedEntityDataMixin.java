@@ -14,9 +14,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 abstract class SynchedEntityDataMixin {
     @Shadow(aliases="f_135344_") @Final private Entity entity;
 
-    @ModifyVariable(method={"set(Lnet/minecraft/network/syncher/EntityDataAccessor;Ljava/lang/Object;Z)V",
-            "m_276349_(Lnet/minecraft/network/syncher/EntityDataAccessor;Ljava/lang/Object;Z)V"},
-            at=@At("HEAD"),argsOnly=true,ordinal=0)
+    @ModifyVariable(method="set(Lnet/minecraft/network/syncher/EntityDataAccessor;Ljava/lang/Object;Z)V",
+            remap=true, at=@At("HEAD"),argsOnly=true,ordinal=0)
     private Object ark$healingWrite(Object value,EntityDataAccessor<?> key,Object original,boolean force){
         if(entity instanceof net.everla.projectc.arkofcosmos.entity.FourthCalamityEntity boss
                 &&key.equals(LivingEntity.DATA_HEALTH_ID)&&value instanceof Float health&&boss.protectDeathHealthWrite(health))
@@ -24,8 +23,8 @@ abstract class SynchedEntityDataMixin {
         return BossHealingLock.dataWrite(entity,key,value);
     }
 
-    @Inject(method={"set(Lnet/minecraft/network/syncher/EntityDataAccessor;Ljava/lang/Object;Z)V",
-            "m_276349_(Lnet/minecraft/network/syncher/EntityDataAccessor;Ljava/lang/Object;Z)V"},at=@At("RETURN"))
+    @Inject(method="set(Lnet/minecraft/network/syncher/EntityDataAccessor;Ljava/lang/Object;Z)V",
+            remap=true, at=@At("RETURN"))
     private void ark$healingCommitted(EntityDataAccessor<?> key,Object value,boolean force,CallbackInfo ci){
         if(entity instanceof LivingEntity living)BossHealingLock.synced(living,key);
     }

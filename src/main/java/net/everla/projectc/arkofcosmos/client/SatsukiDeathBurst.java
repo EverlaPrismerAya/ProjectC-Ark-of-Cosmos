@@ -26,7 +26,7 @@ public final class SatsukiDeathBurst {
     @SubscribeEvent public static void render(RenderLevelStageEvent event){
         if(event.getStage()!=RenderLevelStageEvent.Stage.AFTER_PARTICLES)return;
         var mc=Minecraft.getInstance();if(mc.level==null||world!=mc.level){bursts.clear();return;}
-        bursts.removeIf(b->mc.level.getGameTime()-b.born()>40);
+        bursts.removeIf(b->mc.level.getGameTime()-b.born()>60); // deatheff is deleted after 180 frames (60 ticks)
         if(bursts.isEmpty())return;
         ArkFxDraw.matrix=event.getPoseStack().last().pose();ArkFxDraw.camera=event.getCamera().getPosition();
         var inverse=new Matrix4f(event.getProjectionMatrix()).mul(RenderSystem.getModelViewMatrix()).mul(event.getPoseStack().last().pose()).invert();
@@ -41,6 +41,9 @@ public final class SatsukiDeathBurst {
                 var center=burst.center().subtract(ArkFxDraw.camera);
                 shader.safeGetUniform("Center").set((float)center.x,(float)center.y,(float)center.z);
                 shader.safeGetUniform("Age").set(age);
+                var left=event.getCamera().getLeftVector();var up=event.getCamera().getUpVector();
+                shader.safeGetUniform("Right").set(-left.x(),-left.y(),-left.z());
+                shader.safeGetUniform("Up").set(up.x(),up.y(),up.z());
                 var main=mc.getMainRenderTarget();shader.safeGetUniform("ScreenSize").set((float)main.width,(float)main.height);
                 RenderSystem.disableDepthTest();RenderSystem.depthMask(false);RenderSystem.disableCull();RenderSystem.disableBlend();RenderSystem.setShader(()->shader);
                 var b=Tesselator.getInstance().getBuilder();b.begin(VertexFormat.Mode.QUADS,ArkFxDraw.FORMAT);

@@ -41,6 +41,13 @@ public final class ArkJeiPlugin implements IModPlugin {
         if (net.everla.projectc.arkofcosmos.CalamitasContent.ENABLED)
             registration.addIngredientInfo(new ItemStack(ArkOfCosmos.ANNIHILATION_EMBER.get()),VanillaTypes.ITEM_STACK,
                 Component.translatable("jei.arkofcosmos.annihilation_ember.source"));
+        if (net.everla.projectc.arkofcosmos.SatsukiContent.ENABLED) {
+            // Sabbath ritual: four Auric Bars, activated with a Doom Medal (summon_satsuki_rin.json).
+            registration.addIngredientInfo(new ItemStack(ArkOfCosmos.AURIC_BAR.get()),VanillaTypes.ITEM_STACK,
+                Component.translatable("jei.arkofcosmos.satsuki_rin.summon"));
+            registration.addIngredientInfo(new ItemStack(net.everla.projectc.arkofcosmos.SatsukiContent.SPAWN_EGG.get()),VanillaTypes.ITEM_STACK,
+                Component.translatable("jei.arkofcosmos.satsuki_rin.summon"));
+        }
         registration.addRecipes(SUMMONING,List.of(
             new Summoning(new ItemStack(ArkOfCosmos.ASHES_OF_CALAMITY.get()),Component.translatable("jei.arkofcosmos.boss.mahou")),
             new Summoning(new ItemStack(ArkOfCosmos.AURIC_BAR.get()),Component.translatable("entity.arkofcosmos.the_player"))));

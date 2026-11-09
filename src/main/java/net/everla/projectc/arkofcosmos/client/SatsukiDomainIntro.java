@@ -29,10 +29,12 @@ public final class SatsukiDomainIntro {
         var mc=Minecraft.getInstance();
         if(!SatsukiContent.ENABLED||mc.level==null||mc.player==null)return;
         float opacity=0;
-        for(var entity:mc.level.entitiesForRendering())if(entity instanceof SatsukiRinEntity rin&&rin.isDeadOrDying()&&rin.distanceToSqr(mc.player)<=128*128){
-            float t=rin.domainIntro()+partial;
-            if(t>0&&t<SatsukiRinEntity.INTRO_TICKS)
-                opacity=Math.max(opacity,Math.min(1,Math.min(t/10,(SatsukiRinEntity.INTRO_TICKS-t)/10)));
+        for(var entity:mc.level.entitiesForRendering())if(entity instanceof SatsukiRinEntity rin&&rin.distanceToSqr(mc.player)<=128*128){
+            if(rin.isDeadOrDying()){
+                float t=rin.domainIntro()+partial;
+                if(t>0&&t<SatsukiRinEntity.INTRO_TICKS)
+                    opacity=Math.max(opacity,Math.min(1,Math.min(t/10,(SatsukiRinEntity.INTRO_TICKS-t)/10)));
+            }
         }
         int alpha=(int)(opacity*255);if(alpha<4)return;
         int w=gui.guiWidth(),h=gui.guiHeight();

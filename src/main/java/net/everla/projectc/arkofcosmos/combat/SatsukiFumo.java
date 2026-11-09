@@ -19,10 +19,11 @@ public final class SatsukiFumo {
         return switch(id.getPath()) {
             case "inferno" -> 1;
             case "stray_servant" -> 2;
-            case "wraith_servant", "malghast", "husk_servant", "damned" -> 3;
+            // Nether-monolith summons (zombified piglins are undead like the Yuyuko group).
+            case "wraith_servant", "malghast", "husk_servant", "damned", "zpiglin_servant", "zpiglin_brute_servant" -> 3;
             case "phantom_servant" -> 4;
-            case "cave_spider_servant" -> 5;
-            case "skeleton_servant" -> 6;
+            case "cave_spider_servant", "spider_servant", "heretic_servant" -> 5;
+            case "skeleton_servant", "wither_skeleton_servant" -> 6;
             case "obsidian_monolith" -> 7;
             default -> 0;
         };

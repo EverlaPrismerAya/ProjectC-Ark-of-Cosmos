@@ -5,6 +5,7 @@
     { "id": "iceandfire:if_pixie", "required": false },
     { "id": "alexsmobs:fly", "required": false },
     { "id": "alexsmobs:cockroach", "required": false },
-    { "id": "dummmmmmy:target_dummy", "required": false }
+    { "id": "dummmmmmy:target_dummy", "required": false },
+    { "id": "goety:obsidian_monolith", "required": false }
   ]
 }

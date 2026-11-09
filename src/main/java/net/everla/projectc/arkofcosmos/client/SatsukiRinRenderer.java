@@ -18,16 +18,14 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 public final class SatsukiRinRenderer extends HumanoidMobRenderer<SatsukiRinEntity,PlayerModel<SatsukiRinEntity>> {
-    public SatsukiRinRenderer(EntityRendererProvider.Context c){super(c,new SatsukiModel(c.bakeLayer(ModelLayers.PLAYER_SLIM),c.bakeLayer(ModModelLayer.APOSTLE)),.4f);addLayer(new ItemInHandLayer<SatsukiRinEntity,PlayerModel<SatsukiRinEntity>>(this,c.getItemInHandRenderer()){
+    public SatsukiRinRenderer(EntityRendererProvider.Context c){super(c,new SatsukiModel(c.bakeLayer(ModelLayers.PLAYER_SLIM),c.bakeLayer(ModModelLayer.APOSTLE)),.4f);
+        // HumanoidMobRenderer already adds a native ItemInHandLayer (the real bow); keep only the staff substitute.
+        layers.removeIf(layer->layer.getClass()==ItemInHandLayer.class);
+        addLayer(new ItemInHandLayer<SatsukiRinEntity,PlayerModel<SatsukiRinEntity>>(this,c.getItemInHandRenderer()){
         @Override protected void renderArmWithItem(net.minecraft.world.entity.LivingEntity entity,net.minecraft.world.item.ItemStack stack,net.minecraft.world.item.ItemDisplayContext context,net.minecraft.world.entity.HumanoidArm arm,PoseStack pose,MultiBufferSource buffers,int light){
             // Substitute only the rendered weapon; equipment, bow checks and native attack AI stay authoritative.
             if(arm!=entity.getMainArm())return;
-            var rin=(SatsukiRinEntity)entity;
-            var shown=rin.isSpellcasting()?new net.minecraft.world.item.ItemStack(net.everla.projectc.arkofcosmos.BejeweledContent.STAFF.get()):rin.getMainHandItem();
-            if(!rin.isSpellcasting()){
-                var bow=net.minecraftforge.registries.ForgeRegistries.ITEMS.getValue(ResourceLocation.fromNamespaceAndPath("goety_revelation","bow_of_revelation"));
-                if(bow!=null)shown=new net.minecraft.world.item.ItemStack(bow);
-            }
+            var shown=new net.minecraft.world.item.ItemStack(net.everla.projectc.arkofcosmos.BejeweledContent.STAFF.get());
             if(shown.isEmpty())return;
             pose.pushPose();
             getParentModel().translateToHand(arm,pose);
@@ -41,7 +39,9 @@ public final class SatsukiRinRenderer extends HumanoidMobRenderer<SatsukiRinEnti
     });addLayer(new HaloLayer(this,new ApostleRenderer(c)));}
     @Override public ResourceLocation getTextureLocation(SatsukiRinEntity e){return ResourceLocation.fromNamespaceAndPath("arkofcosmos","textures/entity/satsuki_rin.png");}
     @Override public boolean shouldRender(SatsukiRinEntity e,net.minecraft.client.renderer.culling.Frustum frustum,double x,double y,double z){
-        return super.shouldRender(e,frustum,x,y,z)||e.domainScale(1)>0&&frustum.isVisible(e.getBoundingBox().inflate(17));
+        return super.shouldRender(e,frustum,x,y,z)||e.domainScale(1)>0&&frustum.isVisible(e.getBoundingBox().inflate(17))
+                ||SatsukiNoteCircles.active(e)&&frustum.isVisible(SatsukiNoteCircles.bounds(e))
+                ||frustum.isVisible(SatsukiShieldVisuals.bounds(e));
     }
     @Override public void render(SatsukiRinEntity e,float yaw,float partial,PoseStack pose,MultiBufferSource buffers,int light){
         float scale=e.domainScale(partial);
@@ -52,6 +52,9 @@ public final class SatsukiRinRenderer extends HumanoidMobRenderer<SatsukiRinEnti
         }
         super.render(e,yaw,partial,pose,buffers,light);
         pose.popPose();
+        // Same render origin as the model (GR/RF may shift it), so the circle never drifts from her.
+        SatsukiNoteCircles.render(e,partial,pose,buffers);
+        SatsukiShieldVisuals.render(e,partial,pose,buffers);
     }
     @Override protected void setupRotations(SatsukiRinEntity e,PoseStack pose,float age,float yaw,float partial){
         if(e.domainScale(partial)>0){
@@ -66,7 +69,8 @@ public final class SatsukiRinRenderer extends HumanoidMobRenderer<SatsukiRinEnti
         private final ApostleRenderer nativeRenderer;
         HaloLayer(SatsukiRinRenderer parent,ApostleRenderer nativeRenderer){super(parent);this.nativeRenderer=nativeRenderer;}
         @Override public void render(PoseStack pose,MultiBufferSource buffers,int light,SatsukiRinEntity entity,float swing,float amount,float partial,float age,float yaw,float pitch){
-            if(entity.isInvisible())return;
+            // In phase two the note circle above her head is the halo.
+            if(entity.isInvisible()||SatsukiNoteCircles.active(entity))return;
             var skin=(SatsukiModel)getParentModel();
             var texture=nativeRenderer.getTextureLocation(entity);
             pose.pushPose();

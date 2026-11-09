@@ -42,7 +42,7 @@ public final class SatsukiSlashes {
     public static void receive(CompoundTag data){
         world();if(world==null)return;
         var random=new Random(data.getLong("Seed"));
-        for(int i=0;i<3;i++)add(new Vec3(data.getDouble("X"),data.getDouble("Y"),data.getDouble("Z")),data.getFloat("Size")*2.5,
+        for(int i=0;i<3;i++)add(new Vec3(data.getDouble("X"),data.getDouble("Y"),data.getDouble("Z")),data.getFloat("Size")*5,
                 data.getInt("Entity"),new Vec3(.05+random.nextDouble()*.9,.05+random.nextDouble()*.9,.05+random.nextDouble()*.9));
     }
     @SubscribeEvent public static void tick(TickEvent.ClientTickEvent event){
@@ -52,7 +52,7 @@ public final class SatsukiSlashes {
         if(!net.everla.projectc.arkofcosmos.SatsukiContent.ENABLED)return;
         for(var entity:mc.level.entitiesForRendering())if(entity instanceof SatsukiRinEntity rin&&SatsukiDomain.active(rin)){
             var box=SatsukiDomain.bounds(rin);
-            for(int i=0;i<48;i++)add(new Vec3(randomBetween(box.minX,box.maxX),randomBetween(box.minY,box.maxY),randomBetween(box.minZ,box.maxZ)),1.6+RANDOM.nextDouble()*2.4);
+            for(int i=0;i<48;i++)add(new Vec3(randomBetween(box.minX,box.maxX),randomBetween(box.minY,box.maxY),randomBetween(box.minZ,box.maxZ)),3.2+RANDOM.nextDouble()*4.8);
         }
     }
     private static double randomBetween(double min,double max){return min+(max-min)*RANDOM.nextDouble();}
@@ -86,8 +86,8 @@ public final class SatsukiSlashes {
                 plane=new AttackFrame(face.direction(angle),face.direction(angle+Math.PI/2));
             }
             double shrink=Math.max(0,1-(now-s.born()+partial)/life);
-            double width=(s.target()>=0?.16:.12)*shrink;
-            double length=s.target()>=0?Math.max(2.4,Math.min(10,s.length())):s.length();
+            double width=.20*shrink;
+            double length=5;
             length*=shrink;
             float strength=(float)Math.sin(Math.PI*Math.max(0,Math.min(1,(now-s.born()+partial)/life)));
             SatsukiRefraction.draw(at,plane,length,strength);
