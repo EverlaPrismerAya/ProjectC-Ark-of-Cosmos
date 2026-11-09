@@ -195,7 +195,13 @@ public final class SatsukiRinEntity extends Apostle implements SatsukiBoss,Apoll
             net.everla.projectc.arkofcosmos.network.ArkNetwork.nearbyEffect(this,packet);
         }
     }
-    @Override public void die(DamageSource source){if(vitalityReady&&getHealth()>0)return;super.die(source);}
+    private boolean defeatAwarded;
+    @Override public void die(DamageSource source){
+        if(vitalityReady&&getHealth()>0)return;
+        // Hidden challenge "幻想碎灭" for everyone fighting her (on her boss bar), like Calamitas's end_of_calamity.
+        if(!level().isClientSide&&!defeatAwarded&&!commandRemoval){defeatAwarded=true;for(var player:java.util.List.copyOf(bossInfo.getPlayers()))HiddenAdvancements.award(player,"fantasy_shattered");}
+        super.die(source);
+    }
     @Override public void addAdditionalSaveData(net.minecraft.nbt.CompoundTag tag){super.addAdditionalSaveData(tag);tag.putFloat("SatsukiVitality",getHealth());tag.putInt("FumoIntro",domainIntro());}
     @Override public void readAdditionalSaveData(net.minecraft.nbt.CompoundTag tag){
         vitalityReady=false;try{super.readAdditionalSaveData(tag);vitality=tag.contains("SatsukiVitality")?tag.getFloat("SatsukiVitality"):entityData.get(DATA_HEALTH_ID);}

@@ -1,0 +1,27 @@
+{
+  "conditions": [
+    { "type": "forge:mod_loaded", "modid": "goety" },
+    { "type": "forge:mod_loaded", "modid": "goety_revelation" }
+  ],
+  "parent": "minecraft:adventure/root",
+  "display": {
+    "icon": {
+      "item": "arkofcosmos:first_fractal"
+    },
+    "title": {
+      "translate": "advancements.arkofcosmos.fantasy_shattered.title"
+    },
+    "description": {
+      "translate": "advancements.arkofcosmos.fantasy_shattered.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": true
+  },
+  "criteria": {
+    "complete": {
+      "trigger": "minecraft:impossible"
+    }
+  }
+}
