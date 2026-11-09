@@ -20,7 +20,7 @@ public final class FirstFractalCombat {
         boolean left,tap; long heartbeat; int frame; ItemStack stack=ItemStack.EMPTY;
         final List<FirstFractalEntity> attacks=new ArrayList<>();
     }
-    public static boolean holding(Player p) { return p!=null&&p.getMainHandItem().is(ArkOfCosmos.FIRST_FRACTAL.get()); }
+    public static boolean holding(Player p) { return p!=null&&ArkOfCosmos.FIRST_FRACTAL!=null&&p.getMainHandItem().is(ArkOfCosmos.FIRST_FRACTAL.get()); }
     public static boolean active(Player p) {
         if(p.level().isClientSide)return !p.level().getEntitiesOfClass(FirstFractalEntity.class,p.getBoundingBox().inflate(128),a->a.ownerId()==p.getId()).isEmpty();
         Controls c=CONTROLS.get(p.getUUID());return c!=null&&(c.left||c.attacks.stream().anyMatch(a->!a.isRemoved()));

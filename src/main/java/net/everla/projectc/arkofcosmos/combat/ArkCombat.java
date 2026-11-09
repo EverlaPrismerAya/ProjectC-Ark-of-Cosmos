@@ -229,7 +229,8 @@ public final class ArkCombat {
         return aim(player, range, range);
     }
 
-    private static Vec3 aim(Player player, double lockRange, double reach) {
+    /** Shared crosshair lock: the enemy closest to the crosshair inside a 12° cone (all weapons, incl. the First Fractal). */
+    public static LivingEntity crosshairTarget(Player player, double lockRange) {
         Vec3 origin = player.getEyePosition(), look = player.getLookAngle();
         LivingEntity best = null;
         double bestCos = Math.cos(Math.toRadians(12)), bestDistance = Double.MAX_VALUE;
@@ -243,6 +244,12 @@ public final class ArkCombat {
                 best = entity; bestCos = cos; bestDistance = distance;
             }
         }
+        return best;
+    }
+
+    private static Vec3 aim(Player player, double lockRange, double reach) {
+        Vec3 look = player.getLookAngle();
+        LivingEntity best = crosshairTarget(player, lockRange);
         Vec3 center = player.getBoundingBox().getCenter();
         Vec3 offset = best == null ? look.scale(20) : best.getBoundingBox().getCenter().subtract(center);
         return center.add(offset.length() > reach ? offset.normalize().scale(reach) : offset);

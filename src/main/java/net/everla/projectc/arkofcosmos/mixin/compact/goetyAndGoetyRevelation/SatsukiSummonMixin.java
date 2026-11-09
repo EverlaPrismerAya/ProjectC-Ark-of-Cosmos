@@ -15,10 +15,10 @@ import org.spongepowered.asm.mixin.injection.At;
 @Mixin(targets="com.Polarice3.Goety.common.entities.util.SummonApostle")
 public abstract class SatsukiSummonMixin {
     private boolean ark$satsuki(){return SatsukiContent.ENABLED&&((net.minecraft.world.entity.Entity)(Object)this).getType()==SatsukiContent.SUMMON.get();}
-    @WrapOperation(method="tick",at=@At(value="NEW",remap=false,target="(Lnet/minecraft/world/entity/EntityType;Lnet/minecraft/world/level/Level;)Lcom/Polarice3/Goety/common/entities/boss/Apostle;"),require=1)
+    @WrapOperation(method={"tick","m_8119_"},at=@At(value="NEW",remap=false,target="(Lnet/minecraft/world/entity/EntityType;Lnet/minecraft/world/level/Level;)Lcom/Polarice3/Goety/common/entities/boss/Apostle;"),remap=false,require=1)
     private Apostle ark$spawnSatsuki(EntityType<?> type,Level level,Operation<Apostle> original){
         return ark$satsuki()?SatsukiContent.BOSS.get().create(level):original.call(type,level);
     }
-    @ModifyExpressionValue(method="tick",at=@At(value="CONSTANT",args="stringValue=info.goety.apostle.summon"),require=0)
+    @ModifyExpressionValue(method={"tick","m_8119_"},at=@At(value="CONSTANT",args="stringValue=info.goety.apostle.summon"),remap=false,require=0)
     private String ark$message(String key){return ark$satsuki()?"info.arkofcosmos.satsuki_rin.summon":key;}
 }

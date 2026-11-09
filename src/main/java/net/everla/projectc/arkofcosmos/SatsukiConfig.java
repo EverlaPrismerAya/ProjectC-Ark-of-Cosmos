@@ -22,6 +22,7 @@ public final class SatsukiConfig {
         number(b,"barrier_preparation",3,3,10,"Seconds for the native death barrier to open");
         number(b,"shooting_cooldown",1600,0,32767,"Death-arrow skill cooldown in ticks; the apocalypse uses half this value");
         number(b,"second_phase_damage_multiplier",2,0,100,"Native Nether phase-two outgoing damage multiplier");
+        number(b,"fractal_sigil_damage",16,0,1000000,"Damage of each First Fractal slash from the phase-two fractal sigils (replacing fire blast traps)");
         number(b,"genesis_damage_multiplier",4,0,100,"Additional native Genesis outgoing damage multiplier");
         number(b,"armor_piercing",30,0,100,"Native armor-piercing attribute base value in percent");
         number(b,"enchantment_piercing",30,0,100,"Native enchantment-piercing attribute base value in percent");

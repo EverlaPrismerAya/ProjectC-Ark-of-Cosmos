@@ -116,10 +116,14 @@ public final class SatsukiRinEntity extends Apostle implements SatsukiBoss,Apoll
     }
     // "不老不死程度的能力" (GR title 0): every native heal() is four times as strong.
     @Override public void heal(float amount){
-        if(amount>0&&!level().isClientSide&&((z1gned.goetyrevelation.util.ApollyonAbilityHelper)(Object)this).allTitleApostle$getTitleNumber()==0)amount*=4;
+        if(amount>0&&!level().isClientSide&&title()==0)amount*=4;
         super.heal(amount);
     }
-    public boolean phaseInvulnerable(){return isSettingUpSecond()||monolithShield;}
+    /** GR title number (0 = 不老不死, 12 = 引发奇迹, 13 = 飞翔于空中). */
+    public int title(){return ((z1gned.goetyrevelation.util.ApollyonAbilityHelper)(Object)this).allTitleApostle$getTitleNumber();}
+    /** 引发奇迹 / 飞翔于空中: complete immunity outside casting animations (covers ArkDamage via the ProtectedBoss health guards). */
+    private boolean unifiedGuard(){int t=title();return (t==12||t==13)&&!isSpellcasting()&&!isCasting();}
+    public boolean phaseInvulnerable(){return isSettingUpSecond()||monolithShield||!isDeadOrDying()&&unifiedGuard();}
     private boolean blocksNonPlayerDamage(DamageSource source){return !WeaponUser.playerOwnedDamage(source)&&level().getGameTime()<nonPlayerInvulnerableUntil;}
     @Override public boolean blocksHealthWrite(float health){return vitalityReady&&!level().isClientSide&&damageDepth==0&&syncDepth==0&&health<vitality&&(phaseInvulnerable()||level().getGameTime()<nonPlayerInvulnerableUntil);}
     @Override public boolean redirectHealthWrite(float health){

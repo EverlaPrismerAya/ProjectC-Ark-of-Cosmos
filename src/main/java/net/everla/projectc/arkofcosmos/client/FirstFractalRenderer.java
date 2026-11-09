@@ -41,7 +41,11 @@ public final class FirstFractalRenderer extends EntityRenderer<FirstFractalEntit
         Vec3 at=vector(s,"Position"),velocity=vector(s,"Velocity"),base=e.getPosition(partial);
         AttackFrame f=new AttackFrame(vector(s,"F"),vector(s,"R"));double angle=f.angle(velocity);
         var d=new NativeSprites.Draw(pose,buffers,base,e.ownerId());
-        if(e.level().getEntity(e.ownerId()) instanceof AbstractClientPlayer p)clone(p,at.subtract(velocity.normalize().scale(42/16d)),velocity,base,opacity,pose,buffers);
+        var ownerEntity=e.level().getEntity(e.ownerId());
+        if(ownerEntity instanceof AbstractClientPlayer p)clone(p,at.subtract(velocity.normalize().scale(42/16d)),velocity,base,opacity,pose,buffers);
+        // Satsuki's sigil slashes: the phantom is Satsuki herself (her slim model and skin).
+        else if(ownerEntity instanceof net.everla.projectc.arkofcosmos.combat.SatsukiBoss&&ownerEntity instanceof net.minecraft.world.entity.LivingEntity boss)
+            phantom(boss,at.subtract(velocity.normalize().scale(42/16d)),velocity,base,opacity,pose,buffers);
         // Source Main.DrawProjWithStarryTrail: three orbiting flares and two white pulses.
         Vec3 direction=velocity.normalize();double time=(e.level().getGameTime()+partial)/20d;
         double distance=1;
@@ -65,6 +69,32 @@ public final class FirstFractalRenderer extends EntityRenderer<FirstFractalEntit
         }
         int variant=s.getInt("Variant");
         d.thickRegion("fx/first_fractal_swords",at,f,angle+Math.PI/4,1,45,42,new float[]{.9f,.9f,.9f,(float)(opacity*.45)},variant*90,0,90,84,false,15728880);
+    }
+    private static final ResourceLocation SATSUKI=ResourceLocation.fromNamespaceAndPath("arkofcosmos","textures/entity/satsuki_rin.png");
+    private void phantom(net.minecraft.world.entity.LivingEntity boss,Vec3 center,Vec3 velocity,Vec3 base,double opacity,PoseStack pose,MultiBufferSource buffers){
+        var model=slim;
+        model.setAllVisible(true);model.crouching=false;model.riding=false;model.young=false;model.attackTime=0;
+        model.rightArmPose=model.leftArmPose=net.minecraft.client.model.HumanoidModel.ArmPose.EMPTY;
+        @SuppressWarnings("unchecked") var anim=(PlayerModel<net.minecraft.world.entity.LivingEntity>)(Object)model;
+        anim.setupAnim(boss,0,0,0,0,0);
+        pose(model,(float)Math.asin(-velocity.normalize().y));
+        Vec3 at=center.subtract(base);pose.pushPose();
+        try{
+            pose.translate(at.x,at.y-.9,at.z);
+            pose.mulPose(Axis.YP.rotation((float)(Math.PI-Math.atan2(-velocity.x,velocity.z))));
+            pose.scale(-1,-1,1);pose.translate(0,-1.501,0);
+            model.renderToBuffer(pose,buffers.getBuffer(RenderType.entityTranslucent(SATSUKI)),15728880,OverlayTexture.NO_OVERLAY,1,1,1,(float)opacity);
+        }finally{pose.popPose();}
+    }
+    /** Shared afterimage pose: sword arm forward along the slash. */
+    private static void pose(PlayerModel<?> model,float pitch){
+        model.head.xRot=pitch;model.head.yRot=0;
+        model.body.xRot=0;model.body.yRot=0;
+        model.rightArm.xRot=-(float)Math.PI/2+pitch;model.rightArm.yRot=0;model.rightArm.zRot=.1f;
+        model.leftArm.xRot=-.25f;model.leftArm.yRot=0;model.leftArm.zRot=-.15f;
+        model.rightLeg.xRot=.25f;model.leftLeg.xRot=-.25f;
+        model.hat.copyFrom(model.head);model.rightSleeve.copyFrom(model.rightArm);model.leftSleeve.copyFrom(model.leftArm);
+        model.rightPants.copyFrom(model.rightLeg);model.leftPants.copyFrom(model.leftLeg);model.jacket.copyFrom(model.body);
     }
     private void clone(AbstractClientPlayer p,Vec3 center,Vec3 velocity,Vec3 base,double opacity,PoseStack pose,MultiBufferSource buffers){
         var model=p.getModelName().equals("slim")?slim:regular;
@@ -96,7 +126,7 @@ public final class FirstFractalRenderer extends EntityRenderer<FirstFractalEntit
     @Mod.EventBusSubscriber(modid=ArkOfCosmos.MOD_ID,value=Dist.CLIENT,bus=Mod.EventBusSubscriber.Bus.MOD)
     // Forge listener wrapper names omit the enclosing class; keep this simple name unique.
     public static final class FirstFractalRendererRegistration {
-        @SubscribeEvent public static void renderer(net.minecraftforge.client.event.EntityRenderersEvent.RegisterRenderers e){e.registerEntityRenderer(ArkOfCosmos.FIRST_FRACTAL_ATTACK.get(),FirstFractalRenderer::new);}
-        @SubscribeEvent public static void setup(net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent e){e.enqueueWork(()->net.minecraft.client.renderer.item.ItemProperties.register(ArkOfCosmos.FIRST_FRACTAL.get(),ResourceLocation.fromNamespaceAndPath(ArkOfCosmos.MOD_ID,"active"),(stack,level,entity,seed)->entity instanceof net.minecraft.world.entity.player.Player p&&net.everla.projectc.arkofcosmos.combat.FirstFractalCombat.active(p)?1:0));}
+        @SubscribeEvent public static void renderer(net.minecraftforge.client.event.EntityRenderersEvent.RegisterRenderers e){if(ArkOfCosmos.FIRST_FRACTAL_ATTACK!=null)e.registerEntityRenderer(ArkOfCosmos.FIRST_FRACTAL_ATTACK.get(),FirstFractalRenderer::new);}
+        @SubscribeEvent public static void setup(net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent e){if(ArkOfCosmos.FIRST_FRACTAL!=null)e.enqueueWork(()->net.minecraft.client.renderer.item.ItemProperties.register(ArkOfCosmos.FIRST_FRACTAL.get(),ResourceLocation.fromNamespaceAndPath(ArkOfCosmos.MOD_ID,"active"),(stack,level,entity,seed)->entity instanceof net.minecraft.world.entity.player.Player p&&net.everla.projectc.arkofcosmos.combat.FirstFractalCombat.active(p)?1:0));}
     }
 }

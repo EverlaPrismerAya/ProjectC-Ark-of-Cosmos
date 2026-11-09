@@ -10,7 +10,8 @@ import net.minecraftforge.registries.*;
 import net.minecraftforge.eventbus.api.IEventBus;
 
 public final class BejeweledContent {
-    public static final boolean ENABLED=net.minecraftforge.fml.ModList.get().isLoaded("goety");
+    // The Bejeweled Staff is Satsuki Rin content: Goety Revelation is required as well.
+    public static final boolean ENABLED=net.minecraftforge.fml.ModList.get().isLoaded("goety")&&net.minecraftforge.fml.ModList.get().isLoaded("goety_revelation");
     private static final DeferredRegister<Item> ITEMS=DeferredRegister.create(ForgeRegistries.ITEMS,ArkOfCosmos.MOD_ID);
     private static final DeferredRegister<EntityType<?>> ENTITIES=DeferredRegister.create(ForgeRegistries.ENTITY_TYPES,ArkOfCosmos.MOD_ID);
     private static final DeferredRegister<SoundEvent> SOUNDS=DeferredRegister.create(ForgeRegistries.SOUND_EVENTS,ArkOfCosmos.MOD_ID);

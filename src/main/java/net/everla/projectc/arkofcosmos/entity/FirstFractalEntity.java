@@ -29,9 +29,12 @@ public final class FirstFractalEntity extends Entity implements OwnableEntity {
     private AttackFrame frame=new AttackFrame(new Vec3(0,0,1),new Vec3(1,0,0));
     private ItemStack weapon=ItemStack.EMPTY,sourceItem=ItemStack.EMPTY;
     private boolean ending;
+    // Boss-owned slash (Satsuki's fractal sigils): fixed aim, owner resolved as any LivingEntity, never counted as player-owned.
+    private boolean boss;
+    private float bossDamage;
     private ListTag samples=new ListTag();
     public FirstFractalEntity(EntityType<? extends FirstFractalEntity> type,Level level){super(type,level);noPhysics=true;setNoGravity(true);}
-    @Override public UUID getOwnerUUID(){return owner;}
+    @Override public UUID getOwnerUUID(){return boss?null:owner;}
     @Override public Player getOwner(){return owner==null?null:level().getPlayerByUUID(owner);}
     public int ownerId(){return level().isClientSide?view().getInt("Owner"):ownerId;}
     public ItemStack weapon(){return weapon;}
@@ -46,25 +49,8 @@ public final class FirstFractalEntity extends Entity implements OwnableEntity {
         for(int i=0;i<30;i++){offset=offset.add(velocity);velocity=rotate(velocity,plane,curve);}
         return aim.subtract(offset);
     }
-    private static final double LOCK_RANGE=64,LOCK_COS=Math.cos(Math.toRadians(15));
-    /** Visible enemy nearest the crosshair (smallest angle, then distance) within a 15° cone. */
-    private static LivingEntity crosshairTarget(Player p,Vec3 look){
-        Vec3 eye=p.getEyePosition();LivingEntity best=null;double bestCos=LOCK_COS,bestDistance=Double.MAX_VALUE;
-        for(var t:p.level().getEntitiesOfClass(LivingEntity.class,p.getBoundingBox().expandTowards(look.scale(LOCK_RANGE)).inflate(LOCK_RANGE*Math.tan(Math.toRadians(15))),t->WeaponUser.enemy(p,t))){
-            Vec3 offset=t.getBoundingBox().getCenter().subtract(eye);double distance=offset.length();
-            if(distance<.001||distance>LOCK_RANGE)continue;
-            double cos=offset.dot(look)/distance;
-            if((cos>bestCos+1e-6||Math.abs(cos-bestCos)<=1e-6&&distance<bestDistance)&&visible(p,t)){best=t;bestCos=cos;bestDistance=distance;}
-        }
-        return best;
-    }
-    /** Tall or partly buried targets (emerging obsidian monoliths) may have their eye point inside blocks: accept any of centre, top or eye. */
-    private static boolean visible(Player p,LivingEntity t){
-        var box=t.getBoundingBox();Vec3 eye=p.getEyePosition();
-        for(Vec3 point:new Vec3[]{box.getCenter(),new Vec3(box.getCenter().x,box.maxY-.1,box.getCenter().z),t.getEyePosition()})
-            if(p.level().clip(new net.minecraft.world.level.ClipContext(eye,point,net.minecraft.world.level.ClipContext.Block.COLLIDER,net.minecraft.world.level.ClipContext.Fluid.NONE,p)).getType()==net.minecraft.world.phys.HitResult.Type.MISS)return true;
-        return false;
-    }
+    /** Same crosshair lock as the other Ark weapons (ArkCombat), which already handles obsidian monoliths. */
+    private static LivingEntity crosshairTarget(Player p,Vec3 look){return ArkCombat.crosshairTarget(p,64);}
     public static FirstFractalEntity launch(Player p,double hue,int delay){
         var e=new FirstFractalEntity(ArkOfCosmos.FIRST_FRACTAL_ATTACK.get(),p.level());var random=p.getRandom();
         e.owner=p.getUUID();e.ownerId=p.getId();e.sourceItem=p.getMainHandItem();e.weapon=e.sourceItem.copy();
@@ -105,6 +91,24 @@ public final class FirstFractalEntity extends Entity implements OwnableEntity {
         e.setPos(start(aim,e.velocity,e.frame,e.curve));
         e.publish();p.level().addFreshEntity(e);ArkOfCosmos.sound(p,"biome_swing",1);return e;
     }
+    /** A sigil slash: random 3D arc plane, aimed at a fixed point (never at the boss's target). */
+    public static FirstFractalEntity launchBoss(LivingEntity owner,Vec3 aim,float damage,double hue,int delay){
+        var e=new FirstFractalEntity(ArkOfCosmos.FIRST_FRACTAL_ATTACK.get(),owner.level());var random=owner.getRandom();
+        e.owner=owner.getUUID();e.ownerId=owner.getId();e.boss=true;e.bossDamage=damage;
+        e.weapon=new ItemStack(ArkOfCosmos.FIRST_FRACTAL.get());e.sourceItem=e.weapon;
+        e.hue=(float)hue;e.variant=random.nextInt(15);e.delay=delay;
+        double y=random.nextDouble()*2-1,a=random.nextDouble()*Math.PI*2,r=Math.sqrt(1-y*y);
+        Vec3 axis=new Vec3(r*Math.cos(a),y,r*Math.sin(a));
+        Vec3 helper=Math.abs(axis.y)<.9?new Vec3(0,1,0):new Vec3(1,0,0);
+        Vec3 side=axis.cross(helper).normalize();double roll=random.nextDouble()*Math.PI*2;
+        side=side.scale(Math.cos(roll)).add(axis.cross(side).scale(Math.sin(roll)));
+        e.frame=new AttackFrame(axis,side);
+        Vec3 direction=e.frame.direction(random.nextDouble()*Math.PI*2);
+        e.curve=(random.nextDouble()*2-1)*Math.PI/120;
+        e.velocity=direction.scale((12+random.nextDouble()*2)/16);
+        e.setPos(start(aim,e.velocity,e.frame,e.curve));
+        e.publish();owner.level().addFreshEntity(e);ArkOfCosmos.sound(e,"biome_swing",1);return e;
+    }
     public void discardAttack(){ending=true;try{discard();}finally{ending=false;}}
     @Override public void remove(RemovalReason reason){
         if(!level().isClientSide&&reason==RemovalReason.DISCARDED&&!ending&&age<59&&WeaponUser.active(getOwner()))return;
@@ -123,8 +127,8 @@ public final class FirstFractalEntity extends Entity implements OwnableEntity {
     }
     @Override public void tick(){
         super.tick();if(level().isClientSide){render.tick(view(),"Age");return;}
-        Player p=getOwner();
-        if(!WeaponUser.active(p)||p.getMainHandItem()!=sourceItem){discardAttack();return;}
+        LivingEntity p=boss?WeaponUser.resolve(level(),owner):getOwner();
+        if(boss?p==null||!p.isAlive()||p.isDeadOrDying():!WeaponUser.active(p)||p.getMainHandItem()!=sourceItem){discardAttack();return;}
         // Publish the terminal source sample for one network tick without extending collision life.
         if(age>=59){discardAttack();return;}
         samples=new ListTag();samples.add(snapshot(false));
@@ -137,18 +141,18 @@ public final class FirstFractalEntity extends Entity implements OwnableEntity {
         }
         publish();
     }
-    private void hit(Player p,Vec3 from,Vec3 to){
+    private void hit(LivingEntity p,Vec3 from,Vec3 to){
         for(var target:level().getEntitiesOfClass(LivingEntity.class,new AABB(from,to).inflate(1),t->WeaponUser.canHit(p,t))){
             if(hitUntil.getOrDefault(target.getUUID(),-1)>age)continue;
             AABB box=target.getBoundingBox().inflate(1);
             if(!box.contains(from)&&box.clip(from,to).isEmpty())continue;
-            float amount=PlayerWeaponDamage.scale(p,weapon,net.everla.projectc.arkofcosmos.ProjectCCommonConfig.damage("first_fractal"))
+            float amount=boss?bossDamage:PlayerWeaponDamage.scale((Player)p,weapon,net.everla.projectc.arkofcosmos.ProjectCCommonConfig.damage("first_fractal"))
                     +EnchantmentHelper.getDamageBonus(weapon,target.getMobType());
             if(!ArkDamage.hurt(target,WeaponUser.source(this,p),amount))continue;
             hitUntil.put(target.getUUID(),age+10);p.setLastHurtMob(target);
             int fire=weapon.getEnchantmentLevel(Enchantments.FIRE_ASPECT);if(fire>0)target.setSecondsOnFire(fire*4);
             EnchantmentHelper.doPostHurtEffects(target,p);
-            InnateEnchantment.combatEnchantments(weapon).forEach((enchantment,level)->enchantment.doPostAttack(p,target,level));
+            if(!boss)InnateEnchantment.combatEnchantments(weapon).forEach((enchantment,level)->enchantment.doPostAttack(p,target,level));
             target.knockback((6.5+weapon.getEnchantmentLevel(Enchantments.KNOCKBACK))*.1,-velocity.x,-velocity.z);
         }
     }

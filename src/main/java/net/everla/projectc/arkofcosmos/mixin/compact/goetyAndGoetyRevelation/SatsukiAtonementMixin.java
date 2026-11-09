@@ -13,11 +13,11 @@ import org.spongepowered.asm.mixin.injection.At;
 @Pseudo
 @Mixin(targets="com.mega.revelationfix.common.item.other.AtonementVoucher")
 public abstract class SatsukiAtonementMixin {
-    @WrapOperation(method="use",at=@At(value="INVOKE",target="Lcom/Polarice3/Goety/common/entities/boss/Apostle;hurt(Lnet/minecraft/world/damagesource/DamageSource;F)Z"),require=0)
+    @WrapOperation(method={"use","m_7203_"},at={@At(value="INVOKE",target="Lcom/Polarice3/Goety/common/entities/boss/Apostle;hurt(Lnet/minecraft/world/damagesource/DamageSource;F)Z",remap=false),@At(value="INVOKE",target="Lcom/Polarice3/Goety/common/entities/boss/Apostle;m_6469_(Lnet/minecraft/world/damagesource/DamageSource;F)Z",remap=false)},remap=false,require=0)
     private boolean ark$skipHurt(Apostle apostle,DamageSource source,float amount,Operation<Boolean> original){
         return apostle instanceof SatsukiBoss?false:original.call(apostle,source,amount);
     }
-    @WrapOperation(method="use",at=@At(value="INVOKE",target="Lcom/Polarice3/Goety/common/entities/boss/Apostle;kill()V"),require=0)
+    @WrapOperation(method={"use","m_7203_"},at={@At(value="INVOKE",target="Lcom/Polarice3/Goety/common/entities/boss/Apostle;kill()V",remap=false),@At(value="INVOKE",target="Lcom/Polarice3/Goety/common/entities/boss/Apostle;m_6074_()V",remap=false)},remap=false,require=0)
     private void ark$clearSatsuki(Apostle apostle,Operation<Void> original){
         if(apostle instanceof SatsukiBoss boss)boss.removeByPlayerCommand();else original.call(apostle);
     }

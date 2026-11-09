@@ -55,8 +55,10 @@ public final class ArkOfCosmos {
     public static final RegistryObject<EntityType<net.everla.projectc.arkofcosmos.entity.ElementsEntity>> ELEMENTS_ATTACK = ENTITIES.register("elements_attack",
             () -> EntityType.Builder.<net.everla.projectc.arkofcosmos.entity.ElementsEntity>of(net.everla.projectc.arkofcosmos.entity.ElementsEntity::new, MobCategory.MISC)
                     .sized(.5f,.5f).noSave().noSummon().clientTrackingRange(128).updateInterval(1).build("arkofcosmos:elements_attack"));
-    public static final RegistryObject<Item> FIRST_FRACTAL=ITEMS.register("first_fractal",net.everla.projectc.arkofcosmos.item.FirstFractalItem::new);
-    public static final RegistryObject<EntityType<net.everla.projectc.arkofcosmos.entity.FirstFractalEntity>> FIRST_FRACTAL_ATTACK=ENTITIES.register("first_fractal_attack",
+    // Satsuki Rin content (her drop, the First Fractal) exists only with Goety Revelation; null otherwise.
+    public static final boolean FIRST_FRACTAL_ENABLED=net.minecraftforge.fml.ModList.get().isLoaded("goety")&&net.minecraftforge.fml.ModList.get().isLoaded("goety_revelation");
+    public static final RegistryObject<Item> FIRST_FRACTAL=FIRST_FRACTAL_ENABLED?ITEMS.register("first_fractal",net.everla.projectc.arkofcosmos.item.FirstFractalItem::new):null;
+    public static final RegistryObject<EntityType<net.everla.projectc.arkofcosmos.entity.FirstFractalEntity>> FIRST_FRACTAL_ATTACK=!FIRST_FRACTAL_ENABLED?null:ENTITIES.register("first_fractal_attack",
         ()->EntityType.Builder.<net.everla.projectc.arkofcosmos.entity.FirstFractalEntity>of(net.everla.projectc.arkofcosmos.entity.FirstFractalEntity::new,MobCategory.MISC)
             .sized(2,2).noSave().noSummon().clientTrackingRange(128).updateInterval(1).build("arkofcosmos:first_fractal_attack"));
     public static final RegistryObject<Item> VIOLENCE=net.minecraftforge.fml.ModList.get().isLoaded("goety") ? ITEMS.register("violence",net.everla.projectc.arkofcosmos.item.ViolenceItem::new) : null;
@@ -177,7 +179,7 @@ public final class ArkOfCosmos {
             event.accept(ARK_OF_THE_ELEMENTS);
             event.accept(FRACTURED_ARK);
             event.accept(ARK_OF_THE_ANCIENTS);
-            event.accept(FIRST_FRACTAL);
+            if (FIRST_FRACTAL != null) event.accept(FIRST_FRACTAL);
             if (CalamitasContent.ENABLED) event.accept(VIOLENCE);
             if (MISTILTEINN != null) event.accept(MISTILTEINN);
         }
