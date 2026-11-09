@@ -92,7 +92,7 @@ public final class CurseCombat {
         }
     }
     public static ItemStack weapon(DamageSource source){
-        Entity direct=source.getDirectEntity();if(direct instanceof WitchCurseEntity)return ItemStack.EMPTY;
+        Entity direct=source.getDirectEntity();if(direct instanceof BejeweledBoltEntity bolt)return bolt.weapon();if(direct instanceof WitchCurseEntity)return ItemStack.EMPTY;
         if(direct!=null && direct.getPersistentData().getBoolean("ArkWitchCaptured"))
             return direct.getPersistentData().contains(SNAP)?ItemStack.of(direct.getPersistentData().getCompound(SNAP)):ItemStack.EMPTY;
         if(direct==source.getEntity() && direct instanceof Player p)return p.getMainHandItem();

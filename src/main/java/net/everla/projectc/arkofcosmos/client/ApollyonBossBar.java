@@ -12,6 +12,9 @@ public final class ApollyonBossBar {
     private static final Map<UUID,FourthCalamityBossBar.State> STATES=new HashMap<>();
     private static Object world;
     private static com.google.gson.JsonObject englishNames;
+    private static final List<String> RIN_LEVELS=new ArrayList<>(List.of("ℵ₀","ℵ₁","ℵ₂","ℶ₀","ℶ₁","ω","ε₀","Γ₀"));
+    static { Collections.shuffle(RIN_LEVELS); }
+    static String rinLevel(UUID id,long tick){return "Lv."+RIN_LEVELS.get(Math.floorMod(tick/20+id.hashCode(),RIN_LEVELS.size()));}
     private ApollyonBossBar() {}
     static void clear() { STATES.clear();world=null;englishNames=null; }
 
@@ -19,6 +22,7 @@ public final class ApollyonBossBar {
         Mob boss=bosses.get(event.getBossEvent().getId());
         if(boss==null)return false;
         try {
+            boolean rin=boss instanceof net.everla.projectc.arkofcosmos.combat.SatsukiBoss;
             if(!Class.forName("com.Polarice3.Goety.common.entities.boss.Apostle").isInstance(boss))return false;
             Class<?> helper=null;
             boolean apollyon=false;
@@ -26,7 +30,7 @@ public final class ApollyonBossBar {
                 helper=Class.forName("z1gned.goetyrevelation.util.ApollyonAbilityHelper");
                 apollyon=helper.isInstance(boss)&&(boolean)helper.getMethod("allTitlesApostle_1_20_1$isApollyon").invoke(boss);
             } catch(ClassNotFoundException ignored) { /* Ordinary Goety is supported too. */ }
-            if(!(apollyon?ProjectCClientConfig.APOLLYON_BOSS_BAR:ProjectCClientConfig.APOSTLE_BOSS_BAR).get()) {
+            if(!(rin?ProjectCClientConfig.SATSUKI_BOSS_BAR:apollyon?ProjectCClientConfig.APOLLYON_BOSS_BAR:ProjectCClientConfig.APOSTLE_BOSS_BAR).get()) {
                 STATES.remove(event.getBossEvent().getId());return false;
             }
             if(world!=boss.level()) { STATES.clear();world=boss.level(); }
@@ -34,6 +38,7 @@ public final class ApollyonBossBar {
             if(!apollyon)return renderApostle(event,boss);
             float max=((Number)((ForgeConfigSpec.ConfigValue<?>)Class.forName("z1gned.goetyrevelation.config.ModConfig")
                 .getField("APOLLYON_HEALTH").get(null)).get()).floatValue();
+            if(rin)max=boss.getMaxHealth();
             float health=boss.getHealth();
             try {
                 // RF's context percent is a pixel width, not a normalized health fraction.
@@ -48,6 +53,8 @@ public final class ApollyonBossBar {
                     &&(boolean)boss.getClass().getMethod("isInNether").invoke(boss))
                     doomFraction=(float)config.getField("netherTheDoomPercent").getDouble(null);
             } catch(ClassNotFoundException ignored) { /* RevelationFix is optional. */ }
+            if(rin)doomFraction=net.everla.projectc.arkofcosmos.SatsukiConfig.value("modpack_mode")!=0
+                ?(float)net.everla.projectc.arkofcosmos.SatsukiConfig.value("doom_percent"):1f/14;
             List<Segment> segments=segments(max,second,doomFraction);
             int index=segments.size()-1;
             for(int i=0;i<segments.size();i++)if(health>segments.get(i).low()) { index=i;break; }
@@ -57,8 +64,8 @@ public final class ApollyonBossBar {
             var state=STATES.computeIfAbsent(event.getBossEvent().getId(),key->new FourthCalamityBossBar.State(remaining));
             state.setBars(remaining);
             int title=(int)helper.getMethod("allTitleApostle$getTitleNumber").invoke(boss);
-            FourthCalamityBossBar.draw(event,state,progress,progress,segments.size(),"Lv.666",
-                Component.translatable("name.goety_revelation.apollyon"),Component.translatable("title.goety."+title));
+            FourthCalamityBossBar.draw(event,state,progress,progress,segments.size(),rin?rinLevel(boss.getUUID(),boss.level().getGameTime()):"Lv.666",
+                rin?boss.getName():Component.translatable("name.goety_revelation.apollyon"),Component.translatable((rin?"title.arkofcosmos.satsuki_rin.":"title.goety.")+title));
             return true;
         } catch(ReflectiveOperationException|LinkageError failure) {
             // Unknown optional-mod versions retain their native bar.

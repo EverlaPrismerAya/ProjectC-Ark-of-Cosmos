@@ -19,6 +19,7 @@ public final class ArkHealthTransformer implements ILaunchPluginService, Opcodes
 
     @Override public boolean processClass(Phase phase, ClassNode node, Type type) {
         boolean changed = BossDamageTransformer.apply(node);
+        changed |= SatsukiConfigTransformer.apply(node);
         for (MethodNode method : node.methods) {
             // Observe only a completed vanilla health read. Float filters may also process offsets.
             // Skip internal super-getter calls: those can return an intermediate backing value.

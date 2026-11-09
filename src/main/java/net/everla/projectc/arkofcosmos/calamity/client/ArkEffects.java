@@ -64,6 +64,9 @@ public final class ArkEffects {
         ArkFxParticle a=particle(SQUISH,p,v,c,range(.3,.6),60,f); a.squish=squish; a.hueShift=hue;
     }
     public static void receive(CompoundTag data){
+        if(data.getString("Event").equals("bejeweled_fx")){net.everla.projectc.arkofcosmos.client.BejeweledEffects.receive(data);return;}
+        if(data.getString("Event").equals("satsuki_death_burst")){net.everla.projectc.arkofcosmos.client.SatsukiDeathBurst.receive(data);return;}
+        if(data.getString("Event").equals("satsuki_slash")){net.everla.projectc.arkofcosmos.client.SatsukiSlashes.receive(data);return;}
         if(data.getString("Event").startsWith("violence_")){ViolenceEffects.receive(data);return;}
         if(data.getString("Event").equals("calamitas_cast_sparks")){CalamitasParticles.receive(data);return;}
         if(data.getString("Event").equals("calamitas_acceptance_music")){net.everla.projectc.arkofcosmos.client.CalamitasMusic.acceptance(data);return;}

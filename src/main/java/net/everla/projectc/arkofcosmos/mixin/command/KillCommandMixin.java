@@ -17,8 +17,16 @@ abstract class KillCommandMixin {
     @WrapOperation(method="kill", at=@At(value="INVOKE", target="Lnet/minecraft/world/entity/Entity;kill()V"))
     private static void ark$playerKill(Entity target, Operation<Void> original, CommandSourceStack source, Collection<? extends Entity> targets){
         // withEntity (/execute as) changes the executor, but preserves the original source.
-        if(target instanceof MahouTsukaiEntity boss && source.source instanceof ServerPlayer)
-            boss.removeByPlayerCommand();
-        else original.call(target);
+        if(source.source instanceof ServerPlayer){
+            if(target instanceof MahouTsukaiEntity boss){boss.removeByPlayerCommand();return;}
+            if(target instanceof net.everla.projectc.arkofcosmos.entity.FourthCalamityEntity boss){boss.removeByPlayerCommand();return;}
+            if(target instanceof net.everla.projectc.arkofcosmos.combat.SatsukiBoss boss){boss.removeByPlayerCommand();return;}
+            if(target instanceof net.everla.projectc.arkofcosmos.entity.SupremeCalamitasEntity boss){
+                boss.endBattle(false);
+                if (!boss.isRemoved()) boss.discard();
+                return;
+            }
+        }
+        original.call(target);
     }
 }

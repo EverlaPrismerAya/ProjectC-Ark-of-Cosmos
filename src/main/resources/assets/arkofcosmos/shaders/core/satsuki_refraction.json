@@ -1,0 +1,11 @@
+{
+  "vertex":"arkofcosmos:fx_sprite",
+  "fragment":"arkofcosmos:satsuki_refraction",
+  "samplers":[{"name":"SceneSampler"}],
+  "attributes":["Position","Color","UV0"],
+  "uniforms":[
+    {"name":"ModelViewMat","type":"matrix4x4","count":16,"values":[1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1]},
+    {"name":"ProjMat","type":"matrix4x4","count":16,"values":[1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1]},
+    {"name":"ScreenSize","type":"float","count":2,"values":[1,1]}
+  ]
+}

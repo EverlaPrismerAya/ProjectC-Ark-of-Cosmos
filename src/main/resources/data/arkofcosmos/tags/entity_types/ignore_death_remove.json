@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
+    { "id": "arkofcosmos:satsuki_rin", "required": false },
     { "id": "bosses_of_mass_destruction:lich", "required": false },
     { "id": "bosses_of_mass_destruction:obsidilith", "required": false },
     { "id": "bosses_of_mass_destruction:void_blossom", "required": false },

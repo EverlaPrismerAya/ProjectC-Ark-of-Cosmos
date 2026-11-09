@@ -76,6 +76,19 @@ public final class ArkMixinPlugin implements IMixinConfigPlugin {
     @Override public List<String> getMixins() { return null; }
     @Override public void preApply(String target, ClassNode node, String mixin, IMixinInfo info) {}
     @Override public void postApply(String target, ClassNode node, String mixin, IMixinInfo info) {
+        if(mixin.endsWith(".SatsukiDamageMixin")) {
+            // Bare GR resets the doom target's max-health base directly in its merged callback.
+            // RF replaces that callback; preserve every other part of either version's tick.
+            for(var method:node.methods)if(method.name.endsWith("$tickAbility"))
+                for(var insn:method.instructions.toArray())if(insn instanceof org.objectweb.asm.tree.MethodInsnNode call
+                        &&call.owner.equals("net/minecraft/world/entity/ai/attributes/AttributeInstance")
+                        &&call.desc.equals("(D)V")&&(call.name.equals("setBaseValue")||call.name.equals("m_22100_"))) {
+                    method.instructions.insertBefore(call,new org.objectweb.asm.tree.VarInsnNode(org.objectweb.asm.Opcodes.ALOAD,0));
+                    method.instructions.set(call,new org.objectweb.asm.tree.MethodInsnNode(org.objectweb.asm.Opcodes.INVOKESTATIC,
+                            "net/everla/projectc/arkofcosmos/combat/SatsukiBoss","doomAttribute",
+                            "(Lnet/minecraft/world/entity/ai/attributes/AttributeInstance;DLjava/lang/Object;)V",true));
+                }
+        }
         if(!mixin.endsWith(".LegacyApollyonLivingMixin"))return;
         int replaced=0;
         // These two old GR/RF callbacks only affect lower Apollyon: one rejects every

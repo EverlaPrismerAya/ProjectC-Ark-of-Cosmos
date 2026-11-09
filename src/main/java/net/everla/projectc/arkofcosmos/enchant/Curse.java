@@ -22,7 +22,7 @@ public enum Curse {
     public static boolean channel(ItemStack stack){return net.everla.projectc.arkofcosmos.CalamitasContent.ENABLED && WitchSouls.channel(stack) || tagged(stack,"channeling") || stack.getItem() instanceof BowItem || stack.getItem() instanceof CrossbowItem;}
     public static boolean recognized(ItemStack stack){return of(stack)!=null || java.util.Arrays.stream(values()).anyMatch(c->c.accepts(stack));}
     public boolean accepts(ItemStack stack){
-        return !stack.isEmpty() && !(stack.getItem() instanceof net.everla.projectc.arkofcosmos.item.NecromanticWeaponItem)
+        return !stack.isEmpty() && !(stack.getItem() instanceof net.everla.projectc.arkofcosmos.item.SoulMagicWeaponItem)
                 && !tagged(stack,"excluded") && tagged(stack,"curses/"+name().toLowerCase(java.util.Locale.ROOT));
     }
     public static Curse of(ItemStack stack){

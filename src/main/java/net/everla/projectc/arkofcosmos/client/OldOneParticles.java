@@ -22,7 +22,8 @@ public final class OldOneParticles {
     private static final net.minecraft.client.renderer.MultiBufferSource.BufferSource BUFFERS=
             net.minecraft.client.renderer.MultiBufferSource.immediate(new com.mojang.blaze3d.vertex.BufferBuilder(256));
     @Mod.EventBusSubscriber(modid=ArkOfCosmos.MOD_ID,value=Dist.CLIENT,bus=Mod.EventBusSubscriber.Bus.MOD)
-    public static final class Registration {
+    // Forge listener wrapper names omit the enclosing class; keep this simple name unique.
+    public static final class OldOneParticlesRegistration {
         @SubscribeEvent public static void setup(net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent e){
             e.enqueueWork(()->net.minecraft.client.renderer.item.ItemProperties.register(ArkOfCosmos.ARK_OF_THE_OLD_ONE.get(),net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(ArkOfCosmos.MOD_ID,"active"),
                 (stack,level,entity,seed)->entity!=null&&!entity.level().getEntitiesOfClass(net.everla.projectc.arkofcosmos.entity.OldOneEntity.class,entity.getBoundingBox().inflate(16),a->a.ownerId()==entity.getId()&&a.kind()==Kind.SWORD&&a.level().getGameTime()-a.renderState().getLong("StartTick")<5).isEmpty()?1:0));

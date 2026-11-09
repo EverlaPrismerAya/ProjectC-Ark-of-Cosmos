@@ -22,7 +22,7 @@ public final class ArkFxDraw {
     public static final VertexFormatElement UV3 = new VertexFormatElement(0, VertexFormatElement.Type.FLOAT, VertexFormatElement.Usage.UV, 3);
     public static final VertexFormat FORMAT = new VertexFormat(ImmutableMap.of("Position", DefaultVertexFormat.ELEMENT_POSITION,
             "Color", DefaultVertexFormat.ELEMENT_COLOR, "UV0", UV3));
-    public static ShaderInstance fracturedShader, witchFlamesShader;
+    public static ShaderInstance fracturedShader, witchFlamesShader, satsukiRefractionShader, satsukiDeathShader;
     public static ShaderInstance arenaMetaballShader, rancorShader;
     public static ShaderInstance spriteShader, trailShader, tintShader, moonShader, forcefieldShader, jujutsuShader, primitiveShader, whiteSpriteShader, hellBallShader;
     /** Immutable per-draw BasicTint parameters, also captured by deferred Oculus draws. */
@@ -57,6 +57,8 @@ public final class ArkFxDraw {
     private static Blend activeBlend=Blend.ALPHA;
 
     public static void register(RegisterShadersEvent event) throws IOException {
+        event.registerShader(shader(event,"satsuki_refraction"), shader -> satsukiRefractionShader=shader);
+        event.registerShader(shader(event,"satsuki_death"), shader -> satsukiDeathShader=shader);
         event.registerShader(shader(event,"fx_sprite"), shader -> spriteShader = shader);
         event.registerShader(shader(event,"fx_primitive"), shader -> primitiveShader = shader);
         event.registerShader(shader(event,"fx_white_sprite"), shader -> whiteSpriteShader = shader);

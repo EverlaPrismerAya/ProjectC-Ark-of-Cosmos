@@ -74,7 +74,8 @@ public final class ViolenceRenderer extends EntityRenderer<ViolenceEntity> {
         }finally{ArkFxDraw.end();ArkFxDraw.matrix=previous;ArkFxDraw.camera=camera;}
     }
     @Mod.EventBusSubscriber(modid=ArkOfCosmos.MOD_ID,value=Dist.CLIENT,bus=Mod.EventBusSubscriber.Bus.MOD)
-    public static final class Registration {
+    // Forge listener wrapper names omit the enclosing class; keep this simple name unique.
+    public static final class ViolenceRendererRegistration {
         @SubscribeEvent public static void renderer(net.minecraftforge.client.event.EntityRenderersEvent.RegisterRenderers event){if(net.everla.projectc.arkofcosmos.CalamitasContent.ENABLED)event.registerEntityRenderer(ArkOfCosmos.VIOLENCE_ATTACK.get(),ViolenceRenderer::new);}
         @SubscribeEvent public static void setup(net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent event){if(net.everla.projectc.arkofcosmos.CalamitasContent.ENABLED)event.enqueueWork(()->net.minecraft.client.renderer.item.ItemProperties.register(ArkOfCosmos.VIOLENCE.get(),ResourceLocation.fromNamespaceAndPath(ArkOfCosmos.MOD_ID,"active"),(stack,level,entity,seed)->entity instanceof net.minecraft.world.entity.player.Player p&&net.everla.projectc.arkofcosmos.combat.ViolenceCombat.active(p)?1:0));}
     }

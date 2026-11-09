@@ -33,7 +33,7 @@ public final class LegacyApollyonDamageWindow {
 
     @Nullable
     public static LegacyApollyonDamageWindow get(LivingEntity entity) {
-        if (entity instanceof Access && entity instanceof Apostle) {
+        if (!(entity instanceof net.everla.projectc.arkofcosmos.combat.SatsukiBoss) && entity instanceof Access && entity instanceof Apostle) {
             Apostle apostle = (Apostle)entity;
             if (!apostle.level().isClientSide && apostle.isInNether() && ((ApollyonAbilityHelper)apostle).allTitlesApostle_1_20_1$isApollyon()) {
                 return ((Access)apostle).ark$damageWindow();

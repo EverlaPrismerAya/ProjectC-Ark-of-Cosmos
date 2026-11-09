@@ -2,6 +2,87 @@
   "notice": "Provenance records do not grant redistribution rights. See THIRD_PARTY_NOTICES.md.",
   "files": [
     {
+      "file": "src/main/resources/assets/arkofcosmos/textures/entity/fumo/cirno.png",
+      "sha256": "125ae8fed6d4986fad9db6fd0d2bc9ebac2541166d14fa6e8ddb0ee1a3e42184",
+      "project": "Fumo-Mcreator / KosherKomeiji and contributors",
+      "path": "src/main/resources/assets/fumo/textures/entities/cirno.png",
+      "source_url": "https://github.com/KosherKomeiji/Fumo-Mcreator/blob/f395209e13cb54e3e5d3a25946dedf8ef91a7df5/src/main/resources/assets/fumo/textures/entities/cirno.png",
+      "commit": "f395209e13cb54e3e5d3a25946dedf8ef91a7df5",
+      "license": "CC-BY-NC-SA-4.0",
+      "conversion": "Unmodified source PNG; original Fumo model, uniformly scaled at render time"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/entity/fumo/marisa.png",
+      "sha256": "a13bb0211f2667aa8e1fdfc444925191ebca380cedcf4f3b0d3a3f3231433a3c",
+      "project": "Fumo-Mcreator / KosherKomeiji and contributors",
+      "path": "src/main/resources/assets/fumo/textures/entities/marisa.png",
+      "source_url": "https://github.com/KosherKomeiji/Fumo-Mcreator/blob/f395209e13cb54e3e5d3a25946dedf8ef91a7df5/src/main/resources/assets/fumo/textures/entities/marisa.png",
+      "commit": "f395209e13cb54e3e5d3a25946dedf8ef91a7df5",
+      "license": "CC-BY-NC-SA-4.0",
+      "conversion": "Unmodified source PNG; original Fumo model, uniformly scaled at render time"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/entity/fumo/patchouli.png",
+      "sha256": "b3639cfd3f7203d3481e0931d6f55f8fcfae4083c537cabf7b3abd75e1ce7ebd",
+      "project": "Fumo-Mcreator / KosherKomeiji and contributors",
+      "path": "src/main/resources/assets/fumo/textures/entities/patchouli.png",
+      "source_url": "https://github.com/KosherKomeiji/Fumo-Mcreator/blob/f395209e13cb54e3e5d3a25946dedf8ef91a7df5/src/main/resources/assets/fumo/textures/entities/patchouli.png",
+      "commit": "f395209e13cb54e3e5d3a25946dedf8ef91a7df5",
+      "license": "CC-BY-NC-SA-4.0",
+      "conversion": "Unmodified source PNG; original Fumo model, uniformly scaled at render time"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/entity/fumo/reimu.png",
+      "sha256": "79a60b8bf40dc34dedc263c41eef9d26bcaedd2ac82d7a87e414ba88fb910967",
+      "project": "Fumo-Mcreator / KosherKomeiji and contributors",
+      "path": "src/main/resources/assets/fumo/textures/entities/reimu.png",
+      "source_url": "https://github.com/KosherKomeiji/Fumo-Mcreator/blob/f395209e13cb54e3e5d3a25946dedf8ef91a7df5/src/main/resources/assets/fumo/textures/entities/reimu.png",
+      "commit": "f395209e13cb54e3e5d3a25946dedf8ef91a7df5",
+      "license": "CC-BY-NC-SA-4.0",
+      "conversion": "Unmodified source PNG; original Fumo model, uniformly scaled at render time"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/entity/fumo/remilia.png",
+      "sha256": "24df73156c65f91fc7105519b70b8a13ec368c6bb04bcf1d38d207cc6ed63499",
+      "project": "Fumo-Mcreator / KosherKomeiji and contributors",
+      "path": "src/main/resources/assets/fumo/textures/entities/remilia.png",
+      "source_url": "https://github.com/KosherKomeiji/Fumo-Mcreator/blob/f395209e13cb54e3e5d3a25946dedf8ef91a7df5/src/main/resources/assets/fumo/textures/entities/remilia.png",
+      "commit": "f395209e13cb54e3e5d3a25946dedf8ef91a7df5",
+      "license": "CC-BY-NC-SA-4.0",
+      "conversion": "Unmodified source PNG; original Fumo model, uniformly scaled at render time"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/entity/fumo/youmu.png",
+      "sha256": "3faf83ca2e765743cc990f238dbd4344d8e161244823bb9299a6b37a12ed67aa",
+      "project": "Fumo-Mcreator / KosherKomeiji and contributors",
+      "path": "src/main/resources/assets/fumo/textures/entities/youmu.png",
+      "source_url": "https://github.com/KosherKomeiji/Fumo-Mcreator/blob/f395209e13cb54e3e5d3a25946dedf8ef91a7df5/src/main/resources/assets/fumo/textures/entities/youmu.png",
+      "commit": "f395209e13cb54e3e5d3a25946dedf8ef91a7df5",
+      "license": "CC-BY-NC-SA-4.0",
+      "conversion": "Unmodified source PNG; original Fumo model, uniformly scaled at render time"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/entity/fumo/yuyuko.png",
+      "sha256": "27fb21a8fd3d020ad2ed682d716c4dc0820e4b95ef2da4973f627a7519f3680a",
+      "project": "Fumo-Mcreator / KosherKomeiji and contributors",
+      "path": "src/main/resources/assets/fumo/textures/entities/yuyuko.png",
+      "source_url": "https://github.com/KosherKomeiji/Fumo-Mcreator/blob/f395209e13cb54e3e5d3a25946dedf8ef91a7df5/src/main/resources/assets/fumo/textures/entities/yuyuko.png",
+      "commit": "f395209e13cb54e3e5d3a25946dedf8ef91a7df5",
+      "license": "CC-BY-NC-SA-4.0",
+      "conversion": "Unmodified source PNG; original Fumo model, uniformly scaled at render time"
+    },
+    {
+      "file": "src/main/java/net/everla/projectc/arkofcosmos/client/ModelFumo.java",
+      "sha256": "4f9d08945b98d9570f06783f3db18d01a6ae3b17a07b712d3ece5310e5dd839a",
+      "source_sha256": "77e0e389678f4110c55d301611f937743e250124576e06cdc1c6efd98437adb2",
+      "project": "Fumo-Mcreator / KosherKomeiji and contributors",
+      "path": "src/main/java/io/github/projectfumo/fumo/client/model/ModelFumo.java",
+      "source_url": "https://raw.githubusercontent.com/KosherKomeiji/Fumo-Mcreator/f395209e13cb54e3e5d3a25946dedf8ef91a7df5/src/main/java/io/github/projectfumo/fumo/client/model/ModelFumo.java",
+      "commit": "f395209e13cb54e3e5d3a25946dedf8ef91a7df5",
+      "license": "CC-BY-NC-SA-4.0",
+      "conversion": "Package and model-layer ResourceLocation adapted for ArkOfCosmos; attribution header added. Geometry and UV unchanged. Adaptation also CC-BY-NC-SA-4.0"
+    },
+    {
       "file": "src/main/resources/assets/arkofcosmos/textures/fx/calamitas_dust_5_0.png",
       "sha256": "7e7c5d86803466a7fbfe88abc95ca5d23e5ebbfc1df92ae4fdfad3ac24a89a5f",
       "project": "Terraria / Re-Logic",
@@ -4104,7 +4185,8 @@
       "used_by": [
         "Biome Blade",
         "Broken Biome Blade",
-        "Violence"
+        "Violence",
+        "First Fractal"
       ]
     },
     {
@@ -6456,6 +6538,198 @@
         "sample_rate": 44100,
         "output_codec": "Vorbis quality 8 (lossy)"
       }
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/entity/satsuki_rin.png",
+      "sha256": "99f8f492d89833428b530cd867de9ca803796c0325f7b8c37410e7ed71dcdf17",
+      "project": "User-supplied Satsuki Rin slim player skin",
+      "path": "Existing workspace asset supplied by user",
+      "license": "User supplied; original creator and redistribution terms not specified",
+      "conversion": "None; original bytes reused",
+      "used_by": [
+        "SatsukiRinRenderer slim PlayerModel"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/item/bejeweled_staff.png",
+      "sha256": "3613f7cae598cc43910ca7a190b658abf600e54172ff70850fcdeb8ebe4c93d4",
+      "project": "Terraria / Re-Logic",
+      "path": "G:/SteamLibrary/steamapps/common/Terraria/Content/Images/Item_6171.xnb",
+      "source_sha256": "bf317ef83e770a61f06b99a41dc533a037e30bd80f2284e13064fc16573ddab8",
+      "license": "ARR (Terraria original terms)",
+      "conversion": "XNB decode; original pixels / PCM audio",
+      "used_by": [
+        "Bejeweled Staff"
+      ],
+      "source_version": "Terraria 1.4.5.8"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/bejeweled_dust.png",
+      "sha256": "63e6e9abe08c029bf1e228742b334d03b43058db51eaca5169d709b9e20ef7c9",
+      "project": "Terraria / Re-Logic",
+      "path": "G:/SteamLibrary/steamapps/common/Terraria/Content/Images/Dust.xnb",
+      "source_sha256": "0c84497a27ff8d9c706fbe9f0890b67bd27914b61e9bad799e65bc783f77b329",
+      "license": "ARR (Terraria original terms)",
+      "conversion": "XNB decode; original pixels / PCM audio",
+      "used_by": [
+        "Bejeweled Staff"
+      ],
+      "source_version": "Terraria 1.4.5.8"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/bejeweled_cast.ogg",
+      "sha256": "4d2161068ad4247dc5fd312c352d6df222c2a7b37115e9762e0d93587f6fc98a",
+      "project": "Terraria / Re-Logic",
+      "path": "G:/SteamLibrary/steamapps/common/Terraria/Content/Sounds/Item_43.xnb",
+      "source_sha256": "07ac493a3d09d26834de1661db22af59a28d33f6849911bbfffece3dcbc3b6de",
+      "license": "ARR (Terraria original terms)",
+      "conversion": {
+        "codec": "Vorbis quality 8 from original PCM; lossy encoding",
+        "source_pcm_sha256": "03962f7990bf4693b77e5ed679d17e1afbe36cbc589f7a82ffce35dc5288659f",
+        "sample_rate": 44100,
+        "channels": 2
+      },
+      "used_by": [
+        "Bejeweled Staff"
+      ],
+      "source_version": "Terraria 1.4.5.8"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/bejeweled_flight.ogg",
+      "sha256": "d64a82e259d2b856eb5d14242b9b5ef609cd7b16e736a33e81d865f64117e895",
+      "project": "Terraria / Re-Logic",
+      "path": "G:/SteamLibrary/steamapps/common/Terraria/Content/Sounds/Item_205.xnb",
+      "source_sha256": "aae1b13f9814f79249437e0d3363a6c1d656508f881bc8115e726512c80cb361",
+      "license": "ARR (Terraria original terms)",
+      "conversion": {
+        "codec": "Vorbis quality 8 from original PCM; lossy encoding",
+        "source_pcm_sha256": "410201a28cfbcb9e88c7ef91716cf820976541952d1061e10a77b3383df4df62",
+        "sample_rate": 44100,
+        "channels": 2
+      },
+      "used_by": [
+        "Bejeweled Staff"
+      ],
+      "source_version": "Terraria 1.4.5.8"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/bejeweled_hit.ogg",
+      "sha256": "80a03b2bab10a54521d02a82fade1ddf368d21b4a1844fe6513511e0a5bb8330",
+      "project": "Terraria / Re-Logic",
+      "path": "G:/SteamLibrary/steamapps/common/Terraria/Content/Sounds/Dig_0.xnb",
+      "source_sha256": "89374853c1bc1e5169a3fec94545a64922a8515b3d48cb070146d72e13cd070e",
+      "license": "ARR (Terraria original terms)",
+      "conversion": {
+        "codec": "Vorbis quality 8 from original PCM; lossy encoding",
+        "source_pcm_sha256": "a2fc9b5b333e2aea7e293c73554f7153c3a271e5c5d7001aa9148aa069ea3219",
+        "sample_rate": 44100,
+        "channels": 2
+      },
+      "used_by": [
+        "Bejeweled Staff"
+      ],
+      "source_version": "Terraria 1.4.5.8"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/item/first_fractal.png",
+      "sha256": "3384fec9bb1ef8817f8b934584f578a1882b80965efc15b23be73872b16b8767",
+      "project": "Terraria 1.4.5.8 / Re-Logic",
+      "path": "G:\\SteamLibrary\\steamapps\\common\\Terraria\\Content\\Images\\Item_4722.xnb",
+      "source_sha256": "02c3e97fb68eb6b6133955ff1bd4ae618fca112496d05b5cf753d20f0b41d84e",
+      "license": "All Rights Reserved (Re-Logic / original authors); not GPL-3.0-only",
+      "conversion": "Lossless XNB decode; original RGBA retained",
+      "decoded_rgba_sha256": "9ab78ab51203ec2bad6bdaabbb27ffacd119e383893b441ad8a9a1251ee5efbb",
+      "used_by": [
+        "First Fractal"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/first_fractal_swords.png",
+      "sha256": "70ba388f78072ee609d8dd681c458946e67a6fb962327fdfe584c5870c5008fd",
+      "project": "Terraria 1.4.5.8 / Re-Logic",
+      "path": "G:\\SteamLibrary\\steamapps\\common\\Terraria\\Content\\Images\\Projectile_857.xnb",
+      "source_sha256": "44dcb42f5582dbc523017bed2fd7336f2ebbd5cebf2b603984cbd5e774c2d958",
+      "license": "All Rights Reserved (Re-Logic / original authors); not GPL-3.0-only",
+      "conversion": "Lossless XNB decode; original RGBA retained",
+      "decoded_rgba_sha256": "fcb8060897feea2a2b147dce48660befc7834d9d79d14dbfa5145b3ba80a7ed9",
+      "used_by": [
+        "First Fractal"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/first_fractal_streak.png",
+      "sha256": "2d30fbb336de80f4d90d95a173ecdca33d11b1b0a6a145b30aeafe8855fdfede",
+      "project": "Terraria 1.4.5.8 / Re-Logic",
+      "path": "G:\\SteamLibrary\\steamapps\\common\\Terraria\\Content\\Images\\Extra_91.xnb",
+      "source_sha256": "9305ae81e8c3c6c2954b0f0e22a2bcbaa9f0d34117762d0e232274decdd0ab18",
+      "license": "All Rights Reserved (Re-Logic / original authors); not GPL-3.0-only",
+      "conversion": "Lossless XNB decode; original RGBA retained",
+      "decoded_rgba_sha256": "5d02f437acea682189cd7d2ceb9e13b6169c0d01cce6c742f4846d96e7ca9cd7",
+      "used_by": [
+        "First Fractal"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/first_fractal_star.png",
+      "sha256": "eef7d4368d17ba498cbdcf9a317cdf0cea5fdd2f35af69c38fc07b9b939ac0af",
+      "project": "Terraria 1.4.5.8 / Re-Logic",
+      "path": "G:\\SteamLibrary\\steamapps\\common\\Terraria\\Content\\Images\\Extra_98.xnb",
+      "source_sha256": "e1724dab08769f37c9034ac23b90bf38cf9f89b2f2e29994d504d7163d358819",
+      "license": "All Rights Reserved (Re-Logic / original authors); not GPL-3.0-only",
+      "conversion": "Lossless XNB decode; original RGBA retained",
+      "decoded_rgba_sha256": "c662dad9913089d9c94426cfad1e28712e9fecbfc02de3c69ba76e4c75a614e0",
+      "used_by": [
+        "First Fractal"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/fx/first_fractal_dust.png",
+      "sha256": "67781fd384213e7c0e2d593991e6335adfb557b43273fab569d217e5bd8b5cf5",
+      "project": "Terraria 1.4.5.8 / Re-Logic",
+      "path": "G:\\SteamLibrary\\steamapps\\common\\Terraria\\Content\\Images\\Dust.xnb",
+      "source_sha256": "0c84497a27ff8d9c706fbe9f0890b67bd27914b61e9bad799e65bc783f77b329",
+      "license": "All Rights Reserved (Re-Logic / original authors); not GPL-3.0-only",
+      "conversion": "Lossless XNB decode; original RGBA retained; crop Dust 278 variants at [780,60,8,28]",
+      "decoded_rgba_sha256": "6036fbec93b328fe86dd00cc1e15beb779c58557f96bf1e6b0ff60dcf33de5f2",
+      "used_by": [
+        "First Fractal"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/bejeweled_hit_1.ogg",
+      "sha256": "550fd5de9e7264a4fd797f12625c8a347a183e3f41c80723ebc9af3a7d640c6b",
+      "project": "Terraria / Re-Logic",
+      "path": "G:/SteamLibrary/steamapps/common/Terraria/Content/Sounds/Dig_1.xnb",
+      "source_sha256": "a9339eea6a4adf2c6e20728b475b5e93b1a32d190dae16780b44134451a7b807",
+      "source_version": "Terraria 1.4.5.8",
+      "license": "ARR (Terraria original terms)",
+      "conversion": {
+        "codec": "Vorbis quality 8 from original PCM; lossy encoding",
+        "source_pcm_sha256": "b1b5d77ed4a2bb2d7f011ecd139fa42b8868c29d908b60c2f47e1bb6ef864afb",
+        "sample_rate": 44100,
+        "channels": 2
+      },
+      "used_by": [
+        "Bejeweled Staff"
+      ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/sounds/bejeweled_hit_2.ogg",
+      "sha256": "d6f98866236027fa892013859dbab78b028ea8815a85e6e2965fd12630299a95",
+      "project": "Terraria / Re-Logic",
+      "path": "G:/SteamLibrary/steamapps/common/Terraria/Content/Sounds/Dig_2.xnb",
+      "source_sha256": "00098cd5e8e7696cebd40780386ea9c9bc3231c1361b5202431f090cea368d43",
+      "source_version": "Terraria 1.4.5.8",
+      "license": "ARR (Terraria original terms)",
+      "conversion": {
+        "codec": "Vorbis quality 8 from original PCM; lossy encoding",
+        "source_pcm_sha256": "bbc9eb80660201290ab8bca10d6aaaa3cca761b06a81ceb4588f714a30688913",
+        "sample_rate": 44100,
+        "channels": 2
+      },
+      "used_by": [
+        "Bejeweled Staff"
+      ]
     }
   ],
   "supreme_calamitas_dialogue": [
@@ -6742,6 +7016,87 @@
     "scope": "Read-only native API verification; no runtime library copies in this mod",
     "files": [
       {
+        "file": "src/main/resources/assets/arkofcosmos/textures/entity/fumo/cirno.png",
+        "sha256": "125ae8fed6d4986fad9db6fd0d2bc9ebac2541166d14fa6e8ddb0ee1a3e42184",
+        "project": "Fumo-Mcreator / KosherKomeiji and contributors",
+        "path": "src/main/resources/assets/fumo/textures/entities/cirno.png",
+        "source_url": "https://github.com/KosherKomeiji/Fumo-Mcreator/blob/f395209e13cb54e3e5d3a25946dedf8ef91a7df5/src/main/resources/assets/fumo/textures/entities/cirno.png",
+        "commit": "f395209e13cb54e3e5d3a25946dedf8ef91a7df5",
+        "license": "CC-BY-NC-SA-4.0",
+        "conversion": "Unmodified source PNG; original Fumo model, uniformly scaled at render time"
+      },
+      {
+        "file": "src/main/resources/assets/arkofcosmos/textures/entity/fumo/marisa.png",
+        "sha256": "a13bb0211f2667aa8e1fdfc444925191ebca380cedcf4f3b0d3a3f3231433a3c",
+        "project": "Fumo-Mcreator / KosherKomeiji and contributors",
+        "path": "src/main/resources/assets/fumo/textures/entities/marisa.png",
+        "source_url": "https://github.com/KosherKomeiji/Fumo-Mcreator/blob/f395209e13cb54e3e5d3a25946dedf8ef91a7df5/src/main/resources/assets/fumo/textures/entities/marisa.png",
+        "commit": "f395209e13cb54e3e5d3a25946dedf8ef91a7df5",
+        "license": "CC-BY-NC-SA-4.0",
+        "conversion": "Unmodified source PNG; original Fumo model, uniformly scaled at render time"
+      },
+      {
+        "file": "src/main/resources/assets/arkofcosmos/textures/entity/fumo/patchouli.png",
+        "sha256": "b3639cfd3f7203d3481e0931d6f55f8fcfae4083c537cabf7b3abd75e1ce7ebd",
+        "project": "Fumo-Mcreator / KosherKomeiji and contributors",
+        "path": "src/main/resources/assets/fumo/textures/entities/patchouli.png",
+        "source_url": "https://github.com/KosherKomeiji/Fumo-Mcreator/blob/f395209e13cb54e3e5d3a25946dedf8ef91a7df5/src/main/resources/assets/fumo/textures/entities/patchouli.png",
+        "commit": "f395209e13cb54e3e5d3a25946dedf8ef91a7df5",
+        "license": "CC-BY-NC-SA-4.0",
+        "conversion": "Unmodified source PNG; original Fumo model, uniformly scaled at render time"
+      },
+      {
+        "file": "src/main/resources/assets/arkofcosmos/textures/entity/fumo/reimu.png",
+        "sha256": "79a60b8bf40dc34dedc263c41eef9d26bcaedd2ac82d7a87e414ba88fb910967",
+        "project": "Fumo-Mcreator / KosherKomeiji and contributors",
+        "path": "src/main/resources/assets/fumo/textures/entities/reimu.png",
+        "source_url": "https://github.com/KosherKomeiji/Fumo-Mcreator/blob/f395209e13cb54e3e5d3a25946dedf8ef91a7df5/src/main/resources/assets/fumo/textures/entities/reimu.png",
+        "commit": "f395209e13cb54e3e5d3a25946dedf8ef91a7df5",
+        "license": "CC-BY-NC-SA-4.0",
+        "conversion": "Unmodified source PNG; original Fumo model, uniformly scaled at render time"
+      },
+      {
+        "file": "src/main/resources/assets/arkofcosmos/textures/entity/fumo/remilia.png",
+        "sha256": "24df73156c65f91fc7105519b70b8a13ec368c6bb04bcf1d38d207cc6ed63499",
+        "project": "Fumo-Mcreator / KosherKomeiji and contributors",
+        "path": "src/main/resources/assets/fumo/textures/entities/remilia.png",
+        "source_url": "https://github.com/KosherKomeiji/Fumo-Mcreator/blob/f395209e13cb54e3e5d3a25946dedf8ef91a7df5/src/main/resources/assets/fumo/textures/entities/remilia.png",
+        "commit": "f395209e13cb54e3e5d3a25946dedf8ef91a7df5",
+        "license": "CC-BY-NC-SA-4.0",
+        "conversion": "Unmodified source PNG; original Fumo model, uniformly scaled at render time"
+      },
+      {
+        "file": "src/main/resources/assets/arkofcosmos/textures/entity/fumo/youmu.png",
+        "sha256": "3faf83ca2e765743cc990f238dbd4344d8e161244823bb9299a6b37a12ed67aa",
+        "project": "Fumo-Mcreator / KosherKomeiji and contributors",
+        "path": "src/main/resources/assets/fumo/textures/entities/youmu.png",
+        "source_url": "https://github.com/KosherKomeiji/Fumo-Mcreator/blob/f395209e13cb54e3e5d3a25946dedf8ef91a7df5/src/main/resources/assets/fumo/textures/entities/youmu.png",
+        "commit": "f395209e13cb54e3e5d3a25946dedf8ef91a7df5",
+        "license": "CC-BY-NC-SA-4.0",
+        "conversion": "Unmodified source PNG; original Fumo model, uniformly scaled at render time"
+      },
+      {
+        "file": "src/main/resources/assets/arkofcosmos/textures/entity/fumo/yuyuko.png",
+        "sha256": "27fb21a8fd3d020ad2ed682d716c4dc0820e4b95ef2da4973f627a7519f3680a",
+        "project": "Fumo-Mcreator / KosherKomeiji and contributors",
+        "path": "src/main/resources/assets/fumo/textures/entities/yuyuko.png",
+        "source_url": "https://github.com/KosherKomeiji/Fumo-Mcreator/blob/f395209e13cb54e3e5d3a25946dedf8ef91a7df5/src/main/resources/assets/fumo/textures/entities/yuyuko.png",
+        "commit": "f395209e13cb54e3e5d3a25946dedf8ef91a7df5",
+        "license": "CC-BY-NC-SA-4.0",
+        "conversion": "Unmodified source PNG; original Fumo model, uniformly scaled at render time"
+      },
+      {
+        "file": "src/main/java/net/everla/projectc/arkofcosmos/client/ModelFumo.java",
+        "sha256": "4f9d08945b98d9570f06783f3db18d01a6ae3b17a07b712d3ece5310e5dd839a",
+        "source_sha256": "77e0e389678f4110c55d301611f937743e250124576e06cdc1c6efd98437adb2",
+        "project": "Fumo-Mcreator / KosherKomeiji and contributors",
+        "path": "src/main/java/io/github/projectfumo/fumo/client/model/ModelFumo.java",
+        "source_url": "https://raw.githubusercontent.com/KosherKomeiji/Fumo-Mcreator/f395209e13cb54e3e5d3a25946dedf8ef91a7df5/src/main/java/io/github/projectfumo/fumo/client/model/ModelFumo.java",
+        "commit": "f395209e13cb54e3e5d3a25946dedf8ef91a7df5",
+        "license": "CC-BY-NC-SA-4.0",
+        "conversion": "Package and model-layer ResourceLocation adapted for ArkOfCosmos; attribution header added. Geometry and UV unchanged. Adaptation also CC-BY-NC-SA-4.0"
+      },
+      {
         "path": "G:/SteamLibrary/steamapps/common/tModLoader/tModLoader.dll",
         "sha256": "bf2ca4d53512d064fae664170a0d21ecc5e2ed51b5e917d871ec78cc449263e9"
       },
@@ -6794,5 +7149,26 @@
       "path": "E:\\工具\\tModUnpacker\\CalamityCN\\Localization\\CalamityMod\\zh-Hans\\Mods.CalamityMod.Items.Weapons.Melee.hjson",
       "sha256": "df94069d08fedebf8964e96d8e61f8c1d8e82dc6b46f81025f903776cec405f2"
     }
+  },
+  "first_fractal_source": {
+    "project": "Terraria",
+    "version": "1.4.5.8",
+    "path": "G:\\SteamLibrary\\steamapps\\common\\Terraria\\Terraria.exe",
+    "sha256": "960a03bff6050cf7be16dfc1a7b19e10fc2c4f8f835a6a3b135a50dd9e6ba2f3",
+    "item_id": 4722,
+    "projectile_id": 857,
+    "methods": [
+      "Item.SetDefaults (4722)",
+      "Player.ItemCheck_Shoot (4722)",
+      "Player.GetSparkleGuitarTarget",
+      "Projectile.AI_168_FirstFractal",
+      "Projectile.SetDefaults (857)",
+      "Main.DrawProjWithStarryTrail",
+      "Main.DrawPrettyStarSparkle",
+      "Main.DrawSuperSpecialProjectiles",
+      "Dust.UpdateDust / GetAlpha (278)"
+    ],
+    "adaptation": "Java / Forge 1.20.1; 16 pixels per block; 60 source frames per second; 8 base damage; random independent 3D planes and Minecraft player skin afterimages",
+    "license": "All Rights Reserved (Re-Logic / original authors); not GPL-3.0-only"
   }
 }

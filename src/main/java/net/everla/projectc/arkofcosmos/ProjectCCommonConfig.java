@@ -24,7 +24,7 @@ import static net.everla.projectc.arkofcosmos.entity.MahouAttackEntity.*;
 public final class ProjectCCommonConfig {
     private ProjectCCommonConfig() {}
     public static final ForgeConfigSpec SPEC;
-    private static final Map<String,ForgeConfigSpec.ConfigValue<? extends Number>> VALUES=new LinkedHashMap<>();
+    private static final Map<String,ForgeConfigSpec.ConfigValue<?>> VALUES=new LinkedHashMap<>();
     private static volatile Map<String,Double> current;
     private static volatile boolean remoteValues;
     private static volatile net.minecraftforge.fml.config.ModConfig loadedConfig;
@@ -63,9 +63,11 @@ public final class ProjectCCommonConfig {
         for(String skill:new String[]{"contact","dart","hellblast","fireblast","gigablast","wave","maelstrom","fist","slash"})
             define(b,skill,1,0,100,"Independent attack multiplier, multiplied by damage_multiplier");
         b.pop();
-        b.pop().pop().push("weapons");
-        String[] ids={"fractured_ark","ark_of_the_ancients","ark_of_the_elements","ark_of_cosmos","ark_of_the_old_one","broken_biome_blade","biome_blade","true_biome_blade","galaxia","violence","rancor","gruesome_eminence"};
-        double[] damage={4,6,7,16,20,5,7,9.5,16,24.25,18,36};
+        b.pop().pop();
+        SatsukiConfig.define(b);
+        b.push("weapons");
+        String[] ids={"fractured_ark","ark_of_the_ancients","ark_of_the_elements","ark_of_cosmos","ark_of_the_old_one","broken_biome_blade","biome_blade","true_biome_blade","galaxia","violence","rancor","gruesome_eminence","bejeweled_staff","first_fractal"};
+        double[] damage={4,6,7,16,20,5,7,9.5,16,24.25,18,36,1.35,8};
         for(int i=0;i<ids.length;i++) {
             b.push(ids[i]);
             define(b,"base_damage",damage[i],.01,1000000,"Base attack damage");
@@ -76,6 +78,8 @@ public final class ProjectCCommonConfig {
         define(b,"soul_cost",25,1,1000000,"Base soul cost before enchantments and soul discounts");
         b.pop().push("gruesome_eminence");
         define(b,"soul_cost",30,1,1000000,"Base soul cost before enchantments and soul discounts");
+        b.pop().push("bejeweled_staff");
+        define(b,"soul_cost",15,1,1000000,"Soul cost per three-bolt volley before enchantments and soul discounts");
         b.pop();
         b.pop().push("integration");
         define(b,"end_halo_trip_chance",.05,0,1,"Chance for a player wearing the Halo of the End to trip when taking sweet berry bush damage, checked at most once every 10 ticks");
@@ -103,12 +107,16 @@ public final class ProjectCCommonConfig {
         b.pop();
         b.pop();SPEC=b.build();
         Map<String,Double> defaults=new LinkedHashMap<>();
-        VALUES.forEach((key,value)->defaults.put(key,value.getDefault().doubleValue()));current=Map.copyOf(defaults);
+        VALUES.forEach((key,value)->defaults.put(key,number(value.getDefault())));current=Map.copyOf(defaults);
     }
-    private static void define(ForgeConfigSpec.Builder b,String name,double value,double min,double max,String comment) {
+    static void define(ForgeConfigSpec.Builder b,String name,double value,double min,double max,String comment) {
         var entry=b.comment(comment).defineInRange(name,value,min,max);
         VALUES.put(String.join(".",entry.getPath()),entry);
     }
+    static void flag(ForgeConfigSpec.Builder b,String name,boolean value,String comment) {
+        var entry=b.comment(comment).define(name,value);VALUES.put(String.join(".",entry.getPath()),entry);
+    }
+    private static double number(Object value){return value instanceof Boolean flag?(flag?1:0):((Number)value).doubleValue();}
     public static double value(String key) { return current.get(key); }
     public static double boost(String system,String key) { return value("combat_boost."+system+"."+key); }
     public static double calamitasValue(String key) { return value("boss.calamitas."+key); }
@@ -161,11 +169,11 @@ public final class ProjectCCommonConfig {
     public static void receive(CompoundTag tag) {
         remoteValues=ServerLifecycleHooks.getCurrentServer()==null;
         Map<String,Double> values=new LinkedHashMap<>();
-        VALUES.forEach((key,spec)->values.put(key,tag.contains(key)?tag.getDouble(key):spec.getDefault().doubleValue()));
+        VALUES.forEach((key,spec)->values.put(key,tag.contains(key)?tag.getDouble(key):number(spec.getDefault())));
         current=Map.copyOf(values);
     }
     public static void localValues() {
-        Map<String,Double> values=new LinkedHashMap<>();VALUES.forEach((key,value)->values.put(key,value.get().doubleValue()));
+        Map<String,Double> values=new LinkedHashMap<>();VALUES.forEach((key,value)->values.put(key,number(value.get())));
         current=Map.copyOf(values);
     }
     public static void disconnected() { remoteValues=false;localValues(); }
@@ -207,6 +215,7 @@ public final class ProjectCCommonConfig {
     }
     @SubscribeEvent public static void join(EntityJoinLevelEvent event) { if(!event.getLevel().isClientSide)applyHealth(event.getEntity()); }
     private static void applyHealth(net.minecraft.world.entity.Entity entity) {
+        if(entity instanceof net.everla.projectc.arkofcosmos.combat.SatsukiBoss boss)boss.applyConfiguredHealth();
         if(entity instanceof net.everla.projectc.arkofcosmos.entity.MahouTsukaiEntity boss)boss.applyConfiguredHealth();
         if(entity instanceof net.everla.projectc.arkofcosmos.entity.FourthCalamityEntity boss)boss.applyConfiguredHealth();
         if(entity instanceof net.minecraft.world.entity.LivingEntity living) {
@@ -232,7 +241,9 @@ public final class ProjectCCommonConfig {
         for(var modifier:java.util.List.copyOf(event.getModifiers().get(Attributes.ATTACK_SPEED)))
             if(modifier.getId().equals(java.util.UUID.fromString("FA233E1C-4180-4865-B01B-BCCE9785ACA3")))event.removeModifier(Attributes.ATTACK_SPEED,modifier);
         event.addModifier(Attributes.ATTACK_SPEED,new AttributeModifier(java.util.UUID.fromString("FA233E1C-4180-4865-B01B-BCCE9785ACA3"),"Weapon modifier",value("weapons."+id.getPath()+".attack_speed")-4,AttributeModifier.Operation.ADDITION));
-        if(java.util.Set.of("ark_of_the_old_one","violence","rancor","gruesome_eminence").contains(id.getPath())) {
+        // These two items already provide live damage with Item's canonical UUID instance.
+        // Vanilla's green total-damage tooltip compares that UUID by identity.
+        if(java.util.Set.of("ark_of_the_old_one","rancor","gruesome_eminence","bejeweled_staff").contains(id.getPath())) {
             for(var modifier:java.util.List.copyOf(event.getModifiers().get(Attributes.ATTACK_DAMAGE)))
                 if(modifier.getId().equals(java.util.UUID.fromString("CB3F55D3-645C-4F38-A497-9C13A33DB5CF")))event.removeModifier(Attributes.ATTACK_DAMAGE,modifier);
             event.addModifier(Attributes.ATTACK_DAMAGE,new AttributeModifier(java.util.UUID.fromString("CB3F55D3-645C-4F38-A497-9C13A33DB5CF"),"Weapon modifier",damage(id.getPath())-1,AttributeModifier.Operation.ADDITION));

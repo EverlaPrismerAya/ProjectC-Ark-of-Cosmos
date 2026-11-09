@@ -45,10 +45,11 @@ public final class ProjectCCommand {
                 var bosses = new ArrayList<Entity>();
                 for (var level : context.getSource().getServer().getAllLevels())
                     for (var entity : level.getAllEntities())
-                        if (!entity.isRemoved() && (entity instanceof MahouTsukaiEntity || entity instanceof FourthCalamityEntity || entity instanceof SupremeCalamitasEntity || net.everla.projectc.arkofcosmos.entity.CalamitasSummons.commandRoot(entity)))
+                        if (!entity.isRemoved() && (entity instanceof net.everla.projectc.arkofcosmos.combat.SatsukiBoss || entity instanceof MahouTsukaiEntity || entity instanceof FourthCalamityEntity || entity instanceof SupremeCalamitasEntity || net.everla.projectc.arkofcosmos.entity.CalamitasSummons.commandRoot(entity)))
                             bosses.add(entity);
                 for (var boss : bosses) {
-                    if (boss instanceof MahouTsukaiEntity mahou) mahou.removeByPlayerCommand();
+                    if(boss instanceof net.everla.projectc.arkofcosmos.combat.SatsukiBoss rin) rin.removeByPlayerCommand();
+                    else if (boss instanceof MahouTsukaiEntity mahou) mahou.removeByPlayerCommand();
                     else if (boss instanceof FourthCalamityEntity calamity) calamity.removeByPlayerCommand();
                     else if (boss instanceof SupremeCalamitasEntity calamitas) calamitas.endBattle(false);
                     else net.everla.projectc.arkofcosmos.entity.CalamitasSummons.removeCommandRoot(boss);

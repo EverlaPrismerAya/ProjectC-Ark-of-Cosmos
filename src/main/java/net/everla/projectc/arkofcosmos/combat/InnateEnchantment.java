@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import net.everla.projectc.arkofcosmos.item.ArkItem;
 import net.everla.projectc.arkofcosmos.item.OldOneItem;
+import net.everla.projectc.arkofcosmos.item.FirstFractalItem;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -23,7 +24,7 @@ public final class InnateEnchantment {
     }
 
     private static int level(ItemStack stack) {
-        return stack.getItem() instanceof ArkItem ? 5 : stack.getItem() instanceof OldOneItem ? 255 : stack.getItem() instanceof net.everla.projectc.arkofcosmos.item.NecromanticWeaponItem || stack.getItem() instanceof net.everla.projectc.arkofcosmos.item.ViolenceItem ? 10 : 0;
+        return stack.getItem() instanceof ArkItem ? 5 : stack.getItem() instanceof OldOneItem ? 255 : stack.getItem() instanceof net.everla.projectc.arkofcosmos.item.SoulMagicWeaponItem || stack.getItem() instanceof net.everla.projectc.arkofcosmos.item.ViolenceItem || stack.getItem() instanceof FirstFractalItem ? 10 : 0;
     }
 
     public static Map<Enchantment, Integer> combatEnchantments(ItemStack stack) {

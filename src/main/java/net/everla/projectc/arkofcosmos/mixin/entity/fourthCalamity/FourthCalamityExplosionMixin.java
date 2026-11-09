@@ -33,7 +33,7 @@ public abstract class FourthCalamityExplosionMixin {
         var boss=net.everla.projectc.arkofcosmos.combat.CalamityAttackGuard.damageOwner(
             new net.minecraft.world.damagesource.DamageSource(source.typeHolder(),explosion.getDirectSourceEntity(),source.getEntity(),source.getSourcePosition()));
         return boss!=null&&entity!=boss?strength:
-            original.call(entity,strength);
+            entity instanceof net.everla.projectc.arkofcosmos.combat.SatsukiBoss?0:original.call(entity,strength);
     }
     @WrapWithCondition(method="explode",at=@At(value="INVOKE",target="Lnet/minecraft/world/entity/Entity;setDeltaMovement(Lnet/minecraft/world/phys/Vec3;)V"))
     private boolean fourthNoBlastKnockback(Entity entity,Vec3 velocity) {

@@ -38,6 +38,7 @@ public final class ArkNetwork {
                     net.everla.projectc.arkofcosmos.combat.FracturedCombat.input(context.getSender(), this);
                     net.everla.projectc.arkofcosmos.combat.AncientsCombat.input(context.getSender(), this);
                     net.everla.projectc.arkofcosmos.combat.ViolenceCombat.input(context.getSender(), this);
+                    net.everla.projectc.arkofcosmos.combat.FirstFractalCombat.input(context.getSender(), this);
                 }
             });
             context.setPacketHandled(true);

@@ -1,0 +1,10 @@
+{
+ "vertex":"arkofcosmos:satsuki_death","fragment":"arkofcosmos:satsuki_death",
+ "attributes":["Position","Color","UV0"],"samplers":[{"name":"SceneSampler"}],
+ "uniforms":[
+  {"name":"InverseViewProjection","type":"matrix4x4","count":16,"values":[1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1]},
+  {"name":"ScreenSize","type":"float","count":2,"values":[1,1]},
+  {"name":"Center","type":"float","count":3,"values":[0,0,0]},
+  {"name":"Age","type":"float","count":1,"values":[0]}
+ ]
+}

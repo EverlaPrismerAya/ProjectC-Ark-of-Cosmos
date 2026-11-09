@@ -174,6 +174,18 @@ tasks.register('verifyMixinRefmap', JavaExec) {
     }
 }
 tasks.named('check').configure { dependsOn 'verifyMixinRefmap' }
+// Forge wrapper names use the declaring class's simple name, so nested subscribers can collide.
+tasks.register('verifyEventSubscribers', JavaExec) {
+    dependsOn 'reobfJar', 'reobfJarJar'
+    javaLauncher = javaToolchains.launcherFor { languageVersion = JavaLanguageVersion.of(17) }
+    classpath = sourceSets.main.compileClasspath
+    mainClass = file('gradle/EventSubscriberAudit.java').absolutePath
+    doFirst {
+        args = [tasks.named('jar').get().archiveFile.get().asFile.absolutePath,
+                tasks.named('jarJar').get().archiveFile.get().asFile.absolutePath]
+    }
+}
+tasks.named('check').configure { dependsOn 'verifyEventSubscribers' }
 repositories {
     // Optional local mirror of verified downloads for unreliable/offline networks.
     maven { url = uri('sample/runtime-maven') }

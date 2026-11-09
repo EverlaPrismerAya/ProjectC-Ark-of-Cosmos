@@ -124,7 +124,7 @@ public final class ArkDamage {
 
     private static boolean ordinaryTarget(LivingEntity target) {
         // Our boss owns staged health/recovery; keep its native callbacks instead of a second health authority.
-        return target instanceof ApollyonCompatTarget apollyon && apollyon.arkofcosmos$isNetherApollyon()
+        return target instanceof ProtectedBoss || target instanceof ApollyonCompatTarget apollyon && apollyon.arkofcosmos$isNetherApollyon()
                 || target instanceof net.everla.projectc.arkofcosmos.entity.MahouTsukaiEntity
                 || target instanceof net.everla.projectc.arkofcosmos.entity.FourthCalamityEntity
                 || target instanceof net.everla.projectc.arkofcosmos.entity.WitchCurseEntity

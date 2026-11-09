@@ -31,6 +31,12 @@
     "entity.fourthCalamity.CalamityAttackRemovalMixin",
     "entity.combat.VanillaLivingCombatMixin",
     "compact.goetyAndGoetyRevelation.GoetyApollyonMixin",
+    "compact.goetyAndGoetyRevelation.SatsukiDamageMixin",
+    "compact.goetyAndGoetyRevelation.SatsukiFumoMixin",
+    "compact.goetyAndGoetyRevelation.SatsukiSpiderFumoMixin",
+    "compact.goetyAndGoetyRevelation.SatsukiDomainMixin",
+    "compact.goetyAndGoetyRevelation.SatsukiHealthMixin",
+    "compact.goetyAndGoetyRevelation.SatsukiDoomMixin",
     "compact.goetyAndGoetyRevelation.LegacyApollyonMixin",
     "compact.goetyAndGoetyRevelation.LegacyApollyonLivingMixin",
     "compact.goetyAndGoetyRevelation.NecromanticFocusEnchantmentMixin",
@@ -48,6 +54,8 @@
     "compact.goetyAndGoetyRevelation.WitchSoulDebitMixin"
   ],
   "client": [
+    "client.SatsukiFumoRenderMixin",
+    "client.SatsukiDomainCageMixin",
     "client.calamitas.CalamitasDronePitchMixin",
     "client.gui.GoetyBossBarMixin",
     "client.gui.BossBarProgressAccessor",

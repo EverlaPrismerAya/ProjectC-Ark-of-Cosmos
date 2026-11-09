@@ -27,6 +27,7 @@ public final class WindBurst {
             boolean ownBossCharge=entity instanceof net.everla.projectc.arkofcosmos.entity.FourthCalamityEntity
                 &&source instanceof net.minecraft.world.entity.projectile.Projectile projectile&&projectile.getOwner()==entity;
             if(entity instanceof net.everla.projectc.arkofcosmos.entity.FourthCalamityEntity&&!ownBossCharge)continue;
+            if(entity instanceof net.everla.projectc.arkofcosmos.combat.SatsukiBoss&&!fullKnockback)continue;
             double distance=entity.position().distanceTo(center)/diameter;if(distance>1)continue;
             Vec3 origin=entity instanceof net.minecraft.world.entity.item.PrimedTnt?entity.position():entity.getEyePosition();
             Vec3 direction=origin.subtract(center).normalize();

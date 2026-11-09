@@ -55,6 +55,10 @@ public final class ArkOfCosmos {
     public static final RegistryObject<EntityType<net.everla.projectc.arkofcosmos.entity.ElementsEntity>> ELEMENTS_ATTACK = ENTITIES.register("elements_attack",
             () -> EntityType.Builder.<net.everla.projectc.arkofcosmos.entity.ElementsEntity>of(net.everla.projectc.arkofcosmos.entity.ElementsEntity::new, MobCategory.MISC)
                     .sized(.5f,.5f).noSave().noSummon().clientTrackingRange(128).updateInterval(1).build("arkofcosmos:elements_attack"));
+    public static final RegistryObject<Item> FIRST_FRACTAL=ITEMS.register("first_fractal",net.everla.projectc.arkofcosmos.item.FirstFractalItem::new);
+    public static final RegistryObject<EntityType<net.everla.projectc.arkofcosmos.entity.FirstFractalEntity>> FIRST_FRACTAL_ATTACK=ENTITIES.register("first_fractal_attack",
+        ()->EntityType.Builder.<net.everla.projectc.arkofcosmos.entity.FirstFractalEntity>of(net.everla.projectc.arkofcosmos.entity.FirstFractalEntity::new,MobCategory.MISC)
+            .sized(2,2).noSave().noSummon().clientTrackingRange(128).updateInterval(1).build("arkofcosmos:first_fractal_attack"));
     public static final RegistryObject<Item> VIOLENCE=net.minecraftforge.fml.ModList.get().isLoaded("goety") ? ITEMS.register("violence",net.everla.projectc.arkofcosmos.item.ViolenceItem::new) : null;
     public static final RegistryObject<EntityType<net.everla.projectc.arkofcosmos.entity.ViolenceEntity>> VIOLENCE_ATTACK=net.minecraftforge.fml.ModList.get().isLoaded("goety") ? ENTITIES.register("violence_attack",
         ()->EntityType.Builder.<net.everla.projectc.arkofcosmos.entity.ViolenceEntity>of(net.everla.projectc.arkofcosmos.entity.ViolenceEntity::new,MobCategory.MISC)
@@ -85,6 +89,8 @@ public final class ArkOfCosmos {
     public static final RegistryObject<EntityType<net.everla.projectc.arkofcosmos.entity.MahouTsukaiEntity>> MAHOU_TSUKAI = ENTITIES.register("mahou_tsukai",
             () -> EntityType.Builder.<net.everla.projectc.arkofcosmos.entity.MahouTsukaiEntity>of(net.everla.projectc.arkofcosmos.entity.MahouTsukaiEntity::new, MobCategory.MONSTER)
                     .sized(.6f, 1.95f).clientTrackingRange(128).updateInterval(1).build("arkofcosmos:mahou_tsukai"));
+    public static final RegistryObject<Item> MAHOU_TSUKAI_SPAWN_EGG=ITEMS.register("mahou_tsukai_spawn_egg",
+        ()->new net.minecraftforge.common.ForgeSpawnEggItem(MAHOU_TSUKAI,0x23213D,0xB68CE0,new Item.Properties()));
     public static final RegistryObject<EntityType<net.everla.projectc.arkofcosmos.entity.MahouAttackEntity>> MAHOU_ATTACK = ENTITIES.register("mahou_attack",
             () -> EntityType.Builder.<net.everla.projectc.arkofcosmos.entity.MahouAttackEntity>of(net.everla.projectc.arkofcosmos.entity.MahouAttackEntity::new, MobCategory.MISC)
                     .sized(.2f,.2f).noSave().noSummon().clientTrackingRange(128).updateInterval(1).build("arkofcosmos:mahou_attack"));
@@ -139,6 +145,8 @@ public final class ArkOfCosmos {
         net.everla.projectc.arkofcosmos.revengeance.RevengeanceModMobEffects.register(bus);
         net.everla.projectc.arkofcosmos.revengeance.RevengeanceModSounds.REGISTRY.register(bus);
         CalamitasContent.register(bus);
+        SatsukiContent.register(bus);
+        BejeweledContent.register(bus);
         net.everla.projectc.arkofcosmos.enchant.WitchEnchanting.register(bus);
         net.everla.projectc.arkofcosmos.combat.vanilla.VanillaCombat.register(bus);
         ITEMS.register(bus);
@@ -169,6 +177,7 @@ public final class ArkOfCosmos {
             event.accept(ARK_OF_THE_ELEMENTS);
             event.accept(FRACTURED_ARK);
             event.accept(ARK_OF_THE_ANCIENTS);
+            event.accept(FIRST_FRACTAL);
             if (CalamitasContent.ENABLED) event.accept(VIOLENCE);
             if (MISTILTEINN != null) event.accept(MISTILTEINN);
         }
@@ -178,6 +187,7 @@ public final class ArkOfCosmos {
         if (event.getTabKey() == CreativeModeTabs.INGREDIENTS) event.accept(ANNIHILATION_EMBER);
         if (event.getTabKey() == CreativeModeTabs.INGREDIENTS) event.accept(ASHES_OF_CALAMITY);
         if (event.getTabKey() == CreativeModeTabs.SPAWN_EGGS) event.accept(THE_PLAYER_SPAWN_EGG);
+        if (event.getTabKey() == CreativeModeTabs.SPAWN_EGGS) event.accept(MAHOU_TSUKAI_SPAWN_EGG);
         if (event.getTabKey() == CreativeModeTabs.SPAWN_EGGS && CalamitasContent.ENABLED) event.accept(CalamitasContent.SPAWN_EGG);
     }
 }

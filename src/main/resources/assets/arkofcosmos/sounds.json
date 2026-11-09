@@ -924,5 +924,22 @@
         "stream": false
       }
     ]
+  },
+  "bejeweled_cast": {
+    "sounds": [
+      "arkofcosmos:bejeweled_cast"
+    ]
+  },
+  "bejeweled_flight": {
+    "sounds": [
+      "arkofcosmos:bejeweled_flight"
+    ]
+  },
+  "bejeweled_hit": {
+    "sounds": [
+      "arkofcosmos:bejeweled_hit",
+      "arkofcosmos:bejeweled_hit_1",
+      "arkofcosmos:bejeweled_hit_2"
+    ]
   }
 }
