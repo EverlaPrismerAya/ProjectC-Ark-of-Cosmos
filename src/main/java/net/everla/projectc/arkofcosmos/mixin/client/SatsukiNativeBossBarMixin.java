@@ -14,8 +14,8 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
-import org.spongepowered.asm.mixin.injection.ModifyArgs;
-import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import net.minecraft.network.chat.Component;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
@@ -75,15 +75,17 @@ public abstract class SatsukiNativeBossBarMixin {
         return key;
     }
 
-    @ModifyArgs(method="renderOldApollyonBar",at=@At(value="INVOKE",
+    @WrapOperation(method="renderOldApollyonBar",at=@At(value="INVOKE",
             target="Lcom/mega/revelationfix/client/screen/bossbar/ApollyonBossbar;renderClassicApollyonBar(Lcom/mega/endinglib/util/mc/client/MegaGuiGraphics;Lnet/minecraft/client/Minecraft;Lnet/minecraft/network/chat/Component;ILnet/minecraft/resources/ResourceLocation;IIFZZI)I"),remap=false,require=0)
-    private static void ark$oldNameAndTitle(Args args){
-        if(!(ark$drawing instanceof SatsukiBoss))return;
-        int title=((z1gned.goetyrevelation.util.ApollyonAbilityHelper)ark$drawing).allTitleApostle$getTitleNumber();
-        Component label=ark$drawing.getName().copy().append(" · ").append(Component.translatable("title.arkofcosmos.satsuki_rin."+title));
-        var minecraft=net.minecraft.client.Minecraft.getInstance();
-        args.set(2,label);
-        args.set(3,minecraft.getWindow().getGuiScaledWidth()/2-minecraft.font.width(label)/2);
-        args.set(9,true);
+    private static int ark$oldNameAndTitle(@Coerce GuiGraphics graphics,net.minecraft.client.Minecraft minecraft,
+            Component label,int titleX,ResourceLocation texture,int x,int y,float health,boolean second,
+            boolean drawTitle,int hurt,Operation<Integer> original){
+        if(ark$drawing instanceof SatsukiBoss){
+            int title=((z1gned.goetyrevelation.util.ApollyonAbilityHelper)ark$drawing).allTitleApostle$getTitleNumber();
+            label=ark$drawing.getName().copy().append(" · ").append(Component.translatable("title.arkofcosmos.satsuki_rin."+title));
+            titleX=minecraft.getWindow().getGuiScaledWidth()/2-minecraft.font.width(label)/2;
+            drawTitle=true;
+        }
+        return original.call(graphics,minecraft,label,titleX,texture,x,y,health,second,drawTitle,hurt);
     }
 }

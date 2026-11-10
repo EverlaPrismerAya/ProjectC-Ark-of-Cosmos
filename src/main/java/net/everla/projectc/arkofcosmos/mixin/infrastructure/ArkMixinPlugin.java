@@ -38,7 +38,9 @@ public final class ArkMixinPlugin implements IMixinConfigPlugin {
             } catch(java.io.IOException|ClassNotFoundException oldVersion) {
                 try {
                     var node=provider.getClassNode("com.mega.revelationfix.mixin.goety.BossBarEventMixin");
-                    return node.methods.stream().anyMatch(m->m.name.equals("revelationfix$getPercent"));
+                    return node.methods.stream().anyMatch(m->m.name.equals("revelationfix$getPercent")
+                            &&m.desc.equals("(Lcom/Polarice3/Goety/common/entities/boss/Apostle;F)F"))
+                            &&bossBarContract(provider.getClassNode(target));
                 } catch(java.io.IOException|ClassNotFoundException absent) { return false; }
             }
         }

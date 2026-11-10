@@ -7,6 +7,15 @@ import org.objectweb.asm.tree.*;
 
 /** Check production annotation strings, including injectors supplied by MixinExtras. */
 class MixinRefmapAudit {
+    static void checkRfArgs(ClassNode node, boolean rfTarget) {
+        if (!rfTarget) return;
+        for (MethodNode method : node.methods)
+            for (AnnotationNode a : annotations(method.visibleAnnotations, method.invisibleAnnotations))
+                if (a.desc.equals("Lorg/spongepowered/asm/mixin/injection/ModifyArgs;"))
+                    throw new AssertionError(node.name + "." + method.name
+                            + ": RF boss-bar transformation cannot load generated Args classes; use WrapOperation");
+    }
+
     static Map<String, Object> values(AnnotationNode annotation) {
         Map<String, Object> result = new HashMap<>();
         if (annotation != null && annotation.values != null)
@@ -34,6 +43,16 @@ class MixinRefmapAudit {
 
     @SuppressWarnings("unchecked")
     public static void main(String[] args) throws Exception {
+        // Regression: the rejected injector previously built successfully but crashed when a boss bar first rendered.
+        ClassNode regression = new ClassNode();
+        regression.name = "RfArgsRegression";
+        MethodNode callback = new MethodNode();
+        callback.visibleAnnotations = List.of(new AnnotationNode("Lorg/spongepowered/asm/mixin/injection/ModifyArgs;"));
+        regression.methods.add(callback);
+        boolean rejected = false;
+        try { checkRfArgs(regression, true); } catch (AssertionError expected) { rejected = true; }
+        if (!rejected) throw new AssertionError("RF ModifyArgs regression guard did not reject unsafe injector");
+        checkRfArgs(regression, false);
         for (String path : args) try (ZipFile jar = new ZipFile(path)) {
             JsonObject config, refs;
             try (Reader r = new InputStreamReader(jar.getInputStream(jar.getEntry("arkofcosmos.mixins.json")))) {
@@ -47,14 +66,18 @@ class MixinRefmapAudit {
                 String name = (config.get("package").getAsString() + "." + item.getAsString()).replace('.', '/');
                 ClassNode node = new ClassNode();
                 try (InputStream in = jar.getInputStream(jar.getEntry(name + ".class"))) { new ClassReader(in).accept(node, 0); }
-                boolean remap = true, vanilla = false;
+                boolean remap = true, vanilla = false, rfTarget = false;
                 for (AnnotationNode a : annotations(node.visibleAnnotations, node.invisibleAnnotations))
                     if (a.desc.equals("Lorg/spongepowered/asm/mixin/Mixin;")) {
                         Map<String, Object> v = values(a);
                         remap = !Boolean.FALSE.equals(v.get("remap"));
                         for (Type t : (List<Type>) v.getOrDefault("value", List.of()))
                             vanilla |= t.getInternalName().startsWith("net/minecraft/");
+                        for (String target : (List<String>) v.getOrDefault("targets", List.of()))
+                            rfTarget |= target.equals("com.mega.revelationfix.client.screen.bossbar.ApollyonBossbar")
+                                    || target.equals("com.Polarice3.Goety.client.events.BossBarEvent");
                     }
+                checkRfArgs(node, rfTarget);
                 JsonObject mappings = refs.has(name) ? refs.getAsJsonObject(name) : new JsonObject();
                 for (MethodNode method : node.methods)
                     for (AnnotationNode a : annotations(method.visibleAnnotations, method.invisibleAnnotations)) {
