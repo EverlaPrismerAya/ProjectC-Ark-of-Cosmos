@@ -28,6 +28,7 @@ public final class SatsukiDomainIntro {
     private static void draw(net.minecraft.client.gui.GuiGraphics gui,float partial){
         var mc=Minecraft.getInstance();
         if(!SatsukiContent.ENABLED||mc.level==null||mc.player==null)return;
+        SatsukiSlashes.screen(gui,partial);
         float opacity=0;
         for(var entity:mc.level.entitiesForRendering())if(entity instanceof SatsukiRinEntity rin&&rin.distanceToSqr(mc.player)<=128*128){
             if(rin.isDeadOrDying()){

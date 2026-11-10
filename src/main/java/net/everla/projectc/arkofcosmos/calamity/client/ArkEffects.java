@@ -26,6 +26,7 @@ public final class ArkEffects {
     private static int emittingOwner = -1;
     private static boolean simulating;
     static double shake;
+    public static void addShake(double amount){shake=Math.max(shake,amount);}
     public static void camera(net.minecraft.client.Camera camera) {
         if(shake<=0||Minecraft.getInstance().isPaused())return;
         // Calamity camera translation uses a random circular offset; one pixel = 1/16 block.

@@ -137,7 +137,13 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "goety_revelation:dimensional_will"
+          "name": "goety_revelation:dimensional_will",
+          "functions": [
+            {
+              "function": "minecraft:set_nbt",
+              "tag": "{ArkSatsukiFantasy:1b}"
+            }
+          ]
         }
       ]
     }

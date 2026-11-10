@@ -114,6 +114,7 @@ public final class ArkOfCosmos {
                 "true_biome_charge","true_biome_flail","true_biome_blast","true_biome_beam_end","true_biome_beam_start","true_biome_hook_end","true_biome_slice","true_biome_pulse"})
             AUDIO.put(name, SOUNDS.register(name, () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(MOD_ID, name))));
     }
+    public static SoundEvent audio(String name) { return AUDIO.get(name).get(); }
     public static void sound(net.minecraft.world.entity.Entity entity, String name, float volume) {
         entity.level().playSound(null, entity.getX(), entity.getY(), entity.getZ(), AUDIO.get(name).get(), net.minecraft.sounds.SoundSource.PLAYERS, name.equals("item35") ? volume * .75f : volume, 1);
     }
