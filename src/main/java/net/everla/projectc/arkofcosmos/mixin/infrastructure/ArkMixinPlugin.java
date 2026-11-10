@@ -30,6 +30,18 @@ public final class ArkMixinPlugin implements IMixinConfigPlugin {
     }
     @Override public String getRefMapperConfig() { return null; }
     @Override public boolean shouldApplyMixin(String target, String mixin) {
+        if(mixin.endsWith(".SatsukiLegacyBossBarMixin")) {
+            var provider=org.spongepowered.asm.service.MixinService.getService().getBytecodeProvider();
+            try {
+                provider.getClassNode("com.mega.revelationfix.client.screen.bossbar.ApollyonBossbar");
+                return false;
+            } catch(java.io.IOException|ClassNotFoundException oldVersion) {
+                try {
+                    var node=provider.getClassNode("com.mega.revelationfix.mixin.goety.BossBarEventMixin");
+                    return node.methods.stream().anyMatch(m->m.name.equals("revelationfix$getPercent"));
+                } catch(java.io.IOException|ClassNotFoundException absent) { return false; }
+            }
+        }
         if(mixin.contains(".LegacyApollyon")) {
             if(legacyApollyon!=null)return legacyApollyon;
             try {

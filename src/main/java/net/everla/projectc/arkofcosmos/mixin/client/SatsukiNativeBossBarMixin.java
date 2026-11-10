@@ -2,6 +2,12 @@ package net.everla.projectc.arkofcosmos.mixin.client;
 
 import com.Polarice3.Goety.common.entities.boss.Apostle;
 import net.everla.projectc.arkofcosmos.combat.SatsukiBoss;
+import net.minecraft.client.gui.GuiGraphics;
+import net.everla.projectc.arkofcosmos.client.SatsukiBossBarFill;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
+import org.spongepowered.asm.mixin.injection.Coerce;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Pseudo;
 import org.spongepowered.asm.mixin.Unique;
@@ -20,15 +26,41 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class SatsukiNativeBossBarMixin {
     /** The Apostle being drawn; getApollyonPercent runs first in renderApollyonBar, before the name is built. */
     @Unique private static Apostle ark$drawing;
+    @Unique private static float ark$phaseAlpha=1;
+
+    @Inject(method="applyDissolve",at=@At("HEAD"),remap=false,require=0)
+    private static void ark$phaseAlpha(float phase,CallbackInfo ci){
+        ark$phaseAlpha=Mth.clamp(phase,0,1);
+    }
 
     @Inject(method="getApollyonPercent",at=@At("RETURN"),cancellable=true,remap=false,require=0)
     private static void ark$rinPercent(Apostle apostle,float partial,CallbackInfoReturnable<Float> cir){
         ark$drawing=apostle;
         if(!(apostle instanceof SatsukiBoss))return;
+        SatsukiBossBarFill.update(apostle,partial);
         float max=apostle.getMaxHealth();
         if(max<=0){cir.setReturnValue(0f);return;}
         // Rin synchronizes her authoritative health; RF's cached percent uses Apollyon's global maximum.
         cir.setReturnValue(Math.max(0,Math.min(1,apostle.getHealth()/max)));
+    }
+
+    @Inject(method="drawCosmicHealth(Lcom/mega/endinglib/util/mc/client/MegaGuiGraphics;Lnet/minecraft/resources/ResourceLocation;IIFFFFFIIFI)V",
+            at=@At("HEAD"),cancellable=true,remap=false,require=0)
+    private static void ark$rainbowFill(@Coerce GuiGraphics graphics,ResourceLocation texture,int x,int y,
+            float u,float v,float cosmicU,float cosmicV,float health,int height,int cosmicHeight,float alpha,int hurt,CallbackInfo ci){
+        if(!(ark$drawing instanceof SatsukiBoss))return;
+        SatsukiBossBarFill.fill(graphics,x,y,health,height,1);
+        ci.cancel();
+    }
+
+    @Inject(method="drawDissolvedCosmicHealth(Lcom/mega/endinglib/util/mc/client/MegaGuiGraphics;Lnet/minecraft/resources/ResourceLocation;IIFFFIIFI)V",
+            at=@At("HEAD"),cancellable=true,remap=false,require=0)
+    private static void ark$rainbowTransition(@Coerce GuiGraphics graphics,ResourceLocation texture,int x,int y,
+            float u,float v,float health,int height,int cosmicHeight,float alpha,int hurt,CallbackInfo ci){
+        if(!(ark$drawing instanceof SatsukiBoss))return;
+        // RF multiplies cosmic alpha by its red hurt animation; use the phase animation independently.
+        SatsukiBossBarFill.fill(graphics,x,y,health,height,ark$phaseAlpha);
+        ci.cancel();
     }
 
     @ModifyArg(method="renderApollyonBar",remap=false,require=0,
