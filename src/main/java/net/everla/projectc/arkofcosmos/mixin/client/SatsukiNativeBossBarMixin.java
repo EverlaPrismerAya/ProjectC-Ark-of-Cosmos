@@ -14,6 +14,9 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
+import org.spongepowered.asm.mixin.injection.ModifyArgs;
+import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
+import net.minecraft.network.chat.Component;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 /**
@@ -70,5 +73,17 @@ public abstract class SatsukiNativeBossBarMixin {
         if(key.equals("name.goety_revelation.apollyon"))return "entity.arkofcosmos.satsuki_rin";
         if(key.startsWith("title.goety."))return "title.arkofcosmos.satsuki_rin."+key.substring("title.goety.".length());
         return key;
+    }
+
+    @ModifyArgs(method="renderOldApollyonBar",at=@At(value="INVOKE",
+            target="Lcom/mega/revelationfix/client/screen/bossbar/ApollyonBossbar;renderClassicApollyonBar(Lcom/mega/endinglib/util/mc/client/MegaGuiGraphics;Lnet/minecraft/client/Minecraft;Lnet/minecraft/network/chat/Component;ILnet/minecraft/resources/ResourceLocation;IIFZZI)I"),remap=false,require=0)
+    private static void ark$oldNameAndTitle(Args args){
+        if(!(ark$drawing instanceof SatsukiBoss))return;
+        int title=((z1gned.goetyrevelation.util.ApollyonAbilityHelper)ark$drawing).allTitleApostle$getTitleNumber();
+        Component label=ark$drawing.getName().copy().append(" · ").append(Component.translatable("title.arkofcosmos.satsuki_rin."+title));
+        var minecraft=net.minecraft.client.Minecraft.getInstance();
+        args.set(2,label);
+        args.set(3,minecraft.getWindow().getGuiScaledWidth()/2-minecraft.font.width(label)/2);
+        args.set(9,true);
     }
 }

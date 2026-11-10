@@ -198,7 +198,7 @@ repositories {
         content { includeGroup 'maven.modrinth' }
     }
     // RevelationFix 4.8 is supplied locally; give fg.deobf a module coordinate.
-    flatDir { dirs 'sample' }
+    flatDir { dirs 'sample', 'sample/legacy-goety' }
     // Put repositories for dependencies here
     // ForgeGradle automatically adds the Forge maven and Maven Central for you
 
@@ -229,8 +229,14 @@ dependencies {
     compileOnly fg.deobf('maven.modrinth:goety-revelation:BAH9TQcK')
     compileOnly fg.deobf('local:[Forge]RevelationFix-1.20.1:4.9') // Optional legacy damage-window backport APIs only.
     compileOnly fg.deobf('maven.modrinth:goety:AIxkLaCV')
+    // Goety Modern
     runtimeOnly fg.deobf('maven.modrinth:goety:AIxkLaCV') // 2.5.60.4
     runtimeOnly fg.deobf('maven.modrinth:goety-revelation:BAH9TQcK') // 2.3.6
+    // Goety Legacy
+    //runtimeOnly fg.deobf('local:goety-legacy:2.5.52.1')
+    //runtimeOnly fg.deobf('local:goety-revelation-legacy:2.3.1')
+    //runtimeOnly fg.deobf('local:revelationfix:4.0')
+    // curios
     runtimeOnly fg.deobf('maven.modrinth:curios:IPQlZkz1')
     compileOnly fg.deobf('maven.modrinth:curios:IPQlZkz1')
     compileOnly 'org.spongepowered:mixin:0.8.5'
