@@ -88,18 +88,24 @@ public final class SatsukiSlashes {
         world();var mc=Minecraft.getInstance();if(mc.level==null||mc.isPaused())return;
         clock++;SLASHES.removeIf(s->clock-s.born()>=s.life());SCREEN.removeIf(c->clock-c.born()>=5);
         lastPresence=presence;
-        float inside=0;
+        float inside=0,outside=0;Vec3 nearest=null;
         if(net.everla.projectc.arkofcosmos.SatsukiContent.ENABLED){
             Vec3 eye=mc.gameRenderer.getMainCamera().getPosition();
             for(var entity:mc.level.entitiesForRendering())if(entity instanceof SatsukiRinEntity rin&&SatsukiDomain.active(rin)){
                 var box=SatsukiDomain.bounds(rin);
                 boolean here=box.contains(eye);
                 if(here)inside=Math.max(inside,SatsukiDomain.scale(rin));
+                else{
+                    Vec3 edge=clamp(box,eye);double distance=edge.distanceTo(eye);
+                    float heard=SatsukiDomain.scale(rin)*(float)(1-distance/HEARING_RANGE);
+                    if(heard>outside){outside=heard;nearest=edge;}
+                }
                 ambient(mc,box,here?eye:null);
             }
         }
         presence+=(inside-presence)*(inside>presence?.35f:.12f);
         if(inside>0)immersion(mc,inside);
+        else if(outside>0)distantSlashes(mc,nearest,outside);
     }
     private static void ambient(Minecraft mc,AABB box,Vec3 eye){
         // Fine cuts: half spread over the whole domain, half crowding the viewer so the storm is always visible.
@@ -164,6 +170,25 @@ public final class SatsukiSlashes {
             Vec3 at=eye.add(randomDirection().scale(4+RANDOM.nextDouble()*8));
             mc.level.playLocalSound(at.x,at.y,at.z,ArkOfCosmos.audio("fractured_swing"),SoundSource.HOSTILE,.45f*strength,1.2f+RANDOM.nextFloat()*.6f,false);
         }
+    }
+    /** Blocks beyond the domain edge within which the slicing storm can still be heard. */
+    private static final double HEARING_RANGE=48;
+    /** Muffled cuts for viewers outside the domain, placed toward its nearest edge so they keep their direction. */
+    private static void distantSlashes(Minecraft mc,Vec3 edge,float strength){
+        Vec3 eye=mc.gameRenderer.getMainCamera().getPosition(),toward=edge.subtract(eye);
+        double distance=toward.length();
+        Vec3 base=eye.add(toward.scale(Math.min(distance,6)/Math.max(distance,1e-4)));
+        if(RANDOM.nextFloat()<.7f){
+            Vec3 at=base.add(randomDirection().scale(RANDOM.nextDouble()*2));
+            mc.level.playLocalSound(at.x,at.y,at.z,SoundEvents.PLAYER_ATTACK_SWEEP,SoundSource.HOSTILE,.3f*strength,1.2f+RANDOM.nextFloat()*.5f,false);
+        }
+        if(RANDOM.nextFloat()<.2f){
+            Vec3 at=base.add(randomDirection().scale(RANDOM.nextDouble()*2));
+            mc.level.playLocalSound(at.x,at.y,at.z,ArkOfCosmos.audio("fractured_swing"),SoundSource.HOSTILE,.4f*strength,1f+RANDOM.nextFloat()*.5f,false);
+        }
+    }
+    private static Vec3 clamp(AABB box,Vec3 at){
+        return new Vec3(Math.max(box.minX,Math.min(box.maxX,at.x)),Math.max(box.minY,Math.min(box.maxY,at.y)),Math.max(box.minZ,Math.min(box.maxZ,at.z)));
     }
     private static Vec3 inBox(AABB box){return new Vec3(between(box.minX,box.maxX),between(box.minY,box.maxY),between(box.minZ,box.maxZ));}
     private static Vec3 near(AABB box,Vec3 eye,double radius){

@@ -44,8 +44,15 @@ public abstract class SatsukiLegacyBossBarMixin {
         SatsukiBossBarFill.update(apostle,partial);
         float max=apostle.getMaxHealth();
         float fraction=max>0?Mth.clamp(apostle.getHealth()/max,0,1):0;
-        SatsukiBossBarFill.fill(graphics,x+9,y+4,fraction*182,8,1);
-        graphics.blit(nether?ark$nether:ark$normal,x,y,0,apostle.isSecondPhase()?16:0,200,16,256,256);
+        ResourceLocation texture=nether?ark$nether:ark$normal;
+        int width=(int)(fraction*182);
+        if(width>0){
+            // Same region, mask and Cosmic overlay as RF 4.0's BossBarEventMixin, with the rainbow replacing the plain fill.
+            SatsukiBossBarFill.fill(graphics,texture,x+9,y+4,0,32,width,8,1);
+            z1gned.goetyrevelation.client.render.ui.NetherStarBar.blitCosmicBar(graphics.pose(),texture,x+9,y+4,0,32,width,8,256,256,
+                    true,((z1gned.goetyrevelation.util.ApollyonAbilityHelper)apostle).getApollyonTime());
+        }
+        graphics.blit(texture,x,y,0,apostle.isSecondPhase()?16:0,200,16,256,256);
         int title=((z1gned.goetyrevelation.util.ApollyonAbilityHelper)apostle).allTitleApostle$getTitleNumber();
         Component label=apostle.getName().copy().append(" · ").append(Component.translatable("title.arkofcosmos.satsuki_rin."+title));
         graphics.drawString(minecraft.font,label,x+100-minecraft.font.width(label)/2,y-9,0xFFFFFF);

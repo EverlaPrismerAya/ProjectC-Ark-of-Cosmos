@@ -275,8 +275,9 @@ public final class ArkDamage {
             if (!seagull && useTotem(target, source)) return true;
             net.everla.projectc.arkofcosmos.enchant.WitchFlames.clear(target);
             // Vanilla plays this in hurt(), which the authoritative damage path bypasses.
-            var deathSound = target.getDeathSound();
-            if (deathSound != null) target.playSound(deathSound, target.getSoundVolume(), target.getVoicePitch());
+            var sounds = (net.everla.projectc.arkofcosmos.mixin.entity.combat.LivingEntitySoundInvoker) target;
+            var deathSound = sounds.arkofcosmos$getDeathSound();
+            if (deathSound != null) target.playSound(deathSound, sounds.arkofcosmos$getSoundVolume(), target.getVoicePitch());
             // Let animated bosses dispatch their own death, delayed loot and eventual removal.
 
             if (bossDamage ? !(target instanceof Player) : target.getType().is(IGNORE_DEATH_REMOVE)) {

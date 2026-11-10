@@ -1,0 +1,21 @@
+{
+  "vertex": "arkofcosmos:satsuki_bar_mask",
+  "fragment": "arkofcosmos:satsuki_bar_mask",
+  "blend": {
+    "func": "add",
+    "srcrgb": "srcalpha",
+    "dstrgb": "1-srcalpha"
+  },
+  "samplers": [
+    { "name": "Sampler0" }
+  ],
+  "uniforms": [
+    { "name": "ModelViewMat", "type": "matrix4x4", "count": 16, "values": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1] },
+    { "name": "ProjMat", "type": "matrix4x4", "count": 16, "values": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1] }
+  ],
+  "attributes": [
+    "Position",
+    "UV0",
+    "Color"
+  ]
+}

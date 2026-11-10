@@ -103,6 +103,8 @@ public final class ArkClient {
             DomainEffects.reset();
             ArkFxDraw.register(event);
             MahouBossBar.registerShader(event);
+            // SatsukiBossBarFill references Goety types; only load it when that integration exists.
+            if(net.everla.projectc.arkofcosmos.SatsukiContent.ENABLED)SatsukiBossBarFill.registerShader(event);
         }
         @SubscribeEvent public static void keys(RegisterKeyMappingsEvent event) {
             event.register(DASH);

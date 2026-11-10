@@ -52,8 +52,13 @@ public abstract class SatsukiNativeBossBarMixin {
     private static void ark$rainbowFill(@Coerce GuiGraphics graphics,ResourceLocation texture,int x,int y,
             float u,float v,float cosmicU,float cosmicV,float health,int height,int cosmicHeight,float alpha,int hurt,CallbackInfo ci){
         if(!(ark$drawing instanceof SatsukiBoss))return;
-        SatsukiBossBarFill.fill(graphics,x,y,health,height,1);
         ci.cancel();
+        if(health<=0)return;
+        // Replaces only RF's plain fill blit: same texture region and alpha mask, rainbow colour.
+        SatsukiBossBarFill.fill(graphics,texture,x,y,u,v,health,height,1);
+        // RF's own Cosmic overlay, with the exact arguments drawCosmicHealth would pass.
+        com.mega.revelationfix.client.screen.bossbar.ApollyonBossbar.blitCosmicBar(graphics.pose(),texture,x,y,cosmicU,cosmicV,
+                (int)health,cosmicHeight,256,256,alpha,hurt);
     }
 
     @Inject(method="drawDissolvedCosmicHealth(Lcom/mega/endinglib/util/mc/client/MegaGuiGraphics;Lnet/minecraft/resources/ResourceLocation;IIFFFIIFI)V",
@@ -61,9 +66,12 @@ public abstract class SatsukiNativeBossBarMixin {
     private static void ark$rainbowTransition(@Coerce GuiGraphics graphics,ResourceLocation texture,int x,int y,
             float u,float v,float health,int height,int cosmicHeight,float alpha,int hurt,CallbackInfo ci){
         if(!(ark$drawing instanceof SatsukiBoss))return;
-        // RF multiplies cosmic alpha by its red hurt animation; use the phase animation independently.
-        SatsukiBossBarFill.fill(graphics,x,y,health,height,ark$phaseAlpha);
         ci.cancel();
+        if(health<=0)return;
+        // RF multiplies cosmic alpha by its red hurt animation; fade the fill with the phase animation independently.
+        SatsukiBossBarFill.fill(graphics,texture,x,y,u,v,health,height,ark$phaseAlpha);
+        com.mega.revelationfix.client.screen.bossbar.ApollyonBossbar.blitCosmicBar(graphics.pose(),texture,x,y,u,v,
+                (int)health,cosmicHeight,256,256,alpha,hurt);
     }
 
     @ModifyArg(method="renderApollyonBar",remap=false,require=0,
