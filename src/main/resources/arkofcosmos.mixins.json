@@ -62,6 +62,7 @@
     "client.SatsukiArrowEffectParticlesMixin",
     "client.SatsukiScarletRainMixin",
     "client.SatsukiDomainCageMixin",
+    "client.SatsukiNativeBossBarMixin",
     "client.calamitas.CalamitasDronePitchMixin",
     "client.gui.GoetyBossBarMixin",
     "client.gui.BossBarProgressAccessor",
