@@ -9,7 +9,7 @@ import net.everla.projectc.arkofcosmos.combat.MahouProgress;
 
 /** Server side boss dialogue broadcast within 128 blocks, localized on each client. */
 final class MahouDialogue {
-    private boolean firstStart, firstEnd, secondStart, phaseTwoHalf, thirdRain, vortex, summon, summonDead;
+    private boolean firstStart, firstEnd, secondStart, phaseTwoHalf, thirdRain, vortex;
     private int defeatLine, lowQuarterLine, lowQuarterDelay;
     private boolean defeatRepeat;
 
@@ -35,16 +35,19 @@ final class MahouDialogue {
             if (boss.distanceToSqr(recipient) <= 128 * 128) recipient.sendSystemMessage(message);
         }
     }
+    void summonBrothers(MahouTsukaiEntity boss) {
+        say(boss, defeatedBefore(boss)?"dialogue.arkofcosmos.mahou.brothers_repeat":"dialogue.arkofcosmos.mahou.brothers");
+    }
     void tick(MahouTsukaiEntity boss) {
         if (boss.level().isClientSide || boss.defeating()) return;
         ServerPlayer player = target(boss);
-        int left = boss.phaseTransitionTicks();
-        if (left == 300) {
-            if (boss.phase() == 1 && !firstStart) { firstStart=true; say(boss, defeatedBefore(boss)?"dialogue.arkofcosmos.mahou.first_rain_repeat":"dialogue.arkofcosmos.mahou.first_rain"); }
-            else if (boss.phase() == 2 && !secondStart) { secondStart=true; say(boss, defeatedBefore(boss)?"dialogue.arkofcosmos.mahou.second_rain_repeat":"dialogue.arkofcosmos.mahou.second_rain"); }
-            else if (boss.phase() == 3 && !thirdRain) { thirdRain=true; say(boss, defeatedBefore(boss)?"dialogue.arkofcosmos.mahou.third_rain_repeat":"dialogue.arkofcosmos.mahou.third_rain"); }
+        var ai=boss.infernum();
+        if (ai.entrance>0 || ai.attack==net.everla.projectc.arkofcosmos.calamity.MahouInfernumEncounter.Attack.PhaseTransition) {
+            if (ai.stage == 0 && !firstStart) { firstStart=true; say(boss, defeatedBefore(boss)?"dialogue.arkofcosmos.mahou.first_rain_repeat":"dialogue.arkofcosmos.mahou.first_rain"); }
+            else if (ai.stage == 1 && !secondStart) { secondStart=true; say(boss, defeatedBefore(boss)?"dialogue.arkofcosmos.mahou.second_rain_repeat":"dialogue.arkofcosmos.mahou.second_rain"); }
+            else if (ai.stage >= 2 && !thirdRain) { thirdRain=true; say(boss, defeatedBefore(boss)?"dialogue.arkofcosmos.mahou.third_rain_repeat":"dialogue.arkofcosmos.mahou.third_rain"); }
         }
-        if (left == 1) {
+        if (ai.entrance==0 && firstStart) {
             if (boss.phase()==1 && !firstEnd) { firstEnd=true; if (defeatedBefore(boss) || player != null && player.getStats().getValue(Stats.CUSTOM, Stats.DEATHS)>0) say(boss, defeatedBefore(boss)?"dialogue.arkofcosmos.mahou.first_end_repeat":"dialogue.arkofcosmos.mahou.first_end"); }
         }
         if (boss.phase()==2 && boss.getHealth()<boss.getMaxHealth()*.5f && !phaseTwoHalf) { phaseTwoHalf=true; if(!defeatedBefore(boss))say(boss,"dialogue.arkofcosmos.mahou.phase_two_half"); }
@@ -55,23 +58,18 @@ final class MahouDialogue {
             lowQuarterDelay=20;
         }
     }
-    void teleport(MahouTsukaiEntity boss){ if(!boss.level().isClientSide&&!defeatedBefore(boss)) say(boss,"dialogue.arkofcosmos.mahou.escape"); }
-    void enragedAttack(MahouTsukaiEntity boss,int kind){
-        String line=switch(kind){
-            case MahouAttackEntity.RED->"red";
-            case MahouAttackEntity.BLUE->"blue";
-            case MahouAttackEntity.FUSION->"fusion";
-            case MahouAttackEntity.PURPLE->"purple";
-            case MahouAttackEntity.BLUE_DASH->"blue_dash";
-            case MahouAttackEntity.DOMAIN->"domain";
-            default->null;
-        };
-        if(line!=null)say(boss,"dialogue.arkofcosmos.mahou.rage_"+line);
+    void enragedVolley(MahouTsukaiEntity boss){
+        String[] lines={"red","blue","fusion","purple","blue_dash","domain"};
+        say(boss,"dialogue.arkofcosmos.mahou.rage_"+lines[boss.getRandom().nextInt(lines.length)]);
     }
-    void summoned(MahouTsukaiEntity boss){ if(!summon){summon=true;say(boss,defeatedBefore(boss)?"dialogue.arkofcosmos.mahou.summon_repeat":"dialogue.arkofcosmos.mahou.summon");} }
-    void defeatedSummon(MahouTsukaiEntity boss){ if(!summonDead){summonDead=true;say(boss,defeatedBefore(boss)?"dialogue.arkofcosmos.mahou.summon_dead_repeat":"dialogue.arkofcosmos.mahou.summon_dead");} }
-    void vortex(MahouTsukaiEntity boss){ if(!vortex){vortex=true;if(defeatedBefore(boss))say(boss,"dialogue.arkofcosmos.mahou.vortex_repeat");} }
     void beginDefeat(MahouTsukaiEntity boss){ defeatRepeat=defeatedBefore(boss); ServerPlayer p=target(boss); if(p==null)return; MahouProgress.markDefeated(p); defeatLine=0; }
     void defeatTick(MahouTsukaiEntity boss){ if(defeatLine<4&&boss.defeatTicks()%20==0)say(boss,"dialogue.arkofcosmos.mahou.defeat_"+(++defeatLine)+(defeatRepeat?"_repeat":"")); }
     void disappeared(MahouTsukaiEntity boss){ if(!boss.level().isClientSide)say(boss,"dialogue.arkofcosmos.mahou.disappear"); }
+    void save(net.minecraft.nbt.CompoundTag root){
+        var t=new net.minecraft.nbt.CompoundTag();boolean[] flags={firstStart,firstEnd,secondStart,phaseTwoHalf,thirdRain,vortex,false,false,defeatRepeat};
+        for(int i=0;i<flags.length;i++)t.putBoolean("Flag"+i,flags[i]);t.putInt("DefeatLine",defeatLine);t.putInt("QuarterLine",lowQuarterLine);t.putInt("QuarterDelay",lowQuarterDelay);root.put("MahouDialogue",t);
+    }
+    void load(net.minecraft.nbt.CompoundTag root){
+        var t=root.getCompound("MahouDialogue");firstStart=t.getBoolean("Flag0");firstEnd=t.getBoolean("Flag1");secondStart=t.getBoolean("Flag2");phaseTwoHalf=t.getBoolean("Flag3");thirdRain=t.getBoolean("Flag4");vortex=t.getBoolean("Flag5");defeatRepeat=t.getBoolean("Flag8");defeatLine=t.getInt("DefeatLine");lowQuarterLine=t.getInt("QuarterLine");lowQuarterDelay=t.getInt("QuarterDelay");
+    }
 }

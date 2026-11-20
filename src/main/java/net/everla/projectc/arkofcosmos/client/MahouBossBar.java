@@ -1,154 +1,69 @@
 package net.everla.projectc.arkofcosmos.client;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.*;
+import java.util.*;
 import net.everla.projectc.arkofcosmos.ArkOfCosmos;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.renderer.ShaderInstance;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Mth;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.client.event.CustomizeGuiOverlayEvent;
-import net.minecraftforge.client.event.RegisterShadersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
 
-/** Replaces only the server boss-event IDs explicitly assigned to Mahou Tsukai. */
-@Mod.EventBusSubscriber(modid = ArkOfCosmos.MOD_ID, value = Dist.CLIENT)
+/** Mahou uses the shared simplified bar and one continuous health pool. */
+@Mod.EventBusSubscriber(modid=ArkOfCosmos.MOD_ID,value=Dist.CLIENT)
 public final class MahouBossBar {
-    private static final Map<UUID, Integer> PHASES = new HashMap<>();
-    private static final Map<UUID, FourthCalamityBossBar.State> SIMPLE_BARS = new HashMap<>();
-    private static final ResourceLocation BAR = id("textures/gui/boss_bar.png");
-    private static final ResourceLocation[] STARS = java.util.stream.IntStream.range(0, 10)
-            .mapToObj(i -> id("textures/misc/cosmic/cosmic_" + i + ".png")).toArray(ResourceLocation[]::new);
-    private static ShaderInstance shader;
-    private static final int[][] STAR_FRAMES = new int[10][];
-
+    private static final Map<UUID,FourthCalamityBossBar.State> BARS=new HashMap<>();
+    private static final Map<UUID,FourthCalamityBossBar.State> CHILDREN=new HashMap<>();
     private MahouBossBar() {}
-    private static ResourceLocation id(String path) { return ResourceLocation.fromNamespaceAndPath(ArkOfCosmos.MOD_ID, path); }
-
-    public static void update(UUID id, int phase) {
-        if (phase <= 0) { PHASES.remove(id);SIMPLE_BARS.remove(id); }
-        else PHASES.put(id, Mth.clamp(phase, 1, 3));
+    public static void update(UUID id,int phase) {
+        if(phase<=0) BARS.remove(id);
+        else BARS.computeIfAbsent(id,key->new FourthCalamityBossBar.State(1));
     }
-
-    @SubscribeEvent public static void logout(ClientPlayerNetworkEvent.LoggingOut event) { PHASES.clear();SIMPLE_BARS.clear(); }
-
-    public static void registerShader(RegisterShadersEvent event) throws IOException {
-        // Use vanilla metadata parsing and retain each source frame's duration.
-        for (int i = 0; i < STARS.length; i++) {
-            var resource = event.getResourceProvider().getResourceOrThrow(STARS[i]);
-            var metadata = resource.metadata().getSection(
-                    net.minecraft.client.resources.metadata.animation.AnimationMetadataSection.SERIALIZER).orElseThrow();
-            var frames = new java.util.ArrayList<Integer>();
-            metadata.forEachFrame((index, duration) -> {
-                for (int tick = 0; tick < duration; tick++) frames.add(index);
-            });
-            if (frames.isEmpty()) {
-                try (var stream = resource.open(); var image = com.mojang.blaze3d.platform.NativeImage.read(stream)) {
-                    for (int frame = 0; frame < image.getHeight() / image.getWidth(); frame++)
-                        for (int tick = 0; tick < metadata.getDefaultFrameTime(); tick++) frames.add(frame);
-                }
-            }
-            STAR_FRAMES[i] = frames.stream().mapToInt(Integer::intValue).toArray();
+    @SubscribeEvent public static void logout(ClientPlayerNetworkEvent.LoggingOut event){BARS.clear();CHILDREN.clear();}
+    @SubscribeEvent public static void render(CustomizeGuiOverlayEvent.BossEventProgress event){
+        var state=BARS.get(event.getBossEvent().getId());
+        if(state==null)return;
+        float progress=((net.everla.projectc.arkofcosmos.mixin.client.gui.BossBarProgressAccessor)event.getBossEvent()).arkofcosmos$targetProgress();
+        FourthCalamityBossBar.draw(event,state,progress,event.getBossEvent().getProgress(),1,"Lv.2147483647",
+            Component.translatable("boss.arkofcosmos.mahou.name"),Component.translatable("boss.arkofcosmos.mahou.title_1"),
+            event.getBossEvent().getColor()==net.minecraft.world.BossEvent.BossBarColor.RED?0xFFE53935:0);
+        drawBrothers(event);
+    }
+    private static void drawBrothers(CustomizeGuiOverlayEvent.BossEventProgress event){
+        var mc=net.minecraft.client.Minecraft.getInstance();if(mc.level==null)return;
+        var boss=net.everla.projectc.arkofcosmos.entity.MahouTsukaiEntity.loaded(mc.level).stream().filter(b->{
+            var view=b.infernumView();return view.hasUUID("BossBarId")&&view.getUUID("BossBarId").equals(event.getBossEvent().getId());
+        }).findFirst().orElse(null);
+        if(boss==null)return;
+        var brothers=new net.everla.projectc.arkofcosmos.entity.MahouInfernumSummonEntity[2];
+        var live=new HashSet<UUID>();
+        for(var entity:mc.level.entitiesForRendering())if(entity instanceof net.everla.projectc.arkofcosmos.entity.MahouInfernumSummonEntity m&&m.ownedBy(boss)&&m.isAlive()){
+            int slot=switch(m.kind()){case CATACLYSM->0;case CATASTROPHE->1;default->-1;};
+            if(slot>=0){brothers[slot]=m;live.add(m.getUUID());}
         }
-        event.registerShader(new ShaderInstance(event.getResourceProvider(), id("boss_bar"),
-                DefaultVertexFormat.POSITION_TEX_COLOR), loaded -> shader = loaded);
-    }
-
-    @SubscribeEvent public static void render(CustomizeGuiOverlayEvent.BossEventProgress event) {
-        Integer phase = PHASES.get(event.getBossEvent().getId());
-        if (phase == null) return;
-        boolean enraged=event.getBossEvent().getColor()==net.minecraft.world.BossEvent.BossBarColor.RED;
-        if(net.everla.projectc.arkofcosmos.ProjectCClientConfig.MAHOU_SIMPLE_BOSS_BAR.get()) {
-            int remaining=4-phase;
-            var state=SIMPLE_BARS.computeIfAbsent(event.getBossEvent().getId(),key->new FourthCalamityBossBar.State(remaining));
-            state.setBars(remaining);
-            float progress=((net.everla.projectc.arkofcosmos.mixin.client.gui.BossBarProgressAccessor)event.getBossEvent()).arkofcosmos$targetProgress();
-            FourthCalamityBossBar.draw(event,state,progress,event.getBossEvent().getProgress(),3,"Lv.2147483647",
-                net.minecraft.network.chat.Component.translatable("boss.arkofcosmos.mahou.name"),
-                net.minecraft.network.chat.Component.translatable("boss.arkofcosmos.mahou.title_"+phase),enraged?0xFFE53935:0);
-            return;
+        CHILDREN.keySet().removeIf(id->!live.contains(id));
+        if(live.isEmpty())return;
+        var g=event.getGuiGraphics();int gap=16,width=Math.max(40,Math.min(170,(g.guiWidth()-32-gap)/2));
+        int left=(g.guiWidth()-width*2-gap)/2,y=event.getY()+58;
+        for(int i=0;i<2;i++)if(brothers[i]!=null){
+            var m=brothers[i];int x=left+i*(width+gap);
+            double ratio=Math.max(0,Math.min(1,m.getHealth()/m.getMaxHealth()));
+            double trail=CHILDREN.computeIfAbsent(m.getUUID(),id->new FourthCalamityBossBar.State(1)).trail(ratio,System.nanoTime());
+            FourthCalamityBossBar.bevel(g,x-2,y-2,width+4,11,width+4,0xC0182630);
+            FourthCalamityBossBar.bevel(g,x-1,y-1,width+2,9,width+2,0xFF83949B);
+            FourthCalamityBossBar.bevel(g,x,y,width,7,width,0xFF342A32);
+            FourthCalamityBossBar.bevel(g,x,y,width,7,(int)Math.round(width*trail),0xFFFFF2B0);
+            FourthCalamityBossBar.bevel(g,x,y,width,7,(int)Math.round(width*ratio),0xFFFF5555);
+            g.fill(x+3,y,x+width-3,y+1,0x40FFFFFF);
+            childText(g,Component.translatable(i==0?"boss.arkofcosmos.mahou_saint.title":"boss.arkofcosmos.mahou_fox.title"),x+width/2,y-25,1);
+            childText(g,Component.translatable("boss.arkofcosmos.mahou_brother.name"),x+width/2,y-14,.8f);
+            g.drawString(mc.font,"Lv.32767",x,y+10,0xFFF3F4EF);
         }
-        SIMPLE_BARS.remove(event.getBossEvent().getId());
-        event.setCanceled(true);
-        event.setIncrement(29);
-        Minecraft mc = Minecraft.getInstance();
-        GuiGraphics graphics = event.getGuiGraphics();
-        int x = graphics.guiWidth() / 2 - 100, y = event.getY();
-        float progress = Mth.clamp(event.getBossEvent().getProgress(), 0f, 1f);
-        graphics.flush();
-        var previous = RenderSystem.getShader();
-        boolean depthTest = org.lwjgl.opengl.GL11.glIsEnabled(org.lwjgl.opengl.GL11.GL_DEPTH_TEST);
-        boolean depthWrite = org.lwjgl.opengl.GL11.glGetBoolean(org.lwjgl.opengl.GL11.GL_DEPTH_WRITEMASK);
-        // GuiGraphics.flush() enables depth testing. HUD quads must not test/write world depth.
-        RenderSystem.disableDepthTest();
-        RenderSystem.depthMask(false);
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
-        RenderSystem.setShaderColor(1, 1, 1, 1);
-        try {
-            // Dim the unfilled mask, then clip the full-width star field without stretching its UVs.
-            RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
-            RenderSystem.setShaderTexture(0, BAR);
-            quad(graphics, x, y, 201, 48, .16f);
-            if (shader != null) {
-                shader.safeGetUniform("uRage").set(enraged?1f:0f);
-                shader.safeGetUniform("uTime").set((mc.level == null ? 0 : mc.level.getGameTime() + event.getPartialTick()) / 20f);
-                RenderSystem.setShader(() -> shader);
-                for (int i = 0; i < STARS.length; i++) {
-                    shader.setSampler("Cosmic" + i, mc.getTextureManager().getTexture(STARS[i]).getId());
-                    long tick = mc.level == null ? 0 : mc.level.getGameTime();
-                    int[] frames = STAR_FRAMES[i];
-                    if (frames.length > 0)
-                        shader.safeGetUniform("Frame" + i).set((float) frames[Math.floorMod(tick, frames.length)]);
-                }
-            } else {
-                RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
-                RenderSystem.setShaderTexture(0, BAR);
-                if(enraged)RenderSystem.setShaderColor(1f,.15f,.15f,1f);
-            }
-            quad(graphics, x, y, progress <= 0 ? 0 : 3 + Math.round(195 * progress), 48, 1f);
-            RenderSystem.setShaderColor(1,1,1,1);
-            // Frame and phase ornament retain the texture's original colors.
-            RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
-            quad(graphics, x, y, 201, (phase - 1) * 16, 1f);
-        } finally {
-            RenderSystem.depthMask(depthWrite);
-            if (depthTest) RenderSystem.enableDepthTest();
-            RenderSystem.setShader(() -> previous);
-            RenderSystem.setShaderColor(1, 1, 1, 1);
-            RenderSystem.disableBlend();
-        }
-        // Some modpacks rebuild BossEvent names and drop the custom font style during sync.
-        // Re-apply the marker at the final GUI boundary so the Font mixin is deterministic.
-        var name = event.getBossEvent().getName().copy()
-                .withStyle(style -> style.withFont(net.everla.projectc.arkofcosmos.util.MahouNameStyle.FONT)
-                        .withColor(net.everla.projectc.arkofcosmos.util.MahouNameStyle.MARKER_COLOR));
-        graphics.drawString(mc.font, name, graphics.guiWidth() / 2 - mc.font.width(name) / 2, y - 9, 0xFFFFFF);
+        event.setIncrement(86);
     }
-
-    private static void quad(GuiGraphics graphics, int x, int y, int width, int v, float brightness) {
-        if (width <= 0) return;
-        var pose = graphics.pose().last().pose();
-        var out = Tesselator.getInstance().getBuilder();
-        writeQuad(out, pose, x, y, width, v, brightness);
-        BufferUploader.drawWithShader(out.end());
-    }
-
-    static void writeQuad(BufferBuilder out, org.joml.Matrix4f pose, int x, int y, int width, int v, float brightness) {
-        out.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
-        // Match GuiGraphics.innerBlit: GUI's inverted Y projection flips winding.
-        out.vertex(pose, x, y, 0).uv(0, v / 256f).color(brightness, brightness, brightness, 1f).endVertex();
-        out.vertex(pose, x, y + 16, 0).uv(0, (v + 16) / 256f).color(brightness, brightness, brightness, 1f).endVertex();
-        out.vertex(pose, x + width, y + 16, 0).uv(width / 256f, (v + 16) / 256f).color(brightness, brightness, brightness, 1f).endVertex();
-        out.vertex(pose, x + width, y, 0).uv(width / 256f, v / 256f).color(brightness, brightness, brightness, 1f).endVertex();
+    private static void childText(net.minecraft.client.gui.GuiGraphics g,Component text,int x,int y,float scale){
+        var font=net.minecraft.client.Minecraft.getInstance().font;
+        g.pose().pushPose();g.pose().translate(x,y,0);g.pose().scale(scale,scale,1);
+        g.drawString(font,text,-font.width(text)/2,0,0xFFF3F4EF);g.pose().popPose();
     }
 }

@@ -27,8 +27,7 @@ public final class CalamitasHexEffect extends MobEffect {
 
     /** Source buffNoSave: filter the serialized snapshot without changing the live player. */
     public static void filterPlayerSave(LivingEntity entity, net.minecraft.nbt.CompoundTag tag) {
-        if (!(entity instanceof Player) || !CalamitasContent.ENABLED
-                || !CalamitasContent.VULNERABILITY_HEX.isPresent()) return;
+        if (!(entity instanceof Player) || !CalamitasContent.VULNERABILITY_HEX.isPresent()) return;
         var effects = tag.getList("ActiveEffects", net.minecraft.nbt.Tag.TAG_COMPOUND);
         for (int i = effects.size() - 1; i >= 0; i--) {
             var effect = MobEffectInstance.load(effects.getCompound(i));

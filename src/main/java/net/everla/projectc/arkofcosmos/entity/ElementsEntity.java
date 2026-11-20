@@ -26,9 +26,7 @@ public final class ElementsEntity extends Entity {
     private final AttackRenderSnapshot clientSnapshot = new AttackRenderSnapshot();
     private UUID ownerUuid;
     private int ownerId,kind,mode,charge,age,left,life,hits,stitches,soundDelay;
-    private boolean missed,ended,bossBurstStar,bossMovingBlast,bossRain;
-    private int ownerPhase;
-    private UUID rainStarTarget;
+    private boolean missed,ended;
     private float damage,rotation,scale=1,snapStart;
     private Vec3 velocity=Vec3.ZERO,direction=new Vec3(0,0,1),aim=Vec3.ZERO;
     private AttackFrame frame=new AttackFrame(new Vec3(0,0,1),new Vec3(-1,0,0));
@@ -39,43 +37,11 @@ public final class ElementsEntity extends Entity {
     public ElementsEntity(EntityType<? extends ElementsEntity> type,Level level){super(type,level);noPhysics=true;}
     public static ElementsEntity create(LivingEntity p,int kind,int mode,int charge,float damage,Vec3 at,Vec3 velocity,AttackFrame frame){
         ElementsEntity e=new ElementsEntity(ArkOfCosmos.ELEMENTS_ATTACK.get(),p.level());
-        e.ownerPhase=p instanceof MahouTsukaiEntity boss?boss.phase():0;e.ownerUuid=p.getUUID();e.ownerId=p.getId();e.kind=kind;e.mode=mode;e.charge=charge;e.damage=damage;e.velocity=velocity;e.frame=frame;e.direction=frame.forward();e.aim=WeaponUser.aim(p);e.weapon=p.getMainHandItem().copy();e.refreshDimensions();e.setPos(at);
+        e.ownerUuid=p.getUUID();e.ownerId=p.getId();e.kind=kind;e.mode=mode;e.charge=charge;e.damage=damage;e.velocity=velocity;e.frame=frame;e.direction=frame.forward();e.aim=WeaponUser.aim(p);e.weapon=p.getMainHandItem().copy();e.refreshDimensions();e.setPos(at);
         e.left=e.life=kind==BLADE?(mode==2?80:35):kind==NEEDLE?30:kind==STAR?120:kind==PARRY?15:70;
-        e.scale=kind==NEEDLE?(p instanceof MahouTsukaiEntity?.6f:2.4f):kind==STAR?1.5f:1;
+        e.scale=kind==NEEDLE?2.4f:kind==STAR?1.5f:1;
         for(int i=0;i<8;i++)e.stitchAngles[i]=(float)(p.getRandom().nextDouble()*Math.PI/2+Math.PI/4);
         e.samples.add(e.snapshot());e.publish();p.level().addFreshEntity(e);return e;
-    }
-    static ElementsEntity bossRift(MahouTsukaiEntity boss,AttackFrame frame){
-        ElementsEntity e=create(boss,BLAST,0,10,ElementsRules.blastDamage(7,10,0),boss.getBoundingBox().getCenter(),Vec3.ZERO,frame);
-        e.bossMovingBlast=true;return e;
-    }
-    static ElementsEntity bossStar(MahouTsukaiEntity boss,AttackFrame frame){
-        ElementsEntity e=create(boss,STAR,0,0,7f*.2f,boss.getBoundingBox().getCenter(),frame.forward().scale(.28),frame);
-        e.bossBurstStar=true;e.left=e.life=48;e.publish();return e;
-    }
-    static ElementsEntity rainStar(MahouTsukaiEntity boss,LivingEntity target,Vec3 at){
-        AttackFrame frame=GalaxiaEntity.aimFrame(target.getBoundingBox().getCenter().subtract(at).normalize(),new Vec3(1,0,0));
-        ElementsEntity e=bossStar(boss,frame);e.setPos(at);e.bossRain=true;e.rainStarTarget=target.getUUID();
-        e.samples.clear();e.samples.add(e.snapshot());e.publish();return e;
-    }
-    private LivingEntity starTarget(MahouTsukaiEntity boss){
-        return rainStarTarget==null?boss.getTarget():WeaponUser.resolve(level(),rainStarTarget);
-    }
-    static ElementsEntity bossFanNeedle(MahouTsukaiEntity boss,AttackFrame frame){
-        ElementsEntity e=create(boss,NEEDLE,1,0,7f*.8f,boss.getBoundingBox().getCenter(),frame.forward().scale(.3),frame);
-        // Slow fans need the longer deceleration window to cross the boss comfort distance.
-        e.left=e.life=300;e.publish();return e;
-    }
-    static ElementsEntity bossGateNeedle(MahouTsukaiEntity boss,float damage,Vec3 at,AttackFrame frame){
-        ElementsEntity e=create(boss,NEEDLE,1,0,damage,at,frame.forward().scale(10/16d),frame);
-        // 30 native substeps reach only ~10 blocks at this speed; 600 reach ~96,
-        // covering the 64-block target range plus the gates' rear/side/height offsets.
-        e.left=e.life=600;e.publish();return e;
-    }
-    static ElementsEntity rainNeedle(MahouTsukaiEntity boss,Vec3 at){
-        AttackFrame frame=new AttackFrame(new Vec3(0,-1,0),new Vec3(1,0,0));
-        ElementsEntity e=create(boss,NEEDLE,1,0,7f*.8f,at,frame.forward().scale(.45),frame);
-        e.bossRain=true;e.left=e.life=180;e.publish();return e;
     }
     public int ownerId(){return entityData.get(VIEW).getInt("Owner");}
     public int kind(){return entityData.get(VIEW).getInt("Kind");}
@@ -90,7 +56,7 @@ public final class ElementsEntity extends Entity {
     @Override public boolean shouldRenderAtSqrDistance(double distance){return distance<256*256;}
     @Override public void tick(){
         super.tick();if(level().isClientSide){clientSnapshot.tick(view(),"Age");return;}
-        LivingEntity p=owner();if(!WeaponUser.active(p)||p instanceof MahouTsukaiEntity boss&&(boss.phase()!=ownerPhase||bossRain&&boss.phaseTransitionTicks()==0)){finish(false);return;}
+        LivingEntity p=owner();if(!WeaponUser.active(p)){finish(false);return;}
         if((kind==BLADE||kind==PARRY)&&!p.getMainHandItem().is(ArkOfCosmos.ARK_OF_THE_ELEMENTS.get())){finish(false);return;}
         samples=new ListTag();samples.add(snapshot());
         int updates=kind==BLADE?6:3;
@@ -154,30 +120,21 @@ public final class ElementsEntity extends Entity {
     private void needle(LivingEntity p){
         velocity=velocity.scale(1-Math.pow(age/(double)life,3));
         Vec3 old=position(),next=old.add(velocity);
-        var terrain=bossRain?level().clip(new ClipContext(old,next,ClipContext.Block.COLLIDER,ClipContext.Fluid.ANY,this)):null;
-        setPos(terrain!=null&&terrain.getType()!=HitResult.Type.MISS?terrain.getLocation():next);rotation=(float)frame.angle(velocity);
-        if(terrain!=null&&terrain.getType()!=HitResult.Type.MISS){finish(true);return;}
+        setPos(next);rotation=(float)frame.angle(velocity);
         if(velocity.length()<1/16d){finish(true);return;}
         Vec3 v=velocity.normalize(),a=position().subtract(v.scale(16/16d));
         hitLine(p,a,a.add(v.scale(44/16d*scale)),24/16d,30,damage,20);
     }
     private void star(LivingEntity p){
-        if(bossBurstStar&&p instanceof MahouTsukaiEntity boss){
-            LivingEntity target=starTarget(boss);
-            if(!MahouPhaseOneAI.valid(boss,target)){finish(false);return;}
-            Vec3 aim=target.getBoundingBox().getCenter().subtract(position()).normalize();
-            velocity=velocity.scale(.96).add(aim.scale(.28*.04));
-            if(age>=life-1){finish(true);return;}
-        }
-        if(age>30&&!bossBurstStar)velocity=velocity.scale(.95);
+        if(age>30)velocity=velocity.scale(.95);
         if(soundDelay--<=0){soundDelay=20+random.nextInt(40);if(random.nextInt(5)==0)ElementsCombat.sound(this,ownerId,"elements_item9",1,false,false,position().subtract(frame.forward().add(frame.right()).scale(10/16d)));}
         if(velocity.length()<2/16d&&left<60){finish(true);return;}
         rotation+=(Math.abs(velocity.dot(frame.forward()))+Math.abs(velocity.dot(frame.right())))*16*.01;
         LivingEntity target=WeaponUser.nearest(p,position(),350/16d);
-        if(!(p instanceof MahouTsukaiEntity)&&target!=null&&(age<=5||level().clip(new ClipContext(position(),target.getBoundingBox().getCenter(),ClipContext.Block.COLLIDER,ClipContext.Fluid.NONE,this)).getType()==HitResult.Type.MISS))
+        if(target!=null&&(age<=5||level().clip(new ClipContext(position(),target.getBoundingBox().getCenter(),ClipContext.Block.COLLIDER,ClipContext.Fluid.NONE,this)).getType()==HitResult.Type.MISS))
             velocity=velocity.scale(19/20d).add(target.getBoundingBox().getCenter().subtract(position()).normalize().scale(12/16d/20));
         Vec3 old=position(),next=old.add(velocity);
-        if(age>5&&!bossBurstStar){
+        if(age>5){
             // Sweep the projectile volume, not just its center, to retain the original tile hitbox.
             Vec3 move=Entity.collideBoundingBox(this,velocity,getBoundingBox(),level(),List.of());
             if(move.distanceToSqr(velocity)>1e-12){setPos(old.add(move));finish(true);return;}
@@ -190,7 +147,6 @@ public final class ElementsEntity extends Entity {
         if(!(p instanceof Player player && ElementsCombat.parried(player)))hitLine(p,position(),position().add(direction.scale(142/16d*scale)),44/16d,340,damage,30);
     }
     private void blast(LivingEntity p){
-        if(bossMovingBlast)setPos(center(p));
         scale=1.4f;int count=ElementsRules.stitches(age);
         while(stitches<count){ElementsCombat.sound(p,ownerId,"item"+(63+stitches%3),.5f,false,false,p.getBoundingBox().getCenter());stitches++;}
         if(age==26)event("blast",position());
@@ -199,7 +155,7 @@ public final class ElementsEntity extends Entity {
     private void hitLine(LivingEntity p,Vec3 a,Vec3 b,double width,int cooldown,float amount,int dot){
         for(LivingEntity t:level().getEntitiesOfClass(LivingEntity.class,new AABB(a,b).inflate(width/2+2),e->WeaponUser.canHit(p,e)))
             if(ArkGeometry.line(t.getBoundingBox(),a,b,width,frame)){
-                hit(p,t,cooldown,amount,dot);if(bossBurstStar)finish(true);if(isRemoved())return;
+                hit(p,t,cooldown,amount,dot);if(isRemoved())return;
                 if(kind==PARRY&&(p instanceof Player player && ElementsCombat.parried(player)))return;
             }
     }
@@ -232,13 +188,6 @@ public final class ElementsEntity extends Entity {
     private void finish(boolean natural){
         if(ended)return;ended=true;
         if(natural){
-            if(bossBurstStar&&owner() instanceof MahouTsukaiEntity boss&&MahouPhaseOneAI.valid(boss,starTarget(boss))){
-                Vec3 aim=starTarget(boss).getBoundingBox().getCenter().subtract(position());
-                AttackFrame burst=GalaxiaEntity.aimFrame(aim.lengthSqr()<1e-8?frame.forward():aim.normalize(),frame.right());
-                int count=rainStarTarget==null?8:boss.phase()==3?5:3;
-                for(int i=0;i<count;i++)GalaxiaEntity.bossBolt(boss,position(),burst.direction(i*Math.PI*2/count),.3,1);
-                ArkOfCosmos.sound(this,"galaxia_lightning",1);
-            }
             if(kind==BLADE&&mode==3)sound("item84",1,false,false);
             if(kind==NEEDLE||kind==STAR)sound("needle_death",kind==STAR?.5f:1,false,false);
             event("end",position());

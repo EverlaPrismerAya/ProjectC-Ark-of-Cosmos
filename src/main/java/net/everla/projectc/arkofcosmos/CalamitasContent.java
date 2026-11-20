@@ -29,7 +29,7 @@ public final class CalamitasContent {
     private static final DeferredRegister<net.minecraft.world.item.Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, ArkOfCosmos.MOD_ID);
     private static final DeferredRegister<SoundEvent> SOUNDS = DeferredRegister.create(ForgeRegistries.SOUND_EVENTS, ArkOfCosmos.MOD_ID);
     private static final DeferredRegister<net.minecraft.world.effect.MobEffect> EFFECTS = DeferredRegister.create(ForgeRegistries.MOB_EFFECTS, ArkOfCosmos.MOD_ID);
-    public static final RegistryObject<net.minecraft.world.effect.MobEffect> VULNERABILITY_HEX = ENABLED ? EFFECTS.register("vulnerability_hex", net.everla.projectc.arkofcosmos.calamity.CalamitasHexEffect::new) : null;
+    public static final RegistryObject<net.minecraft.world.effect.MobEffect> VULNERABILITY_HEX = EFFECTS.register("vulnerability_hex", net.everla.projectc.arkofcosmos.calamity.CalamitasHexEffect::new);
     public static final RegistryObject<net.minecraft.world.effect.MobEffect> WITCH_WITHERED=ENABLED?EFFECTS.register("witch_withered",()->new net.minecraft.world.effect.MobEffect(net.minecraft.world.effect.MobEffectCategory.HARMFUL,0x635C68){}):null;
     private static final java.util.Map<String, RegistryObject<SoundEvent>> AUDIO = new java.util.HashMap<>();
     private static final java.util.Map<String,RegistryObject<SoundEvent>> NECROMANTIC_AUDIO=new java.util.HashMap<>();
@@ -95,8 +95,9 @@ public final class CalamitasContent {
         }
     }
     public static void register(IEventBus bus) {
+        EFFECTS.register(bus);
         if (!ENABLED) return;
-        ENTITIES.register(bus); ATTRIBUTES.register(bus); ITEMS.register(bus); SOUNDS.register(bus); EFFECTS.register(bus);
+        ENTITIES.register(bus); ATTRIBUTES.register(bus); ITEMS.register(bus); SOUNDS.register(bus);
         bus.addListener((net.minecraftforge.event.entity.EntityAttributeCreationEvent event) -> {
             event.put(BOSS.get(), SupremeCalamitasEntity.createAttributes().build());
             event.put(WITCH.get(), net.everla.projectc.arkofcosmos.entity.BrimstoneWitchEntity.attributes().build());

@@ -198,7 +198,7 @@
   "mahou_music_phase_1": {
     "sounds": [
       {
-        "name": "arkofcosmos:music/calamitas_phase_1",
+        "name": "arkofcosmos:music/mahou_phase_1",
         "stream": true
       }
     ]
@@ -206,15 +206,7 @@
   "mahou_music_phase_2": {
     "sounds": [
       {
-        "name": "arkofcosmos:music/calamitas_phase_2",
-        "stream": true
-      }
-    ]
-  },
-  "mahou_music_phase_3": {
-    "sounds": [
-      {
-        "name": "arkofcosmos:music/calamitas_phase_3",
+        "name": "arkofcosmos:music/mahou_phase_2",
         "stream": true
       }
     ]
@@ -225,11 +217,6 @@
         "name": "arkofcosmos:music/calamitas_defeat_long_fade",
         "stream": true
       }
-    ]
-  },
-  "mahou_vortex": {
-    "sounds": [
-      "arkofcosmos:brimstone_monster_drone"
     ]
   },
   "entity.wind_charge.throw": {

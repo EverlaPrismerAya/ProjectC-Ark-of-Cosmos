@@ -15,6 +15,9 @@ import org.joml.Matrix4f;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 /** XNA sprite/primitive semantics, including the original third texture coordinate. */
 public final class ArkFxDraw {
@@ -55,6 +58,48 @@ public final class ArkFxDraw {
     public static double opacityAt(Vec3 point) { return fadeEye == null ? 1 : nearOpacity(point.distanceTo(fadeEye)); }
     public enum Blend { ALPHA, NONPREMULTIPLIED, ADDITIVE }
     private static Blend activeBlend=Blend.ALPHA;
+    private static boolean batchingSprites;
+    private static List<Runnable> spriteCommands;
+    private static SpriteBatchKey spriteBatchKey;
+    private record SpriteBatchKey(String name, Blend blend, Tint tint, Matrix4f matrix, Vec3 camera, Vec3 eye) {
+        boolean matches(String name, Blend blend, Tint tint) {
+            return this.name.equals(name) && this.blend == blend && Objects.equals(this.tint, tint)
+                    && matrix.equals(ArkFxDraw.matrix) && camera.equals(ArkFxDraw.camera)
+                    && Objects.equals(eye, fadeEye);
+        }
+    }
+
+    /** One entity, original order. Collect before deferring so random animation is sampled at the original time. */
+    public static void batchSprites(Runnable draw) {
+        if (batchingSprites || spriteCommands != null) throw new IllegalStateException("Nested sprite batch");
+        if (!OculusShaderCompat.shaderPackActive()) {
+            runSpriteBatch(draw);
+            return;
+        }
+        List<Runnable> commands = new ArrayList<>();
+        spriteCommands = commands;
+        try { draw.run(); }
+        finally { spriteCommands = null; }
+        if (commands.isEmpty()) return;
+        Runnable replay = () -> runSpriteBatch(() -> commands.forEach(Runnable::run));
+        if (!OculusShaderCompat.defer(replay)) replay.run();
+    }
+
+    private static void runSpriteBatch(Runnable draw) {
+        batchingSprites = true;
+        try { draw.run(); }
+        finally {
+            try { flushSprites(); }
+            finally { batchingSprites = false; }
+        }
+    }
+
+    private static void flushSprites() {
+        if (spriteBatchKey == null) return;
+        spriteBatchKey = null;
+        try { BufferUploader.drawWithShader(Tesselator.getInstance().getBuilder().end()); }
+        finally { end(); }
+    }
 
     public static void register(RegisterShadersEvent event) throws IOException {
         event.registerShader(shader(event,"satsuki_refraction"), shader -> satsukiRefractionShader=shader);
@@ -98,6 +143,7 @@ public final class ArkFxDraw {
         begin(texture, blend, trail, null);
     }
     private static void begin(String texture, Blend blend, boolean trail, Tint tint) {
+        flushSprites();
         activeBlend=blend;
         RenderSystem.enableDepthTest();
         RenderSystem.depthMask(false);
@@ -126,7 +172,7 @@ public final class ArkFxDraw {
         RenderSystem.activeTexture(org.lwjgl.opengl.GL13.GL_TEXTURE0);image.bind();
         RenderSystem.texParameter(org.lwjgl.opengl.GL11.GL_TEXTURE_2D,org.lwjgl.opengl.GL11.GL_TEXTURE_WRAP_S,org.lwjgl.opengl.GL12.GL_CLAMP_TO_EDGE);
         RenderSystem.texParameter(org.lwjgl.opengl.GL11.GL_TEXTURE_2D,org.lwjgl.opengl.GL11.GL_TEXTURE_WRAP_T,org.lwjgl.opengl.GL12.GL_CLAMP_TO_EDGE);
-        if (trailShader != null && trailShader.getUniform("uTime") != null)
+        if (shader == trailShader && trailShader != null && trailShader.getUniform("uTime") != null)
             trailShader.getUniform("uTime").set(time());
     }
     public static void end() {
@@ -174,8 +220,8 @@ public final class ArkFxDraw {
         begin("supreme_forcefield",Blend.ALPHA,false);
         try{
             RenderSystem.setShaderTexture(1,texture("supreme_noise"));
-            float[] color=phase==1?new float[]{.35f,.65f,1}:phase==2?new float[]{.06f,.07f,.09f}:new float[]{.05f,.85f,.8f};
-            float[] edge=phase==1?new float[]{.45f,.75f,1}:phase==2?new float[]{.24f,.26f,.3f}:new float[]{.4f,1,1};
+            float[] color={.2f,.95f,1};
+            float[] edge={.8f,.65f,1};
             forcefieldShader.safeGetUniform("uSupremeSource").set(0f);
             forcefieldShader.safeGetUniform("uColor").set(color[0],color[1],color[2]);
             forcefieldShader.safeGetUniform("uSecondaryColor").set(edge[0],edge[1],edge[2]);
@@ -184,7 +230,7 @@ public final class ArkFxDraw {
             forcefieldShader.safeGetUniform("uRandom").set(java.util.concurrent.ThreadLocalRandom.current().nextFloat());
             forcefieldShader.safeGetUniform("uTime").set(time);
             forcefieldShader.safeGetUniform("uFixedBoundary").set(fixedRadius>0?1f:0f);
-            forcefieldShader.safeGetUniform("uTintStrength").set(phase==2?.9f:.5f);
+            forcefieldShader.safeGetUniform("uTintStrength").set(.9f);
             RenderSystem.setShader(()->forcefieldShader);
             BufferBuilder buffer=Tesselator.getInstance().getBuilder();buffer.begin(VertexFormat.Mode.QUADS,FORMAT);
             double radius=fixedRadius>0?fixedRadius:2.6;
@@ -252,12 +298,21 @@ public final class ArkFxDraw {
     private static void sprite(String name, Vec3 position, AttackFrame plane, double angle, double sx, double sy,
                                double ox, double oy, float[] color, Blend blend, int rx, int ry, int rw, int rh, Tint tint, SpriteLight lighting) {
         if (color[3] <= 0 && color[0] <= 0 && color[1] <= 0 && color[2] <= 0 || sx == 0 || sy == 0) return;
-        if (OculusShaderCompat.defer(() -> sprite(name, position, plane, angle, sx, sy,
+        if (spriteCommands != null) {
+            spriteCommands.add(() -> sprite(name, position, plane, angle, sx, sy,
+                    ox, oy, color, blend, rx, ry, rw, rh, tint, lighting));
+            return;
+        }
+        if (!batchingSprites && OculusShaderCompat.defer(() -> sprite(name, position, plane, angle, sx, sy,
                 ox, oy, color, blend, rx, ry, rw, rh,tint,lighting))) return;
-        begin(name, blend, false,tint);
-        applySpriteLight(lighting);
+        boolean batched = batchingSprites && lighting == null;
+        if (!batched || spriteBatchKey == null || !spriteBatchKey.matches(name, blend, tint)) {
+            begin(name, blend, false,tint);
+            applySpriteLight(lighting);
+            Tesselator.getInstance().getBuilder().begin(VertexFormat.Mode.QUADS, FORMAT);
+            if (batched) spriteBatchKey = new SpriteBatchKey(name, blend, tint, new Matrix4f(matrix), camera, fadeEye);
+        }
         BufferBuilder buffer = Tesselator.getInstance().getBuilder();
-        buffer.begin(VertexFormat.Mode.QUADS, FORMAT);
         Vec3 x = plane.direction(angle).scale(sx / 16), y = plane.direction(angle + Math.PI / 2).scale(sy / 16);
         int[] size = size(name);
         float u0 = (float)rx / size[0], v0 = (float)ry / size[1], u1 = (float)(rx + rw) / size[0], v1 = (float)(ry + rh) / size[1];
@@ -265,8 +320,10 @@ public final class ArkFxDraw {
         vertex(buffer, position.add(x.scale(-ox)).add(y.scale(rh - oy)), color, u0, v1, 1);
         vertex(buffer, position.add(x.scale(rw - ox)).add(y.scale(rh - oy)), color, u1, v1, 1);
         vertex(buffer, position.add(x.scale(rw - ox)).add(y.scale(-oy)), color, u1, v0, 1);
-        BufferUploader.drawWithShader(buffer.end());
-        end();
+        if (!batched) {
+            BufferUploader.drawWithShader(buffer.end());
+            end();
+        }
     }
     private static void applySpriteLight(SpriteLight lighting) {
         if (lighting != null) {
@@ -310,7 +367,11 @@ public final class ArkFxDraw {
     private static void extrudedBlade(String name, Vec3 position, AttackFrame plane, double angle, double scale,
                                      double ox, double oy, float[] color, Tint tint, SpriteLight lighting, Blend blend) {
         if (color[3] <= 0 || scale == 0) return;
-        if (OculusShaderCompat.defer(() -> extrudedBlade(name, position, plane, angle, scale, ox, oy, color, tint,lighting,blend))) return;
+        if (spriteCommands != null) {
+            spriteCommands.add(() -> extrudedBlade(name, position, plane, angle, scale, ox, oy, color, tint, lighting, blend));
+            return;
+        }
+        if (!batchingSprites && OculusShaderCompat.defer(() -> extrudedBlade(name, position, plane, angle, scale, ox, oy, color, tint,lighting,blend))) return;
         int[] dimensions = size(name);
         var edges = SpriteImages.get(texture(name)).contour();
         Vec3 x = plane.direction(angle).scale(scale / 16), y = plane.direction(angle + Math.PI / 2).scale(scale / 16);

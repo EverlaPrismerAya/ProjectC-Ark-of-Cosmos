@@ -12,7 +12,9 @@ void main() {
     if (sampleColor.a < AlphaCutoff) discard;
     fragColor = sampleColor * vertexColor;
     // Keep this curve in sync with ArkFxDraw.nearOpacity and the other three sprite/trail fragments.
-    float fade = mix(1.0, mix(0.12, 1.0, smoothstep(0.5, 3.0, length(viewPosition))), NearFade);
-    fragColor.a *= fade;
-    fragColor.rgb *= mix(1.0, fade, FadePremultiplied);
+    if (NearFade != 0.0) {
+        float fade = mix(1.0, mix(0.12, 1.0, smoothstep(0.5, 3.0, length(viewPosition))), NearFade);
+        fragColor.a *= fade;
+        fragColor.rgb *= mix(1.0, fade, FadePremultiplied);
+    }
 }

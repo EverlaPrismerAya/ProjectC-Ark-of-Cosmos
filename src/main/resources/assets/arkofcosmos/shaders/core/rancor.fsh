@@ -23,7 +23,8 @@ void main(){
         float noise=texture(Sampler0,vec2(fract(coords.y),fract(coords.x-uTime*1.4))).r*pow(coords.x,0.04);
         float opacity=mix(1.45,1.95,noise)*color.a;
         opacity*=pow(max(0.0,sin(coords.y*3.141)),mix(1.0,6.0,pow(coords.x,2.0)));
-        opacity*=pow(max(0.0,sin(coords.x*3.141)),0.4);
+        // Pillars use their collision capsule for the ends; longitudinal fading hides dangerous height.
+        if(Mode<1.5)opacity*=pow(max(0.0,sin(coords.x*3.141)),0.4);
         opacity*=(noise*1.5+1.0)*mix(0.4,0.9,noise);
         vec3 transformColor=mix(vec3(1,205.0/255.0,119.0/255.0),vec3(1,76.0/255.0,79.0/255.0),noise);
         color.rgb=mix(color.rgb,transformColor,noise);

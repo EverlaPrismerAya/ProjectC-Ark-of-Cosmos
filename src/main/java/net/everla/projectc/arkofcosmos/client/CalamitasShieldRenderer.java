@@ -20,6 +20,21 @@ final class CalamitasShieldRenderer {
         double scale=brotherScale(entity);
         brotherField(center,scale,((entity.level().getGameTime()%72000)+partial)/20d);
     }
+    static void renderBrother(net.everla.projectc.arkofcosmos.entity.MahouInfernumSummonEntity entity,float partial,PoseStack pose) {
+        ArkFxDraw.matrix=pose.last().pose();ArkFxDraw.camera=entity.getPosition(partial);ArkFxDraw.fadeEye=null;
+        Vec3 center=entity.getPosition(partial).add(0,entity.getBbHeight()/2,0);
+        brotherField(center,entity.shieldDiameter()*16/72,((entity.level().getGameTime()%72000)+partial)/20d);
+    }
+    static void renderSeeker(net.everla.projectc.arkofcosmos.entity.MahouInfernumSummonEntity entity,float partial,PoseStack pose) {
+        ArkFxDraw.matrix=pose.last().pose();ArkFxDraw.camera=entity.getPosition(partial);ArkFxDraw.fadeEye=null;
+        seekerField(entity.getPosition(partial).add(0,entity.getBbHeight()/2,0),entity.getBbWidth()*1.5,
+                ((entity.level().getGameTime()%72000)+partial)/20d);
+    }
+    private static void seekerField(Vec3 center,double radius,double time) {
+        if(OculusShaderCompat.defer(()->seekerField(center,radius,time),true))return;
+        field("calamitas_forcefield",center,NativeSprites.billboard(),0,radius*32/ArkFxDraw.size("calamitas_forcefield")[0],
+                palette(148,48,230,.75f),palette(210,145,255,.75f),time);
+    }
     private static double brotherScale(CalamitasBrotherEntity entity) {
         return entity.shieldDiameter()*16/72;
     }

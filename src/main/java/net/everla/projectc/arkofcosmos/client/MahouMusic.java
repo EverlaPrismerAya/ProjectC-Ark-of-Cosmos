@@ -22,7 +22,7 @@ public final class MahouMusic {
     private MahouMusic() {}
 
     public static boolean postMusicHit(MahouTsukaiEntity boss) {
-        return current != null && current.boss == boss && current.phase == 3 && current.elapsedTicks >= 694;
+        return current != null && current.boss == boss && current.phase == 2 && current.elapsedTicks >= 694;
     }
 
     @SubscribeEvent public static void tick(TickEvent.ClientTickEvent event) {
@@ -52,7 +52,7 @@ public final class MahouMusic {
             return;
         }
         mc.getMusicManager().stopPlaying();
-        if (current == null || current.boss != boss || current.phase != boss.phase()) {
+        if (current == null || current.boss != boss || current.phase != boss.musicPhase()) {
             stop(mc);
             current = new Track(boss);
             mc.getSoundManager().play(current);
@@ -76,9 +76,9 @@ public final class MahouMusic {
 
         Track(MahouTsukaiEntity boss) {
             super(SoundEvent.createVariableRangeEvent(new ResourceLocation(ArkOfCosmos.MOD_ID,
-                    "mahou_music_phase_" + boss.phase())), SoundSource.MUSIC, RandomSource.create());
+                    "mahou_music_phase_" + boss.musicPhase())), SoundSource.MUSIC, RandomSource.create());
             this.boss = boss;
-            phase = boss.phase();
+            phase = boss.musicPhase();
             looping = true;
             relative = true;
             attenuation = Attenuation.NONE;
@@ -87,7 +87,7 @@ public final class MahouMusic {
 
         @Override public void tick() {
             Minecraft mc = Minecraft.getInstance();
-            if (mc.player == null || !eligible(mc, boss) || boss.phase() != phase) stop();
+            if (mc.player == null || !eligible(mc, boss) || boss.musicPhase() != phase) stop();
             else if (!mc.isPaused()) elapsedTicks++;
         }
     }

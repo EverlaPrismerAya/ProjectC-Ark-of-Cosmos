@@ -513,7 +513,7 @@ public final class SupremeCalamitasEntity extends Monster implements net.everla.
         if (redirectHealthWrite(health) || Float.isNaN(health) || blocksHealthWrite(health)) return;
         if (!finished && encounter != null && health < vitality && healthWriteDepth == 0) health = Math.max(health, (float)encounter.damageFloor(getMaxHealth()));
         if (!finished && damageCommitDepth > 0 && healthSyncDepth == 0 && health < vitality)
-            health = vitality - (float)dynamicReduction.apply(level().getGameTime(), Math.max(0, vitality - Math.max(health, damageHealthFloor)));
+            health = vitality - (float)dynamicReduction.apply(level().getGameTime(), Math.max(0, vitality - Math.max(health, damageHealthFloor)), getMaxHealth());
         vitality = net.minecraft.util.Mth.clamp(Math.max(health, damageHealthFloor), 0, getMaxHealth());
         syncVitality();
     }

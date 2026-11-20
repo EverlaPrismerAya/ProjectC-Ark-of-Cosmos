@@ -182,7 +182,7 @@ public final class MahoragaWardenEntity extends Warden {
         super.aiStep();
         if(!level().isClientSide&&bossId!=null&&level() instanceof ServerLevel server){
             var boss=server.getEntity(bossId);
-            if(boss!=null&&!boss.isAlive())discard();
+            if(boss instanceof MahouTsukaiEntity || boss!=null&&!boss.isAlive())discard();
 
         }
     }

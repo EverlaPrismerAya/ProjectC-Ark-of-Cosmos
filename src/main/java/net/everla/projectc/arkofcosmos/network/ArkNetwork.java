@@ -33,6 +33,7 @@ public final class ArkNetwork {
             context.enqueueWork(() -> {
                 if (context.getSender() != null) {
                     ArkCombat.input(context.getSender(), this);
+                    net.everla.projectc.arkofcosmos.combat.SiriusShield.input(context.getSender(),right,alt);
                     net.everla.projectc.arkofcosmos.combat.OldOneCombat.input(context.getSender(), this.left());
                     net.everla.projectc.arkofcosmos.combat.ElementsCombat.input(context.getSender(), this);
                     net.everla.projectc.arkofcosmos.combat.FracturedCombat.input(context.getSender(), this);

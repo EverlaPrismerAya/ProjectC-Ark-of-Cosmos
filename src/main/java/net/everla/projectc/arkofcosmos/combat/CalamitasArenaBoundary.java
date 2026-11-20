@@ -34,6 +34,19 @@ public final class CalamitasArenaBoundary {
         return proposed;
     }
 
+    public static AABB shrink(net.everla.projectc.arkofcosmos.entity.MahouTsukaiEntity boss,AABB previous,AABB proposed){
+        if(boss.level() instanceof ServerLevel level)for(var player:level.players()){
+            if(!participates(player)||!previous.inflate(1e-7).intersects(player.getBoundingBox()))continue;
+            Vec3 before=player.position();carry(player,proposed);
+            if(player.position().distanceToSqr(before)>1e-16)CARRIED.putIfAbsent(player,new Carried(level,before));
+        }
+        return proposed;
+    }
+    private static java.util.List<AABB> mahouBounds(net.minecraft.world.level.Level level){
+        var result=new java.util.ArrayList<AABB>();
+        for(var boss:net.everla.projectc.arkofcosmos.entity.MahouTsukaiEntity.loaded(level)){var bounds=boss.arenaBounds();if(bounds!=null)result.add(bounds);}
+        return result;
+    }
     private static void carry(Entity entity, AABB bounds) {
         Vec3 correction = CalamitasArenaCollision.correction(bounds, entity.getBoundingBox());
         if (correction.lengthSqr() <= 1e-16) return;
@@ -92,6 +105,7 @@ public final class CalamitasArenaBoundary {
             if (bounds != null && bounds.inflate(1e-7).intersects(body))
                 movement = CalamitasArenaCollision.clip(bounds, body, movement);
         }
+        for(var bounds:mahouBounds(entity.level()))if(bounds.inflate(1e-7).intersects(body))movement=CalamitasArenaCollision.clip(bounds,body,movement);
         return movement;
     }
 
@@ -105,6 +119,7 @@ public final class CalamitasArenaBoundary {
                 constrained = constrained.add(CalamitasArenaCollision.correction(bounds, body));
             }
         }
+        for(var bounds:mahouBounds(player.level()))if(bounds.inflate(1e-7).intersects(player.getBoundingBox()))constrained=constrained.add(CalamitasArenaCollision.correction(bounds,player.getBoundingBox().move(constrained.subtract(player.position()))));
         return constrained;
     }
 
@@ -114,8 +129,9 @@ public final class CalamitasArenaBoundary {
         Vec3 movement = pearl.getDeltaMovement();
         double fraction = 1;
         net.minecraft.core.Direction face = net.minecraft.core.Direction.UP;
-        for (var boss : SupremeCalamitasEntity.loaded(pearl.level())) {
-            var bounds = boss.arenaBounds();
+        var pearlBounds=mahouBounds(pearl.level());
+        for(var boss:SupremeCalamitasEntity.loaded(pearl.level()))if(boss.arenaBounds()!=null)pearlBounds.add(boss.arenaBounds());
+        for (var bounds:pearlBounds) {
             if (bounds == null || !bounds.inflate(1e-7).intersects(pearl.getBoundingBox())) continue;
             Vec3 allowed = CalamitasArenaCollision.clip(bounds, pearl.getBoundingBox(), movement);
             for (var axis : net.minecraft.core.Direction.Axis.values()) {

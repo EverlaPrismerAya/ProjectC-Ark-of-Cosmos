@@ -32,6 +32,22 @@ public final class GalaxiaEffects {
         for(var entity:level.entitiesForRendering())if(entity instanceof GalaxiaEntity e){
             live.add(e.getId());consume(e.getId(),e.effectSnapshot(),phase);
         }
+        for(var entity:level.entitiesForRendering()){
+            CompoundTag view=null;
+            if(entity instanceof net.everla.projectc.arkofcosmos.entity.MahouInfernumSummonEntity summon&&summon.view().getString("Kind").equals("BOMBER"))view=summon.view();
+            else if(entity instanceof net.everla.projectc.arkofcosmos.entity.MahouInfernumAttackEntity shot&&!shot.view().isEmpty()){
+                String kind=shot.view().getString("Kind");
+                if(java.util.Set.of("DART","FINAL_DART","DARK_SOUL","REDIRECT_SOUL","SHADOW_BOLT","BONE","HELLBLAST").contains(kind))view=shot.view();
+            }
+            if(view==null)continue;live.add(entity.getId());
+            var external=new CompoundTag();external.putInt("Owner",-1);var path=new net.minecraft.nbt.ListTag();
+            for(var raw:view.getList("Samples",10)){
+                var sample=((CompoundTag)raw).copy();sample.putInt("Kind",BOLT);sample.putInt("Mode",0);sample.putFloat("Scale",.6f);sample.putFloat("Hue",.6f);sample.putDouble("Time",(level.getGameTime()*3d+phase)/60);
+                var frame=net.everla.projectc.arkofcosmos.client.render.NativeSprites.billboard();
+                net.everla.projectc.arkofcosmos.entity.MahouInfernumAttackEntity.vector(sample,"F",frame.forward());net.everla.projectc.arkofcosmos.entity.MahouInfernumAttackEntity.vector(sample,"R",frame.right());path.add(sample);
+            }
+            external.put("Samples",path);consume(entity.getId(),external,phase);
+        }
         if(phase==2)visuals.keySet().removeIf(id->!live.contains(id));
     }
     static void consume(int id,CompoundTag state,int phase){

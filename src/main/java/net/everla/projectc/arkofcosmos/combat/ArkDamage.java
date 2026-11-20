@@ -32,6 +32,10 @@ import net.everla.projectc.arkofcosmos.ArkOfCosmos;
 public final class ArkDamage {
     private static final ResourceLocation SEAGULL = ResourceLocation.fromNamespaceAndPath("alexsmobs", "seagull");
     private static final EntityDataAccessor<Float> HEALTH = SynchedEntityData.defineId(LivingEntity.class, EntityDataSerializers.FLOAT);
+    static final EntityDataAccessor<Float> SIRIUS_CAPACITY=SynchedEntityData.defineId(LivingEntity.class,EntityDataSerializers.FLOAT);
+    static final EntityDataAccessor<Integer> SIRIUS_TIME=SynchedEntityData.defineId(LivingEntity.class,EntityDataSerializers.INT);
+    static final EntityDataAccessor<Integer> SIRIUS_COOLDOWN=SynchedEntityData.defineId(LivingEntity.class,EntityDataSerializers.INT);
+    static final EntityDataAccessor<Integer> SIRIUS_HIT=SynchedEntityData.defineId(LivingEntity.class,EntityDataSerializers.INT);
     private static final MethodHandle DIE = method(LivingEntity.class, "m_6667_", DamageSource.class, true);
     private static final MethodHandle PLAYER_DIE = method(ServerPlayer.class, "m_6667_", DamageSource.class, true);
     private static final MethodHandle REMOVE = method(Entity.class, "m_142687_", Entity.RemovalReason.class, true);
@@ -54,7 +58,7 @@ public final class ArkDamage {
         return entity instanceof Player player && (player.isCreative() || player.isSpectator());
     }
 
-    public static void define(LivingEntity entity) { entity.getEntityData().define(HEALTH, -1f); }
+    public static void define(LivingEntity entity) { entity.getEntityData().define(HEALTH, -1f); SiriusShield.define(entity); }
     public static boolean isHealthData(EntityDataAccessor<?> key){return key.equals(HEALTH)||key.equals(LivingEntity.DATA_HEALTH_ID);}
     public static boolean authoritative(LivingEntity target){
         return target.getEntityData().hasItem(HEALTH)&&target.getEntityData().get(HEALTH)>=0
@@ -124,7 +128,7 @@ public final class ArkDamage {
 
     private static boolean ordinaryTarget(LivingEntity target) {
         // Our boss owns staged health/recovery; keep its native callbacks instead of a second health authority.
-        return target instanceof ProtectedBoss || target instanceof ApollyonCompatTarget apollyon && apollyon.arkofcosmos$isNetherApollyon()
+        return target instanceof net.everla.projectc.arkofcosmos.entity.MahouInfernumSummonEntity || target instanceof ProtectedBoss || target instanceof ApollyonCompatTarget apollyon && apollyon.arkofcosmos$isNetherApollyon()
                 || target instanceof net.everla.projectc.arkofcosmos.entity.MahouTsukaiEntity
                 || target instanceof net.everla.projectc.arkofcosmos.entity.FourthCalamityEntity
                 || target instanceof net.everla.projectc.arkofcosmos.entity.WitchCurseEntity
@@ -257,6 +261,8 @@ public final class ArkDamage {
         boolean seagull = seagull(target);
         if (seagull) amount = Float.MAX_VALUE;
         if(target instanceof Player player)amount=net.everla.projectc.arkofcosmos.enchant.CurseCombat.incoming(player,amount);
+        amount=SiriusShield.absorb(target,amount);
+        if(amount<=0)return true;
         float after = Math.max(0, before - amount);
         target.getEntityData().set(HEALTH, after);
         if (target instanceof Player player && after < before)

@@ -98,7 +98,7 @@ public final class FourthCalamityBossBar {
         graphics.pose().popPose();
     }
     /** Clip each layer to the same pointed silhouette, including an empty or full bar. */
-    private static void bevel(GuiGraphics graphics,int x,int y,int width,int height,int filled,int color) {
+    static void bevel(GuiGraphics graphics,int x,int y,int width,int height,int filled,int color) {
         filled=Math.max(0,Math.min(width,filled));
         for(int row=0;row<height;row++) {
             int inset=Math.abs(row-height/2),right=Math.min(width-inset,filled);

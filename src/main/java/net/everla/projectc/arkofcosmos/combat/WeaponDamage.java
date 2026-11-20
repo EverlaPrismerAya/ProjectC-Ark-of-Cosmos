@@ -19,7 +19,8 @@ public final class WeaponDamage {
         if(amount<=0)return false;
         // Calamitas summons retain native hurt frames and mitigation even when
         // struck by an Ark weapon; do not install this dispatcher's 35% floor.
-        if(target instanceof net.everla.projectc.arkofcosmos.entity.WitchCurseEntity
+        if(target instanceof net.everla.projectc.arkofcosmos.entity.MahouInfernumSummonEntity
+                || target instanceof net.everla.projectc.arkofcosmos.entity.WitchCurseEntity
                 || target instanceof net.everla.projectc.arkofcosmos.entity.BrimstoneWitchEntity
                 || target instanceof net.everla.projectc.arkofcosmos.entity.CalamitasMinionEntity
                 || target instanceof net.everla.projectc.arkofcosmos.entity.CalamitasBrotherEntity
@@ -69,7 +70,13 @@ public final class WeaponDamage {
             if(success&&fourthHit&&!source.is(net.minecraft.tags.DamageTypeTags.IS_EXPLOSION)
                 &&source.getDirectEntity()==fourth&&!source.is(net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.DAMAGE_TYPE,net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("arkofcosmos","spear"))))
                 CalamityAttackGuard.knockback(target,.4,fourth.getX()-target.getX(),fourth.getZ()-target.getZ(),fourth);
-            if(success&&mahouHit&&!ElementsCombat.isResonanceDamage(target))BossHealingLock.apply(target,(LivingEntity)source.getEntity());
+            if(success&&mahouHit&&!ElementsCombat.isResonanceDamage(target)&&!net.everla.projectc.arkofcosmos.enchant.WitchFlames.isDamage(target)){
+                var mage=(net.everla.projectc.arkofcosmos.entity.MahouTsukaiEntity)source.getEntity();
+                BossHealingLock.apply(target,40);
+                boolean tail=source.getDirectEntity() instanceof net.everla.projectc.arkofcosmos.entity.MahouInfernumAttackEntity shot?shot.tail():source.getDirectEntity() instanceof net.everla.projectc.arkofcosmos.entity.MahouInfernumSummonEntity summon?summon.tail():mage.tailAttack();
+                if(tail)net.everla.projectc.arkofcosmos.enchant.WitchFlames.hex(target,60,1,mage);
+                else ElementsCombat.applyResonance(target,mage,20);
+            }
             return success;
         } finally {
             if (bossHit && !success) {

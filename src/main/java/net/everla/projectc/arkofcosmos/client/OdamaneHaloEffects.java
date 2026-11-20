@@ -34,7 +34,7 @@ public final class OdamaneHaloEffects extends RenderType {
             VertexFormat.Mode.QUADS, 256, false, true, CompositeState.builder()
                     .setShaderState(RENDERTYPE_BEACON_BEAM_SHADER).setTextureState(new TextureStateShard(OdamaneHaloLayer.TEXTURE, false, false))
                     .setTransparencyState(TRANSLUCENT_TRANSPARENCY).setCullState(NO_CULL).setDepthTestState(LEQUAL_DEPTH_TEST)
-                    .setWriteMaskState(COLOR_DEPTH_WRITE).setOutputState(OUTPUT).createCompositeState(false));
+                    .setWriteMaskState(COLOR_WRITE).setOutputState(OUTPUT).createCompositeState(false));
     private static final TransparencyStateShard GLOW_BLEND = new TransparencyStateShard("ark_halo_glow", () -> {
         RenderSystem.enableBlend();
         RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE,
@@ -44,7 +44,20 @@ public final class OdamaneHaloEffects extends RenderType {
             VertexFormat.Mode.QUADS, 256, true, false, CompositeState.builder()
                     .setShaderState(RENDERTYPE_EYES_SHADER).setTextureState(new TextureStateShard(OdamaneHaloLayer.TEXTURE, false, false))
                     .setTransparencyState(GLOW_BLEND).setCullState(NO_CULL).setLightmapState(LIGHTMAP).setOverlayState(OVERLAY)
-                    .setDepthTestState(EQUAL_DEPTH_TEST).setOutputState(ITEM_ENTITY_TARGET).createCompositeState(true));
+                    .setDepthTestState(LEQUAL_DEPTH_TEST).setWriteMaskState(COLOR_WRITE).setOutputState(MAIN_TARGET).createCompositeState(true));
+
+    private static final RenderType BASE=create("ark_odamane_base",DefaultVertexFormat.NEW_ENTITY,VertexFormat.Mode.QUADS,256,false,true,
+            CompositeState.builder().setShaderState(RENDERTYPE_ENTITY_TRANSLUCENT_SHADER)
+                    .setTextureState(new TextureStateShard(OdamaneHaloLayer.TEXTURE,false,false))
+                    .setTransparencyState(TRANSLUCENT_TRANSPARENCY).setCullState(NO_CULL).setLightmapState(LIGHTMAP).setOverlayState(OVERLAY)
+                    .setDepthTestState(LEQUAL_DEPTH_TEST).setWriteMaskState(COLOR_WRITE).setOutputState(MAIN_TARGET).createCompositeState(false));
+    private static final RenderType SWIRL=create("ark_odamane_swirl",DefaultVertexFormat.NEW_ENTITY,VertexFormat.Mode.QUADS,256,false,true,
+            CompositeState.builder().setShaderState(RENDERTYPE_ENERGY_SWIRL_SHADER)
+                    .setTextureState(new TextureStateShard(OdamaneHaloLayer.TEXTURE,false,false)).setTexturingState(new OffsetTexturingStateShard(1,1))
+                    .setTransparencyState(ADDITIVE_TRANSPARENCY).setCullState(NO_CULL).setLightmapState(LIGHTMAP).setOverlayState(OVERLAY)
+                    .setDepthTestState(LEQUAL_DEPTH_TEST).setWriteMaskState(COLOR_WRITE).setOutputState(MAIN_TARGET).createCompositeState(false));
+    static RenderType swirlType(){return SWIRL;}
+    static RenderType baseType(){return BASE;}
 
     private OdamaneHaloEffects() { super("ark_halo", DefaultVertexFormat.POSITION_COLOR_TEX, VertexFormat.Mode.QUADS, 256, false, true, () -> {}, () -> {}); }
     static RenderType glowType() { return GLOW; }
@@ -66,7 +79,7 @@ public final class OdamaneHaloEffects extends RenderType {
                 com.mojang.logging.LogUtils.getLogger().error("Cannot load Odamane halo effect", error);
             } finally { mc.getMainRenderTarget().bindWrite(true); }
         }
-        if (chain == null) return RenderType.energySwirl(OdamaneHaloLayer.TEXTURE, 1, 1);
+        if (chain == null) return SWIRL;
         var target = chain.getTempTarget("final");
         if (target.width != mc.getWindow().getWidth() || target.height != mc.getWindow().getHeight())
             chain.resize(mc.getWindow().getWidth(), mc.getWindow().getHeight());
@@ -84,16 +97,8 @@ public final class OdamaneHaloEffects extends RenderType {
         if (event.phase == TickEvent.Phase.START) pending = prepared = false;
     }
 
-    @SubscribeEvent public static void compositeHalo(RenderLevelStageEvent event) {
-        if (!net.everla.projectc.arkofcosmos.client.render.OculusShaderCompat.shaderPackActive()
-                && event.getStage() == RenderLevelStageEvent.Stage.AFTER_LEVEL) composite(event.getPartialTick());
-    }
-
-    /** Called by the Oculus coordinator after deferred world effects are complete. */
-    public static void compositeFromOculus(float partialTick) {
-        if (net.everla.projectc.arkofcosmos.client.render.OculusShaderCompat.shaderPackActive())
-            composite(partialTick);
-    }
+    /** Runs after shield and Halo draws in the shared retained-depth coordinator, with or without Oculus. */
+    public static void compositeFromOculus(float partialTick) { composite(partialTick); }
 
     static void composite(float partialTick) {
         if (!pending || chain == null) return;

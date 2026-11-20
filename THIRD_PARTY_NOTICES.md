@@ -222,3 +222,22 @@ Java 移植、Minecraft 三维适配及项目维护：EverlaPrismerAya。
 怨戾与异端僭越物品Tooltip逐字保留Calamity固定提交的`Localization/en-US/Mods.CalamityMod.Items.Weapons.Magic.hjson`英文原文；中文优先采用本地CalamityCN同名Magic条目，与固定英文对照后保留汉化文本。原文快照、中文源文件散列及选择说明见`reference/necromantic-infusion/localization-sources.json`；相关文本权利归Calamity Team／汉化作者，未重新按GPL授权。
 
 璀璨权杖的行为派生自本机 Terraria 1.4.5.8 的 Item 6171、Player 宝石法杖发射逻辑、Projectile.GemStaffFeatures 与 AI_029、Dust 更新逻辑；原作版权属于 Re-Logic。本说明及资源来源清单不授予原作代码或素材的再分发许可。
+
+## Infernum Mode combat algorithms
+
+Mahou Infernum encounter choreography, projectiles and summon behavior are adapted from Infernum Mode SupremeCalamitas behavior overrides in the user-supplied source tree. Copyright (c) 2025 Javyz. MIT License; see [InfernumMode-LICENSE.txt](licenses/InfernumMode-LICENSE.txt). No Infernum textures or audio are added; presentation reuses existing Ark of Cosmos resources and vanilla models. Source-file SHA-256 records are in `licenses/INFERNUM-SOURCES.json`.
+
+The 2026-11-19 audit also inspected the user-provided `InfernumMode/lib/Luminance.dll` (`Utilities.AperiodicSin`) and `InfernumMode/lib/CalamityMod.dll` (`BrimstoneHellblast`) to resolve behavior called by these overrides. Supplemental hashes are recorded in the same manifest. Neither assembly nor decompiled source is included in release artifacts.
+
+## User-provided Supreme Mahou summon skins (2026-11-20)
+
+`assets/arkofcosmos/textures/entity/mahou_saint.png` is copied byte-for-byte from user-provided `缝合怪26.png` (SHA-256 `b8541400cdba36bc12f93a00a683a9803a7edb744e638c1cca2d55a4427a56c3`). `assets/arkofcosmos/textures/entity/mahou_fox.png` is copied byte-for-byte from user-provided `啊？？4.0.png` (SHA-256 `3d64246a0d62a9dbea85530413eaeb4e02ef49663768d0f069bdcdecc92d59d9`). Both use Minecraft's slim player model, including skin overlay layers. Original authors/rights holders retain their rights; no separate license was supplied and these skins are not relicensed under GPL.
+
+## User-provided Supreme Mahou music (2026-11-20)
+
+`assets/arkofcosmos/sounds/music/mahou_phase_1.ogg`: copied byte-for-byte from user-provided `p1.ogg`; SHA-256 `d763c1b0cdcb941a983b914e46ac6487a9f37d839baa794e115b8abafcd9c740`. Original authors/rights holders retain their rights; no separate license was supplied and this audio is not relicensed under GPL.
+
+`assets/arkofcosmos/sounds/music/mahou_phase_2.ogg`: copied byte-for-byte from user-provided `p2.ogg`; SHA-256 `3aa3c6c121c2b0d576295c72ff63ddf2694bbd7666f71a9c240edd1bbcdac92f`. Original authors/rights holders retain their rights; no separate license was supplied and this audio is not relicensed under GPL.
+
+### Sirius texture
+`textures/item/sirius.png` is copied unchanged from the user-provided CalamityModLegacy `Items/Weapons/Summon/Sirius.png` (Calamity Mod). Original asset rights remain with its authors.

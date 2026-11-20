@@ -144,6 +144,10 @@ public final class SupremeCalamitasCombat {
         Vec3 desired = unit.scale(Math.min(length, baseSpeed)).lerp(unit.scale(Math.min(length / 24, baseSpeed * 3)), Math.min(1, length / 2400));
         return new Vec3(approach(current.x, desired.x, acceleration), approach(current.y, desired.y, acceleration), approach(current.z, desired.z, acceleration));
     }
+    /** Terraria SimpleFlyMovement, including the second acceleration when reversing an axis. */
+    public static Vec3 fly(Vec3 current,Vec3 desired,double acceleration){
+        return new Vec3(approach(current.x,desired.x,acceleration),approach(current.y,desired.y,acceleration),approach(current.z,desired.z,acceleration));
+    }
     private static double approach(double current, double desired, double acceleration) {
         if (current < desired) { current += acceleration; if (current < 0 && desired > 0) current += acceleration; }
         else if (current > desired) { current -= acceleration; if (current > 0 && desired < 0) current -= acceleration; }

@@ -30,7 +30,7 @@ public final class ArkClient {
     private ArkClient() {}
     private static boolean lastLeft, lastRight, lastAlt, wasHolding;
     private static int heartbeat;
-    private static final KeyMapping DASH = new KeyMapping("key.arkofcosmos.dash", KeyConflictContext.IN_GAME,
+    public static final KeyMapping DASH = new KeyMapping("key.arkofcosmos.dash", KeyConflictContext.IN_GAME,
             InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_LEFT_ALT, "key.categories.arkofcosmos");
     public static boolean blockUsePriority() {
         Minecraft mc = Minecraft.getInstance();
@@ -100,11 +100,9 @@ public final class ArkClient {
     public static final class Registration {
         @SubscribeEvent public static void shaders(RegisterShadersEvent event) throws java.io.IOException {
             OdamaneHaloEffects.reset();
-            DomainEffects.reset();
             ArkFxDraw.register(event);
-            MahouBossBar.registerShader(event);
             // SatsukiBossBarFill references Goety types; only load it when that integration exists.
-            if(net.everla.projectc.arkofcosmos.SatsukiContent.ENABLED)SatsukiBossBarFill.registerShader(event);
+            if(net.everla.projectc.arkofcosmos.ArkOfCosmos.FIRST_FRACTAL_ENABLED)SatsukiBossBarFill.registerShader(event);
         }
         @SubscribeEvent public static void keys(RegisterKeyMappingsEvent event) {
             event.register(DASH);
@@ -131,7 +129,7 @@ public final class ArkClient {
         }
         @SubscribeEvent public static void renderers(EntityRenderersEvent.RegisterRenderers event) {
             if(net.everla.projectc.arkofcosmos.BejeweledContent.ENABLED) event.registerEntityRenderer(net.everla.projectc.arkofcosmos.BejeweledContent.BOLT.get(), net.minecraft.client.renderer.entity.NoopRenderer::new);
-            if(net.everla.projectc.arkofcosmos.SatsukiContent.ENABLED){event.registerEntityRenderer(net.everla.projectc.arkofcosmos.SatsukiContent.BOSS.get(),SatsukiRinRenderer::new);event.registerEntityRenderer(net.everla.projectc.arkofcosmos.SatsukiContent.SUMMON.get(),com.Polarice3.Goety.client.render.SummonApostleRenderer::new);event.registerEntityRenderer(net.everla.projectc.arkofcosmos.SatsukiContent.FRACTAL_SIGIL.get(),FractalSigilRenderer::new);}
+            if(net.everla.projectc.arkofcosmos.ArkOfCosmos.FIRST_FRACTAL_ENABLED){event.registerEntityRenderer(net.everla.projectc.arkofcosmos.SatsukiContent.BOSS.get(),SatsukiRinRenderer::new);event.registerEntityRenderer(net.everla.projectc.arkofcosmos.SatsukiContent.SUMMON.get(),com.Polarice3.Goety.client.render.SummonApostleRenderer::new);event.registerEntityRenderer(net.everla.projectc.arkofcosmos.SatsukiContent.FRACTAL_SIGIL.get(),FractalSigilRenderer::new);}
             if (net.everla.projectc.arkofcosmos.CalamitasContent.ENABLED)
                 net.everla.projectc.arkofcosmos.CalamitasContent.ATTACKS.values().forEach(type -> event.registerEntityRenderer(type.get(), CalamitasAttackRenderer::new));
             if (net.everla.projectc.arkofcosmos.CalamitasContent.ENABLED)
@@ -144,9 +142,11 @@ public final class ArkClient {
                 event.registerEntityRenderer(net.everla.projectc.arkofcosmos.CalamitasContent.BOSS.get(), SupremeCalamitasRenderer::new);
             event.registerEntityRenderer(ArkOfCosmos.ATTACK.get(), ArkAttackRenderer::new);
             event.registerEntityRenderer(ArkOfCosmos.OLD_ONE_ATTACK.get(), net.everla.projectc.arkofcosmos.client.OldOneRenderer::new);
+            event.registerEntityRenderer(ArkOfCosmos.MAHOU_INFERNUM_ATTACK.get(),MahouInfernumAttackRenderer::new);
+            event.registerEntityRenderer(ArkOfCosmos.MAHOU_INFERNUM_SUMMON.get(),MahouInfernumSummonRenderer::new);
             event.registerEntityRenderer(ArkOfCosmos.MAHOU_TSUKAI.get(), MahouTsukaiRenderer::new);
             event.registerEntityRenderer(ArkOfCosmos.THE_PLAYER.get(), FourthCalamityRenderer::new);
-            event.registerEntityRenderer(ArkOfCosmos.MAHOU_ATTACK.get(), MahouAttackRenderer::new);
+            event.registerEntityRenderer(ArkOfCosmos.MAHOU_ATTACK.get(), net.minecraft.client.renderer.entity.NoopRenderer::new);
             event.registerEntityRenderer(ArkOfCosmos.MAHORAGA.get(), MahoragaRenderer::new);
         }
     }

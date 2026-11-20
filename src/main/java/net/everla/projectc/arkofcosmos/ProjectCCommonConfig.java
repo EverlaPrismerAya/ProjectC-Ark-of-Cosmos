@@ -17,7 +17,9 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.config.ModConfigEvent;
 import net.minecraftforge.server.ServerLifecycleHooks;
 import net.minecraftforge.registries.ForgeRegistries;
-import static net.everla.projectc.arkofcosmos.entity.MahouAttackEntity.*;
+import java.util.Locale;
+import net.everla.projectc.arkofcosmos.entity.MahouInfernumAttackEntity;
+import net.everla.projectc.arkofcosmos.entity.MahouInfernumSummonEntity;
 
 /** Forge watches the common TOML; snapshots also synchronize item panels and boss bars. */
 @Mod.EventBusSubscriber(modid=ArkOfCosmos.MOD_ID)
@@ -32,14 +34,18 @@ public final class ProjectCCommonConfig {
     static {
         var b=new ForgeConfigSpec.Builder();
         b.push("boss").push("mahou");
-        define(b,"health",1000,1,1000000000,"Maximum health");
-        define(b,"phase_two_threshold",.5,0,.999,"Remaining health ratio for transitioning from phase one to phase two");
-        define(b,"phase_three_threshold",.25,0,.999,"Remaining health ratio for transitioning from phase two to phase three");
-        define(b,"summon_threshold",.5,0,1,"Remaining health ratio for summoning the shikigami in phase three");
+        define(b,"health",1440,1,1000000000,"Maximum health");
         define(b,"skill_damage_multiplier",1,0,100,"Base skill damage multiplier");
-        b.push("skills");
-        for(String skill:new String[]{"pillar","wave","bloom","gravity","void_vortex","red","blue","fusion","purple","blue_dash","domain_text","blade","needle","star","blast","galaxia_blade","galaxia_bolt","galaxia_star","resonance","other"})
-            define(b,skill,1,0,100,"Damage multiplier for this skill, multiplied by skill_damage_multiplier");
+        b.push("attacks");
+        for(var kind:MahouInfernumAttackEntity.Kind.values()) {
+            // Telegraphs, emitters and decorative objects never deal direct damage.
+            if(switch(kind){case BOMB,WARNING,BOMB_WARNING,PILLAR_WARNING,ORB,RITUAL,HEART_STAR->false;default->true;})
+                define(b,kind.name().toLowerCase(Locale.ROOT),1,0,100,"Infernum "+kind.name()+" damage multiplier, multiplied by skill_damage_multiplier");
+        }
+        b.pop().push("contact");
+        define(b,"boss",1,0,100,"Boss charge contact damage multiplier, multiplied by skill_damage_multiplier");
+        for(var kind:MahouInfernumSummonEntity.Kind.values())
+            define(b,kind.name().toLowerCase(Locale.ROOT),1,0,100,"Infernum "+kind.name()+" contact damage multiplier, multiplied by skill_damage_multiplier");
         b.pop();
         b.pop().push("fourth_calamity");
         var bars=b.comment("Number of health bars. Total health = health_bars * bar_health").defineInRange("health_bars",44,1,10000);
@@ -66,6 +72,9 @@ public final class ProjectCCommonConfig {
         b.pop().pop();
         SatsukiConfig.define(b);
         b.push("weapons");
+        b.push("sirius");
+        define(b,"shield_capacity",40,0,1000000,"Sirius shield damage absorption capacity");
+        b.pop();
         String[] ids={"fractured_ark","ark_of_the_ancients","ark_of_the_elements","ark_of_cosmos","ark_of_the_old_one","broken_biome_blade","biome_blade","true_biome_blade","galaxia","violence","rancor","gruesome_eminence","bejeweled_staff","first_fractal"};
         double[] damage={4,6,7,16,20,5,7,9.5,16,24.25,18,36,8,16};
         for(int i=0;i<ids.length;i++) {
@@ -126,7 +135,6 @@ public final class ProjectCCommonConfig {
     public static float damage(String item) { return (float)value("weapons."+item+".base_damage"); }
     public static int bars() { return (int)value("boss.fourth_calamity.health_bars"); }
     public static double fourthHealth() { return bars()*value("boss.fourth_calamity.bar_health"); }
-    public static float threshold(int phase) { return phase>=3?0:(float)value("boss.mahou.phase_"+(phase==1?"two":"three")+"_threshold"); }
     public static float bossDamage(net.minecraft.world.entity.LivingEntity target,net.minecraft.world.damagesource.DamageSource source,float amount) {
         boolean mahou=source.getEntity() instanceof net.everla.projectc.arkofcosmos.entity.MahouTsukaiEntity;
         var fourth=net.everla.projectc.arkofcosmos.combat.CalamityAttackGuard.damageOwner(source);
@@ -134,22 +142,16 @@ public final class ProjectCCommonConfig {
         String boss=mahou?"mahou":"fourth_calamity",skill="other";
         var direct=source.getDirectEntity();
         if(mahou) {
-            if(direct instanceof net.everla.projectc.arkofcosmos.entity.MahouAttackEntity attack)skill=switch(attack.kind()) {
-                case PILLAR->"pillar";case WAVE->"wave";case BLOOM->"bloom";case GRAVITY->"gravity";case VOID_VORTEX->"void_vortex";
-                case RED->"red";case BLUE->"blue";case FUSION->"fusion";case PURPLE->"purple";case BLUE_DASH->"blue_dash";case DOMAIN_TEXT->"domain_text";default->"other";
-            };
-            else if(direct instanceof net.everla.projectc.arkofcosmos.entity.ElementsEntity attack)skill=switch(attack.kind()) {
-                case net.everla.projectc.arkofcosmos.entity.ElementsEntity.BLADE->"blade";
-                case net.everla.projectc.arkofcosmos.entity.ElementsEntity.NEEDLE->"needle";
-                case net.everla.projectc.arkofcosmos.entity.ElementsEntity.STAR->"star";default->"other";
-                case net.everla.projectc.arkofcosmos.entity.ElementsEntity.BLAST->"blast";
-            };
-            else if(direct instanceof net.everla.projectc.arkofcosmos.entity.GalaxiaEntity attack)skill=switch(attack.kind()) {
-                case net.everla.projectc.arkofcosmos.entity.GalaxiaEntity.BLADE->"galaxia_blade";
-                case net.everla.projectc.arkofcosmos.entity.GalaxiaEntity.BOLT->"galaxia_bolt";
-                case net.everla.projectc.arkofcosmos.entity.GalaxiaEntity.STAR->"galaxia_star";default->"other";
-            };
-            else if(net.everla.projectc.arkofcosmos.combat.ElementsCombat.isResonanceDamage(target))skill="resonance";
+            String key=null;
+            if(direct instanceof MahouInfernumAttackEntity attack)
+                key="attacks."+attack.kind().name().toLowerCase(Locale.ROOT);
+            else if(direct instanceof MahouInfernumSummonEntity summon)
+                key="contact."+summon.kind().name().toLowerCase(Locale.ROOT);
+            else if(direct==source.getEntity())key="contact.boss";
+            // Unknown/legacy sources receive only the shared multiplier, never a removed skill key.
+            double multiplier=key==null?1:current.getOrDefault("boss.mahou."+key,1d);
+            var mage=(net.everla.projectc.arkofcosmos.entity.MahouTsukaiEntity)source.getEntity();
+            return (float)(amount*mage.outgoingDamageMultiplier()*value("boss.mahou.skill_damage_multiplier")*multiplier);
         } else {
             if(source.is(net.minecraft.tags.DamageTypeTags.IS_EXPLOSION))skill="explosion";
             else if(source.typeHolder().unwrapKey().map(key->key.location().toString()).orElse("").equals("arkofcosmos:wind_charge"))skill="wind_charge";
@@ -159,9 +161,7 @@ public final class ProjectCCommonConfig {
                 default->direct==fourth?(fourth.getMainHandItem().getItem() instanceof net.everla.projectc.arkofcosmos.item.MaceItem?"mace":"melee"):"other";
             };
         }
-        float rage=source.getEntity() instanceof net.everla.projectc.arkofcosmos.entity.MahouTsukaiEntity mage
-                ?mage.outgoingDamageMultiplier():1f;
-        return (float)(amount*rage*value("boss."+boss+".skill_damage_multiplier")*value("boss."+boss+".skills."+skill));
+        return (float)(amount*value("boss."+boss+".skill_damage_multiplier")*value("boss."+boss+".skills."+skill));
     }
     public static CompoundTag snapshot() {
         var tag=new CompoundTag();current.forEach(tag::putDouble);return tag;

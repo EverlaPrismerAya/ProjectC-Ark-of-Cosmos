@@ -28,7 +28,7 @@ public final class ArkOfCosmos {
     public static final RegistryObject<net.minecraft.world.entity.ai.attributes.Attribute> FOURTH_MAX_HEALTH=ATTRIBUTES.register("fourth_max_health",
         ()->new net.minecraft.world.entity.ai.attributes.RangedAttribute("attribute.name.generic.max_health",880,1,Double.MAX_VALUE).setSyncable(true));
     public static final RegistryObject<net.minecraft.world.entity.ai.attributes.Attribute> MAHOU_MAX_HEALTH=ATTRIBUTES.register("mahou_max_health",
-        ()->new net.minecraft.world.entity.ai.attributes.RangedAttribute("attribute.name.generic.max_health",1000,1,Double.MAX_VALUE).setSyncable(true));
+        ()->new net.minecraft.world.entity.ai.attributes.RangedAttribute("attribute.name.generic.max_health",1440,.001,Double.MAX_VALUE).setSyncable(true));
     public static final RegistryObject<EntityType<net.everla.projectc.arkofcosmos.entity.FourthCalamityEntity>> THE_PLAYER=ENTITIES.register("the_player",
         ()->EntityType.Builder.<net.everla.projectc.arkofcosmos.entity.FourthCalamityEntity>of(net.everla.projectc.arkofcosmos.entity.FourthCalamityEntity::new,MobCategory.MONSTER)
             .sized(.6f,1.8f).clientTrackingRange(128).updateInterval(1).build("arkofcosmos:the_player"));
@@ -65,6 +65,7 @@ public final class ArkOfCosmos {
     public static final RegistryObject<EntityType<net.everla.projectc.arkofcosmos.entity.ViolenceEntity>> VIOLENCE_ATTACK=net.minecraftforge.fml.ModList.get().isLoaded("goety") ? ENTITIES.register("violence_attack",
         ()->EntityType.Builder.<net.everla.projectc.arkofcosmos.entity.ViolenceEntity>of(net.everla.projectc.arkofcosmos.entity.ViolenceEntity::new,MobCategory.MISC)
             .sized(.5f,.5f).noSave().noSummon().clientTrackingRange(128).updateInterval(1).build("arkofcosmos:violence_attack")) : null;
+    public static final RegistryObject<Item> SIRIUS = ITEMS.register("sirius", net.everla.projectc.arkofcosmos.item.SiriusItem::new);
     public static final RegistryObject<Item> GALAXIA = ITEMS.register("galaxia", net.everla.projectc.arkofcosmos.item.GalaxiaItem::new);
     public static final RegistryObject<Item> BROKEN_BIOME_BLADE = ITEMS.register("broken_biome_blade", net.everla.projectc.arkofcosmos.item.BrokenBiomeBladeItem::new);
     public static final RegistryObject<EntityType<net.everla.projectc.arkofcosmos.entity.BrokenBiomeEntity>> BROKEN_BIOME_ATTACK = ENTITIES.register("broken_biome_attack",
@@ -93,6 +94,10 @@ public final class ArkOfCosmos {
                     .sized(.6f, 1.95f).clientTrackingRange(128).updateInterval(1).build("arkofcosmos:mahou_tsukai"));
     public static final RegistryObject<Item> MAHOU_TSUKAI_SPAWN_EGG=ITEMS.register("mahou_tsukai_spawn_egg",
         ()->new net.minecraftforge.common.ForgeSpawnEggItem(MAHOU_TSUKAI,0x23213D,0xB68CE0,new Item.Properties()));
+    public static final RegistryObject<EntityType<net.everla.projectc.arkofcosmos.entity.MahouInfernumAttackEntity>> MAHOU_INFERNUM_ATTACK=ENTITIES.register("mahou_infernum_attack",
+        ()->EntityType.Builder.<net.everla.projectc.arkofcosmos.entity.MahouInfernumAttackEntity>of(net.everla.projectc.arkofcosmos.entity.MahouInfernumAttackEntity::new,MobCategory.MISC).sized(.25f,.25f).noSummon().clientTrackingRange(256).updateInterval(1).build("arkofcosmos:mahou_infernum_attack"));
+    public static final RegistryObject<EntityType<net.everla.projectc.arkofcosmos.entity.MahouInfernumSummonEntity>> MAHOU_INFERNUM_SUMMON=ENTITIES.register("mahou_infernum_summon",
+        ()->EntityType.Builder.<net.everla.projectc.arkofcosmos.entity.MahouInfernumSummonEntity>of(net.everla.projectc.arkofcosmos.entity.MahouInfernumSummonEntity::new,MobCategory.MONSTER).sized(1.5f,1.5f).noSummon().clientTrackingRange(256).updateInterval(1).build("arkofcosmos:mahou_infernum_summon"));
     public static final RegistryObject<EntityType<net.everla.projectc.arkofcosmos.entity.MahouAttackEntity>> MAHOU_ATTACK = ENTITIES.register("mahou_attack",
             () -> EntityType.Builder.<net.everla.projectc.arkofcosmos.entity.MahouAttackEntity>of(net.everla.projectc.arkofcosmos.entity.MahouAttackEntity::new, MobCategory.MISC)
                     .sized(.2f,.2f).noSave().noSummon().clientTrackingRange(128).updateInterval(1).build("arkofcosmos:mahou_attack"));
@@ -148,7 +153,7 @@ public final class ArkOfCosmos {
         net.everla.projectc.arkofcosmos.revengeance.RevengeanceModMobEffects.register(bus);
         net.everla.projectc.arkofcosmos.revengeance.RevengeanceModSounds.REGISTRY.register(bus);
         CalamitasContent.register(bus);
-        SatsukiContent.register(bus);
+        if(net.minecraftforge.fml.ModList.get().isLoaded("goety")&&net.minecraftforge.fml.ModList.get().isLoaded("goety_revelation"))SatsukiContent.register(bus);
         BejeweledContent.register(bus);
         net.everla.projectc.arkofcosmos.enchant.WitchEnchanting.register(bus);
         net.everla.projectc.arkofcosmos.combat.vanilla.VanillaCombat.register(bus);
@@ -166,6 +171,7 @@ public final class ArkOfCosmos {
     private void attributes(EntityAttributeCreationEvent event) {
         event.put(THE_PLAYER.get(),net.everla.projectc.arkofcosmos.entity.FourthCalamityEntity.createAttributes().build());
         event.put(MAHORAGA.get(),net.minecraft.world.entity.monster.warden.Warden.createAttributes().build());
+        event.put(MAHOU_INFERNUM_SUMMON.get(),net.everla.projectc.arkofcosmos.entity.MahouInfernumSummonEntity.attributes().build());
         event.put(MAHOU_TSUKAI.get(), net.everla.projectc.arkofcosmos.entity.MahouTsukaiEntity.createAttributes().build());
     }
 
@@ -174,6 +180,7 @@ public final class ArkOfCosmos {
             event.accept(ARK_OF_COSMOS);
             event.accept(ARK_OF_THE_OLD_ONE);
             event.accept(GALAXIA);
+            event.accept(SIRIUS);
             event.accept(TRUE_BIOME_BLADE);
             event.accept(BIOME_BLADE);
             event.accept(BROKEN_BIOME_BLADE);

@@ -1,0 +1,202 @@
+{
+  "source": "User-supplied InfernumMode source tree, SupremeCalamitas overrides",
+  "license": "MIT",
+  "files": [
+    {
+      "path": "AcceleratingDarkMagicFlame.cs",
+      "sha256": "a1ceb3581271d03d015c4b5d039b911457bcb5b7938d4e84ffcb8d91a88d6523"
+    },
+    {
+      "path": "BrimstoneBarrageOld.cs",
+      "sha256": "2dadd5583efae961371274ab8f359da64d0c8768479b64e2eddb68fc7e30084b"
+    },
+    {
+      "path": "BrimstoneDemonSummonExplosion.cs",
+      "sha256": "514b109a2a5b1f460e72357bb9f69714cfeaa5227bf74ce68f630f946f9ccf3d"
+    },
+    {
+      "path": "BrimstoneFlameOrb.cs",
+      "sha256": "85ff4f44172ff941ce58738ca07f17cc13ceb348a6ea14725b587b52e9b45dd2"
+    },
+    {
+      "path": "BrimstoneFlamePillar.cs",
+      "sha256": "70c337cabce2fa2444dc1fb528f5b824bce311fa90e86260c5745b802879e305"
+    },
+    {
+      "path": "BrimstoneFlamePillarTelegraph.cs",
+      "sha256": "105aca0eb067a4d0aa122378a4416ec3a8282fa4558a6314cd670ad88936fb47"
+    },
+    {
+      "path": "BrimstoneJewelProj.cs",
+      "sha256": "9ab7daa262c6e773d44b7849bc6b18854051e436c9f5755a9907d3df9c081453"
+    },
+    {
+      "path": "BrimstoneLaserbeam.cs",
+      "sha256": "ac83edba40d3a4d1bf2e312c0eb74bf508807e2fc1163fc6168440c73459d7ef"
+    },
+    {
+      "path": "CatastropheSlash.cs",
+      "sha256": "34f5c73606943769a8f845dc02905e7d846527a8f1cd86d9c301f7d002afebc8"
+    },
+    {
+      "path": "CondemnationArrowSCal.cs",
+      "sha256": "bc063a8b7a0085afdfb4d0a6179c8e5058f9919ecc35de8f0e493ba2518ff052"
+    },
+    {
+      "path": "CondemnationProj.cs",
+      "sha256": "1018703bf6889b1f6412d570cbb1c6b198bd793e08375cd0b2f116b2b9b45ad8"
+    },
+    {
+      "path": "DemonicBomb.cs",
+      "sha256": "63e4e200be74ada7efed5560e84ece52a78cf7a438cd71f212546193e8bdf8fb"
+    },
+    {
+      "path": "DemonicExplosion.cs",
+      "sha256": "31ac98fc9ce45a6701d8922c27d65a2c8d86e45de62ae269512f51c25890d248"
+    },
+    {
+      "path": "DemonicTelegraphLine.cs",
+      "sha256": "1e256e1ad7a14ea34503fa3853f76ca97461e954a0ecf885625e5627687a16db"
+    },
+    {
+      "path": "FlameOverloadBeam.cs",
+      "sha256": "b716f99f185f1aacc9c4d6a7d44e8620099af37e8c72c260258f4cb29221d65d"
+    },
+    {
+      "path": "HeresyProjSCal.cs",
+      "sha256": "8e0d831f6de52a5dbf8a6cdc479a838a75a4ab4354426a3e10d03f4a0e4af36d"
+    },
+    {
+      "path": "InfernumBrimstoneGigablast.cs",
+      "sha256": "994e17943a3487e1be63c05814b34374115369b6909b814c6712ab57789ac584"
+    },
+    {
+      "path": "LostSoulProj.cs",
+      "sha256": "fd3c97830d551cfb5d77cfe26c63424bd0d66cf2478e0689cdc5b0f56a457fe6"
+    },
+    {
+      "path": "RedirectingDarkSoul.cs",
+      "sha256": "c0279512e1911615e44f034c36932fc8350502368004659467fc3da071ac81aa"
+    },
+    {
+      "path": "RedirectingHellfireSCal.cs",
+      "sha256": "32a624aab729202c8b1e1a41451555bf96bdd6c45e71313efe8c6b48d2047cb0"
+    },
+    {
+      "path": "RedirectingLostSoulProj.cs",
+      "sha256": "5e7bdfd8c994218e628902aebd5867dd2087e0b6d5dcc3521b0f58a4b8bff3e1"
+    },
+    {
+      "path": "RitualBrimstoneHeart.cs",
+      "sha256": "10535637fa34aefaa06a9f09a29c2f5d2859f1bede68a9d707dfa3f9e83cdca7"
+    },
+    {
+      "path": "SepulcherBone.cs",
+      "sha256": "20ad9041b383426f172be42572a0c7ce7d86f5875a8563666a4fe87f820ecfee"
+    },
+    {
+      "path": "SepulcherHeadBehaviorOverride.cs",
+      "sha256": "0fa18a34122f57b8fa7824c90eb890b62878fcc55ec44c441442ba13ed9e63b7"
+    },
+    {
+      "path": "SepulcherSegmentBehaviorOverrides.cs",
+      "sha256": "2b82b47a39bd471422479a180dace319ef9657988683e7a61ddc4966fbd2d8c9"
+    },
+    {
+      "path": "SepulcherSoulBomb.cs",
+      "sha256": "3c043d3bc16d81daa4f68fe95530d9024745a9115f15978950581537e39397e2"
+    },
+    {
+      "path": "ShadowBolt.cs",
+      "sha256": "4c3a455e7909f9cc40db690a33aa01e33417f9d457b11a0a59cc9e239c0d265f"
+    },
+    {
+      "path": "ShadowDemon.cs",
+      "sha256": "16a440f99361ffefffe39468f708afb7a39159e4315732ebbe318b58b78e4b25"
+    },
+    {
+      "path": "ShadowFlameBlast.cs",
+      "sha256": "0cc9f221f799a87d7aa969bc649c379b5c367970f78a6bcfcbd0e005b68f7591"
+    },
+    {
+      "path": "ShadowGigablast.cs",
+      "sha256": "a26c6285ef2da7169e42c0d6986564a8151b71273bb203576323abe10cbabbe7"
+    },
+    {
+      "path": "ShadowSpark.cs",
+      "sha256": "abf2b9ca815632af3c7182df4ea001e5b517f99a67b1c9569ad9de4438bcbf69"
+    },
+    {
+      "path": "SoulSeekerSupremeBehaviorOverride.cs",
+      "sha256": "c948a4a54f4486fe7042d1fd8b50bc81a139d7bae5272606aaab1749a0d1b8e4"
+    },
+    {
+      "path": "SuicideBomberDemonExplosion.cs",
+      "sha256": "e09b22046766d8051db81410055ae08668366673d83a05697465a78fa731b855"
+    },
+    {
+      "path": "SuicideBomberDemonHostile.cs",
+      "sha256": "dbcaf9a6899b692ee396317cb893e2a089d92afc3c8fdec0f5cd3948543b13af"
+    },
+    {
+      "path": "SuicideBomberRitual.cs",
+      "sha256": "ebca10ace7b0611a478ab22c5baa752c5d1ad1484fb319b76959da62f425af87"
+    },
+    {
+      "path": "SupremeCalamitasBehaviorOverride.cs",
+      "sha256": "8bf7c6fce8bcc875f92e63a6b87e61fd1e2dc66e5c39644eea4e8f7411f53fe9"
+    },
+    {
+      "path": "SupremeCalamitasBehaviorOverride.Music.cs",
+      "sha256": "61dedd7d3ad1eeee3e2a757b36569b7d95395554af688cd3e43d4ba49fee84be"
+    },
+    {
+      "path": "SupremeCalamitasBrotherPortal.cs",
+      "sha256": "4611c9970be71b564eef127e80ad1176e815a6cf61a64ca6416c086136c69538"
+    },
+    {
+      "path": "SupremeCataclysmBehaviorOverride.cs",
+      "sha256": "3e8e58c007c87b3a224d04920e745b699173f39e0e3b3752ed329aae61ea3f2c"
+    },
+    {
+      "path": "SupremeCataclysmFistOld.cs",
+      "sha256": "701cf109b71d8876c9fc94b4493d826de9f22f5bca87d9c63f5a23abc1ae4099"
+    },
+    {
+      "path": "SupremeCatastropheBehaviorOverride.cs",
+      "sha256": "5b4f89b5d3b525dfa95dcb178508f961c8b2991c9bd371656634831ee6fcef1a"
+    },
+    {
+      "path": "VigilanceProj.cs",
+      "sha256": "957f76855f555ce66c5c205213f400c67498b4db2c35ebed5323b198192b51d5"
+    }
+  ],
+  "adaptations": {
+    "clock": "Three 60 Hz source frames per Minecraft tick; projectile extra updates are retained.",
+    "space": "Fans, walls, seeker rings and rotating beams use the vertical plane locked at attack start. Direct aim and pursuit remain three-dimensional.",
+    "presentation": "Existing Galaxia, Ark of the Cosmos and Ark of the Elements assets; vanilla summon models. No new Infernum media.",
+    "intentional_changes": [
+      "Thirteen ritual hearts are visual-only elemental stars.",
+      "Only desperation attacks and their descendants apply the existing vulnerability hex.",
+      "Existing Mahou identity, Mistilteinn rules, target priorities, dialogue and reward settlement remain."
+    ]
+  },
+  "supplemental_behavior_checks": [
+    {
+      "path": "InfernumMode/lib/Luminance.dll",
+      "sha256": "a3db7eab9c3a2552b087375d03965573a9e168468dc1644b2918a01ef89eeb37",
+      "members": [
+        "Luminance.Common.Utilities.Utilities.AperiodicSin"
+      ],
+      "purpose": "Resolve the helper referenced by SepulcherHeadBehaviorOverride; binary is not distributed."
+    },
+    {
+      "path": "InfernumMode/lib/CalamityMod.dll",
+      "sha256": "10c439082c90d24953a35736efadcddc77059058ec36835435ab15353505468d",
+      "members": [
+        "CalamityMod.Projectiles.Boss.BrimstoneHellblast"
+      ],
+      "purpose": "Verify the external projectile referenced by the Infernum override; binary is not distributed."
+    }
+  ]
+}

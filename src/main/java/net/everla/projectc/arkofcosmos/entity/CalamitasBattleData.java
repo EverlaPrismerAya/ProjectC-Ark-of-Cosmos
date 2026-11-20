@@ -24,6 +24,9 @@ public final class CalamitasBattleData extends SavedData {
     public void settle(UUID boss){if(settlements.add(boss))setDirty();}
     private boolean defeated;
     private boolean acceptanceMusicPlayed;
+    private boolean infernumRitualPlayed;
+    public static boolean infernumRitualPlayed(ServerLevel level){return get(level.getServer().overworld()).infernumRitualPlayed;}
+    public static void markInfernumRitualPlayed(ServerLevel level){var data=get(level.getServer().overworld());if(!data.infernumRitualPlayed){data.infernumRitualPlayed=true;data.setDirty();}}
     public static boolean beginAcceptanceMusic(ServerLevel level, UUID owner) {
         var data = get(level.getServer().overworld());
         if (data.acceptanceMusicPlayed) return false;
@@ -69,6 +72,15 @@ public final class CalamitasBattleData extends SavedData {
         for (var member : battle.members.entrySet())
             if (member.getValue().equals(role) && !battle.dead.contains(member.getKey())) count++;
         return count;
+    }
+    /** Retire a whole role, including members in unloaded chunks. */
+    public void retireRole(UUID owner,String role) {
+        Battle battle=battles.get(owner);
+        if(battle==null || battle.ended)return;
+        boolean changed=false;
+        for(var member:battle.members.entrySet())
+            if(role.equals(member.getValue()))changed|=battle.dead.add(member.getKey());
+        if(changed)setDirty();
     }
     public void died(UUID owner, UUID member) {
         Battle battle = battles.get(owner);
@@ -198,6 +210,7 @@ public final class CalamitasBattleData extends SavedData {
         var data = new CalamitasBattleData();
         data.defeated = root.getBoolean("Defeated");
         data.acceptanceMusicPlayed = root.getBoolean("AcceptanceMusicPlayed");
+        data.infernumRitualPlayed = root.getBoolean("InfernumRitualPlayed");
         for(Tag raw:root.getList("WitchConversions",Tag.TAG_COMPOUND)){CompoundTag entry=(CompoundTag)raw;if(entry.hasUUID("Boss")&&entry.hasUUID("NPC")){UUID boss=entry.getUUID("Boss");data.conversions.put(boss,entry.getUUID("NPC"));if(entry.getBoolean("Settled"))data.settlements.add(boss);}}
         for (Tag raw : root.getList("Battles", Tag.TAG_COMPOUND)) {
             CompoundTag tag = (CompoundTag) raw;
@@ -226,6 +239,7 @@ public final class CalamitasBattleData extends SavedData {
         var conversionsTag=new ListTag();conversions.forEach((boss,npc)->{var entry=new CompoundTag();entry.putUUID("Boss",boss);entry.putUUID("NPC",npc);entry.putBoolean("Settled",settlements.contains(boss));conversionsTag.add(entry);});root.put("WitchConversions",conversionsTag);
         root.putBoolean("Defeated", defeated);
         root.putBoolean("AcceptanceMusicPlayed", acceptanceMusicPlayed);
+        root.putBoolean("InfernumRitualPlayed",infernumRitualPlayed);
         var entries = new ListTag();
         battles.forEach((owner, battle) -> {
             var tag = new CompoundTag();

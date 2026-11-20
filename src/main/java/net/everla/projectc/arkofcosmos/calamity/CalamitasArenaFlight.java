@@ -17,10 +17,13 @@ public final class CalamitasArenaFlight {
 
     public static void update(ServerPlayer player) {
         boolean inside = player.isAlive()
-                && SupremeCalamitasEntity.loaded(player.level()).stream().anyMatch(boss -> {
+                && (SupremeCalamitasEntity.loaded(player.level()).stream().anyMatch(boss -> {
                     var bounds = boss.arenaBounds();
                     return bounds != null && bounds.contains(player.getBoundingBox().getCenter());
-                });
+                }) || net.everla.projectc.arkofcosmos.entity.MahouTsukaiEntity.loaded(player.level()).stream().anyMatch(boss -> {
+                    var bounds = boss.arenaBounds();
+                    return bounds != null && bounds.contains(player.getBoundingBox().getCenter());
+                }));
         if (!inside) { release(player); return; }
         var abilities = player.getAbilities();
         boolean changed = false;

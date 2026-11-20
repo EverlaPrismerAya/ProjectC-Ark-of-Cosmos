@@ -12,7 +12,6 @@ public final class ProjectCClientConfig {
     public static final ForgeConfigSpec.BooleanValue APOLLYON_BOSS_BAR;
     public static final ForgeConfigSpec.BooleanValue SATSUKI_BOSS_BAR;
     public static final ForgeConfigSpec.BooleanValue APOSTLE_BOSS_BAR;
-    public static final ForgeConfigSpec.BooleanValue MAHOU_SIMPLE_BOSS_BAR;
     static {
         var builder=new ForgeConfigSpec.Builder();
         APOLLYON_BOSS_BAR=builder.comment("Use the ProjectC multi-stage boss bar for Apollyon.")
@@ -21,8 +20,6 @@ public final class ProjectCClientConfig {
             .define("apostleBossBar",false);
         SATSUKI_BOSS_BAR=builder.comment("Use the ProjectC multi-stage boss bar for Satsuki Rin.")
             .define("satsukiRinBossBar",true);
-        MAHOU_SIMPLE_BOSS_BAR=builder.comment("Use the simplified ProjectC boss bar for Mahou Tsukai instead of the cosmic bar.")
-            .define("mahouSimpleBossBar",false);
         SPEC=builder.build();
     }
     private ProjectCClientConfig() {}

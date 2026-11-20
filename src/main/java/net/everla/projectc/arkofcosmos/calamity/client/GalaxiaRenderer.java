@@ -24,7 +24,7 @@ public final class GalaxiaRenderer extends EntityRenderer<GalaxiaEntity> {
         Vec3 base=new Vec3(net.minecraft.util.Mth.lerp(partial,e.xOld,e.getX()),net.minecraft.util.Mth.lerp(partial,e.yOld,e.getY()),net.minecraft.util.Mth.lerp(partial,e.zOld,e.getZ()));
         ArkFxDraw.matrix=pose.last().pose();ArkFxDraw.camera=base;ArkFxDraw.ownerView(e.ownerId(),Vec3.ZERO);
         // vertex() subtracts base, while this entity pose already includes its translation.
-        try{
+        try{ArkFxDraw.batchSprites(()->{
             int kind=s.getInt("Kind"),mode=s.getInt("Mode");
             AttackFrame f=GalaxiaEffects.frame(s);Vec3 p=vector(s,"Position");
             double r=s.getFloat("Rotation"),scale=s.getFloat("Scale"),time=ArkFxDraw.time();
@@ -60,7 +60,7 @@ public final class GalaxiaRenderer extends EntityRenderer<GalaxiaEntity> {
             }else if(kind==CHAIN)constellation(s,f,p,time);
             else if(kind==RING)tropicRing(s,f,p,time);
             else if(kind==SLASH)dash(s,f,time);
-        }finally{ArkFxDraw.fadeEye=null;}
+        });}finally{ArkFxDraw.fadeEye=null;}
     }
     static Vec3 historyPosition(java.util.List<CompoundTag> history,double age){
         CompoundTag newer=history.get(0);

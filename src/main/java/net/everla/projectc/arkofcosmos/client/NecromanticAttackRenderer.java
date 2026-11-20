@@ -55,23 +55,39 @@ public final class NecromanticAttackRenderer extends EntityRenderer<NecromanticA
         }finally{ArkFxDraw.end();}
     }
     private static void beam(Vec3 start,Vec3 forward,double length,double scale,float partial){
+        beam(start,forward,length,scale*20/16);
+    }
+    /** Shared Rancor flame material with a world-space radius and retained scene depth. */
+    static void beam(Vec3 start,Vec3 forward,double length,double radius){
+        beam(start,forward,length,radius,false);
+    }
+    /** Match the pillar's damaging capsule, including its rounded vertical end caps. */
+    static void pillar(Vec3 start,double length,double radius){beam(start,new Vec3(0,1,0),length,radius,true);}
+    private static void beam(Vec3 start,Vec3 forward,double length,double radius,boolean pillar){
+        if(OculusShaderCompat.defer(()->beam(start,forward,length,radius,pillar),true))return;
         if(length<=0||ArkFxDraw.rancorShader==null)return;
         ArkFxDraw.begin("terraria_perlin",ArkFxDraw.Blend.ALPHA,true);
         try{
-            var shader=ArkFxDraw.rancorShader;shader.safeGetUniform("Mode").set(1f);shader.safeGetUniform("uTime").set(ArkFxDraw.time());RenderSystem.setShader(()->shader);
+            var shader=ArkFxDraw.rancorShader;shader.safeGetUniform("Mode").set(pillar?2f:1f);shader.safeGetUniform("uTime").set(ArkFxDraw.time());RenderSystem.setShader(()->shader);
             Vec3 a=forward.cross(new Vec3(0,1,0));if(a.lengthSqr()<.001)a=new Vec3(1,0,0);a=a.normalize();Vec3 b=forward.cross(a).normalize();
             // Closed cross-section: the beam has thickness from every viewing direction.
             var out=Tesselator.getInstance().getBuilder();out.begin(VertexFormat.Mode.QUADS,ArkFxDraw.FORMAT);
             for(int step=0;step<92;step++)for(int side=0;side<12;side++){
                 double u0=step/92d,u1=(step+1)/92d,v0=side/12d,v1=(side+1)/12d;
-                beamVertex(out,start,forward,a,b,length,scale,u0,v0);beamVertex(out,start,forward,a,b,length,scale,u0,v1);beamVertex(out,start,forward,a,b,length,scale,u1,v1);beamVertex(out,start,forward,a,b,length,scale,u1,v0);
+                beamVertex(out,start,forward,a,b,length,radius,u0,v0,pillar);beamVertex(out,start,forward,a,b,length,radius,u0,v1,pillar);beamVertex(out,start,forward,a,b,length,radius,u1,v1,pillar);beamVertex(out,start,forward,a,b,length,radius,u1,v0,pillar);
             }BufferUploader.drawWithShader(out.end());
         }finally{ArkFxDraw.end();}
     }
-    private static void beamVertex(BufferBuilder out,Vec3 at,Vec3 forward,Vec3 a,Vec3 b,double length,double scale,double u,double v){
-        Vec3 point=at.add(forward.scale(u*length)).add(a.scale(Math.cos(v*Math.PI*2)*scale*20/16)).add(b.scale(Math.sin(v*Math.PI*2)*scale*20/16));
+    private static void beamVertex(BufferBuilder out,Vec3 at,Vec3 forward,Vec3 a,Vec3 b,double length,double radius,double u,double v,boolean pillar){
+        double along=u*length,crossRadius=radius;
+        if(pillar){
+            along=u*(length+2*radius)-radius;
+            double cap=Math.max(0,Math.max(-along,along-length));
+            crossRadius=Math.sqrt(Math.max(0,radius*radius-cap*cap));
+        }
+        Vec3 point=at.add(forward.scale(along)).add(a.scale(Math.cos(v*Math.PI*2)*crossRadius)).add(b.scale(Math.sin(v*Math.PI*2)*crossRadius));
         double sourceLength=length*16;float mix=(float)(Math.cos(ArkFxDraw.time()*.67-u/Math.max(1,sourceLength)*29)*.5+.5);
-        float alpha=(float)(lerpValue(.97,.9,u)*lerpValue(0,Math.min(.5,15/Math.max(1,sourceLength)),u)*Math.pow(lerpValue(60,270,sourceLength),3)*2);
+        float alpha=pillar?2:(float)(lerpValue(.97,.9,u)*lerpValue(0,Math.min(.5,15/Math.max(1,sourceLength)),u)*Math.pow(lerpValue(60,270,sourceLength),3)*2);
         ArkFxDraw.vertex(out,point,new float[]{(.5f+.5f*mix)*alpha,.5f*alpha,(1-.5f*mix)*alpha,alpha},(float)u,(float)v,1);
     }
 }

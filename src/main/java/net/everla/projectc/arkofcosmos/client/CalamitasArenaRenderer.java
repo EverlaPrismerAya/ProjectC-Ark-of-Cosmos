@@ -53,6 +53,11 @@ public final class CalamitasArenaRenderer {
                     ? new CalamitasArenaVisual(id.getMostSignificantBits() ^ id.getLeastSignificantBits()) : old)
                     .snapshot(bounds, pixels, boss.view().getCompound("Arena").getInt("BorderColor"));
         }
+        for(var boss:net.everla.projectc.arkofcosmos.entity.MahouTsukaiEntity.loaded(current)){
+            var bounds=boss.arenaBounds();var view=boss.infernumView();double pixels=view.getDouble("Pixels");
+            if(bounds==null||pixels<=0)continue;alive.add(boss.getUUID());
+            ARENAS.compute(boss.getUUID(),(id,old)->old==null||old.retiring()?new CalamitasArenaVisual(id.getMostSignificantBits()^id.getLeastSignificantBits()):old).snapshot(bounds,pixels,view.getCompound("Arena").getInt("BorderColor"));
+        }
         ARENAS.forEach((id, arena) -> {
             if (!alive.contains(id)) arena.retire();
             for (int source = 0; source < 3; source++) arena.step();

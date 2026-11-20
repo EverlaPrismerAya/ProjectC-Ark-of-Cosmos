@@ -6,7 +6,9 @@ public final class SupremeCalamitasDynamicReduction {
     private long lastTick = Long.MIN_VALUE;
     private double incomingTotal, appliedTotal;
 
-    public double apply(long tick, double damage) {
+    public double apply(long tick,double damage){return apply(tick,damage,4444);}
+
+    public double apply(long tick, double damage, double maximumHealth) {
         if (!Double.isFinite(damage) || damage < 0) throw new IllegalArgumentException("Invalid damage");
         if (lastTick == Long.MIN_VALUE || tick < lastTick || tick - lastTick >= 20) {
             java.util.Arrays.fill(incoming, 0);
@@ -22,7 +24,8 @@ public final class SupremeCalamitasDynamicReduction {
         lastTick = tick;
         incomingTotal = Math.max(0, incomingTotal) + damage;
         appliedTotal = Math.max(0, appliedTotal);
-        double budget = incomingTotal <= 160 ? incomingTotal : 160 + 160 * Math.log(incomingTotal / 160);
+        double baseline=maximumHealth*160/4444;
+        double budget = incomingTotal <= baseline ? incomingTotal : baseline + baseline * Math.log(incomingTotal / baseline);
         double result = Math.max(0, Math.min(damage, budget - appliedTotal));
         int slot = Math.floorMod(tick, 20);
         incoming[slot] += damage; applied[slot] += result; appliedTotal += result;

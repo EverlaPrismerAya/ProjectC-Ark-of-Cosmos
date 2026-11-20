@@ -89,7 +89,7 @@ public final class SatsukiSlashes {
         clock++;SLASHES.removeIf(s->clock-s.born()>=s.life());SCREEN.removeIf(c->clock-c.born()>=5);
         lastPresence=presence;
         float inside=0,outside=0;Vec3 nearest=null;
-        if(net.everla.projectc.arkofcosmos.SatsukiContent.ENABLED){
+        if(net.everla.projectc.arkofcosmos.ArkOfCosmos.FIRST_FRACTAL_ENABLED){
             Vec3 eye=mc.gameRenderer.getMainCamera().getPosition();
             for(var entity:mc.level.entitiesForRendering())if(entity instanceof SatsukiRinEntity rin&&SatsukiDomain.active(rin)){
                 var box=SatsukiDomain.bounds(rin);

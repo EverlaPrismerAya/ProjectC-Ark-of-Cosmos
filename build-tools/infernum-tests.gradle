@@ -1,0 +1,16 @@
+// Opt-in real-server regression tests; excluded from release artifacts.
+gradle.beforeProject { project -> project.layout.buildDirectory.set(new File(project.projectDir,'build/infernum-tests')) }
+allprojects {
+    afterEvaluate {
+        sourceSets.main.java.srcDir 'build-tools/infernum/server'
+        sourceSets.main.resources.srcDir 'build-tools/infernum/resources'
+        if(project.hasProperty('infernumNoGoety')) {
+            configurations.runtimeClasspath.exclude group:'maven.modrinth',module:'goety'
+            configurations.runtimeClasspath.exclude group:'maven.modrinth',module:'goety-revelation'
+        }
+        minecraft.runs.create('gameTestServer') {
+            property 'forge.enabledGameTestNamespaces','arkofcosmos'
+            workingDirectory project.file('build/infernum-run')
+        }
+    }
+}

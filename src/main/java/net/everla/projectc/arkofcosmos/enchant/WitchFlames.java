@@ -22,17 +22,25 @@ import net.minecraftforge.fml.common.Mod;
 @Mod.EventBusSubscriber(modid=ArkOfCosmos.MOD_ID)
 public final class WitchFlames {
     private WitchFlames() {}
-    private static final class State { long flames,hex,strongHex; }
+    private static final class State { long flames,hex,strongHex; java.util.UUID hexOwner; }
     private static final Map<LivingEntity,State> STATES=new WeakHashMap<>();
     private static boolean showingFlames;
+    private static final ThreadLocal<LivingEntity> DOT_HIT=new ThreadLocal<>();
+    public static boolean isDamage(LivingEntity entity){return DOT_HIT.get()==entity;}
     public static boolean active(LivingEntity entity){return remaining(entity)>0;}
     public static int remaining(LivingEntity entity){var s=STATES.get(entity);return s==null?0:(int)Math.max(0,s.flames-entity.level().getGameTime());}
     public static int strength(LivingEntity entity){var s=STATES.get(entity);if(s==null)return 0;long now=entity.level().getGameTime();return s.strongHex>now?2:s.hex>now || entity instanceof Player && active(entity)?1:0;}
     public static boolean weakened(LivingEntity entity){return strength(entity)>0;}
     /** Enter through native effect application, retaining entity/Forge immunity checks. */
     public static void hex(LivingEntity entity,int ticks,int strength){
-        if(entity instanceof net.everla.projectc.arkofcosmos.entity.SupremeCalamitasEntity || entity.level().isClientSide || !entity.isAlive() || ticks<=0 || protectedPlayer(entity) || !CalamitasContent.ENABLED)return;
+        if(entity instanceof net.everla.projectc.arkofcosmos.entity.SupremeCalamitasEntity || entity.level().isClientSide || !entity.isAlive() || ticks<=0 || protectedPlayer(entity))return;
         entity.addEffect(new MobEffectInstance(CalamitasContent.VULNERABILITY_HEX.get(),ticks,strength>=2?1:0,false,false,true));
+    }
+    /** Owner-aware application retains native effect rejection and the existing temporary timer. */
+    public static void hex(LivingEntity entity,int ticks,int strength,LivingEntity owner){
+        hex(entity,ticks,strength);
+        State state=STATES.get(entity);
+        if(state!=null && state.hex>entity.level().getGameTime())state.hexOwner=owner.getUUID();
     }
     public static void apply(LivingEntity entity,int ticks){
         if(entity instanceof net.everla.projectc.arkofcosmos.entity.SupremeCalamitasEntity || entity.level().isClientSide || !entity.isAlive() || ticks<=0 || protectedPlayer(entity))return;
@@ -45,7 +53,7 @@ public final class WitchFlames {
     private static boolean protectedPlayer(LivingEntity e){return e instanceof Player p && (p.isCreative()||p.isSpectator());}
     @SubscribeEvent public static void potion(MobEffectEvent.Added event){
         var entity=event.getEntity();var effect=event.getEffectInstance();
-        if(entity instanceof net.everla.projectc.arkofcosmos.entity.SupremeCalamitasEntity || entity.level().isClientSide || showingFlames || !CalamitasContent.ENABLED || effect.getEffect()!=CalamitasContent.VULNERABILITY_HEX.get() || !entity.isAlive() || protectedPlayer(entity))return;
+        if(entity instanceof net.everla.projectc.arkofcosmos.entity.SupremeCalamitasEntity || entity.level().isClientSide || showingFlames || effect.getEffect()!=CalamitasContent.VULNERABILITY_HEX.get() || !entity.isAlive() || protectedPlayer(entity))return;
         State s=STATES.computeIfAbsent(entity,k->new State());
         // Commands and boss attacks both enter here; shorter refreshes cannot truncate a running timer.
         long until=effect.isInfiniteDuration()?Long.MAX_VALUE:entity.level().getGameTime()+effect.getDuration();
@@ -77,7 +85,17 @@ public final class WitchFlames {
             float flameDamage=active(entity)?entity instanceof Player?3f:1332*.06f:0;
             float hexDamage=(entity.hasEffect(MobEffects.FIRE_RESISTANCE)?1.5f:3f)*strength(entity);
             float damage=Math.max(flameDamage,hexDamage);
-            if(damage>0)ArkDamage.hurtUnmitigated(entity,entity.damageSources().magic(),damage);
+            if(damage>0){
+                var source=entity.damageSources().magic();
+                if(hexDamage>=flameDamage && s.hexOwner!=null && entity.level() instanceof net.minecraft.server.level.ServerLevel server
+                    && server.getEntity(s.hexOwner) instanceof LivingEntity owner)
+                    source=new net.minecraft.world.damagesource.DamageSource(source.typeHolder(),owner,owner);
+                if(source.getEntity() instanceof net.everla.projectc.arkofcosmos.entity.MahouTsukaiEntity){
+                    LivingEntity previous=DOT_HIT.get();DOT_HIT.set(entity);
+                    try{net.everla.projectc.arkofcosmos.combat.WeaponDamage.hurt(entity,source,damage);}
+                    finally{if(previous==null)DOT_HIT.remove();else DOT_HIT.set(previous);}
+                }else ArkDamage.hurtUnmitigated(entity,source,damage);
+            }
         }
     }
     @SubscribeEvent public static void track(PlayerEvent.StartTracking event){

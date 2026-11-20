@@ -12,13 +12,16 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
 import net.minecraft.tags.ItemTags;
 
-public final class SpearItem extends Item {
+public class SpearItem extends Item {
     public final SpearMaterial material;
     private final Multimap<Attribute,AttributeModifier> attributes;
     public SpearItem(SpearMaterial material) {
+        this(material,0);
+    }
+    protected SpearItem(SpearMaterial material,double bonus) {
         super(properties(material)); this.material=material;
         attributes=ImmutableMultimap.<Attribute,AttributeModifier>builder()
-            .put(Attributes.ATTACK_DAMAGE,new AttributeModifier(BASE_ATTACK_DAMAGE_UUID,"Weapon modifier",material.damage(),AttributeModifier.Operation.ADDITION))
+            .put(Attributes.ATTACK_DAMAGE,new AttributeModifier(BASE_ATTACK_DAMAGE_UUID,"Weapon modifier",material.damage()+bonus,AttributeModifier.Operation.ADDITION))
             .put(Attributes.ATTACK_SPEED,new AttributeModifier(BASE_ATTACK_SPEED_UUID,"Weapon modifier",1.0/material.duration()-4,AttributeModifier.Operation.ADDITION)).build();
     }
     private static Properties properties(SpearMaterial m) {
