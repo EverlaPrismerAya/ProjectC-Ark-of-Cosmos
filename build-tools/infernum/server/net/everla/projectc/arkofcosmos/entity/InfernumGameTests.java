@@ -17,6 +17,17 @@ import static net.everla.projectc.arkofcosmos.calamity.MahouInfernumEncounter.At
 @GameTestHolder("arkofcosmos") @PrefixGameTestTemplate(false)
 public final class InfernumGameTests {
     @GameTest(template="infernum_empty",timeoutTicks=40)
+    public static void summonOwnerFromEntitySync(GameTestHelper h){
+        var boss=boss(h);boss.infernum().entrance=0;boss.infernum().tick();
+        for(var kind:new MahouInfernumSummonEntity.Kind[]{MahouInfernumSummonEntity.Kind.CATACLYSM,MahouInfernumSummonEntity.Kind.CATASTROPHE}){
+            var original=MahouInfernumSummonEntity.spawn(boss,kind,boss.position(),0);
+            var replica=new MahouInfernumSummonEntity(ArkOfCosmos.MAHOU_INFERNUM_SUMMON.get(),h.getLevel());
+            replica.getEntityData().assignValues(original.getEntityData().getNonDefaultValues());
+            h.assertTrue(replica.ownedBy(boss)&&replica.kind()==kind,"entity sync lost summon ownership or brother kind");
+        }
+        boss.discard();h.succeed();
+    }
+    @GameTest(template="infernum_empty",timeoutTicks=40)
     public static void mahouRetreatWithoutTarget(GameTestHelper h){
         var boss=boss(h);var ai=boss.infernum();ai.entrance=0;ai.tick();
         var old=boss.getTarget();old.discard();boss.setTarget(null);boss.setLastHurtByMob(null);

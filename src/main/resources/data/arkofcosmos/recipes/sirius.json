@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "arkofcosmos:netherite_spear"
+    },
+    {
+      "item": "minecraft:nether_star"
+    },
+    {
+      "item": "minecraft:shield"
+    },
+    {
+      "item": "arkofcosmos:ashes_of_calamity"
+    }
+  ],
+  "result": {
+    "item": "arkofcosmos:sirius"
+  }
+}

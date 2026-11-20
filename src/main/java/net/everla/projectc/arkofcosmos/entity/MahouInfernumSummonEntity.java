@@ -66,7 +66,7 @@ public final class MahouInfernumSummonEntity extends Monster {
     }
     @Override public void onSyncedDataUpdated(EntityDataAccessor<?> key){
         super.onSyncedDataUpdated(key);
-        if(VIEW.equals(key)&&!view().isEmpty()){headId=view().getInt("HeadId");pixels=view().getDouble("Pixels");if(pixels<=0)pixels=16;kind=Kind.valueOf(view().getString("Kind"));index=view().getInt("Index");shadowScale=view().contains("ShadowScale")?view().getDouble("ShadowScale"):1;shadowWidth=view().contains("ShadowWidth")?view().getDouble("ShadowWidth"):50;refreshDimensions();}
+        if(VIEW.equals(key)&&!view().isEmpty()){owner=view().hasUUID("Owner")?view().getUUID("Owner"):null;headId=view().getInt("HeadId");pixels=view().getDouble("Pixels");if(pixels<=0)pixels=16;kind=Kind.valueOf(view().getString("Kind"));index=view().getInt("Index");shadowScale=view().contains("ShadowScale")?view().getDouble("ShadowScale"):1;shadowWidth=view().contains("ShadowWidth")?view().getDouble("ShadowWidth"):50;refreshDimensions();}
     }
     public int sourceAge(){return level().isClientSide?view().getInt("Age"):age;}
     public CompoundTag view(){return entityData.get(VIEW);}
