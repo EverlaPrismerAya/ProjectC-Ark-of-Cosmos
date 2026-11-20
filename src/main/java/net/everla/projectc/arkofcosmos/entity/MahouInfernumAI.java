@@ -66,6 +66,10 @@ final class MahouInfernumAI {
         var fourth=boss.level().getEntitiesOfClass(FourthCalamityEntity.class,boss.getBoundingBox().inflate(128),e->!e.defeated()&&MahouTargeting.valid(boss,e))
             .stream().min(Comparator.comparingDouble(boss::distanceToSqr)).orElse(null);
         if(fourth!=null){boss.setTarget(fourth);unseen=0;return;}
+        var arenaPlayer=((ServerLevel)boss.level()).players().stream()
+            .filter(p->MahouTargeting.valid(boss,p)&&MahouTargeting.insideArena(boss,p))
+            .min(Comparator.comparingDouble(boss::distanceToSqr)).orElse(null);
+        if(arenaPlayer!=null){boss.setTarget(arenaPlayer);unseen=0;return;}
         var player=boss.level().getNearestPlayer(boss.getX(),boss.getY(),boss.getZ(),128,p->p instanceof Player v&&MahouTargeting.valid(boss,v)&&boss.hasLineOfSight(v));
         LivingEntity old=boss.getTarget();
         if(player!=null){boss.setTarget(player);unseen=0;}

@@ -62,7 +62,7 @@ public final class MahouTsukaiEntity extends PathfinderMob implements net.minecr
     private final MahouInfernumAI infernum = new MahouInfernumAI(this);
     private static final EntityDataAccessor<CompoundTag> INFERNUM=SynchedEntityData.defineId(MahouTsukaiEntity.class,EntityDataSerializers.COMPOUND_TAG);
     public CompoundTag infernumView(){return entityData.get(INFERNUM);}
-    void publishInfernum(CompoundTag view){view.putUUID("BossBarId",bossEvent.getId());entityData.set(INFERNUM,view);}
+    void publishInfernum(CompoundTag view){view.putBoolean("Invulnerable",infernum.invulnerable());view.putUUID("BossBarId",bossEvent.getId());entityData.set(INFERNUM,view);}
     MahouInfernumAI infernum(){return infernum;}
     public int musicPhase(){return level().isClientSide?infernumView().getInt("Stage")>=2?2:1:infernum.stage>=2?2:1;}
     public boolean tailAttack(){return level().isClientSide?infernumView().getInt("Stage")==4:infernum.tailAttack();}
@@ -104,6 +104,10 @@ public final class MahouTsukaiEntity extends PathfinderMob implements net.minecr
         return target;
     }
     public boolean phaseRecovering() { return false; }
+    public boolean blocksProjectileTracking(){
+        if(defeating()||isInvulnerable())return true;
+        return level().isClientSide?infernumView().getBoolean("Invulnerable"):infernum.invulnerable();
+    }
     public float outgoingDamageMultiplier() { return mistilteinnEnraged ? 6f : 1f; }
     void rageVolleyDialogue() { if(mistilteinnEnraged)dialogue.enragedVolley(this); }
     void brothersDialogue() { dialogue.summonBrothers(this); }

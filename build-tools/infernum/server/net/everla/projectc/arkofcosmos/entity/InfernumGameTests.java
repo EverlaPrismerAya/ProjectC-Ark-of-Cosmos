@@ -17,6 +17,28 @@ import static net.everla.projectc.arkofcosmos.calamity.MahouInfernumEncounter.At
 @GameTestHolder("arkofcosmos") @PrefixGameTestTemplate(false)
 public final class InfernumGameTests {
     @GameTest(template="infernum_empty",timeoutTicks=40)
+    public static void arenaTargetBeyondBossRange(GameTestHelper h){
+        var boss=boss(h);var ai=boss.infernum();ai.entrance=0;ai.tick();
+        var player=player(h);player.setPos(ai.arena.bounds().getCenter());
+        boss.forceCombatPosition(player.position().add(200,0,0));
+        h.assertTrue(MahouTargeting.valid(boss,player),"arena participant rejected beyond 128 blocks");
+        player.setPos(boss.position().add(500,0,0));
+        h.assertTrue(!MahouTargeting.valid(boss,player),"distant player outside arena remained valid");
+        boss.discard();h.succeed();
+    }
+    @GameTest(template="infernum_empty",timeoutTicks=40)
+    public static void invulnerableMahouCannotBeTracked(GameTestHelper h){
+        var boss=boss(h);var ai=boss.infernum();ai.tick();var player=player(h);
+        h.assertTrue(!net.everla.projectc.arkofcosmos.combat.WeaponUser.canTrack(player,boss),"entrance invulnerability remained trackable");
+        ai.entrance=0;ai.start(HorizontalDarkSoulRelease);
+        h.assertTrue(net.everla.projectc.arkofcosmos.combat.WeaponUser.canTrack(player,boss),"vulnerable Mahou became untrackable");
+        ai.start(SummonBrothers);
+        h.assertTrue(!net.everla.projectc.arkofcosmos.combat.WeaponUser.canTrack(player,boss),"existing lock survived summon invulnerability");
+        ai.start(HorizontalDarkSoulRelease);boss.setInvulnerable(true);
+        h.assertTrue(!net.everla.projectc.arkofcosmos.combat.WeaponUser.canTrack(player,boss),"explicit invulnerability remained trackable");
+        boss.discard();h.succeed();
+    }
+    @GameTest(template="infernum_empty",timeoutTicks=40)
     public static void summonOwnerFromEntitySync(GameTestHelper h){
         var boss=boss(h);boss.infernum().entrance=0;boss.infernum().tick();
         for(var kind:new MahouInfernumSummonEntity.Kind[]{MahouInfernumSummonEntity.Kind.CATACLYSM,MahouInfernumSummonEntity.Kind.CATASTROPHE}){
@@ -205,7 +227,7 @@ public final class InfernumGameTests {
             var leader=MahouInfernumSummonEntity.spawn(boss,MahouInfernumSummonEntity.Kind.CATACLYSM,boss.position(),0);
             var follower=MahouInfernumSummonEntity.spawn(boss,MahouInfernumSummonEntity.Kind.CATASTROPHE,boss.position().add(4,0,0),0);
             CalamitasBattleData.get(h.getLevel()).add(boss.getUUID(),UUID.randomUUID(),"mahou_CATASTROPHE");
-            close(h,leader.getMaxHealth(),1225,"brother maximum health incorrect");close(h,follower.getMaxHealth(),1225,"partner maximum health incorrect");
+            close(h,leader.getMaxHealth(),444,"brother maximum health incorrect");close(h,follower.getMaxHealth(),444,"partner maximum health incorrect");
             var target=hitFollower?follower:leader;var source=leader.damageSources().generic();float before=leader.getHealth();
             h.assertTrue(net.everla.projectc.arkofcosmos.combat.ArkDamage.hurt(target,source,150),"Ark brother hit rejected");
             h.assertTrue(leader.getHealth()<before&&leader.getHealth()>0,"Ark did not damage brother shared health");close(h,follower.getHealth(),leader.getHealth(),"brother health diverged");

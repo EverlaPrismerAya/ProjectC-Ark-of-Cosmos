@@ -58,7 +58,8 @@ public final class WeaponUser {
         return owner instanceof Player player?ArkCombat.enemy(player,target):canTrack(owner,target);
     }
     public static boolean canTrack(LivingEntity owner,LivingEntity target) {
-        return !(target instanceof net.everla.projectc.arkofcosmos.entity.CalamitasSepulcherEntity)
+        return !(target instanceof MahouTsukaiEntity boss&&boss.blocksProjectileTracking())
+                && !(target instanceof net.everla.projectc.arkofcosmos.entity.CalamitasSepulcherEntity)
                 && !(target instanceof net.everla.projectc.arkofcosmos.entity.MahouInfernumSummonEntity summon&&summon.kind()==net.everla.projectc.arkofcosmos.entity.MahouInfernumSummonEntity.Kind.SHADOW) && canHit(owner,target);
     }
     public static LivingEntity nearest(LivingEntity owner,Vec3 from,double radius) {

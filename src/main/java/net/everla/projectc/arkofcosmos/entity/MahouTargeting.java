@@ -6,10 +6,15 @@ import net.minecraft.world.level.ClipContext;
 /** Shared target filters also retire legacy weapon-owned attacks safely. */
 final class MahouTargeting {
     private MahouTargeting() {}
+    static boolean insideArena(MahouTsukaiEntity boss,LivingEntity target){
+        var arena=boss.arenaBounds();
+        return target!=null&&target.level()==boss.level()&&arena!=null&&arena.intersects(target.getBoundingBox());
+    }
     static boolean valid(MahouTsukaiEntity boss, LivingEntity target) {
         return target != null && target != boss && target.isAlive() && !target.isRemoved()
                 && (!(target instanceof FourthCalamityEntity fourth) || !fourth.defeated())
-                && target.level() == boss.level() && !boss.isAlliedTo(target) && boss.distanceToSqr(target) <= 128 * 128
+                && target.level() == boss.level() && !boss.isAlliedTo(target)
+                && (boss.distanceToSqr(target) <= 128 * 128||insideArena(boss,target))
                 && (!(target instanceof Player p) || !p.isCreative() && !p.isSpectator());
     }
     static boolean holdAltitude(LivingEntity target){

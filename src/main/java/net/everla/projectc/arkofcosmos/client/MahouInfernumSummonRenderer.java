@@ -41,7 +41,7 @@ public final class MahouInfernumSummonRenderer extends EntityRenderer<MahouInfer
             net.everla.projectc.arkofcosmos.client.render.ArkFxDraw.camera=e.getPosition(partial);
             net.everla.projectc.arkofcosmos.client.render.ArkFxDraw.fadeEye=null;
             if(net.everla.projectc.arkofcosmos.client.render.OculusShaderCompat.defer(()->{
-                var immediate=MultiBufferSource.immediate(new com.mojang.blaze3d.vertex.BufferBuilder(256));
+                var immediate=net.minecraft.client.Minecraft.getInstance().renderBuffers().bufferSource();
                 render(e,yaw,partial,saved,immediate,light);immediate.endBatch();
             },true))return;
         }
