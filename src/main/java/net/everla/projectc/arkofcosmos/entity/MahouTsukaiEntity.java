@@ -96,7 +96,16 @@ public final class MahouTsukaiEntity extends PathfinderMob implements net.minecr
     @Override public net.minecraft.world.entity.ai.attributes.AttributeInstance getAttribute(net.minecraft.world.entity.ai.attributes.Attribute attribute) { return super.getAttribute(attribute==Attributes.MAX_HEALTH?net.everla.projectc.arkofcosmos.ArkOfCosmos.MAHOU_MAX_HEALTH.get():attribute); }
     @Override public double getAttributeBaseValue(net.minecraft.world.entity.ai.attributes.Attribute attribute) { return super.getAttributeBaseValue(attribute==Attributes.MAX_HEALTH?net.everla.projectc.arkofcosmos.ArkOfCosmos.MAHOU_MAX_HEALTH.get():attribute); }
     @Override protected void registerGoals() {}
-    @Override public void setTarget(LivingEntity target){super.setTarget(target);targetId=target==null?null:target.getUUID();}
+    @Override public void setTarget(LivingEntity target) {
+        if (MobBattleTargeting.reject(this, target, this::removeByPlayerCommand)) return;
+        if (target != null && !(target instanceof net.minecraft.world.entity.player.Player) && !(target instanceof FourthCalamityEntity)) {
+            super.setTarget(null);
+            targetId = null;
+            return;
+        }
+        super.setTarget(target);
+        targetId = target == null ? null : target.getUUID();
+    }
     @Override public LivingEntity getTarget(){
         var target=super.getTarget();
         if(target==null && targetId!=null && level() instanceof net.minecraft.server.level.ServerLevel server
@@ -195,7 +204,7 @@ public final class MahouTsukaiEntity extends PathfinderMob implements net.minecr
                 &&(!(entity instanceof net.minecraft.world.entity.player.Player player)||!player.isCreative()&&!player.isSpectator());
     }
     LivingEntity orbitTarget(){
-        return MahouTargeting.valid(this,getTarget())?getTarget():presentThreat(orbitAnchor)?orbitAnchor:null;
+        return MahouTargeting.valid(this,getTarget())?getTarget():MahouTargeting.valid(this,orbitAnchor)?orbitAnchor:null;
     }
     private void observeNonPlayerPressure(DamageSource source){
         if(!level().isClientSide&&!defeating()

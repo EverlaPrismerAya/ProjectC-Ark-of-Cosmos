@@ -1,5 +1,7 @@
 # 七叶镜绫 Boss
 
+只将玩家作为常规攻击目标。魔法使与第四天灾互殴的特例保留。Mob Battle Mod 的仇恨杖或队伍 AI 指定非玩家目标时，先对该目标结算 `ArkDamage` 的 `Float.MAX_VALUE` 伤害，再强制移除目标；无论抹杀是否成功，Boss 均脱战消失。其他来源的非玩家目标只会被拒绝，不触发抹杀。
+
 ## 召唤与生命
 
 沿用 `arkofcosmos:mahou_tsukai`、现有刷怪蛋及召唤入口。默认最大生命为 1440；服务端 `boss.mahou.health` 可覆盖默认值。血条使用本模组共享简化样式，显示一条连续生命进度。OdamaneHalo 在所有战斗阶段显示。

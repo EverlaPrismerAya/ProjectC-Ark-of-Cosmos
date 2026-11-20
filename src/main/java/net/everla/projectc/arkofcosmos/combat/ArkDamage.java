@@ -51,6 +51,26 @@ public final class ArkDamage {
     private ArkDamage() {}
     public static void bootstrap() {}
 
+    /** Punish externally assigned non-player boss targets, including removal-guarded mobs. */
+    public static void obliterate(LivingEntity target, LivingEntity attacker) {
+        if (target.level().isClientSide || target instanceof Player || target.isRemoved()) return;
+        try {
+            hurt(target, attacker.damageSources().mobAttack(attacker), Float.MAX_VALUE);
+        } finally {
+            LivingEntity previous = FINISHING.get();
+            FINISHING.set(target);
+            try {
+                target.getEntityData().set(HEALTH, 0f);
+                REMOVE.invoke(target, Entity.RemovalReason.KILLED);
+            } catch (Throwable failure) {
+                throw new IllegalStateException("Could not remove rejected boss target", failure);
+            } finally {
+                if (previous == null) FINISHING.remove();
+                else FINISHING.set(previous);
+            }
+        }
+    }
+
     public static boolean protectedPlayer(Object entity) {
         // LivingEntity initializes health before ServerPlayer initializes its game mode.
         if (entity instanceof Player player && player.getAbilities() == null) return false;

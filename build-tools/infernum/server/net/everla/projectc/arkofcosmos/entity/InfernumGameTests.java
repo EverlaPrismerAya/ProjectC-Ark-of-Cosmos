@@ -356,7 +356,7 @@ public final class InfernumGameTests {
     }
     private static MahouTsukaiEntity boss(GameTestHelper h){
         var boss=ArkOfCosmos.MAHOU_TSUKAI.get().create(h.getLevel());boss.applyConfiguredHealth();
-        boss.setPos(h.absoluteVec(new Vec3(1,4,1)));var target=EntityType.PIG.create(h.getLevel());target.setPos(boss.position().add(8,0,0));boss.setTarget(target);return boss;
+        boss.setPos(h.absoluteVec(new Vec3(1,4,1)));var target=player(h);target.setPos(boss.position().add(8,0,0));boss.setTarget(target);return boss;
     }
     private static ServerPlayer player(GameTestHelper h){return new ServerPlayer(h.getLevel().getServer(),h.getLevel(),new GameProfile(UUID.randomUUID(),"InfernumTest"));}
     private static void close(GameTestHelper h,double a,double b,String message){h.assertTrue(Math.abs(a-b)<.0002,message+": "+a+" != "+b);}
@@ -418,7 +418,10 @@ public final class InfernumGameTests {
     }
     @GameTest(template="infernum_empty",timeoutTicks=80)
     public static void allAttacksAndStatuses(GameTestHelper h){
-        var boss=boss(h);var ai=boss.infernum();ai.entrance=0;ai.tick();
+        var boss=boss(h);
+        // This long synthetic fight has no connected player; use the intentional non-player rival.
+        var rival=ArkOfCosmos.THE_PLAYER.get().create(h.getLevel());rival.setPos(boss.getTarget().position());boss.setTarget(rival);
+        var ai=boss.infernum();ai.entrance=0;ai.tick();
         for(var attack:MahouInfernumEncounter.Attack.values()){
             ai.clearShots();for(var kind:MahouInfernumSummonEntity.Kind.values())ai.clearKind(kind);
             ai.stage=attack==DesperationPhase?4:3;ai.finalState=0;ai.start(attack);
@@ -497,4 +500,32 @@ public final class InfernumGameTests {
         boss.discard();victim.discard();h.succeed();
     }
 
+
+    @GameTest(template="infernum_empty",timeoutTicks=40)
+    public static void rejectForeignTargetsWithoutPunishment(GameTestHelper h) {
+        var target=EntityType.COW.create(h.getLevel());
+        var mahou=ArkOfCosmos.MAHOU_TSUKAI.get().create(h.getLevel());
+        mahou.setTarget(target);
+        h.assertTrue(mahou.getTarget()==null&&!target.isRemoved()&&!mahou.isRemoved(),"ordinary assignment triggered punishment");
+        var fourth=ArkOfCosmos.THE_PLAYER.get().create(h.getLevel());
+        mahou.setTarget(fourth);
+        h.assertTrue(mahou.getTarget()==fourth&&!fourth.isRemoved(),"intentional Fourth Calamity combat rejected");
+        mahou.discard();fourth.discard();target.discard();h.succeed();
+    }
+    @GameTest(template="infernum_empty",timeoutTicks=40)
+    public static void mobBattleAssignmentRemovesTargetAndBoss(GameTestHelper h) throws Exception {
+        if(!net.minecraftforge.fml.ModList.get().isLoaded("mobbattle")){h.succeed();return;}
+        var assign=Class.forName("io.github.flemmli97.mobbattle.handler.Utils")
+                .getMethod("setAttackTarget",Mob.class,LivingEntity.class,boolean.class);
+        var bosses=new java.util.ArrayList<Mob>();
+        bosses.add(ArkOfCosmos.MAHOU_TSUKAI.get().create(h.getLevel()));
+        bosses.add(net.everla.projectc.arkofcosmos.CalamitasContent.BOSS.get().create(h.getLevel()));
+        if(net.everla.projectc.arkofcosmos.SatsukiContent.BOSS!=null)bosses.add(net.everla.projectc.arkofcosmos.SatsukiContent.BOSS.get().create(h.getLevel()));
+        for(var boss:bosses){
+            var target=EntityType.COW.create(h.getLevel());
+            assign.invoke(null,boss,target,false);
+            h.assertTrue(target.isRemoved()&&boss.isRemoved(),"Mob Battle assignment failed for "+boss.getType());
+        }
+        h.succeed();
+    }
 }

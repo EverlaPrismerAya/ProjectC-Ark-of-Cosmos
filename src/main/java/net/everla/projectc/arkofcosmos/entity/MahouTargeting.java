@@ -11,7 +11,7 @@ final class MahouTargeting {
         return target!=null&&target.level()==boss.level()&&arena!=null&&arena.intersects(target.getBoundingBox());
     }
     static boolean valid(MahouTsukaiEntity boss, LivingEntity target) {
-        return target != null && target != boss && target.isAlive() && !target.isRemoved()
+        return (target instanceof Player || target instanceof FourthCalamityEntity) && target != boss && target.isAlive() && !target.isRemoved()
                 && (!(target instanceof FourthCalamityEntity fourth) || !fourth.defeated())
                 && target.level() == boss.level() && !boss.isAlliedTo(target)
                 && (boss.distanceToSqr(target) <= 128 * 128||insideArena(boss,target))

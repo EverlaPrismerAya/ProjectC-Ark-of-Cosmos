@@ -126,7 +126,16 @@ public final class SupremeCalamitasEntity extends Monster implements net.everla.
     }
     public boolean protectionBoost() { return protectionBoost; }
     public SupremeCalamitasEncounter.Phase phase() { return encounter.phase(); }
-    @Override public void setTarget(LivingEntity target) { super.setTarget(target); targetId = target == null ? null : target.getUUID(); }
+    @Override public void setTarget(LivingEntity target) {
+        if (MobBattleTargeting.reject(this, target, () -> endBattle(false))) return;
+        if (target != null && !(target instanceof net.minecraft.world.entity.player.Player)) {
+            super.setTarget(null);
+            targetId = null;
+            return;
+        }
+        super.setTarget(target);
+        targetId = target == null ? null : target.getUUID();
+    }
     @Override public LivingEntity getTarget() {
         var target = super.getTarget();
         // OdamaneHalo can clear the vanilla target slot; retain this encounter's valid player target.
@@ -161,7 +170,7 @@ public final class SupremeCalamitasEntity extends Monster implements net.everla.
         CalamitasBattleData.get(server).begin(getUUID()); publish();
     }
     private boolean validTarget(LivingEntity target) {
-        return target != null && target != this && target.isAlive() && target.level() == level() && !isAlliedTo(target)
+        return target instanceof Player && target != this && target.isAlive() && target.level() == level() && !isAlliedTo(target)
                 && (!(target instanceof Player p) || !p.isCreative() && !p.isSpectator());
     }
     @Override public void tick() {

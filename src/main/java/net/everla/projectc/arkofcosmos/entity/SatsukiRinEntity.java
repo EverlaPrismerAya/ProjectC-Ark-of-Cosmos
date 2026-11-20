@@ -51,11 +51,19 @@ public final class SatsukiRinEntity extends Apostle implements SatsukiBoss,Apoll
         if(!level().isClientSide){markArrows();monolithShield=!isDeadOrDying()&&hasMonolith();boolean shield=!isDeadOrDying()&&phaseInvulnerable();if(shield!=shielded())entityData.set(SHIELD,shield);}
         domainScale=SatsukiDomain.scale(this);
     }
+    @Override public void setTarget(LivingEntity target) {
+        if (MobBattleTargeting.reject(this, target, this::removeByPlayerCommand)) return;
+        if (target != null && !(target instanceof net.minecraft.world.entity.player.Player)) {
+            super.setTarget(null);
+            return;
+        }
+        super.setTarget(target);
+    }
     public static final double TARGET_RANGE=128;
     /** Creative, spectator, dead and far players are never kept; OdamaneHalo wearers stay legal targets. */
     public boolean validTarget(LivingEntity target){
         if(target==null||!target.isAlive()||target.isRemoved())return false;
-        if(!(target instanceof net.minecraft.world.entity.player.Player p))return true;
+        if(!(target instanceof net.minecraft.world.entity.player.Player p))return false;
         return !p.isCreative()&&!p.isSpectator()&&distanceToSqr(p)<=TARGET_RANGE*TARGET_RANGE;
     }
     // Native arrows stay authoritative; clients only receive a visual marker (owner/color) per arrow.
