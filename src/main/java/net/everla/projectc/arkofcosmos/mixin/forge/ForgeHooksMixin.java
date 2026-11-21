@@ -19,6 +19,7 @@ abstract class ForgeHooksMixin {
 
     @Inject(method = "onLivingDeath", at = @At("HEAD"), cancellable = true)
     private static void ark$finishDeath(LivingEntity entity, DamageSource source, CallbackInfoReturnable<Boolean> cir) {
-        if (ArkDamage.finishing(entity) && !ArkDamage.protectedPlayer(entity)) cir.setReturnValue(false);
+        if (ArkDamage.finishing(entity) && (!ArkDamage.protectedPlayer(entity)
+                || net.everla.projectc.arkofcosmos.antiMobBattle.OrphanObliterator.terminated(entity))) cir.setReturnValue(false);
     }
 }

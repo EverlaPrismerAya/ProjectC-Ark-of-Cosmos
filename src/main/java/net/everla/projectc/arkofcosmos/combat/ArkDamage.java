@@ -78,6 +78,7 @@ public final class ArkDamage {
 
     // Object signatures keep the launch plugin independent of game class loading.
     public static float health(Object object) {
+        if (net.everla.projectc.arkofcosmos.antiMobBattle.OrphanObliterator.terminated(object)) return 0;
         // Constructor callbacks may arrive before LivingEntity defines our health data.
         if (!(object instanceof LivingEntity entity) || !entity.getEntityData().hasItem(HEALTH)) return -1;
         if(object instanceof net.everla.projectc.arkofcosmos.entity.FourthCalamityEntity boss&&boss.protectingDefeat()&&!boss.level().isClientSide)return 1;
@@ -99,6 +100,7 @@ public final class ArkDamage {
     }
 
     public static boolean setHealth(Object object, float value) {
+        if (net.everla.projectc.arkofcosmos.antiMobBattle.OrphanObliterator.terminated(object)) return true;
         if (!(object instanceof LivingEntity entity) || !entity.getEntityData().hasItem(HEALTH)) return false;
         if(object instanceof net.everla.projectc.arkofcosmos.entity.FourthCalamityEntity boss)return boss.protectDeathHealthWrite(value);
         if(BossHealingLock.blockWrite(object,value))return true;
@@ -115,6 +117,24 @@ public final class ArkDamage {
     }
 
     public static boolean finishing(Object object) { return FINISHING.get() == object; }
+
+    /** Administrator erasure uses the existing death context without damage/tag/creative gates. */
+    public static void finishObliteration(LivingEntity target) {
+        if (!net.everla.projectc.arkofcosmos.antiMobBattle.OrphanObliterator.terminated(target))
+            throw new IllegalStateException("Target must be terminated before forced death");
+        if (target.getEntityData().hasItem(HEALTH)) target.getEntityData().set(HEALTH, 0f);
+        if (((net.everla.projectc.arkofcosmos.antiMobBattle.mixin.LivingDeathAccess)target).antiMobBattle$dead()) return;
+        LivingEntity previous = FINISHING.get();
+        FINISHING.set(target);
+        try {
+            (target instanceof ServerPlayer ? PLAYER_DIE : DIE).invoke(target, target.damageSources().genericKill());
+        } catch (Throwable failure) {
+            throw new IllegalStateException("Could not finish obliteration", failure);
+        } finally {
+            if (previous == null) FINISHING.remove();
+            else FINISHING.set(previous);
+        }
+    }
 
     /** Immediate removal cannot wait for a subclass's delayed death-loot dispatcher. */
     public static void deathLoot(LivingEntity target, DamageSource source) {

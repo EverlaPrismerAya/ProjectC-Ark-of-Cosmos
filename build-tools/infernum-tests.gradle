@@ -2,6 +2,9 @@
 gradle.beforeProject { project -> project.layout.buildDirectory.set(new File(project.projectDir,'build/infernum-tests')) }
 allprojects {
     afterEvaluate {
+        if(project.hasProperty('obliterationHalo')) {
+            dependencies.add('runtimeOnly', fg.deobf('local:[Forge]RevelationFix-1.20.1:4.9'))
+        }
         sourceSets.main.java.srcDir 'build-tools/infernum/server'
         sourceSets.main.resources.srcDir 'build-tools/infernum/resources'
         if(project.hasProperty('infernumNoGoety')) {

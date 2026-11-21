@@ -3,6 +3,8 @@ package net.everla.projectc.arkofcosmos.antiMobBattle;
 import com.mojang.logging.LogUtils;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.lang.ref.ReferenceQueue;
+import java.lang.ref.WeakReference;
 import java.util.*;
 import net.everla.projectc.arkofcosmos.antiMobBattle.mixin.EntityAccess;
 import net.everla.projectc.arkofcosmos.antiMobBattle.mixin.EntityDataAccess;
@@ -20,22 +22,40 @@ import net.minecraftforge.event.server.ServerStoppedEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
-/** Mob Battle's destructive exit. Deliberately does not use the weapon damage authority. */
+/** Independent erasure policy; shares only the vanilla death dispatcher with weapon damage. */
 @Mod.EventBusSubscriber(modid = "arkofcosmos")
 public final class OrphanObliterator {
     private static final UUID MAX_HEALTH = UUID.fromString("f69a56cd-31c0-41aa-9064-e00b30f1e8e2");
     private static final Set<Entity> PROCESSING = Collections.newSetFromMap(new IdentityHashMap<>());
     private static final List<Pending> PENDING = new ArrayList<>();
+    // Locks belong to this entity instance, never to a UUID shared with a respawned player.
+    private static final ReferenceQueue<Object> RETIRED = new ReferenceQueue<>();
+    private static final Set<InstanceKey> TERMINATED = new HashSet<>();
+    private static final class InstanceKey extends WeakReference<Object> {
+        private final int hash;
+        InstanceKey(Object target) { super(target, RETIRED); hash = System.identityHashCode(target); }
+        @Override public int hashCode() { return hash; }
+        @Override public boolean equals(Object other) {
+            return this == other || other instanceof InstanceKey key && get() != null && get() == key.get();
+        }
+    }
     private record Pending(ServerLevel level, LivingEntity target, long tick, List<Runnable> writes) {}
     private record Candidate(double error, Runnable write) {}
     private OrphanObliterator() {}
+
+    public static synchronized boolean terminated(Object target) {
+        for (var key = RETIRED.poll(); key != null; key = RETIRED.poll()) TERMINATED.remove(key);
+        return target != null && !TERMINATED.isEmpty() && TERMINATED.contains(new InstanceKey(target));
+    }
+
+    private static synchronized void terminate(LivingEntity target) { TERMINATED.add(new InstanceKey(target)); }
 
     public static void obliterate(LivingEntity target, LivingEntity attacker) {
         obliterate(target, attacker, false);
     }
 
     public static void obliterate(LivingEntity target, LivingEntity attacker, boolean procedureSword) {
-        if (!(target.level() instanceof ServerLevel level) || target instanceof Player && !procedureSword || target.isRemoved()) return;
+        if (!(target.level() instanceof ServerLevel level) || target instanceof Player && !procedureSword || target.isRemoved() || terminated(target)) return;
         if (!level.getServer().isSameThread()) throw new IllegalStateException("Obliteration requires the server thread");
         if (!PROCESSING.add(target)) return;
         try {
@@ -43,6 +63,7 @@ public final class OrphanObliterator {
             // Capture before any zeroing: otherwise the subsequent search would have no positive reference.
             List<Runnable> writes = new ArrayList<>();
             stage(target, "health field search", () -> writes.addAll(healthFields(target)));
+            terminate(target);
             stage(target, "native health", () -> rawHealth(target, .1f));
             stage(target, "native damage", () -> {
                 target.setInvulnerable(false);
@@ -64,12 +85,21 @@ public final class OrphanObliterator {
             });
             for (Runnable write : writes) stage(target, "custom health", write);
             stage(target, "final health", () -> rawHealth(target, 0));
-            if (target instanceof Player) {
-                // Retain the connection and player indexes so the vanilla respawn packet remains valid.
-                stage(target, "player death", () -> { if (!((net.everla.projectc.arkofcosmos.antiMobBattle.mixin.LivingDeathAccess)target).antiMobBattle$dead()) target.die(target.damageSources().genericKill()); });
-            } else remove(level, target);
-            // One follow-up only: no persistent locks, background threads or unbounded retries.
-            PENDING.add(new Pending(level, target, level.getGameTime() + 1, writes));
+            // Bypass virtual death guards and cancellable Forge death events. Players retain
+            // their connection and world indexes so vanilla can replace them on respawn.
+            stage(target, "forced death", () -> net.everla.projectc.arkofcosmos.combat.ArkDamage.finishObliteration(target));
+            stage(target, "health synchronization", () -> {
+                var values = target.getEntityData().getNonDefaultValues();
+                if (values != null) level.getChunkSource().broadcastAndSend(target,
+                        new net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket(target.getId(), values));
+                if (target instanceof net.minecraft.server.level.ServerPlayer player)
+                    player.connection.send(new net.minecraft.network.protocol.game.ClientboundSetHealthPacket(
+                            0, player.getFoodData().getFoodLevel(), player.getFoodData().getSaturationLevel()));
+            });
+            if (!(target instanceof Player)) remove(level, target);
+            // Repair backing fields during the death window; permanent getter/setter locks
+            // use weak instance keys and require no background thread or retained field closures.
+            PENDING.add(new Pending(level, target, level.getGameTime() + 40, writes));
         } finally {
             PROCESSING.remove(target);
         }
@@ -181,12 +211,12 @@ public final class OrphanObliterator {
         if (event.phase != TickEvent.Phase.END) return;
         for (var iterator = PENDING.iterator(); iterator.hasNext();) {
             var pending = iterator.next();
-            if (pending.level.getGameTime() < pending.tick) continue;
-            iterator.remove();
+            if (pending.target instanceof Player && pending.level.getEntity(pending.target.getUUID()) != pending.target
+                    || pending.level.getGameTime() > pending.tick) { iterator.remove(); continue; }
             for (Runnable write : pending.writes) stage(pending.target, "health follow-up", write);
             stage(pending.target, "final health follow-up", () -> rawHealth(pending.target, 0));
             if (!(pending.target instanceof Player) && pending.level.getEntity(pending.target.getUUID()) == pending.target) remove(pending.level, pending.target);
         }
     }
-    @SubscribeEvent public static void stopped(ServerStoppedEvent event) { PENDING.clear(); PROCESSING.clear(); }
+    @SubscribeEvent public static synchronized void stopped(ServerStoppedEvent event) { PENDING.clear(); PROCESSING.clear(); TERMINATED.clear(); }
 }

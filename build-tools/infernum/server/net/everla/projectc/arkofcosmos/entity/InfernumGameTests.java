@@ -519,8 +519,8 @@ public final class InfernumGameTests {
                 .getMethod("setAttackTarget",Mob.class,LivingEntity.class,boolean.class);
         var bosses=new java.util.ArrayList<Mob>();
         bosses.add(ArkOfCosmos.MAHOU_TSUKAI.get().create(h.getLevel()));
-        bosses.add(net.everla.projectc.arkofcosmos.CalamitasContent.BOSS.get().create(h.getLevel()));
-        if(net.everla.projectc.arkofcosmos.SatsukiContent.BOSS!=null)bosses.add(net.everla.projectc.arkofcosmos.SatsukiContent.BOSS.get().create(h.getLevel()));
+        if(net.everla.projectc.arkofcosmos.CalamitasContent.BOSS!=null)bosses.add(net.everla.projectc.arkofcosmos.CalamitasContent.BOSS.get().create(h.getLevel()));
+        if(ArkOfCosmos.FIRST_FRACTAL_ENABLED&&net.everla.projectc.arkofcosmos.SatsukiContent.BOSS!=null)bosses.add(net.everla.projectc.arkofcosmos.SatsukiContent.BOSS.get().create(h.getLevel()));
         for(var boss:bosses){
             boss.setPos(Vec3.atBottomCenterOf(h.absolutePos(net.minecraft.core.BlockPos.ZERO)).add(2,5,2));
             boss.getPersistentData().putBoolean("ArkSummoningComplete",true);
@@ -681,6 +681,62 @@ public final class InfernumGameTests {
         var modifiers=sword.getDefaultAttributeModifiers(net.minecraft.world.entity.EquipmentSlot.MAINHAND);
         double attack=modifiers.get(net.minecraft.world.entity.ai.attributes.Attributes.ATTACK_DAMAGE).stream().mapToDouble(net.minecraft.world.entity.ai.attributes.AttributeModifier::getAmount).sum();
         h.assertTrue(attack+1==12,"ordinary sword damage changed");
+        h.succeed();
+    }
+
+    @GameTest(template="infernum_empty",timeoutTicks=65)
+    public static void procedureSwordRejectsRevivalAndDeathCancellation(GameTestHelper h) {
+        var target=new ServerPlayer(h.getLevel().getServer(),h.getLevel(),new GameProfile(UUID.randomUUID(),"DeathGuard")) {
+            @Override public void die(net.minecraft.world.damagesource.DamageSource source) {}
+        };
+        target.connection=new net.minecraft.server.network.ServerGamePacketListenerImpl(h.getLevel().getServer(),
+                new net.minecraft.network.Connection(net.minecraft.network.protocol.PacketFlow.SERVERBOUND),target);
+        target.setGameMode(net.minecraft.world.level.GameType.CREATIVE);
+        java.util.function.Consumer<net.minecraftforge.event.entity.living.LivingDeathEvent> cancel=e->{if(e.getEntity()==target)e.setCanceled(true);};
+        net.minecraftforge.common.MinecraftForge.EVENT_BUS.addListener(net.minecraftforge.eventbus.api.EventPriority.HIGHEST,cancel);
+        try {
+            net.everla.projectc.arkofcosmos.antiMobBattle.OrphanObliterator.obliterate(target,player(h),true);
+            h.assertTrue(target.getStats().getValue(net.minecraft.stats.Stats.CUSTOM.get(net.minecraft.stats.Stats.DEATHS))==1
+                    &&target.getLastDeathLocation().isPresent(),"virtual/event death guard survived");
+            net.everla.projectc.arkofcosmos.antiMobBattle.OrphanObliterator.obliterate(target,player(h),true);
+            h.assertTrue(target.getStats().getValue(net.minecraft.stats.Stats.CUSTOM.get(net.minecraft.stats.Stats.DEATHS))==1,"duplicate death dispatch");
+        } finally { net.minecraftforge.common.MinecraftForge.EVENT_BUS.unregister(cancel); }
+        h.runAfterDelay(45,()->{
+            target.setHealth(20);target.getEntityData().set(LivingEntity.DATA_HEALTH_ID,20f);
+            h.assertTrue(target.getHealth()==0&&!target.isAlive()&&target.isDeadOrDying(),"revival escaped permanent instance lock");
+            var replacement=new ServerPlayer(h.getLevel().getServer(),h.getLevel(),target.getGameProfile());
+            replacement.setId(target.getId());
+            h.assertTrue(replacement.getHealth()>0&&!net.everla.projectc.arkofcosmos.antiMobBattle.OrphanObliterator.terminated(replacement),"death lock leaked to respawn instance");
+            h.succeed();
+        });
+    }
+
+    @GameTest(template="infernum_empty",timeoutTicks=30)
+    public static void procedureSwordKillsActualEndHaloPlayer(GameTestHelper h) throws Exception {
+        if(!net.minecraftforge.fml.ModList.get().isLoaded("revelationfix")){h.succeed();return;}
+        var target=player(h);
+        target.connection=new net.minecraft.server.network.ServerGamePacketListenerImpl(h.getLevel().getServer(),
+                new net.minecraft.network.Connection(net.minecraft.network.protocol.PacketFlow.SERVERBOUND),target);
+        var halo=net.minecraftforge.registries.ForgeRegistries.ITEMS.getValue(net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("goety_revelation","halo_of_the_end"));
+        h.assertTrue(halo!=null&&halo!=net.minecraft.world.item.Items.AIR,"actual end halo missing");
+        var inventory=top.theillusivec4.curios.api.CuriosApi.getCuriosInventory(target).resolve().orElseThrow();
+        var slot=inventory.getCurios().values().stream().filter(s->s.getSlots()>0).findFirst().orElseThrow();
+        slot.getStacks().setStackInSlot(0,new net.minecraft.world.item.ItemStack(halo));
+        h.assertTrue(net.everla.projectc.arkofcosmos.combat.HaloCompat.equipped(target,"halo_of_the_end"),"halo was not equipped");
+        var helper=Class.forName("com.mega.revelationfix.util.entity.ATAHelper2");
+        var context=helper.getMethod("getOdamaneEC",LivingEntity.class).invoke(null,target);
+        context.getClass().getMethod("tick").invoke(context);
+        h.assertTrue((boolean)helper.getMethod("hasOdamane",Entity.class).invoke(null,target),"native halo protection did not activate");
+        net.everla.projectc.arkofcosmos.combat.BossHealingLock.apply(target,200);
+        target.setCustomName(net.minecraft.network.chat.Component.literal("Procedure"));
+        ArkOfCosmos.PROCEDURE_SWORD.get().onLeftClickEntity(new net.minecraft.world.item.ItemStack(ArkOfCosmos.PROCEDURE_SWORD.get()),player(h),target);
+        h.assertTrue(target.getHealth()==0&&target.isDeadOrDying()&&!target.isAlive(),"halo player survived");
+        h.assertTrue(target.getStats().getValue(net.minecraft.stats.Stats.CUSTOM.get(net.minecraft.stats.Stats.DEATHS))==1
+                &&target.getLastDeathLocation().isPresent(),"halo cancelled actual death");
+        h.assertTrue(!target.isRemoved()&&target.connection!=null,"player respawn connection lost");
+        target.setHealth(20);
+        context.getClass().getMethod("reviveCheck").invoke(context);
+        h.assertTrue(target.getHealth()==0,"halo player revived");
         h.succeed();
     }
 

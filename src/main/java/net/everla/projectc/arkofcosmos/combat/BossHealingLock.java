@@ -42,6 +42,7 @@ public final class BossHealingLock {
     }
     /** Observe a completed getHealth call, never an arbitrary float filter or health offset read. */
     public static float filterHealth(float value,Object target){
+        if(net.everla.projectc.arkofcosmos.antiMobBattle.OrphanObliterator.terminated(target))return 0;
         if(!(target instanceof LivingEntity living)||!active(living))return value;
         float cap=health(living);
         // Only the active store may lower the ceiling; a stale vanilla value is not another hit.
