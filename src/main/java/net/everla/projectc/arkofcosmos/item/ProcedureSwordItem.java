@@ -18,14 +18,16 @@ import net.minecraft.world.item.crafting.Ingredient;
 public final class ProcedureSwordItem extends SwordItem {
     public ProcedureSwordItem() {
         super(new Tier() {
-            public int getUses() { return 3389; }
+            public int getUses() { return 0; }
             public float getSpeed() { return 12; }
             public float getAttackDamageBonus() { return 8; }
             public int getLevel() { return 0; }
             public int getEnchantmentValue() { return 15; }
             public Ingredient getRepairIngredient() { return Ingredient.of(ArkOfCosmos.AURIC_BAR.get()); }
-        }, 3, -2.4f, new Item.Properties().fireResistant().rarity(net.everla.projectc.arkofcosmos.item.ProcedureRarity.RAINBOW));
+        }, 3, -2.4f, new Item.Properties().stacksTo(1).fireResistant().rarity(net.everla.projectc.arkofcosmos.item.ProcedureRarity.RAINBOW));
     }
+
+    @Override public boolean isEnchantable(ItemStack stack) { return stack.getCount() == 1; }
 
     public static boolean unrestricted(Player player) { return player != null && player.isCreative() && player.hasPermissions(2); }
 
