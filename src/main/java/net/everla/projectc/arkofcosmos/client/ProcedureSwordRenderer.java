@@ -3,6 +3,7 @@ package net.everla.projectc.arkofcosmos.client;
 import com.google.gson.*;
 import com.mojang.blaze3d.vertex.*;
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.everla.projectc.arkofcosmos.client.render.OculusShaderCompat;
 import net.everla.projectc.arkofcosmos.item.ProcedureSwordItem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.Direction;
@@ -153,31 +154,40 @@ public final class ProcedureSwordRenderer extends BlockEntityWithoutLevelRendere
     @Override public void renderByItem(ItemStack stack,ItemDisplayContext context,PoseStack pose,MultiBufferSource buffers,int light,int overlay) {
         var mc=Minecraft.getInstance();
         if (!(mc.getItemRenderer().getModel(stack,mc.level,null,0) instanceof Model model)) return;
-        for(var pass:model.base().getRenderPasses(stack,true))
-            for(var type:pass.getRenderTypes(stack,true))
-                mc.getItemRenderer().renderModelLists(pass,stack,light,overlay,pose,buffers.getBuffer(type));
         Runnable trail=context.firstPerson()?ThreadripperHandTrail.capture(pose,context):null;
         boolean glare=mc.level!=null && ProcedureSwordItem.unrestricted(mc.player);
         float glareTime=glare?mc.level.getGameTime()%72000+mc.getFrameTime():0;
         float tipFlash=glare?ThreadripperHandTrail.tipFlash(context):0;
-        if(shader==null && trail==null && !glare)return;
-        if(buffers instanceof MultiBufferSource.BufferSource batch)batch.endBatch();
-        if(context!=ItemDisplayContext.GUI && net.everla.projectc.arkofcosmos.client.render.OculusShaderCompat.shaderPackActive()) {
-            var captured=new PoseStack();
-            captured.last().pose().set(pose.last().pose());
-            captured.last().normal().set(pose.last().normal());
-            var copy=stack.copy();
-            if(net.everla.projectc.arkofcosmos.client.render.OculusShaderCompat.deferItem(()->{
-                var isolated=MultiBufferSource.immediate(new BufferBuilder(256));
-                if(shader!=null)renderCosmic(copy,context,captured,isolated,light,overlay,model,CosmicType.COMPAT);
-                isolated.endBatch();
-                if(glare)ThreadripperHandTrail.glow(captured,context,glareTime,tipFlash,model.front,model.back);
-                if(trail!=null)trail.run();
-            },context.firstPerson()))return;
+        boolean effects=shader!=null || trail!=null || glare;
+        boolean deferred=context!=ItemDisplayContext.GUI && OculusShaderCompat.shaderPackActive();
+        // EQUAL_DEPTH_TEST needs the blade's depth now. Flush only our blade;
+        // the caller owns pending player geometry, including YSM's batches.
+        var immediate=effects && !deferred ? MultiBufferSource.immediate(new BufferBuilder(256)) : null;
+        try (var state = effects ? new OculusShaderCompat.RasterState() : null) {
+            var baseBuffers=immediate==null ? buffers : immediate;
+            for(var pass:model.base().getRenderPasses(stack,true))
+                for(var type:pass.getRenderTypes(stack,true))
+                    mc.getItemRenderer().renderModelLists(pass,stack,light,overlay,pose,baseBuffers.getBuffer(type));
+            if(!effects)return;
+            if(immediate!=null)immediate.endBatch();
+            if(deferred) {
+                var captured=new PoseStack();
+                captured.last().pose().set(pose.last().pose());
+                captured.last().normal().set(pose.last().normal());
+                var copy=stack.copy();
+                if(OculusShaderCompat.deferItem(()->{
+                    var isolated=MultiBufferSource.immediate(new BufferBuilder(256));
+                    if(shader!=null)renderCosmic(copy,context,captured,isolated,light,overlay,model,CosmicType.COMPAT);
+                    isolated.endBatch();
+                    if(glare)ThreadripperHandTrail.glow(captured,context,glareTime,tipFlash,model.front,model.back);
+                    if(trail!=null)trail.run();
+                },context.firstPerson()))return;
+            }
+            if(shader!=null)renderCosmic(stack,context,pose,immediate!=null?immediate:MultiBufferSource.immediate(new BufferBuilder(256)),light,overlay,model,
+                    deferred?CosmicType.COMPAT:CosmicType.TYPE);
+            if(glare)ThreadripperHandTrail.glow(pose,context,glareTime,tipFlash,model.front,model.back);
+            if(trail!=null)trail.run();
         }
-        if(shader!=null)renderCosmic(stack,context,pose,buffers,light,overlay,model,CosmicType.TYPE);
-        if(glare)ThreadripperHandTrail.glow(pose,context,glareTime,tipFlash,model.front,model.back);
-        if(trail!=null)trail.run();
     }
     private static void renderCosmic(ItemStack stack,ItemDisplayContext context,PoseStack pose,MultiBufferSource buffers,
             int light,int overlay,Model model,RenderType type) {

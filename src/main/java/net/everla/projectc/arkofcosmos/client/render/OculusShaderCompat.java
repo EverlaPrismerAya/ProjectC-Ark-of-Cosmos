@@ -17,6 +17,8 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import org.joml.Matrix4f;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL14;
 
 /** Draw custom shaders after Oculus' world composite, retaining the scene's depth buffer. */
 @Mod.EventBusSubscriber(modid = ArkOfCosmos.MOD_ID, value = Dist.CLIENT)
@@ -78,9 +80,7 @@ public final class OculusShaderCompat {
         Matrix4f projection = new Matrix4f(RenderSystem.getProjectionMatrix());
         Runnable replay = () -> {
             var previousShader = RenderSystem.getShader();
-            boolean depth = org.lwjgl.opengl.GL11.glIsEnabled(org.lwjgl.opengl.GL11.GL_DEPTH_TEST);
-            boolean blend = org.lwjgl.opengl.GL11.glIsEnabled(org.lwjgl.opengl.GL11.GL_BLEND);
-            boolean write = org.lwjgl.opengl.GL11.glGetBoolean(org.lwjgl.opengl.GL11.GL_DEPTH_WRITEMASK);
+            var raster = new RasterState();
             RenderSystem.backupProjectionMatrix();
             var view = RenderSystem.getModelViewStack();
             view.pushPose();
@@ -94,9 +94,7 @@ public final class OculusShaderCompat {
                 RenderSystem.applyModelViewMatrix();
                 RenderSystem.restoreProjectionMatrix();
                 RenderSystem.setShader(() -> previousShader);
-                RenderSystem.depthMask(write);
-                if (depth) RenderSystem.enableDepthTest(); else RenderSystem.disableDepthTest();
-                if (blend) RenderSystem.enableBlend(); else RenderSystem.disableBlend();
+                raster.close();
             }
         };
         if (firstPerson) HAND_ITEMS.add(replay);
@@ -176,9 +174,7 @@ public final class OculusShaderCompat {
         if ((!active && DEFERRED.isEmpty() && FOREGROUND.isEmpty()) || !viewReady || event.getStage() != RenderLevelStageEvent.Stage.AFTER_LEVEL) return;
         mc.getMainRenderTarget().bindWrite(true);
         var shader = RenderSystem.getShader();
-        boolean depth = org.lwjgl.opengl.GL11.glIsEnabled(org.lwjgl.opengl.GL11.GL_DEPTH_TEST);
-        boolean blend = org.lwjgl.opengl.GL11.glIsEnabled(org.lwjgl.opengl.GL11.GL_BLEND);
-        boolean depthWrite = org.lwjgl.opengl.GL11.glGetBoolean(org.lwjgl.opengl.GL11.GL_DEPTH_WRITEMASK);
+        var raster = new RasterState();
         RenderSystem.backupProjectionMatrix();
         RenderSystem.setProjectionMatrix(PROJECTION, VertexSorting.DISTANCE_TO_ORIGIN);
         PoseStack modelView = RenderSystem.getModelViewStack();
@@ -203,10 +199,32 @@ public final class OculusShaderCompat {
             RenderSystem.applyModelViewMatrix();
             RenderSystem.restoreProjectionMatrix();
             RenderSystem.setShader(() -> shader);
-            RenderSystem.depthMask(depthWrite);
-            if (depth) RenderSystem.enableDepthTest(); else RenderSystem.disableDepthTest();
-            if (blend) RenderSystem.enableBlend(); else RenderSystem.disableBlend();
-            ArkFxDraw.end();
+            raster.close();
         }
     }
+    // Deferred FX may use ArkFxDraw.end(), which resets culling and blend factors
+    // to its defaults. Restore the caller's state after the entire replay.
+    public static final class RasterState implements AutoCloseable {
+        private final boolean depth = GL11.glIsEnabled(GL11.GL_DEPTH_TEST);
+        private final boolean write = GL11.glGetBoolean(GL11.GL_DEPTH_WRITEMASK);
+        private final boolean blend = GL11.glIsEnabled(GL11.GL_BLEND);
+        private final int depthFunc = GL11.glGetInteger(GL11.GL_DEPTH_FUNC);
+        private final int equation = GL11.glGetInteger(org.lwjgl.opengl.GL20.GL_BLEND_EQUATION_RGB);
+        private final boolean cull = GL11.glIsEnabled(GL11.GL_CULL_FACE);
+        private final int src = GL11.glGetInteger(GL14.GL_BLEND_SRC_RGB);
+        private final int dst = GL11.glGetInteger(GL14.GL_BLEND_DST_RGB);
+        private final int srcAlpha = GL11.glGetInteger(GL14.GL_BLEND_SRC_ALPHA);
+        private final int dstAlpha = GL11.glGetInteger(GL14.GL_BLEND_DST_ALPHA);
+
+        @Override public void close() {
+            RenderSystem.depthFunc(depthFunc);
+            RenderSystem.depthMask(write);
+            if (depth) RenderSystem.enableDepthTest(); else RenderSystem.disableDepthTest();
+            if (blend) RenderSystem.enableBlend(); else RenderSystem.disableBlend();
+            RenderSystem.blendEquation(equation);
+            if (cull) RenderSystem.enableCull(); else RenderSystem.disableCull();
+            RenderSystem.blendFuncSeparate(src, dst, srcAlpha, dstAlpha);
+        }
+    }
+
 }
