@@ -12,6 +12,10 @@ import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber(modid="arkofcosmos",value=Dist.CLIENT)
 public final class ProcedureSwordTooltip {
+    public static Component authorizedName() {
+        return ProcedureSwordItem.unrestricted(net.minecraft.client.Minecraft.getInstance().player)
+                ? Component.translatable("item.arkofcosmos.procedure_sword.authorized") : null;
+    }
     @SubscribeEvent public static void tooltip(ItemTooltipEvent event) {
         if (!event.getItemStack().is(ArkOfCosmos.PROCEDURE_SWORD.get())) return;
         var lines=event.getToolTip();

@@ -82,7 +82,11 @@ public final class ProcedureSwordItem extends SwordItem {
         arrow.hurtMarked = true;
     }
 
-    @Override public net.minecraft.network.chat.Component getName(ItemStack stack) { return super.getName(stack).copy().withStyle(s -> s.withFont(ProcedureRarity.FONT)); }
+    @Override public net.minecraft.network.chat.Component getName(ItemStack stack) {
+        var name = net.minecraftforge.fml.DistExecutor.unsafeCallWhenOn(net.minecraftforge.api.distmarker.Dist.CLIENT,
+                () -> () -> net.everla.projectc.arkofcosmos.client.ProcedureSwordTooltip.authorizedName());
+        return (name == null ? super.getName(stack) : name).copy().withStyle(s -> s.withFont(ProcedureRarity.FONT));
+    }
 
     @Override public Rarity getRarity(ItemStack stack) { return ProcedureRarity.RAINBOW; }
 

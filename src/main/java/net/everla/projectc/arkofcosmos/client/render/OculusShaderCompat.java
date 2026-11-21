@@ -23,6 +23,7 @@ import org.joml.Matrix4f;
 public final class OculusShaderCompat {
     private static final List<Runnable> DEFERRED = new ArrayList<>();
     private static final List<Runnable> FOREGROUND = new ArrayList<>();
+    private static final List<Runnable> HAND_ITEMS = new ArrayList<>();
     private static final PoseStack WORLD_POSE = new PoseStack();
     private static final Matrix4f MODEL_VIEW = new Matrix4f(), PROJECTION = new Matrix4f();
     private static Object api;
@@ -38,6 +39,7 @@ public final class OculusShaderCompat {
         if (event.phase != TickEvent.Phase.START) return;
         DEFERRED.clear();
         FOREGROUND.clear();
+        HAND_ITEMS.clear();
         viewReady = false;
         backgroundQueued = false;
         if (!initialized) {
@@ -66,6 +68,55 @@ public final class OculusShaderCompat {
             com.mojang.logging.LogUtils.getLogger().warn("Cannot query Oculus shader state", error);
             return false;
         }
+    }
+
+    /** Item poses/projections differ from the world camera, especially for first-person hands. */
+    public static boolean deferItem(Runnable draw, boolean firstPerson) {
+        if (!active || drawing) return false;
+        if (query(shadowPass)) return true;
+        Matrix4f modelView = new Matrix4f(RenderSystem.getModelViewMatrix());
+        Matrix4f projection = new Matrix4f(RenderSystem.getProjectionMatrix());
+        Runnable replay = () -> {
+            var previousShader = RenderSystem.getShader();
+            boolean depth = org.lwjgl.opengl.GL11.glIsEnabled(org.lwjgl.opengl.GL11.GL_DEPTH_TEST);
+            boolean blend = org.lwjgl.opengl.GL11.glIsEnabled(org.lwjgl.opengl.GL11.GL_BLEND);
+            boolean write = org.lwjgl.opengl.GL11.glGetBoolean(org.lwjgl.opengl.GL11.GL_DEPTH_WRITEMASK);
+            RenderSystem.backupProjectionMatrix();
+            var view = RenderSystem.getModelViewStack();
+            view.pushPose();
+            view.last().pose().set(modelView);
+            RenderSystem.applyModelViewMatrix();
+            RenderSystem.setProjectionMatrix(projection, VertexSorting.DISTANCE_TO_ORIGIN);
+            Minecraft.getInstance().getMainRenderTarget().bindWrite(true);
+            try { draw.run(); }
+            finally {
+                view.popPose();
+                RenderSystem.applyModelViewMatrix();
+                RenderSystem.restoreProjectionMatrix();
+                RenderSystem.setShader(() -> previousShader);
+                RenderSystem.depthMask(write);
+                if (depth) RenderSystem.enableDepthTest(); else RenderSystem.disableDepthTest();
+                if (blend) RenderSystem.enableBlend(); else RenderSystem.disableBlend();
+            }
+        };
+        if (firstPerson) HAND_ITEMS.add(replay);
+        else DEFERRED.add(replay);
+        return true;
+    }
+
+    @SubscribeEvent
+    public static void beforeGui(net.minecraftforge.client.event.RenderGuiEvent.Pre event) { drawHandItems(); }
+
+    @SubscribeEvent
+    public static void endFrame(TickEvent.RenderTickEvent event) {
+        // Hidden GUI frames may never dispatch RenderGuiEvent.
+        if (event.phase == TickEvent.Phase.END) drawHandItems();
+    }
+
+    private static void drawHandItems() {
+        if (HAND_ITEMS.isEmpty()) return;
+        try { for (Runnable draw : HAND_ITEMS) draw.run(); }
+        finally { HAND_ITEMS.clear(); }
     }
 
     /** Snapshot entity-local transforms before the dispatcher pops its mutable pose stack. */

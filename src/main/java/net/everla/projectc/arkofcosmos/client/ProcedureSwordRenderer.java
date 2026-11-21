@@ -96,6 +96,11 @@ public final class ProcedureSwordRenderer extends BlockEntityWithoutLevelRendere
                 CompositeState.builder().setShaderState(new ShaderStateShard(()->shader)).setDepthTestState(EQUAL_DEPTH_TEST)
                         .setLightmapState(LIGHTMAP).setTransparencyState(TRANSLUCENT_TRANSPARENCY)
                         .setTextureState(TEXTURE).createCompositeState(true));
+        // Shader packs can displace depth; retain occlusion without requiring exact equality.
+        static final RenderType COMPAT=create("procedure_cosmic_compat",DefaultVertexFormat.BLOCK,VertexFormat.Mode.QUADS,256,false,false,
+                CompositeState.builder().setShaderState(new ShaderStateShard(()->shader)).setDepthTestState(LEQUAL_DEPTH_TEST)
+                        .setWriteMaskState(COLOR_WRITE).setLightmapState(LIGHTMAP).setTransparencyState(TRANSLUCENT_TRANSPARENCY)
+                        .setTextureState(TEXTURE).createCompositeState(false));
     }
     @Override public void renderByItem(ItemStack stack,ItemDisplayContext context,PoseStack pose,MultiBufferSource buffers,int light,int overlay) {
         var mc=Minecraft.getInstance();
@@ -105,18 +110,35 @@ public final class ProcedureSwordRenderer extends BlockEntityWithoutLevelRendere
                 mc.getItemRenderer().renderModelLists(pass,stack,light,overlay,pose,buffers.getBuffer(type));
         if(shader==null)return;
         if(buffers instanceof MultiBufferSource.BufferSource batch)batch.endBatch();
+        if(context!=ItemDisplayContext.GUI && net.everla.projectc.arkofcosmos.client.render.OculusShaderCompat.shaderPackActive()) {
+            var captured=new PoseStack();
+            captured.last().pose().set(pose.last().pose());
+            captured.last().normal().set(pose.last().normal());
+            var copy=stack.copy();
+            if(net.everla.projectc.arkofcosmos.client.render.OculusShaderCompat.deferItem(()->{
+                var isolated=MultiBufferSource.immediate(new BufferBuilder(256));
+                renderCosmic(copy,context,captured,isolated,light,overlay,model,CosmicType.COMPAT);
+                isolated.endBatch();
+            },context.firstPerson()))return;
+        }
+        renderCosmic(stack,context,pose,buffers,light,overlay,model,CosmicType.TYPE);
+    }
+    private static void renderCosmic(ItemStack stack,ItemDisplayContext context,PoseStack pose,MultiBufferSource buffers,
+            int light,int overlay,Model model,RenderType type) {
+        var mc=Minecraft.getInstance();
         shader.safeGetUniform("time").set(mc.level==null?0f:(float)(mc.level.getGameTime()%Integer.MAX_VALUE));
         shader.safeGetUniform("yaw").set(context==ItemDisplayContext.GUI||mc.player==null?0f:(float)Math.toRadians(mc.player.getYRot()));
         shader.safeGetUniform("pitch").set(context==ItemDisplayContext.GUI||mc.player==null?0f:-(float)Math.toRadians(mc.player.getXRot()));
         shader.safeGetUniform("externalScale").set(context==ItemDisplayContext.GUI?100f:1f);
         shader.safeGetUniform("opacity").set(1f);
         float[] uvs=new float[40];
+        boolean authorized=net.everla.projectc.arkofcosmos.item.ProcedureSwordItem.unrestricted(mc.player);
         for(int i=0;i<10;i++) {
-            var sprite=mc.getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(id("fx/procedure_mcreator"));
+            var sprite=mc.getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(id(authorized?"fx/cosmic_"+i:"fx/procedure_mcreator"));
             uvs[i*4]=sprite.getU0();uvs[i*4+1]=sprite.getV0();uvs[i*4+2]=sprite.getU1();uvs[i*4+3]=sprite.getV1();
         }
         shader.safeGetUniform("cosmicuvs").set(uvs);
-        mc.getItemRenderer().renderQuadList(pose,buffers.getBuffer(CosmicType.TYPE),model.mask,stack,light,overlay);
-        if(buffers instanceof MultiBufferSource.BufferSource batch)batch.endBatch(CosmicType.TYPE);
+        mc.getItemRenderer().renderQuadList(pose,buffers.getBuffer(type),model.mask,stack,light,overlay);
+        if(buffers instanceof MultiBufferSource.BufferSource batch)batch.endBatch(type);
     }
 }
