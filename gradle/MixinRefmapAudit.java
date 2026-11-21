@@ -55,53 +55,55 @@ class MixinRefmapAudit {
         checkRfArgs(regression, false);
         for (String path : args) try (ZipFile jar = new ZipFile(path)) {
             JsonObject config, refs;
-            try (Reader r = new InputStreamReader(jar.getInputStream(jar.getEntry("arkofcosmos.mixins.json")))) {
-                config = JsonParser.parseReader(r).getAsJsonObject();
-            }
             try (Reader r = new InputStreamReader(jar.getInputStream(jar.getEntry("arkofcosmos.refmap.json")))) {
                 refs = JsonParser.parseReader(r).getAsJsonObject().getAsJsonObject("mappings");
             }
-            int mixins = 0, extras = 0, selectors = 0;
-            for (String side : List.of("mixins", "client")) for (JsonElement item : config.getAsJsonArray(side)) {
-                String name = (config.get("package").getAsString() + "." + item.getAsString()).replace('.', '/');
-                ClassNode node = new ClassNode();
-                try (InputStream in = jar.getInputStream(jar.getEntry(name + ".class"))) { new ClassReader(in).accept(node, 0); }
-                boolean remap = true, vanilla = false, rfTarget = false;
-                for (AnnotationNode a : annotations(node.visibleAnnotations, node.invisibleAnnotations))
-                    if (a.desc.equals("Lorg/spongepowered/asm/mixin/Mixin;")) {
-                        Map<String, Object> v = values(a);
-                        remap = !Boolean.FALSE.equals(v.get("remap"));
-                        for (Type t : (List<Type>) v.getOrDefault("value", List.of()))
-                            vanilla |= t.getInternalName().startsWith("net/minecraft/");
-                        for (String target : (List<String>) v.getOrDefault("targets", List.of()))
-                            rfTarget |= target.equals("com.mega.revelationfix.client.screen.bossbar.ApollyonBossbar")
-                                    || target.equals("com.Polarice3.Goety.client.events.BossBarEvent");
-                    }
-                checkRfArgs(node, rfTarget);
-                JsonObject mappings = refs.has(name) ? refs.getAsJsonObject(name) : new JsonObject();
-                for (MethodNode method : node.methods)
-                    for (AnnotationNode a : annotations(method.visibleAnnotations, method.invisibleAnnotations)) {
-                        Map<String, Object> v = values(a);
-                        if (!v.containsKey("method") || !v.containsKey("at")) continue;
-                        if (a.desc.startsWith("Lcom/llamalad7/mixinextras/")) extras++;
-                        boolean auto = (boolean) v.getOrDefault("remap", remap);
-                        String context = name + "." + method.name;
-                        if (auto && vanilla) for (String selector : (List<String>) v.get("method")) {
-                            check(mappings, selector, context); selectors++;
+            for (String configName : List.of("arkofcosmos.mixins.json", "antiMobBattle.mixins.json")) {
+                try (Reader r = new InputStreamReader(jar.getInputStream(jar.getEntry(configName)))) {
+                    config = JsonParser.parseReader(r).getAsJsonObject();
+                }
+                int mixins = 0, extras = 0, selectors = 0;
+                for (String side : List.of("mixins", "client")) for (JsonElement item : config.getAsJsonArray(side)) {
+                    String name = (config.get("package").getAsString() + "." + item.getAsString()).replace('.', '/');
+                    ClassNode node = new ClassNode();
+                    try (InputStream in = jar.getInputStream(jar.getEntry(name + ".class"))) { new ClassReader(in).accept(node, 0); }
+                    boolean remap = true, vanilla = false, rfTarget = false;
+                    for (AnnotationNode a : annotations(node.visibleAnnotations, node.invisibleAnnotations))
+                        if (a.desc.equals("Lorg/spongepowered/asm/mixin/Mixin;")) {
+                            Map<String, Object> v = values(a);
+                            remap = !Boolean.FALSE.equals(v.get("remap"));
+                            for (Type t : (List<Type>) v.getOrDefault("value", List.of()))
+                                vanilla |= t.getInternalName().startsWith("net/minecraft/");
+                            for (String target : (List<String>) v.getOrDefault("targets", List.of()))
+                                rfTarget |= target.equals("com.mega.revelationfix.client.screen.bossbar.ApollyonBossbar")
+                                        || target.equals("com.Polarice3.Goety.client.events.BossBarEvent");
                         }
-                        Object at = v.get("at");
-                        List<AnnotationNode> sites = at instanceof List<?> ? (List<AnnotationNode>) at : List.of((AnnotationNode) at);
-                        for (AnnotationNode site : sites) {
-                            Map<String, Object> av = values(site);
-                            String target = (String) av.get("target");
-                            if (auto && !Boolean.FALSE.equals(av.get("remap")) && target != null && target.startsWith("Lnet/minecraft/")) {
-                                check(mappings, target, context); selectors++;
+                    checkRfArgs(node, rfTarget);
+                    JsonObject mappings = refs.has(name) ? refs.getAsJsonObject(name) : new JsonObject();
+                    for (MethodNode method : node.methods)
+                        for (AnnotationNode a : annotations(method.visibleAnnotations, method.invisibleAnnotations)) {
+                            Map<String, Object> v = values(a);
+                            if (!v.containsKey("method") || !v.containsKey("at")) continue;
+                            if (a.desc.startsWith("Lcom/llamalad7/mixinextras/")) extras++;
+                            boolean auto = (boolean) v.getOrDefault("remap", remap);
+                            String context = name + "." + method.name;
+                            if (auto && vanilla) for (String selector : (List<String>) v.get("method")) {
+                                check(mappings, selector, context); selectors++;
+                            }
+                            Object at = v.get("at");
+                            List<AnnotationNode> sites = at instanceof List<?> ? (List<AnnotationNode>) at : List.of((AnnotationNode) at);
+                            for (AnnotationNode site : sites) {
+                                Map<String, Object> av = values(site);
+                                String target = (String) av.get("target");
+                                if (auto && !Boolean.FALSE.equals(av.get("remap")) && target != null && target.startsWith("Lnet/minecraft/")) {
+                                    check(mappings, target, context); selectors++;
+                                }
                             }
                         }
-                    }
-                mixins++;
+                    mixins++;
+                }
+                System.out.printf("Verified %s: %d configured Mixins, %d MixinExtras injections, %d SRG selectors%n", path + " [" + configName + "]", mixins, extras, selectors);
             }
-            System.out.printf("Verified %s: %d configured Mixins, %d MixinExtras injections, %d SRG selectors%n", path, mixins, extras, selectors);
         }
     }
 }

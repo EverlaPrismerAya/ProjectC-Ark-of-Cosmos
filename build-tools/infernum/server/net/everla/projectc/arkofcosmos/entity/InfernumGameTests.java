@@ -512,7 +512,7 @@ public final class InfernumGameTests {
         h.assertTrue(mahou.getTarget()==fourth&&!fourth.isRemoved(),"intentional Fourth Calamity combat rejected");
         mahou.discard();fourth.discard();target.discard();h.succeed();
     }
-    @GameTest(template="infernum_empty",timeoutTicks=40)
+    @GameTest(template="infernum_empty",timeoutTicks=90)
     public static void mobBattleAssignmentRemovesTargetAndBoss(GameTestHelper h) throws Exception {
         if(!net.minecraftforge.fml.ModList.get().isLoaded("mobbattle")){h.succeed();return;}
         var assign=Class.forName("io.github.flemmli97.mobbattle.handler.Utils")
@@ -522,10 +522,166 @@ public final class InfernumGameTests {
         bosses.add(net.everla.projectc.arkofcosmos.CalamitasContent.BOSS.get().create(h.getLevel()));
         if(net.everla.projectc.arkofcosmos.SatsukiContent.BOSS!=null)bosses.add(net.everla.projectc.arkofcosmos.SatsukiContent.BOSS.get().create(h.getLevel()));
         for(var boss:bosses){
-            var target=EntityType.COW.create(h.getLevel());
+            boss.setPos(Vec3.atBottomCenterOf(h.absolutePos(net.minecraft.core.BlockPos.ZERO)).add(2,5,2));
+            boss.getPersistentData().putBoolean("ArkSummoningComplete",true);
+            h.assertTrue(h.getLevel().addFreshEntity(boss),"Boss never entered the test world");
+            var target=EntityType.COW.create(h.getLevel());target.setPos(boss.position().add(2,0,0));h.getLevel().addFreshEntity(target);
             assign.invoke(null,boss,target,false);
-            h.assertTrue(target.isRemoved()&&boss.isRemoved(),"Mob Battle assignment failed for "+boss.getType());
+            h.assertTrue(target.isRemoved()&&!boss.isRemoved()&&net.everla.projectc.arkofcosmos.antiMobBattle.BossRetreat.active(boss),"Mob Battle assignment failed for "+boss.getType());
+            h.assertTrue(h.getLevel().getEntity(target.getUUID())==null,"victim still in world index");
+        }
+        double initialY=bosses.get(0).getY();
+        h.runAfterDelay(20,()->{
+            for(var boss:bosses)h.assertTrue(!boss.isRemoved()&&boss.getY()>initialY+1&&boss.getTarget()==null,"Boss did not ascend without combat: "+boss.getType()+" removed="+boss.isRemoved()+" y="+boss.getY()+" initial="+initialY+" target="+boss.getTarget()+" age="+boss.getPersistentData().getInt("ArkAntiMobBattleRetreat"));
+        });
+        h.runAfterDelay(65,()->{
+            for(var boss:bosses)h.assertTrue(boss.isRemoved(),"Boss did not disappear after ascent");
+            h.succeed();
+        });
+    }
+    public static final class RemovalGuardCow extends net.minecraft.world.entity.animal.Cow {
+        private double customHealth=20;
+        private final HealthContainer healthContainer=new HealthContainer();
+        private static final class HealthContainer { private float life=20; }
+        public RemovalGuardCow(net.minecraft.world.level.Level level){super(EntityType.COW,level);}
+        @Override public float getHealth(){return (float)customHealth;}
+        @Override public void setHealth(float value){}
+        @Override public boolean hurt(net.minecraft.world.damagesource.DamageSource source,float amount){return false;}
+        @Override public void remove(RemovalReason reason){}
+    }
+    @GameTest(template="infernum_empty",timeoutTicks=30)
+    public static void independentObliterationBypassesCustomHealthAndRemoval(GameTestHelper h){
+        var target=new RemovalGuardCow(h.getLevel());
+        target.setPos(Vec3.atBottomCenterOf(h.absolutePos(net.minecraft.core.BlockPos.ZERO)).add(2,2,2));
+        h.getLevel().addFreshEntity(target);
+        var attacker=EntityType.ZOMBIE.create(h.getLevel());
+        net.everla.projectc.arkofcosmos.antiMobBattle.OrphanObliterator.obliterate(target,attacker);
+        h.assertTrue(target.isRemoved()&&h.getLevel().getEntity(target.getUUID())==null,"removal override retained target");
+        h.assertTrue(target.customHealth==0&&target.healthContainer.life==0,"custom health was not found and zeroed");
+        h.assertTrue(!target.canUpdate(),"removed victim retained updates");
+        target.customHealth=20;
+        h.runAfterDelay(3,()->{h.assertTrue(target.customHealth==0,"one-tick health recheck missed restoration");h.succeed();});
+    }
+    @GameTest(template="infernum_empty",timeoutTicks=20)
+    public static void mobBattleRetreatAcceleratesAndFinishesOnce(GameTestHelper h){
+        var boss=ArkOfCosmos.MAHOU_TSUKAI.get().create(h.getLevel());
+        net.everla.projectc.arkofcosmos.antiMobBattle.BossRetreat.begin(boss);
+        double previousSpeed=0;
+        var finished=new java.util.concurrent.atomic.AtomicInteger();
+        for(int i=1;i<=60;i++){
+            double before=boss.getY();
+            net.everla.projectc.arkofcosmos.antiMobBattle.BossRetreat.tick(boss,finished::incrementAndGet);
+            double speed=boss.getY()-before;
+            h.assertTrue(speed>previousSpeed,"upward acceleration stopped");previousSpeed=speed;
+            h.assertTrue(finished.get()==(i==60?1:0),"retreat finished at wrong tick");
+        }
+        boss.removeByPlayerCommand();h.succeed();
+    }
+    @GameTest(template="infernum_empty",timeoutTicks=20)
+    public static void procedureSwordPermissionsAndObliteration(GameTestHelper h) {
+        var sword=(net.everla.projectc.arkofcosmos.item.ProcedureSwordItem)ArkOfCosmos.PROCEDURE_SWORD.get();
+        var stack=new net.minecraft.world.item.ItemStack(sword);
+        for(boolean op:new boolean[]{false,true}) {
+            var user=new net.minecraftforge.common.util.FakePlayer(h.getLevel(),new GameProfile(UUID.randomUUID(),"SwordTest")) {
+                @Override public boolean hasPermissions(int level) { return op && level<=2; }
+            };
+            for(var mode:net.minecraft.world.level.GameType.values()) {
+                user.setGameMode(mode);
+                for(String name:new String[]{"", "procedure", "Procedure"}) {
+                    var target=new RemovalGuardCow(h.getLevel());
+                    target.setPos(Vec3.atBottomCenterOf(h.absolutePos(net.minecraft.core.BlockPos.ZERO)).add(2,2,2));
+                    if(!name.isEmpty())target.setCustomName(net.minecraft.network.chat.Component.literal(name));
+                    h.getLevel().addFreshEntity(target);
+                    boolean expected=op && mode==net.minecraft.world.level.GameType.CREATIVE || name.equals("Procedure");
+                    h.assertTrue(net.everla.projectc.arkofcosmos.item.ProcedureSwordItem.canObliterate(user,target)==expected,"wrong permission predicate: "+op+"/"+mode+"/"+name);
+                    boolean handled=sword.onLeftClickEntity(stack,user,target);
+                    h.assertTrue(handled==expected && target.isRemoved()==expected,"wrong attack dispatch: "+op+"/"+mode+"/"+name);
+                    if(expected)h.assertTrue(target.customHealth==0 && h.getLevel().getEntity(target.getUUID())==null,"sword did not use obliterator");
+                    else net.everla.projectc.arkofcosmos.antiMobBattle.OrphanObliterator.obliterate(target,user);
+                }
+            }
+        }
+        h.assertTrue(!net.minecraftforge.registries.ForgeRegistries.ENTITY_TYPES.containsKey(net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("arkofcosmos","mahoraga_warden")),"removed Warden still registered");
+        h.assertTrue(h.getLevel().getRecipeManager().getRecipes().stream().noneMatch(r->r.getResultItem(h.getLevel().registryAccess()).is(sword)),"administrator sword has a recipe");
+        h.succeed();
+    }
+
+    @GameTest(template="infernum_empty",timeoutTicks=20,batch="procedure_guard")
+    public static void procedureSwordGuardAndRelease(GameTestHelper h) {
+        var sword=(net.everla.projectc.arkofcosmos.item.ProcedureSwordItem)ArkOfCosmos.PROCEDURE_SWORD.get();
+        for(boolean op:new boolean[]{false,true}) for(boolean creative:new boolean[]{false,true}) {
+            var user=new net.minecraftforge.common.util.FakePlayer(h.getLevel(),new GameProfile(UUID.randomUUID(),"GuardTest")) {
+                @Override public boolean hasPermissions(int level) { return op && level<=2; }
+            };
+            user.setGameMode(creative?net.minecraft.world.level.GameType.CREATIVE:net.minecraft.world.level.GameType.SURVIVAL);
+            user.setPos(Vec3.atBottomCenterOf(h.absolutePos(net.minecraft.core.BlockPos.ZERO)).add(0,2,0));
+            user.setYRot(0);user.setXRot(0);
+            var stack=new net.minecraft.world.item.ItemStack(sword);
+            user.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND,stack);
+            sword.use(h.getLevel(),user,net.minecraft.world.InteractionHand.MAIN_HAND);
+            h.assertTrue(net.everla.projectc.arkofcosmos.item.ProcedureSwordItem.guarding(user,user.position().add(0,0,2)),"front not guarded");
+            h.assertTrue(!net.everla.projectc.arkofcosmos.item.ProcedureSwordItem.guarding(user,user.position().add(0,0,-2)),"rear guarded");
+            var arrow=new net.minecraft.world.entity.projectile.Arrow(h.getLevel(),user.getX(),user.getY()+1,user.getZ()+2);
+            arrow.setDeltaMovement(0,0,-2);
+            var impact=new net.minecraftforge.event.entity.ProjectileImpactEvent(arrow,new net.minecraft.world.phys.EntityHitResult(user));
+            net.everla.projectc.arkofcosmos.item.ProcedureSwordItem.arrow(impact);
+            h.assertTrue(impact.isCanceled()&&arrow.getOwner()==user&&arrow.getDeltaMovement().z>0,"front arrow not reflected");
+            var target=new RemovalGuardCow(h.getLevel());target.setPos(user.position().add(0,0,3));
+            target.setCustomName(net.minecraft.network.chat.Component.literal("Procedure"));h.getLevel().addFreshEntity(target);
+            h.assertTrue(net.everla.projectc.arkofcosmos.item.ProcedureSwordItem.guardDamage(user,h.getLevel().damageSources().mobAttack(target),10)==5,"guard is not 50 percent");
+            h.getLevel().getChunk(net.minecraft.core.BlockPos.containing(user.position().add(129,0,0)));
+            var outside=new RemovalGuardCow(h.getLevel());outside.setPos(user.position().add(129,0,0));h.getLevel().addFreshEntity(outside);
+            sword.releaseUsing(stack,h.getLevel(),user,71990);
+            h.assertTrue(target.isRemoved()==(op&&creative),"release bypassed creative/operator gate");
+            if(op&&creative) {
+                var effects=h.getLevel().getEntitiesOfClass(ArkAttackEntity.class,target.getBoundingBox().inflate(1),
+                        e->e.kind()==ArkAttackEntity.Kind.BLAST&&e.view().getInt("Mode")==ArkAttackEntity.CENTERED_BLAST_MODE);
+                h.assertTrue(effects.size()==1,"missing centered rift");
+                h.assertTrue(effects.get(0).position().distanceToSqr(target.getBoundingBox().getCenter())<1e-10,"rift anchor is not target center");
+                h.assertTrue(effects.get(0).attackFrame().forward().equals(new Vec3(0,-1,0)),"rift is not vertically downward");
+            }
+            h.assertTrue(!outside.isRemoved(),"release exceeded 128 block sphere");
+            net.everla.projectc.arkofcosmos.antiMobBattle.OrphanObliterator.obliterate(outside,user,true);
+            if(!target.isRemoved())net.everla.projectc.arkofcosmos.antiMobBattle.OrphanObliterator.obliterate(target,user,true);
+            user.stopUsingItem();
+            h.assertTrue(!net.everla.projectc.arkofcosmos.item.ProcedureSwordItem.guarding(user,user.position().add(0,0,2)),"guard persisted after release");
         }
         h.succeed();
     }
+
+    @GameTest(template="infernum_empty",timeoutTicks=30)
+    public static void procedureSwordPlayerAndItemProtection(GameTestHelper h) {
+        var target=player(h);
+        target.connection=new net.minecraft.server.network.ServerGamePacketListenerImpl(h.getLevel().getServer(),
+                new net.minecraft.network.Connection(net.minecraft.network.protocol.PacketFlow.SERVERBOUND),target);
+        target.setCustomName(net.minecraft.network.chat.Component.literal("Procedure"));
+        target.setGameMode(net.minecraft.world.level.GameType.CREATIVE);
+        var sword=ArkOfCosmos.PROCEDURE_SWORD.get();
+        var stack=new net.minecraft.world.item.ItemStack(sword);
+        var attacker=player(h);
+        net.everla.projectc.arkofcosmos.antiMobBattle.OrphanObliterator.obliterate(target,attacker);
+        h.assertTrue(target.getHealth()>0,"Mob Battle path unexpectedly targets players");
+        h.assertTrue(sword.onLeftClickEntity(stack,attacker,target),"named creative player not handled");
+        h.assertTrue(target.getHealth()==0 && target.isDeadOrDying(),"player escaped sword obliteration");
+        h.assertTrue(!target.isRemoved() && target.getMaxHealth()==20,"player connection/respawn state destroyed");
+        var item=new net.minecraft.world.entity.item.ItemEntity(h.getLevel(),0,100,0,stack);
+        h.assertTrue(!item.hurt(h.getLevel().damageSources().explosion(null,null),100),"sword destroyed by explosion");
+        h.assertTrue(!item.hurt(h.getLevel().damageSources().lava(),100),"sword destroyed by lava");
+        try {
+            java.lang.reflect.Field field=null;
+            for(String name:new String[]{"age","f_31985_"}) {
+                try { field=net.minecraft.world.entity.item.ItemEntity.class.getDeclaredField(name);break; }
+                catch(NoSuchFieldException ignored) {}
+            }
+            if(field==null)throw new AssertionError("age field missing");
+            field.setAccessible(true);field.setInt(item,5999);item.tick();
+            h.assertTrue(!item.isRemoved() && item.getAge()<100,"sword despawned");
+        } catch(ReflectiveOperationException failure) { throw new RuntimeException(failure); }
+        h.assertTrue(stack.getRarity()==net.everla.projectc.arkofcosmos.item.ProcedureRarity.RAINBOW,"wrong rarity");
+        var modifiers=sword.getDefaultAttributeModifiers(net.minecraft.world.entity.EquipmentSlot.MAINHAND);
+        double attack=modifiers.get(net.minecraft.world.entity.ai.attributes.Attributes.ATTACK_DAMAGE).stream().mapToDouble(net.minecraft.world.entity.ai.attributes.AttributeModifier::getAmount).sum();
+        h.assertTrue(attack+1==12,"ordinary sword damage changed");
+        h.succeed();
+    }
+
 }

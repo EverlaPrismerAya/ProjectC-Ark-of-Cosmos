@@ -157,10 +157,12 @@ public final class ArkAttackRenderer extends EntityRenderer<ArkAttackEntity> {
                        Vec3 base, Vec3 local, CompoundTag state, float partial, int light) {
         double timer=70-entity.renderLeft(partial),snap=clamp(timer/25),hold=clamp((timer-25)/15),stitch=clamp((timer-32.5)/37.5);
         double length=ArkCurves.blastThrust((float)snap)*242;
+        Vec3 offset=state.getInt("Mode")==ArkAttackEntity.CENTERED_BLAST_MODE?frame.forward().scale(length/32):Vec3.ZERO;
+        local=local.subtract(offset);
         ArkFxDraw.sprite("bloomline",local,frame,Math.PI/2,.2*(1-snap),length,32,1,ArkEffects.mix(ArkEffects.ORANGE_RED,ArkEffects.WHITE,snap),ArkFxDraw.Blend.ADDITIVE);
         if(hold<=.4){
             double close=ArkCurves.blastClose((float)snap),fade=(.4-hold)/.4;
-            Vec3 origin=entity.renderAim(partial).subtract(base);
+            Vec3 origin=entity.renderAim(partial).subtract(base).subtract(offset);
             ArkFxDraw.sprite("sunderingscissorsright",origin,frame,lerp(Math.PI/2,Math.PI/4,close),1.4,1.4,44,86,ArkEffects.mul(ArkEffects.rgb(0,191,255),fade*.9),ArkFxDraw.Blend.ADDITIVE);
             ArkFxDraw.sprite("sunderingscissorsleft",origin,frame,lerp(0,Math.PI/4,close),1.4,1.4,33,86,ArkEffects.mul(ArkEffects.rgb(255,99,71),fade*fade*.9),ArkFxDraw.Blend.ADDITIVE);
         }

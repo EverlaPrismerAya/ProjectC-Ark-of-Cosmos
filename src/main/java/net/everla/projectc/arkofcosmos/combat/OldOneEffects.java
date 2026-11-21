@@ -63,7 +63,7 @@ public final class OldOneEffects {
     private static final TagKey<EntityType<?>> FREEZE_IMMUNE=TagKey.create(Registries.ENTITY_TYPE,ResourceLocation.fromNamespaceAndPath(ArkOfCosmos.MOD_ID,"old_one_freeze_immune"));
     private static final TagKey<EntityType<?>> SLOW_IMMUNE=TagKey.create(Registries.ENTITY_TYPE,ResourceLocation.fromNamespaceAndPath(ArkOfCosmos.MOD_ID,"old_one_slow_immune"));
     public static boolean movementImmune(LivingEntity e,boolean freeze){return !e.canChangeDimensions()||e.getType().is(freeze?FREEZE_IMMUNE:SLOW_IMMUNE)
-            ||e instanceof net.everla.projectc.arkofcosmos.entity.MahouTsukaiEntity||e instanceof net.everla.projectc.arkofcosmos.entity.MahoragaWardenEntity;}
+            ||e instanceof net.everla.projectc.arkofcosmos.entity.MahouTsukaiEntity;}
     private static final Map<LivingEntity,Vec3> FROZEN=new WeakHashMap<>();
     private static final ThreadLocal<Boolean> REFLECTING=ThreadLocal.withInitial(()->false);
     @SubscribeEvent public static void effect(MobEffectEvent.Applicable e){if(e.getEffectInstance().getEffect()==MobEffects.LEVITATION&&has(e.getEntity(),Status.GRAVITY))e.setResult(Event.Result.DENY);}

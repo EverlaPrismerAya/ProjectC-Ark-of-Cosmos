@@ -218,9 +218,12 @@ public final class ArkEffects {
             case CHAIN -> constellation(s,v,f,p,ArkAttackEntity.vector(s,"Aim").subtract(p));
             case BLAST -> {
                 double timer=70-left,snap=clamp(timer/25),hold=clamp((timer-25)/15),stitch=clamp((timer-32.5)/37.5),length=ArkCurves.blastThrust((float)snap)*242;
+                if(mode==ArkAttackEntity.CENTERED_BLAST_MODE)p=p.subtract(f.forward().scale(length/32));
                 if(hold<=.4){
                     if(v.head==null){v.head=particle(SPARKLE,p,Vec3.ZERO,WHITE,scale*2,2,f);v.head.bloom=CORNFLOWER;v.head.bloomScale=5;v.head.spin=.1;}
-                    v.head.previous=v.head.position;v.head.position=ArkAttackEntity.vector(s,"Aim");v.head.scale=scale*2;v.head.time=0;if(!particles.contains(v.head))add(v.head);
+                    v.head.previous=v.head.position;v.head.position=ArkAttackEntity.vector(s,"Aim");
+                    if(mode==ArkAttackEntity.CENTERED_BLAST_MODE)v.head.position=v.head.position.subtract(f.forward().scale(length/32));
+                    v.head.scale=scale*2;v.head.time=0;if(!particles.contains(v.head))add(v.head);
                 }
                 int count=(int)Math.ceil((1-Math.sqrt(1-Math.pow(clamp(stitch*3),2)))*8);
                 while(v.stitches<count){v.stitchAngles[v.stitches]=range(-Math.PI/4,Math.PI/4)+Math.PI/2;spark(p.add(f.forward().scale(length/16*(.5+v.stitches)/8)),Vec3.ZERO,WHITE,CYAN,3,8,.1,f);v.stitches++;}

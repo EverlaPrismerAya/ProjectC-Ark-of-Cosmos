@@ -1,4 +1,7 @@
 package net.everla.projectc.arkofcosmos.entity;
+
+import net.everla.projectc.arkofcosmos.antiMobBattle.MobBattleTargeting;
+import net.everla.projectc.arkofcosmos.antiMobBattle.BossRetreat;
 import java.util.UUID;
 
 import java.util.Random;
@@ -127,7 +130,7 @@ public final class SupremeCalamitasEntity extends Monster implements net.everla.
     public boolean protectionBoost() { return protectionBoost; }
     public SupremeCalamitasEncounter.Phase phase() { return encounter.phase(); }
     @Override public void setTarget(LivingEntity target) {
-        if (MobBattleTargeting.reject(this, target, () -> endBattle(false))) return;
+        if (MobBattleTargeting.reject(this, target, this::beginMobBattleRetreat)) return;
         if (target != null && !(target instanceof net.minecraft.world.entity.player.Player)) {
             super.setTarget(null);
             targetId = null;
@@ -174,6 +177,7 @@ public final class SupremeCalamitasEntity extends Monster implements net.everla.
                 && (!(target instanceof Player p) || !p.isCreative() && !p.isSpectator());
     }
     @Override public void tick() {
+        if (BossRetreat.tick(this, this::discard)) return;
         if (vitalityReady && !level().isClientSide) syncVitality();
         if(level() instanceof ServerLevel server) {
             if(clearNearbyWitches) {
@@ -187,6 +191,7 @@ public final class SupremeCalamitasEntity extends Monster implements net.everla.
         simulate(0);
     }
     boolean sourceStep() {
+        if (BossRetreat.active(this)) return false;
         if (shieldHurtDelay > 0) shieldHurtDelay--;
         framePaused = false; simulate(1); return !framePaused;
     }
@@ -414,6 +419,11 @@ public final class SupremeCalamitasEntity extends Monster implements net.everla.
             if (entity instanceof CalamitasAttackEntity attack && getUUID().equals(attack.ownerUUID())) attack.fadeForTransition(vortex);
     }
     /** Administrative cleanup and natural acceptance use the same isolated ownership end. */
+    private void beginMobBattleRetreat() {
+        BossRetreat.begin(this);
+        cleanupBattle();
+        net.everla.projectc.arkofcosmos.network.ArkNetwork.calamitasMusic(getUUID(), false);
+    }
     public void endBattle(boolean accepted) {
         if(accepted && !finished && level() instanceof ServerLevel server && !witchBorn) {
             if(witchAfterBattle==null) witchAfterBattle=UUID.nameUUIDFromBytes(("brimstone-witch:"+getUUID()).getBytes(java.nio.charset.StandardCharsets.UTF_8));

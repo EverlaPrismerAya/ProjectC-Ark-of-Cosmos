@@ -32,6 +32,7 @@ import java.util.List;
 
 public final class ArkAttackEntity extends CalamityAttackEntity {
     public enum Kind { BLADE, NEEDLE, BOLT, CHAIN, PARRY, BLAST }
+    public static final int CENTERED_BLAST_MODE = 1;
     private static final EntityDataAccessor<CompoundTag> VIEW = SynchedEntityData.defineId(ArkAttackEntity.class, EntityDataSerializers.COMPOUND_TAG);
     private UUID ownerUuid;
     private int ownerEntityId;

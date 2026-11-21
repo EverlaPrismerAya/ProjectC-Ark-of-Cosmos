@@ -1,5 +1,8 @@
 package net.everla.projectc.arkofcosmos.entity;
 
+import net.everla.projectc.arkofcosmos.antiMobBattle.MobBattleTargeting;
+import net.everla.projectc.arkofcosmos.antiMobBattle.BossRetreat;
+
 import com.Polarice3.Goety.common.entities.boss.Apostle;
 import net.everla.projectc.arkofcosmos.SatsukiContent;
 import net.everla.projectc.arkofcosmos.SatsukiConfig;
@@ -39,6 +42,7 @@ public final class SatsukiRinEntity extends Apostle implements SatsukiBoss,Apoll
     private long nonPlayerInvulnerableUntil;
     private float previousDomainScale,domainScale;
     @Override public void tick(){
+        if(BossRetreat.tick(this,this::removeByPlayerCommand))return;
         previousDomainScale=domainScale;
         if(!level().isClientSide){
             // Select before super.tick() so the native Apostle goals can run with this target in the same tick.
@@ -52,7 +56,7 @@ public final class SatsukiRinEntity extends Apostle implements SatsukiBoss,Apoll
         domainScale=SatsukiDomain.scale(this);
     }
     @Override public void setTarget(LivingEntity target) {
-        if (MobBattleTargeting.reject(this, target, this::removeByPlayerCommand)) return;
+        if (MobBattleTargeting.reject(this, target, this::beginMobBattleRetreat)) return;
         if (target != null && !(target instanceof net.minecraft.world.entity.player.Player)) {
             super.setTarget(null);
             return;
@@ -189,6 +193,18 @@ public final class SatsukiRinEntity extends Apostle implements SatsukiBoss,Apoll
         if(nonPlayer&&getHealth()<before)nonPlayerInvulnerableUntil=level().getGameTime()+(long)SatsukiConfig.value("invulnerable_time");
     }
     public boolean protectRemoval(RemovalReason reason){return !commandRemoval&&vitalityReady&&!level().isClientSide&&getHealth()>0&&reason.shouldDestroy();}
+    private void beginMobBattleRetreat(){
+        BossRetreat.begin(this);
+        bossInfo.removeAllPlayers();
+        if(level() instanceof net.minecraft.server.level.ServerLevel server){
+            var owned=new java.util.ArrayList<net.minecraft.world.entity.Entity>();
+            server.getAllEntities().forEach(owned::add);
+            for(var entity:owned)if(entity instanceof net.minecraft.world.entity.projectile.Projectile projectile&&projectile.getOwner()==this
+                    ||entity instanceof com.Polarice3.Goety.common.entities.projectiles.SpellEntity spell&&spell.getOwner()==this
+                    ||entity instanceof com.Polarice3.Goety.api.entities.IOwned servant&&getUUID().equals(servant.getOwnerId()))entity.discard();
+            arrows.clear();
+        }
+    }
     @Override public void removeByPlayerCommand(){commandRemoval=true;bossInfo.removeAllPlayers();remove(RemovalReason.DISCARDED);}
     @Override public void remove(RemovalReason reason){if(!protectRemoval(reason))super.remove(reason);}
     private boolean deathBurstSent;

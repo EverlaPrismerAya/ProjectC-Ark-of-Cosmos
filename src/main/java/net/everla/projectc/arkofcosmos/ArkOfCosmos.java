@@ -65,6 +65,7 @@ public final class ArkOfCosmos {
     public static final RegistryObject<EntityType<net.everla.projectc.arkofcosmos.entity.ViolenceEntity>> VIOLENCE_ATTACK=net.minecraftforge.fml.ModList.get().isLoaded("goety") ? ENTITIES.register("violence_attack",
         ()->EntityType.Builder.<net.everla.projectc.arkofcosmos.entity.ViolenceEntity>of(net.everla.projectc.arkofcosmos.entity.ViolenceEntity::new,MobCategory.MISC)
             .sized(.5f,.5f).noSave().noSummon().clientTrackingRange(128).updateInterval(1).build("arkofcosmos:violence_attack")) : null;
+    public static final RegistryObject<Item> PROCEDURE_SWORD = ITEMS.register("procedure_sword", net.everla.projectc.arkofcosmos.item.ProcedureSwordItem::new);
     public static final RegistryObject<Item> SIRIUS = ITEMS.register("sirius", net.everla.projectc.arkofcosmos.item.SiriusItem::new);
     public static final RegistryObject<Item> GALAXIA = ITEMS.register("galaxia", net.everla.projectc.arkofcosmos.item.GalaxiaItem::new);
     public static final RegistryObject<Item> BROKEN_BIOME_BLADE = ITEMS.register("broken_biome_blade", net.everla.projectc.arkofcosmos.item.BrokenBiomeBladeItem::new);
@@ -101,9 +102,6 @@ public final class ArkOfCosmos {
     public static final RegistryObject<EntityType<net.everla.projectc.arkofcosmos.entity.MahouAttackEntity>> MAHOU_ATTACK = ENTITIES.register("mahou_attack",
             () -> EntityType.Builder.<net.everla.projectc.arkofcosmos.entity.MahouAttackEntity>of(net.everla.projectc.arkofcosmos.entity.MahouAttackEntity::new, MobCategory.MISC)
                     .sized(.2f,.2f).noSave().noSummon().clientTrackingRange(128).updateInterval(1).build("arkofcosmos:mahou_attack"));
-    public static final RegistryObject<EntityType<net.everla.projectc.arkofcosmos.entity.MahoragaWardenEntity>> MAHORAGA=ENTITIES.register("mahoraga_warden",
-            ()->EntityType.Builder.<net.everla.projectc.arkofcosmos.entity.MahoragaWardenEntity>of(net.everla.projectc.arkofcosmos.entity.MahoragaWardenEntity::new,MobCategory.MONSTER)
-                    .sized(.9f,2.9f).clientTrackingRange(128).build("arkofcosmos:mahoraga_warden"));
     public static final RegistryObject<SoundEvent> SNAP = SOUNDS.register("snap",
             () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(MOD_ID, "snap")));
     private static final java.util.Map<String, RegistryObject<SoundEvent>> AUDIO = new java.util.HashMap<>();
@@ -164,18 +162,19 @@ public final class ArkOfCosmos {
         net.everla.projectc.arkofcosmos.combat.OldOneEffects.register(bus);
         EFFECTS.register(bus);
         ArkNetwork.register();
+        net.everla.projectc.arkofcosmos.antiMobBattle.AntiMobBattleNetwork.register();
         bus.addListener(this::addCreativeContents);
         bus.addListener(this::attributes);
     }
 
     private void attributes(EntityAttributeCreationEvent event) {
         event.put(THE_PLAYER.get(),net.everla.projectc.arkofcosmos.entity.FourthCalamityEntity.createAttributes().build());
-        event.put(MAHORAGA.get(),net.minecraft.world.entity.monster.warden.Warden.createAttributes().build());
         event.put(MAHOU_INFERNUM_SUMMON.get(),net.everla.projectc.arkofcosmos.entity.MahouInfernumSummonEntity.attributes().build());
         event.put(MAHOU_TSUKAI.get(), net.everla.projectc.arkofcosmos.entity.MahouTsukaiEntity.createAttributes().build());
     }
 
     private void addCreativeContents(BuildCreativeModeTabContentsEvent event) {
+        if (event.getTabKey() == CreativeModeTabs.OP_BLOCKS && event.hasPermissions()) event.accept(PROCEDURE_SWORD);
         if (event.getTabKey() == CreativeModeTabs.COMBAT) {
             event.accept(ARK_OF_COSMOS);
             event.accept(ARK_OF_THE_OLD_ONE);

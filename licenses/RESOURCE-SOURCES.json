@@ -1,6 +1,12 @@
 {
   "notice": "Provenance records do not grant redistribution rights. See THIRD_PARTY_NOTICES.md.",
   "files": [
+    {"file": "src/main/resources/assets/arkofcosmos/textures/fx/procedure_mcreator.png", "sha256": "dde6cfde2ff934dfd9c89ced595146de746deddae09eacde98f5e87e6371bb7d", "project": "EverlaArtifacts", "path": "src/main/resources/assets/everlaartifacts/textures/misc/mcreator/mcreator.png", "commit": "4ecc89c60cd58a02ae91f0539e099135bbc59367", "conversion": "Unmodified source overlay sprite"},
+    {"file": "src/main/resources/assets/arkofcosmos/textures/item/procedure_sword.png", "sha256": "fe5ac0c43cd44b785a9e8e4f514b989da84c6da7da8b3d42d63b01e624648330", "project": "EverlaArtifacts", "path": "src/main/resources/assets/everlaartifacts/textures/item/procedure_sword.png", "commit": "4ecc89c60cd58a02ae91f0539e099135bbc59367", "conversion": "Unmodified source asset"},
+    {"file": "src/main/resources/assets/arkofcosmos/textures/item/procedure_sword_mask.png", "sha256": "c2c454cedf87c72c8164953070b4d77cd8465d437b8786755700c55b8eb715ce", "project": "EverlaArtifacts", "path": "src/main/resources/assets/everlaartifacts/textures/mask/item/procedure_sword.png", "commit": "4ecc89c60cd58a02ae91f0539e099135bbc59367", "conversion": "Unmodified source asset"},
+    {"file": "src/main/resources/assets/arkofcosmos/shaders/core/procedure_cosmic.vsh", "sha256": "31d40f789a17f952ff183e7523036461e11301c645d893a017e3bded1652c2f6", "project": "EverlaArtifacts", "path": "src/main/resources/assets/everlaartifacts/shaders/core/cosmic.vsh", "commit": "4ecc89c60cd58a02ae91f0539e099135bbc59367", "conversion": "Unmodified source asset"},
+    {"file": "src/main/resources/assets/arkofcosmos/shaders/core/procedure_cosmic.fsh", "sha256": "bd246cae631a619a6e76ee8e7f3076bcd8bbec68ad0d4aea7791411129b70306", "project": "EverlaArtifacts", "path": "src/main/resources/assets/everlaartifacts/shaders/core/cosmic.fsh", "commit": "4ecc89c60cd58a02ae91f0539e099135bbc59367", "conversion": "Unmodified source asset"},
+    {"file": "src/main/resources/assets/arkofcosmos/shaders/core/procedure_cosmic.json", "sha256": "da2fa5c382c523ab64453f0c4cc26a1e2beefd1912606ae0f9fa98d7de735ab6", "project": "EverlaArtifacts", "path": "src/main/resources/assets/everlaartifacts/shaders/core/cosmic.json", "commit": "4ecc89c60cd58a02ae91f0539e099135bbc59367", "conversion": "Original asset; shader JSON namespace updated"},
     {
       "file": "src/main/resources/assets/arkofcosmos/textures/entity/fumo/cirno.png",
       "sha256": "125ae8fed6d4986fad9db6fd0d2bc9ebac2541166d14fa6e8ddb0ee1a3e42184",
@@ -6730,6 +6736,229 @@
       "used_by": [
         "Bejeweled Staff"
       ]
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/misc/cosmic/cosmic_0.png",
+      "sha256": "d31cee25652db7f9cc33b17eaa704f81c604342137817e177d77ab9dac74c7ff",
+      "project": "Re-Avaritia",
+      "path": "assets/avaritia/textures/misc/cosmic/cosmic_0.png",
+      "source_url": "https://github.com/Nova-Committee/Re-Avaritia",
+      "version": "1.4.0",
+      "license": "MIT",
+      "conversion": "Unmodified PNG and animation metadata; atlas sprite for original cosmic shader"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/misc/cosmic/cosmic_0.png.mcmeta",
+      "sha256": "f65e30a78154dc78b479272887ee4c21f569a164cfe41193ec6746df121700f5",
+      "project": "Re-Avaritia",
+      "path": "assets\\avaritia\\textures\\misc\\cosmic\\cosmic_0.png.mcmeta",
+      "version": "1.4.0",
+      "license": "MIT",
+      "conversion": "Unmodified animation metadata"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/misc/cosmic/cosmic_1.png",
+      "sha256": "b93b798237b67339a0d753c71308195a838c7dd6bbbadd12bbeec0df9781c5b7",
+      "project": "Re-Avaritia",
+      "path": "assets/avaritia/textures/misc/cosmic/cosmic_1.png",
+      "source_url": "https://github.com/Nova-Committee/Re-Avaritia",
+      "version": "1.4.0",
+      "license": "MIT",
+      "conversion": "Unmodified PNG and animation metadata; atlas sprite for original cosmic shader"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/misc/cosmic/cosmic_1.png.mcmeta",
+      "sha256": "946f4658a5eb22d0fcadc1286594960c01a72932c76c51d6f8c741c313490aad",
+      "project": "Re-Avaritia",
+      "path": "assets\\avaritia\\textures\\misc\\cosmic\\cosmic_1.png.mcmeta",
+      "version": "1.4.0",
+      "license": "MIT",
+      "conversion": "Unmodified animation metadata"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/misc/cosmic/cosmic_2.png",
+      "sha256": "f65b02ee0ee9c98ae787eb2cb87d4f8fa2b88b83ab05d3b49af7cd7d1050e633",
+      "project": "Re-Avaritia",
+      "path": "assets/avaritia/textures/misc/cosmic/cosmic_2.png",
+      "source_url": "https://github.com/Nova-Committee/Re-Avaritia",
+      "version": "1.4.0",
+      "license": "MIT",
+      "conversion": "Unmodified PNG and animation metadata; atlas sprite for original cosmic shader"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/misc/cosmic/cosmic_2.png.mcmeta",
+      "sha256": "fb59784aad714426c7ee9d771e4cb4d1d4cdc263e8118cb2ae32942a1129d6a1",
+      "project": "Re-Avaritia",
+      "path": "assets\\avaritia\\textures\\misc\\cosmic\\cosmic_2.png.mcmeta",
+      "version": "1.4.0",
+      "license": "MIT",
+      "conversion": "Unmodified animation metadata"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/misc/cosmic/cosmic_3.png",
+      "sha256": "d053db8e0d1145ff3ba8046d30b2817abf7cebfdfb84e16f7c22657f2facbfdb",
+      "project": "Re-Avaritia",
+      "path": "assets/avaritia/textures/misc/cosmic/cosmic_3.png",
+      "source_url": "https://github.com/Nova-Committee/Re-Avaritia",
+      "version": "1.4.0",
+      "license": "MIT",
+      "conversion": "Unmodified PNG and animation metadata; atlas sprite for original cosmic shader"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/misc/cosmic/cosmic_3.png.mcmeta",
+      "sha256": "f8061403d6a8b0fa48980bb8d22c6f705edaa3f04c7c901f074610eeed8761d7",
+      "project": "Re-Avaritia",
+      "path": "assets\\avaritia\\textures\\misc\\cosmic\\cosmic_3.png.mcmeta",
+      "version": "1.4.0",
+      "license": "MIT",
+      "conversion": "Unmodified animation metadata"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/misc/cosmic/cosmic_4.png",
+      "sha256": "fd3bf78941a46aa33b32fbf4457ab1ffa7312f10bb8e566ea433e47953498f2e",
+      "project": "Re-Avaritia",
+      "path": "assets/avaritia/textures/misc/cosmic/cosmic_4.png",
+      "source_url": "https://github.com/Nova-Committee/Re-Avaritia",
+      "version": "1.4.0",
+      "license": "MIT",
+      "conversion": "Unmodified PNG and animation metadata; atlas sprite for original cosmic shader"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/misc/cosmic/cosmic_4.png.mcmeta",
+      "sha256": "3af487a215145efd1836770beb2af04159d2e6e6c13a0fe06166f524246f0faf",
+      "project": "Re-Avaritia",
+      "path": "assets\\avaritia\\textures\\misc\\cosmic\\cosmic_4.png.mcmeta",
+      "version": "1.4.0",
+      "license": "MIT",
+      "conversion": "Unmodified animation metadata"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/misc/cosmic/cosmic_5.png",
+      "sha256": "7e3e1abbec28ae16a39297cd9356a8388e5ee45edd24fac17f9a4cafe094768b",
+      "project": "Re-Avaritia",
+      "path": "assets/avaritia/textures/misc/cosmic/cosmic_5.png",
+      "source_url": "https://github.com/Nova-Committee/Re-Avaritia",
+      "version": "1.4.0",
+      "license": "MIT",
+      "conversion": "Unmodified PNG and animation metadata; atlas sprite for original cosmic shader"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/misc/cosmic/cosmic_5.png.mcmeta",
+      "sha256": "08c831e83df77bb14ed1d31c40f4dc2a14feef1531361edf82c9117f22d37cf7",
+      "project": "Re-Avaritia",
+      "path": "assets\\avaritia\\textures\\misc\\cosmic\\cosmic_5.png.mcmeta",
+      "version": "1.4.0",
+      "license": "MIT",
+      "conversion": "Unmodified animation metadata"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/misc/cosmic/cosmic_6.png",
+      "sha256": "8b632f18a0d3004e7ed731a6fcf971a6c7ec13d9991ce326fb2c8f6134281222",
+      "project": "Re-Avaritia",
+      "path": "assets/avaritia/textures/misc/cosmic/cosmic_6.png",
+      "source_url": "https://github.com/Nova-Committee/Re-Avaritia",
+      "version": "1.4.0",
+      "license": "MIT",
+      "conversion": "Unmodified PNG and animation metadata; atlas sprite for original cosmic shader"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/misc/cosmic/cosmic_6.png.mcmeta",
+      "sha256": "49fc4624f6d61129d531f982ca66b24219ed1716c8e736e0b11f34a9a68250ea",
+      "project": "Re-Avaritia",
+      "path": "assets\\avaritia\\textures\\misc\\cosmic\\cosmic_6.png.mcmeta",
+      "version": "1.4.0",
+      "license": "MIT",
+      "conversion": "Unmodified animation metadata"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/misc/cosmic/cosmic_7.png",
+      "sha256": "9ba882f2f4edb5f66e1eee7d1ce44a1ffaf4302a079946707376df349a13678e",
+      "project": "Re-Avaritia",
+      "path": "assets/avaritia/textures/misc/cosmic/cosmic_7.png",
+      "source_url": "https://github.com/Nova-Committee/Re-Avaritia",
+      "version": "1.4.0",
+      "license": "MIT",
+      "conversion": "Unmodified PNG and animation metadata; atlas sprite for original cosmic shader"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/misc/cosmic/cosmic_7.png.mcmeta",
+      "sha256": "90fb44a3511d279e0f59d80d82799e72ee6295ef29420184f76f218d4d3d653a",
+      "project": "Re-Avaritia",
+      "path": "assets\\avaritia\\textures\\misc\\cosmic\\cosmic_7.png.mcmeta",
+      "version": "1.4.0",
+      "license": "MIT",
+      "conversion": "Unmodified animation metadata"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/misc/cosmic/cosmic_8.png",
+      "sha256": "de0e3bb5af4bb55cba11abaf214ce25137c19efa9889341194fa43be7cd2f900",
+      "project": "Re-Avaritia",
+      "path": "assets/avaritia/textures/misc/cosmic/cosmic_8.png",
+      "source_url": "https://github.com/Nova-Committee/Re-Avaritia",
+      "version": "1.4.0",
+      "license": "MIT",
+      "conversion": "Unmodified PNG and animation metadata; atlas sprite for original cosmic shader"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/misc/cosmic/cosmic_8.png.mcmeta",
+      "sha256": "541d965fc07e448996142ba31319b14094bc771f5c52e47532a3dd3b457162f6",
+      "project": "Re-Avaritia",
+      "path": "assets\\avaritia\\textures\\misc\\cosmic\\cosmic_8.png.mcmeta",
+      "version": "1.4.0",
+      "license": "MIT",
+      "conversion": "Unmodified animation metadata"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/misc/cosmic/cosmic_9.png",
+      "sha256": "10bfd7907124e9432496c2cb2535b0090f3e5a2e7bacdce60770ce901a132d9e",
+      "project": "Re-Avaritia",
+      "path": "assets/avaritia/textures/misc/cosmic/cosmic_9.png",
+      "source_url": "https://github.com/Nova-Committee/Re-Avaritia",
+      "version": "1.4.0",
+      "license": "MIT",
+      "conversion": "Unmodified PNG and animation metadata; atlas sprite for original cosmic shader"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/textures/misc/cosmic/cosmic_9.png.mcmeta",
+      "sha256": "90fb44a3511d279e0f59d80d82799e72ee6295ef29420184f76f218d4d3d653a",
+      "project": "Re-Avaritia",
+      "path": "assets\\avaritia\\textures\\misc\\cosmic\\cosmic_9.png.mcmeta",
+      "version": "1.4.0",
+      "license": "MIT",
+      "conversion": "Unmodified animation metadata"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/shaders/core/anti_mob_battle_cosmic.fsh",
+      "sha256": "2417de3a9ba23a98581e97040d8eea4ed0b9138543bf9e35ce776321b47662e9",
+      "project": "Re-Avaritia",
+      "path": "assets/avaritia/shaders/core/cosmic.fsh",
+      "source_sha256": "df99dff577925003da6cee790dcd9b460e19859eb16f94fb2d18a3943227ebf4",
+      "source_url": "https://github.com/Nova-Committee/Re-Avaritia",
+      "version": "1.4.0",
+      "license": "MIT",
+      "conversion": "Original 16-layer cosmic algorithm; separate font alpha mask, white outline, star atlas sampler; text vertex format"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/shaders/core/anti_mob_battle_cosmic.vsh",
+      "sha256": "a509570e6bbd37860602f33e5b4b89fbe7d9059b89b0bf66a8f4db049715d8ef",
+      "project": "Re-Avaritia",
+      "path": "assets/avaritia/shaders/core/cosmic.vsh",
+      "source_sha256": "e2490fab15129ecb655400214cd04efc2b715b7127a0b5ca98d1d09e9c85dce9",
+      "source_url": "https://github.com/Nova-Committee/Re-Avaritia",
+      "version": "1.4.0",
+      "license": "MIT",
+      "conversion": "Original 16-layer cosmic algorithm; separate font alpha mask, white outline, star atlas sampler; text vertex format"
+    },
+    {
+      "file": "src/main/resources/assets/arkofcosmos/shaders/core/anti_mob_battle_cosmic.json",
+      "sha256": "09979103b8d6f24628e977c422d328c00092c432f55795a3a3ba9c90e9d5ed39",
+      "project": "Re-Avaritia",
+      "path": "assets/avaritia/shaders/core/cosmic.json",
+      "source_sha256": "df141b2c7dc103b4ec3b19fe6ae1290676ec8b8181f669054b61470bc3c5582c",
+      "source_url": "https://github.com/Nova-Committee/Re-Avaritia",
+      "version": "1.4.0",
+      "license": "MIT",
+      "conversion": "Original 16-layer cosmic algorithm; separate font alpha mask, white outline, star atlas sampler; text vertex format"
     }
   ],
   "supreme_calamitas_dialogue": [

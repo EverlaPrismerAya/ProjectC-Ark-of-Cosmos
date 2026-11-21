@@ -241,3 +241,14 @@ The 2026-11-19 audit also inspected the user-provided `InfernumMode/lib/Luminanc
 
 ### Sirius texture
 `textures/item/sirius.png` is copied unchanged from the user-provided CalamityModLegacy `Items/Weapons/Summon/Sirius.png` (Calamity Mod). Original asset rights remain with its authors.
+
+
+## Re-Avaritia Cosmos text effect
+
+The anti-Mob-Battle popup uses the original 16-layer `cosmic` shader algorithm and ten animated cosmic sprites from Re-Avaritia 1.4.0, by cnlimiter, cu6, MHanHanBing, IAFEnvoy, Asek3, MikhailTapio and contributors.
+Source: https://github.com/Nova-Committee/Re-Avaritia . The supplied distribution declares the MIT license; the upstream license text is included in `licenses/Re-Avaritia-LICENSE.txt`. Adaptations separate the font alpha mask from the star atlas, add a flowing rainbow outline with outward alpha falloff, and accept text vertices. PNGs and animation metadata are unchanged. File and upstream-source hashes are recorded in `licenses/RESOURCE-SOURCES.json`.
+
+
+## EverlaArtifacts Sword of Procedure
+
+The administrator-only acquisition Sword of Procedure is ported from the user-provided EverlaArtifacts checkout, commit `4ecc89c60cd58a02ae91f0539e099135bbc59367`. Original sword/mask textures, and mcreator overlay sprite are preserved unchanged. Shader sources and rendering algorithms derive from EverlaArtifacts / Nova-Committee Re-Avaritia (MIT; see `licenses/Re-Avaritia-LICENSE.txt`). Original asset rights remain with their respective authors; this notice does not grant additional redistribution rights. Asset paths and SHA-256 hashes are recorded in `licenses/RESOURCE-SOURCES.json`. Killing is delegated to the existing OrphanObliterator, with no recipe.

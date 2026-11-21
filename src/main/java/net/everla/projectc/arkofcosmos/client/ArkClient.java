@@ -147,7 +147,6 @@ public final class ArkClient {
             event.registerEntityRenderer(ArkOfCosmos.MAHOU_TSUKAI.get(), MahouTsukaiRenderer::new);
             event.registerEntityRenderer(ArkOfCosmos.THE_PLAYER.get(), FourthCalamityRenderer::new);
             event.registerEntityRenderer(ArkOfCosmos.MAHOU_ATTACK.get(), net.minecraft.client.renderer.entity.NoopRenderer::new);
-            event.registerEntityRenderer(ArkOfCosmos.MAHORAGA.get(), MahoragaRenderer::new);
         }
     }
 }

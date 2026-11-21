@@ -1,4 +1,5 @@
 {
+  "item.arkofcosmos.procedure_sword": "流程支配之剑",
   "boss.arkofcosmos.mahou_saint.title": "至尊圣女",
   "boss.arkofcosmos.mahou_fox.title": "至尊狐妖",
   "boss.arkofcosmos.mahou_brother.name": "七叶镜 绫",
@@ -31,7 +32,6 @@
   "item.arkofcosmos.mahou_tsukai_spawn_egg": "魔法使刷怪蛋",
   "dialogue.arkofcosmos.calamitas.summoning": "狱焰降临于你……",
   "item.goety_revelation.atonement_voucher.desc": "可清除附近的亚波伦，冴月麟或至尊灾厄Boss",
-  "entity.arkofcosmos.mahoraga_warden": "魔虚罗·监守者",
   "advancements.arkofcosmos.fly_swatter.title": "消灭苍蝇的小能手",
   "advancements.arkofcosmos.fly_swatter.description": "使用鸿蒙方舟消灭一只苍蝇",
   "item.arkofcosmos.ark_of_cosmos": "鸿蒙方舟",

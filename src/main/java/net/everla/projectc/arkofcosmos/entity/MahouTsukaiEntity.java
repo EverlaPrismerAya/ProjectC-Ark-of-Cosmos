@@ -1,5 +1,8 @@
 package net.everla.projectc.arkofcosmos.entity;
 
+import net.everla.projectc.arkofcosmos.antiMobBattle.MobBattleTargeting;
+import net.everla.projectc.arkofcosmos.antiMobBattle.BossRetreat;
+
 import net.minecraft.network.syncher.*;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerBossEvent;
@@ -42,7 +45,7 @@ public final class MahouTsukaiEntity extends PathfinderMob implements net.minecr
     public boolean raisedHands(){return !defeating() && (phase()==3&&phaseTransitionTicks()>0||spell()==4);}
     void shikigamiDefeated(java.util.UUID id){if(id.equals(shikigami)){shikigami=null;}}
     @Override public boolean isAlliedTo(Entity other){
-        return other instanceof MahouInfernumSummonEntity m&&m.ownedBy(this)||other instanceof MahoragaWardenEntity w&&getUUID().equals(w.bossId())||super.isAlliedTo(other);
+        return other instanceof MahouInfernumSummonEntity m&&m.ownedBy(this)||super.isAlliedTo(other);
     }
     private long nonPlayerInvulnerableUntil;
     private final DistantOrbitTrigger distantOrbitTrigger=new DistantOrbitTrigger();
@@ -97,7 +100,7 @@ public final class MahouTsukaiEntity extends PathfinderMob implements net.minecr
     @Override public double getAttributeBaseValue(net.minecraft.world.entity.ai.attributes.Attribute attribute) { return super.getAttributeBaseValue(attribute==Attributes.MAX_HEALTH?net.everla.projectc.arkofcosmos.ArkOfCosmos.MAHOU_MAX_HEALTH.get():attribute); }
     @Override protected void registerGoals() {}
     @Override public void setTarget(LivingEntity target) {
-        if (MobBattleTargeting.reject(this, target, this::removeByPlayerCommand)) return;
+        if (MobBattleTargeting.reject(this, target, this::beginMobBattleRetreat)) return;
         if (target != null && !(target instanceof net.minecraft.world.entity.player.Player) && !(target instanceof FourthCalamityEntity)) {
             super.setTarget(null);
             targetId = null;
@@ -285,6 +288,16 @@ public final class MahouTsukaiEntity extends PathfinderMob implements net.minecr
         if(getHealth()<before && !net.everla.projectc.arkofcosmos.combat.WeaponUser.playerOwnedDamage(source))
             nonPlayerInvulnerableUntil=level().getGameTime()+10;
         entityData.set(TOTAL_HEALTH,totalHealthProgress());
+    }
+
+    private void beginMobBattleRetreat() {
+        BossRetreat.begin(this);
+        clearCombatEntities();
+        bossEvent.removeAllPlayers();
+    }
+    @Override public void tick() {
+        if (BossRetreat.tick(this, this::removeByPlayerCommand)) return;
+        super.tick();
     }
 
     /** Called only by the player-originated /kill command hook. */

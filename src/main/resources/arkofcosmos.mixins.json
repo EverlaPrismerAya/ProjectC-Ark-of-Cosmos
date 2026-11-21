@@ -57,6 +57,7 @@
     "compact.goetyAndGoetyRevelation.WitchSoulDebitMixin"
   ],
   "client": [
+    "client.ProcedureRainbowFontMixin",
     "client.SatsukiFumoRenderMixin",
     "client.SatsukiArrowParticlesMixin",
     "client.SatsukiArrowEffectParticlesMixin",

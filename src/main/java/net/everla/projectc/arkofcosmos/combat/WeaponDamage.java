@@ -53,8 +53,7 @@ public final class WeaponDamage {
         var fourth=CalamityAttackGuard.damageOwner(source);
         boolean fourthHit=fourth!=null&&target!=fourth;
         if(fourthHit&&fourth.combat.selfDefending())amount*=6;
-        boolean bossHit = mahouHit || calamitasHit || fourthHit || target instanceof Player
-                && source.getEntity() instanceof net.everla.projectc.arkofcosmos.entity.MahoragaWardenEntity;
+        boolean bossHit = mahouHit || calamitasHit || fourthHit;
         long now = target.level().getGameTime();
         Long previousUntil = bossHit ? BOSS_HIT_UNTIL.get(target) : null;
         if (previousUntil != null && now < previousUntil) return false;
@@ -91,7 +90,6 @@ public final class WeaponDamage {
     }
 
     public static float minimum(LivingEntity target, DamageSource source, float amount) {
-        if(target instanceof net.everla.projectc.arkofcosmos.entity.MahoragaWardenEntity)return amount;
         Hit hit = CURRENT.get();
         if (hit == null || hit.target != target || hit.source != source)
             return amount;

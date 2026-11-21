@@ -51,26 +51,6 @@ public final class ArkDamage {
     private ArkDamage() {}
     public static void bootstrap() {}
 
-    /** Punish externally assigned non-player boss targets, including removal-guarded mobs. */
-    public static void obliterate(LivingEntity target, LivingEntity attacker) {
-        if (target.level().isClientSide || target instanceof Player || target.isRemoved()) return;
-        try {
-            hurt(target, attacker.damageSources().mobAttack(attacker), Float.MAX_VALUE);
-        } finally {
-            LivingEntity previous = FINISHING.get();
-            FINISHING.set(target);
-            try {
-                target.getEntityData().set(HEALTH, 0f);
-                REMOVE.invoke(target, Entity.RemovalReason.KILLED);
-            } catch (Throwable failure) {
-                throw new IllegalStateException("Could not remove rejected boss target", failure);
-            } finally {
-                if (previous == null) FINISHING.remove();
-                else FINISHING.set(previous);
-            }
-        }
-    }
-
     public static boolean protectedPlayer(Object entity) {
         // LivingEntity initializes health before ServerPlayer initializes its game mode.
         if (entity instanceof Player player && player.getAbilities() == null) return false;
@@ -124,7 +104,6 @@ public final class ArkDamage {
         if(BossHealingLock.blockWrite(object,value))return true;
         if(object instanceof ProtectedBoss boss)
             return boss.redirectHealthWrite(value)||boss.blocksHealthWrite(value);
-        if(object instanceof net.everla.projectc.arkofcosmos.entity.MahoragaWardenEntity warden && warden.blocksHealthWrite(value))return true;
         // A temporary healing ceiling must not activate a second health store on a native target.
         if (!authoritative(entity)) return false;
         // Death remains final after die() returns: tick-based revival also uses this setter.
@@ -157,7 +136,6 @@ public final class ArkDamage {
                 || target instanceof net.everla.projectc.arkofcosmos.entity.CalamitasBrotherEntity
                 || target instanceof net.everla.projectc.arkofcosmos.entity.SupremeCalamitasEntity
                 || target instanceof net.everla.projectc.arkofcosmos.entity.CalamitasSepulcherEntity
-                || target instanceof net.everla.projectc.arkofcosmos.entity.MahoragaWardenEntity
                 || !seagull(target) && target.getType().is(IGNORE_SPECIAL_DAMAGE);
     }
 
@@ -281,6 +259,7 @@ public final class ArkDamage {
         boolean seagull = seagull(target);
         if (seagull) amount = Float.MAX_VALUE;
         if(target instanceof Player player)amount=net.everla.projectc.arkofcosmos.enchant.CurseCombat.incoming(player,amount);
+        amount=net.everla.projectc.arkofcosmos.item.ProcedureSwordItem.guardDamage(target,source,amount);
         amount=SiriusShield.absorb(target,amount);
         if(amount<=0)return true;
         float after = Math.max(0, before - amount);
