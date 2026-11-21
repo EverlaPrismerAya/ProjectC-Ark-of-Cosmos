@@ -10,9 +10,9 @@ import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 /** Clamp the final write after a custom container has applied its own damage rules. */
-@Mixin(value=SynchedEntityData.class,remap=false)
+@Mixin(SynchedEntityData.class)
 abstract class SynchedEntityDataMixin {
-    @Shadow(aliases="f_135344_") @Final private Entity entity;
+    @Shadow @Final private Entity entity;
 
     @ModifyVariable(method="set(Lnet/minecraft/network/syncher/EntityDataAccessor;Ljava/lang/Object;Z)V",
             remap=true, at=@At("HEAD"),argsOnly=true,ordinal=0)

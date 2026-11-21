@@ -151,8 +151,8 @@ tasks.register('verifyMixinSrg') {
             }
             def bytecode = output.toString('UTF-8')
             members.each { member ->
-                if (!(bytecode =~ /\b${java.util.regex.Pattern.quote(member[-1])}\b/).find()
-                        || (bytecode =~ /\b${java.util.regex.Pattern.quote(member[1])}\b/).find()) {
+                if (!(bytecode =~ /\b${java.util.regex.Pattern.quote(member[-1])}\s*[:;(]/).find()
+                        || (bytecode =~ /\b${java.util.regex.Pattern.quote(member[1])}\s*[:;(]/).find()) {
                     throw new GradleException("Unmapped Mixin declaration or reference in release JAR: ${member.join(' ')}")
                 }
             }
