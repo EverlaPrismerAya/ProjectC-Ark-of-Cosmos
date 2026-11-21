@@ -5,6 +5,7 @@ import net.everla.projectc.arkofcosmos.util.AttackFrame;
 import net.everla.projectc.arkofcosmos.entity.ArkAttackEntity;
 import net.everla.projectc.arkofcosmos.calamity.util.ArkCurves;
 import net.everla.projectc.arkofcosmos.client.render.ArkFxDraw;
+import net.everla.projectc.arkofcosmos.client.ThreadripperEffects;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Camera;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -65,6 +66,7 @@ public final class ArkEffects {
         ArkFxParticle a=particle(SQUISH,p,v,c,range(.3,.6),60,f); a.squish=squish; a.hueShift=hue;
     }
     public static void receive(CompoundTag data){
+        if (data.getString("Event").equals("threadripper_hit")) {ThreadripperEffects.receive(data);return;}
         if(data.getString("Event").equals("bejeweled_fx")){net.everla.projectc.arkofcosmos.client.BejeweledEffects.receive(data);return;}
         if(data.getString("Event").equals("satsuki_death_burst")){net.everla.projectc.arkofcosmos.client.SatsukiDeathBurst.receive(data);return;}
         if(data.getString("Event").equals("satsuki_arrow")){net.everla.projectc.arkofcosmos.client.SatsukiArrowVisuals.receive(data);return;}
@@ -142,6 +144,7 @@ public final class ArkEffects {
     public static void tick(){
         Minecraft mc=Minecraft.getInstance();
         if(world!=mc.level){world=mc.level;particles.clear();frameParticles.clear();visuals.clear();GalaxiaEffects.clear();CalamitasParticles.clear();shake=0;}
+        ThreadripperEffects.tick(mc.level);
         if(mc.level==null||mc.isPaused())return;
         Set<Integer> live=new HashSet<>();
         frameParticles.clear();frameParticles.addAll(particles);for(ArkFxParticle p:particles)p.beginFrame();
@@ -280,6 +283,7 @@ public final class ArkEffects {
         Vec3 forward=new Vec3(look.x(),look.y(),look.z()),up=new Vec3(u.x(),u.y(),u.z());
         AttackFrame billboard=new AttackFrame(forward.cross(up).normalize(),up.scale(-1));
         ArkFxDraw.matrix=pose.last().pose();ArkFxDraw.camera=camera;
+        ThreadripperEffects.render(camera, partial);
         try {
             for(boolean additive:new boolean[]{false,true})for(ArkFxParticle p:frameParticles)if(((p.type!=SMOKE||p.glowing)&&p.type!=VOID_SPARK&&p.type!=SOURCE_DUST_261&&p.type!=SOURCE_DUST_66&&p.type!=SOURCE_DUST_279&&p.type!=SOURCE_DUST_60&&p.type!=SOURCE_DUST_114&&p.type!=SOURCE_DUST_182&&p.type!=SOURCE_DUST_5)==additive){
                 ArkFxDraw.ownerView(p.ownerId,Vec3.ZERO);

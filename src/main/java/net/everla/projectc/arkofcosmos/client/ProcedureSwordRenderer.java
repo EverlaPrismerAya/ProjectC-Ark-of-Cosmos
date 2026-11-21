@@ -2,7 +2,12 @@ package net.everla.projectc.arkofcosmos.client;
 
 import com.google.gson.*;
 import com.mojang.blaze3d.vertex.*;
+import com.mojang.blaze3d.systems.RenderSystem;
+import net.everla.projectc.arkofcosmos.item.ProcedureSwordItem;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.Direction;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.block.model.*;
 import net.minecraft.client.renderer.texture.*;
@@ -16,10 +21,12 @@ import net.minecraftforge.client.model.BakedModelWrapper;
 import net.minecraftforge.client.model.geometry.*;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
 import java.util.*;
 import java.util.function.Function;
 
-/** EverlaArtifacts/Re-Avaritia mask geometry and cosmic shader, using Forge's model wrapper. */
+/** Masked EverlaArtifacts overlay, with a separate material effect for Threadripper. */
 @Mod.EventBusSubscriber(modid="arkofcosmos", value=Dist.CLIENT, bus=Mod.EventBusSubscriber.Bus.MOD)
 public final class ProcedureSwordRenderer extends BlockEntityWithoutLevelRenderer {
     public static final ProcedureSwordRenderer INSTANCE = new ProcedureSwordRenderer();
@@ -51,7 +58,12 @@ public final class ProcedureSwordRenderer extends BlockEntityWithoutLevelRendere
     }
 
     @SubscribeEvent public static void shaders(RegisterShadersEvent event) throws java.io.IOException {
-        event.registerShader(new ShaderInstance(event.getResourceProvider(), id("procedure_cosmic"), DefaultVertexFormat.BLOCK), s -> shader=s);
+        shader=null;
+        try {
+            event.registerShader(new ShaderInstance(event.getResourceProvider(), id("procedure_cosmic"), DefaultVertexFormat.BLOCK), s -> shader=s);
+        } catch (java.io.IOException error) {
+            com.mojang.logging.LogUtils.getLogger().warn("Procedure sword overlay unavailable; using the base model", error);
+        }
     }
     @SubscribeEvent public static void loaders(ModelEvent.RegisterGeometryLoaders event) {
         event.register("procedure_sword", (IGeometryLoader<Geometry>)(json, context) -> {
@@ -75,11 +87,47 @@ public final class ProcedureSwordRenderer extends BlockEntityWithoutLevelRendere
     }
     private static final class Model extends BakedModelWrapper<BakedModel> {
         final List<BakedQuad> mask;
-        Model(BakedModel base,List<BakedQuad> mask) { super(base);this.mask=mask; }
+        final BladeFace front, back;
+        Model(BakedModel base,List<BakedQuad> mask) {
+            super(base);
+            this.mask=mask;
+            var faces=base.getQuads(null,null,RandomSource.create(42));
+            front=BladeFace.find(faces,Direction.SOUTH);
+            back=BladeFace.find(faces,Direction.NORTH);
+        }
         BakedModel base() { return originalModel; }
         @Override public boolean isCustomRenderer() { return true; }
         @Override public BakedModel applyTransform(ItemDisplayContext context,PoseStack pose,boolean left) {
             originalModel.applyTransform(context,pose,left); return this;
+        }
+    }
+    /** Sprite center and half-axes reconstructed from the actual baked face UVs. */
+    record BladeFace(Vec3 center, Vec3 x, Vec3 y) {
+        static BladeFace find(List<BakedQuad> quads, Direction side) {
+            for (BakedQuad quad : quads) {
+                var sprite=quad.getSprite();
+                if (quad.getDirection()!=side || !sprite.contents().name().equals(id("item/procedure_sword"))) continue;
+                int[] data=quad.getVertices();
+                int stride=data.length/4;
+                float middleU=(sprite.getU0()+sprite.getU1())*.5f, middleV=(sprite.getV0()+sprite.getV1())*.5f;
+                Vec3 center=Vec3.ZERO,x=Vec3.ZERO,y=Vec3.ZERO;
+                float minU=Float.POSITIVE_INFINITY,maxU=Float.NEGATIVE_INFINITY;
+                float minV=Float.POSITIVE_INFINITY,maxV=Float.NEGATIVE_INFINITY;
+                for (int i=0;i<data.length;i+=stride) {
+                    Vec3 p=new Vec3(Float.intBitsToFloat(data[i]),Float.intBitsToFloat(data[i+1]),Float.intBitsToFloat(data[i+2]));
+                    float u=Float.intBitsToFloat(data[i+4]),v=Float.intBitsToFloat(data[i+5]);
+                    center=center.add(p);
+                    x=x.add(p.scale(u<middleU?-1:1));
+                    y=y.add(p.scale(v<middleV?1:-1));
+                    minU=Math.min(minU,u);maxU=Math.max(maxU,u);
+                    minV=Math.min(minV,v);maxV=Math.max(maxV,v);
+                }
+                float spanU=sprite.getU1()-sprite.getU0(),spanV=sprite.getV1()-sprite.getV0();
+                // Ignore side strips; undo the atlas inset so the shader can read raw sprite UVs.
+                if(maxU-minU>spanU*.8f && maxV-minV>spanV*.8f)
+                    return new BladeFace(center.scale(.25),x.scale(.25*spanU/(maxU-minU)),y.scale(.25*spanV/(maxV-minV)));
+            }
+            return null;
         }
     }
     private static final class CosmicType extends RenderType {
@@ -94,8 +142,8 @@ public final class ProcedureSwordRenderer extends BlockEntityWithoutLevelRendere
         };
         static final RenderType TYPE=create("procedure_cosmic",DefaultVertexFormat.BLOCK,VertexFormat.Mode.QUADS,256,false,false,
                 CompositeState.builder().setShaderState(new ShaderStateShard(()->shader)).setDepthTestState(EQUAL_DEPTH_TEST)
-                        .setLightmapState(LIGHTMAP).setTransparencyState(TRANSLUCENT_TRANSPARENCY)
-                        .setTextureState(TEXTURE).createCompositeState(true));
+                        .setWriteMaskState(COLOR_WRITE).setLightmapState(LIGHTMAP).setTransparencyState(TRANSLUCENT_TRANSPARENCY)
+                        .setTextureState(TEXTURE).createCompositeState(false));
         // Shader packs can displace depth; retain occlusion without requiring exact equality.
         static final RenderType COMPAT=create("procedure_cosmic_compat",DefaultVertexFormat.BLOCK,VertexFormat.Mode.QUADS,256,false,false,
                 CompositeState.builder().setShaderState(new ShaderStateShard(()->shader)).setDepthTestState(LEQUAL_DEPTH_TEST)
@@ -108,7 +156,11 @@ public final class ProcedureSwordRenderer extends BlockEntityWithoutLevelRendere
         for(var pass:model.base().getRenderPasses(stack,true))
             for(var type:pass.getRenderTypes(stack,true))
                 mc.getItemRenderer().renderModelLists(pass,stack,light,overlay,pose,buffers.getBuffer(type));
-        if(shader==null)return;
+        Runnable trail=context.firstPerson()?ThreadripperHandTrail.capture(pose,context):null;
+        boolean glare=mc.level!=null && ProcedureSwordItem.unrestricted(mc.player);
+        float glareTime=glare?mc.level.getGameTime()%72000+mc.getFrameTime():0;
+        float tipFlash=glare?ThreadripperHandTrail.tipFlash(context):0;
+        if(shader==null && trail==null && !glare)return;
         if(buffers instanceof MultiBufferSource.BufferSource batch)batch.endBatch();
         if(context!=ItemDisplayContext.GUI && net.everla.projectc.arkofcosmos.client.render.OculusShaderCompat.shaderPackActive()) {
             var captured=new PoseStack();
@@ -117,24 +169,43 @@ public final class ProcedureSwordRenderer extends BlockEntityWithoutLevelRendere
             var copy=stack.copy();
             if(net.everla.projectc.arkofcosmos.client.render.OculusShaderCompat.deferItem(()->{
                 var isolated=MultiBufferSource.immediate(new BufferBuilder(256));
-                renderCosmic(copy,context,captured,isolated,light,overlay,model,CosmicType.COMPAT);
+                if(shader!=null)renderCosmic(copy,context,captured,isolated,light,overlay,model,CosmicType.COMPAT);
                 isolated.endBatch();
+                if(glare)ThreadripperHandTrail.glow(captured,context,glareTime,tipFlash,model.front,model.back);
+                if(trail!=null)trail.run();
             },context.firstPerson()))return;
         }
-        renderCosmic(stack,context,pose,buffers,light,overlay,model,CosmicType.TYPE);
+        if(shader!=null)renderCosmic(stack,context,pose,buffers,light,overlay,model,CosmicType.TYPE);
+        if(glare)ThreadripperHandTrail.glow(pose,context,glareTime,tipFlash,model.front,model.back);
+        if(trail!=null)trail.run();
     }
     private static void renderCosmic(ItemStack stack,ItemDisplayContext context,PoseStack pose,MultiBufferSource buffers,
             int light,int overlay,Model model,RenderType type) {
         var mc=Minecraft.getInstance();
-        shader.safeGetUniform("time").set(mc.level==null?0f:(float)(mc.level.getGameTime()%Integer.MAX_VALUE));
+        boolean authorized=ProcedureSwordItem.unrestricted(mc.player);
+        var atlas=mc.getTextureAtlas(InventoryMenu.BLOCK_ATLAS);
+        shader.safeGetUniform("threadripper").set(authorized?1:0);
         shader.safeGetUniform("yaw").set(context==ItemDisplayContext.GUI||mc.player==null?0f:(float)Math.toRadians(mc.player.getYRot()));
         shader.safeGetUniform("pitch").set(context==ItemDisplayContext.GUI||mc.player==null?0f:-(float)Math.toRadians(mc.player.getXRot()));
         shader.safeGetUniform("externalScale").set(context==ItemDisplayContext.GUI?100f:1f);
         shader.safeGetUniform("opacity").set(1f);
+        if(authorized) {
+            Vector3f eye=new Vector3f();
+            if(context!=ItemDisplayContext.GUI) {
+                new Matrix4f(RenderSystem.getModelViewMatrix()).mul(pose.last().pose()).invert().transformPosition(eye);
+                eye.sub(.5f,.5f,.5f);
+                if(eye.lengthSquared()>1e-6f)eye.normalize();
+            }
+            shader.safeGetUniform("viewLean").set((eye.x+eye.y)*.5f,(eye.x-eye.y)*.5f);
+            var mask=atlas.apply(id("item/procedure_sword_mask"));
+            shader.safeGetUniform("maskUv").set(mask.getU0(),mask.getV0(),mask.getU1(),mask.getV1());
+            shader.safeGetUniform("time").set(mc.level==null?0f:mc.level.getGameTime()%72000+mc.getFrameTime());
+        } else {
+            shader.safeGetUniform("time").set(mc.level==null?0f:(float)(mc.level.getGameTime()%Integer.MAX_VALUE));
+        }
         float[] uvs=new float[40];
-        boolean authorized=net.everla.projectc.arkofcosmos.item.ProcedureSwordItem.unrestricted(mc.player);
         for(int i=0;i<10;i++) {
-            var sprite=mc.getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(id(authorized?"fx/cosmic_"+i:"fx/procedure_mcreator"));
+            var sprite=atlas.apply(id(authorized?"fx/cosmic_"+i:"fx/procedure_mcreator"));
             uvs[i*4]=sprite.getU0();uvs[i*4+1]=sprite.getV0();uvs[i*4+2]=sprite.getU1();uvs[i*4+3]=sprite.getV1();
         }
         shader.safeGetUniform("cosmicuvs").set(uvs);

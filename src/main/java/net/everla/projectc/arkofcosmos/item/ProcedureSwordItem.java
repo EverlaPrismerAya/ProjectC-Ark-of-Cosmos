@@ -2,6 +2,10 @@ package net.everla.projectc.arkofcosmos.item;
 
 import net.everla.projectc.arkofcosmos.ArkOfCosmos;
 import net.everla.projectc.arkofcosmos.antiMobBattle.OrphanObliterator;
+import net.everla.projectc.arkofcosmos.network.ArkNetwork;
+import net.everla.projectc.arkofcosmos.util.AttackFrame;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.boss.EnderDragonPart;
@@ -38,19 +42,36 @@ public final class ProcedureSwordItem extends SwordItem {
         var targets = level.getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(128),
                 target -> target != player && target.isAlive() && target.distanceToSqr(player) <= 128 * 128);
         for (LivingEntity target : targets) {
-            var frame = new net.everla.projectc.arkofcosmos.util.AttackFrame(new net.minecraft.world.phys.Vec3(0,-1,0),
-                    net.everla.projectc.arkofcosmos.util.AttackFrame.capture(player).right());
-            var at = target.getBoundingBox().getCenter();
-            var effect = net.everla.projectc.arkofcosmos.entity.ArkAttackEntity.create(player,
-                    net.everla.projectc.arkofcosmos.entity.ArkAttackEntity.Kind.BLAST,
-                    net.everla.projectc.arkofcosmos.entity.ArkAttackEntity.CENTERED_BLAST_MODE, 0, 0, at,
-                    net.minecraft.world.phys.Vec3.ZERO, frame);
-            var hit = effect.view().copy();
-            hit.putString("Event", "hit");
-            hit.putDouble("AtX", at.x); hit.putDouble("AtY", at.y); hit.putDouble("AtZ", at.z);
-            net.everla.projectc.arkofcosmos.network.ArkNetwork.nearbyEffect(target, hit);
+            threadripperHit(player, target, true);
+            ArkOfCosmos.sound(target, "item84", .3f);
             OrphanObliterator.obliterate(target, player, true);
         }
+    }
+
+    private static void threadripperHit(Player player, Entity anchor, boolean purge) {
+        var bounds = anchor.getBoundingBox();
+        Vec3 at = bounds.getCenter();
+        AttackFrame view = AttackFrame.capture(player);
+        Vec3 direction = at.subtract(player.getEyePosition()).normalize();
+        if (direction.lengthSqr() < 1e-8) direction = view.forward();
+        Vec3 right = view.right().subtract(direction.scale(view.right().dot(direction))).normalize();
+        if (right.lengthSqr() < 1e-8) right = view.normal().cross(direction).normalize();
+        var hit = new CompoundTag();
+        hit.putString("Event", "threadripper_hit");
+        hit.putInt("Owner", player.getId());
+        hit.putString("Dimension", player.level().dimension().location().toString());
+        vector(hit, "At", at);
+        vector(hit, "F", direction);
+        vector(hit, "R", right);
+        hit.putDouble("Width", Math.max(bounds.getXsize(), bounds.getZsize()));
+        hit.putDouble("Height", bounds.getYsize());
+        hit.putInt("Seed", 31 * anchor.getUUID().hashCode() + Long.hashCode(player.level().getGameTime()));
+        hit.putBoolean("Purge", purge);
+        ArkNetwork.nearbyEffect(anchor, hit);
+    }
+
+    private static void vector(CompoundTag hit, String key, Vec3 v) {
+        hit.putDouble(key + "X", v.x); hit.putDouble(key + "Y", v.y); hit.putDouble(key + "Z", v.z);
     }
 
     public static boolean guarding(LivingEntity user, net.minecraft.world.phys.Vec3 source) {
@@ -100,7 +121,11 @@ public final class ProcedureSwordItem extends SwordItem {
                 : entity instanceof LivingEntity living ? living : null;
         if (target == null || target.isRemoved() || !canObliterate(player, target))
             return super.onLeftClickEntity(stack, player, entity);
-        if (!(player.level() instanceof ServerLevel level)) return true;
+        if (!(player.level() instanceof ServerLevel)) return true;
+        if (unrestricted(player)) {
+            threadripperHit(player, entity, false);
+            ArkOfCosmos.sound(entity, "item84", .52f);
+        }
         OrphanObliterator.obliterate(target, player, true);
         return true;
     }

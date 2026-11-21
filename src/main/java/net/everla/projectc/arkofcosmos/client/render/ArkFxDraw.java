@@ -26,7 +26,7 @@ public final class ArkFxDraw {
     public static final VertexFormat FORMAT = new VertexFormat(ImmutableMap.of("Position", DefaultVertexFormat.ELEMENT_POSITION,
             "Color", DefaultVertexFormat.ELEMENT_COLOR, "UV0", UV3));
     public static ShaderInstance fracturedShader, witchFlamesShader, satsukiRefractionShader, satsukiDeathShader;
-    public static ShaderInstance arenaMetaballShader, rancorShader;
+    public static ShaderInstance arenaMetaballShader, rancorShader, riftShader;
     public static ShaderInstance spriteShader, trailShader, tintShader, moonShader, forcefieldShader, jujutsuShader, primitiveShader, whiteSpriteShader, hellBallShader;
     /** Immutable per-draw BasicTint parameters, also captured by deferred Oculus draws. */
     public record Tint(float red, float green, float blue, float opacity) {}
@@ -107,6 +107,9 @@ public final class ArkFxDraw {
         event.registerShader(shader(event,"fx_sprite"), shader -> spriteShader = shader);
         event.registerShader(shader(event,"fx_primitive"), shader -> primitiveShader = shader);
         event.registerShader(shader(event,"fx_white_sprite"), shader -> whiteSpriteShader = shader);
+        riftShader=null;
+        try { event.registerShader(shader(event,"threadripper_rift"), shader -> riftShader=shader); }
+        catch(IOException error){com.mojang.logging.LogUtils.getLogger().warn("Threadripper rift shader unavailable; using cut lines",error);}
         event.registerShader(shader(event,"calamitas_hell_ball"), shader -> hellBallShader = shader);
         event.registerShader(shader(event,"calamitas_arena_metaball"), shader -> arenaMetaballShader = shader);
         event.registerShader(shader(event,"rancor"), shader -> rancorShader=shader);
@@ -134,7 +137,7 @@ public final class ArkFxDraw {
         };
     }
     public static ResourceLocation id(String name) { return ResourceLocation.fromNamespaceAndPath(ArkOfCosmos.MOD_ID, name); }
-    public static ResourceLocation texture(String name) { return id("textures/" + ((name.startsWith("fx/") || name.startsWith("galaxia/") || name.startsWith("elements/") || name.startsWith("item/") || name.startsWith("entity/")) ? name : "fx/" + name) + ".png"); }
+    public static ResourceLocation texture(String name) { return id("textures/" + ((name.startsWith("fx/") || name.startsWith("galaxia/") || name.startsWith("elements/") || name.startsWith("item/") || name.startsWith("entity/") || name.startsWith("misc/")) ? name : "fx/" + name) + ".png"); }
     public static int[] size(String name) {
         return sizes.computeIfAbsent(name, key -> SpriteImages.get(texture(key)).size());
     }
