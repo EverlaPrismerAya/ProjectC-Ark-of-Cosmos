@@ -91,7 +91,9 @@ public final class OculusShaderCompat {
         if (!active && !afterWorld) return false;
         if (query(shadowPass)) return true;
         if (drawing) return false;
-        Matrix4f matrix = new Matrix4f(ArkFxDraw.matrix);
+        // Standalone world draws (for example death popups) capture their own view and
+        // can be queued before any ArkFxDraw entity context exists this frame.
+        Matrix4f matrix = ArkFxDraw.matrix == null ? null : new Matrix4f(ArkFxDraw.matrix);
         Vec3 camera = ArkFxDraw.camera, eye = ArkFxDraw.fadeEye;
         DEFERRED.add(() -> {
             Matrix4f previousMatrix = ArkFxDraw.matrix;
