@@ -286,6 +286,7 @@ tasks.named('processResources', ProcessResources).configure {
 
 // Both distributable archives carry the same project and third-party notices.
 tasks.matching { it.name in ['jar', 'jarJar'] }.configureEach {
+    exclude 'net/everla/projectc/arkofcosmos/antiMobBattle/check/**'
     from('LICENSE.txt', 'THIRD_PARTY_NOTICES.md')
     from('licenses') {
         into 'licenses'
