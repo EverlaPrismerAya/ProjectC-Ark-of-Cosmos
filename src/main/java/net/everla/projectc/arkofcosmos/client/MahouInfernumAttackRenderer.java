@@ -13,6 +13,8 @@ import net.minecraft.world.phys.Vec3;
 
 /** Weapon sprites and materials applied to authoritative Infernum trajectories. */
 public final class MahouInfernumAttackRenderer extends EntityRenderer<MahouInfernumAttackEntity> {
+    private static final Vec3 X=new Vec3(1,0,0),Y=new Vec3(0,1,0),Z=new Vec3(0,0,1);
+    private static final AttackFrame[] BLAST_RINGS={new AttackFrame(X,Z),new AttackFrame(X,Y),new AttackFrame(Z,Y)};
     public MahouInfernumAttackRenderer(EntityRendererProvider.Context context){super(context);shadowRadius=0;}
     @Override public ResourceLocation getTextureLocation(MahouInfernumAttackEntity e){return ArkFxDraw.texture("galaxia_bolt");}
     @Override public boolean shouldRender(MahouInfernumAttackEntity e,net.minecraft.client.renderer.culling.Frustum f,double x,double y,double z){return e.shouldRenderAtSqrDistance(e.distanceToSqr(x,y,z));}
@@ -24,7 +26,7 @@ public final class MahouInfernumAttackRenderer extends EntityRenderer<MahouInfer
         ArkFxDraw.matrix=pose.last().pose();ArkFxDraw.camera=at;ArkFxDraw.fadeEye=null;
         float opacity=s.contains("Opacity")?s.getFloat("Opacity"):1;float[] white=ArkEffects.mul(ArkEffects.WHITE,opacity),cornflower=ArkEffects.mul(ArkEffects.CORNFLOWER,opacity);
         switch(kind){
-            case WARNING,BOMB_WARNING->{Vec3 end=at.add(v.normalize().scale((s.getInt("Parameter")==1?3950:3330)/pixels));beam(at,end,Math.min(.12,age/120),ArkEffects.rgb(150,200,255));}
+            case WARNING,BOMB_WARNING->{Vec3 end=at.add(v.normalize().scale((s.getInt("Parameter")==MahouInfernumAttackEntity.OVERLOAD_WARNING?3950:3330)/pixels));beam(at,end,Math.min(.12,age/120),ArkEffects.rgb(150,200,255));}
             case PILLAR_WARNING->{var shape=MahouInfernumAttackEntity.pillarShape(52.5,pixels);beam(at.add(0,shape.bottom()-shape.radius(),0),at.add(0,shape.top()+shape.radius(),0),Math.min(.12,age/120),ArkEffects.rgb(150,200,255));}
             case PILLAR->{
                 // Do not predict shrinkage ahead of the authoritative damage volume.
@@ -35,6 +37,7 @@ public final class MahouInfernumAttackRenderer extends EntityRenderer<MahouInfer
             case RITUAL->{double scale=Math.sin(Math.min(1,age/84)*Math.PI)*2;Vec3 plane=MahouInfernumAttackEntity.vector(s,"Plane");AttackFrame ritual=new AttackFrame(plane,new Vec3(0,-1,0));sprite("elements/elemental_glass_star",at,ritual,time,scale,scale,white,false);sprite("elements/techy_holosquare",at,ritual,-time,scale,scale,cornflower,true);}
             case EXPLOSION,ORB->{double radius=s.getDouble("Radius"),scale=radius*32/ArkFxDraw.size("bloomcircle")[0];sprite("bloomcircle",at,face,0,scale,scale,ArkEffects.mul(cornflower,.55),true);sprite("sparkle",at,face,time*3,scale*.5,scale*.5,white,true);}
             case HEART_STAR,BOMB->{
+                if(kind==MahouInfernumAttackEntity.Kind.BOMB&&s.getInt("Left")<=60)blastWarning(s);
                 double scale=kind==MahouInfernumAttackEntity.Kind.HEART_STAR?.6:1.2;
                 sprite("elements/elemental_glass_star",at,face,time*3,scale,scale,white,false);
                 sprite("fx/sparkle",at,face,time*8,scale,scale,cornflower,true);
@@ -61,6 +64,14 @@ public final class MahouInfernumAttackRenderer extends EntityRenderer<MahouInfer
                 if(index==0)sprite("fx/galaxia_bolt",at,f,0,.6,.6,white,false);
             }
         }
+    }
+    private static void blastWarning(net.minecraft.nbt.CompoundTag state){
+        double radius=state.getDouble("BlastRadius");if(radius<=0)return;
+        Vec3 center=MahouInfernumAttackEntity.vector(state,"Detonation");
+        String texture="hollowcirclehardedge";
+        int[] size=ArkFxDraw.size(texture);
+        float[] color=ArkEffects.mul(ArkEffects.rgb(255,120,70),.4+.6*(1-state.getInt("Left")/60d));
+        for(var frame:BLAST_RINGS)sprite(texture,center,frame,0,radius*32/size[0],radius*32/size[1],color,true);
     }
     /** Draw over the arena backdrop, with scene depth testing and no depth writes. */
     private static void sprite(String name,Vec3 at,AttackFrame frame,double angle,double sx,double sy,float[] color,boolean additive){

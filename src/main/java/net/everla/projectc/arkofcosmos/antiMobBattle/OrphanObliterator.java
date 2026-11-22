@@ -16,6 +16,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.server.ServerStoppedEvent;
@@ -60,6 +61,16 @@ public final class OrphanObliterator {
         if (!PROCESSING.add(target)) return;
         try {
             stage(target, "notification", () -> AntiMobBattleNetwork.popup(target, procedureSword));
+            if (target instanceof EnderDragon dragon) {
+                // A freshly loaded dragon may not have bound itself to its fight yet.
+                var fight = level.getDragonFight();
+                if (dragon.getDragonFight() == null && fight != null && dragon.getUUID().equals(fight.getDragonUUID())) {
+                    dragon.setDragonFight(fight);
+                }
+                terminate(dragon);
+                dragon.kill(); // Vanilla instant kill also completes the tracked dragon fight.
+                return;
+            }
             // Capture before any zeroing: otherwise the subsequent search would have no positive reference.
             List<Runnable> writes = new ArrayList<>();
             stage(target, "health field search", () -> writes.addAll(healthFields(target)));

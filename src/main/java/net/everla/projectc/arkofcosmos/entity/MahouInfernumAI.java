@@ -166,7 +166,7 @@ final class MahouInfernumAI {
     private void followPlayerPlane(){
         Vec3 before=plane;lockPlane();
         aim=turnPlane(aim,before,plane);
-        origin=center().add(turnPlane(origin.subtract(center()),before,plane));
+        if(attack==DarkMagicBombWalls)origin=center().add(turnPlane(origin.subtract(center()),before,plane));
     }
     void start(MahouInfernumEncounter.Attack value){attack=value;trackingWarning=null;timer=count=state=0;counter=offset=angle=0;direction=boss.getRandom().nextBoolean()?1:-1;lockPlane();aim=unit(target().subtract(center()));
 
@@ -182,7 +182,12 @@ final class MahouInfernumAI {
     }
     Vec3 side(double x,double y){double facing=target().subtract(center()).dot(plane)>=0?1:-1;return target().subtract(plane.scale(facing*x/pixels())).add(0,y/pixels(),0);}
     private boolean volleySpoken;
-    void warning(Vec3 at,Vec3 direction,int time){shot(MahouInfernumAttackEntity.Kind.WARNING,at,unit(direction),time,0,0);}
+    MahouInfernumAttackEntity warning(Vec3 at,Vec3 direction,int time){return shot(MahouInfernumAttackEntity.Kind.WARNING,at,unit(direction),time,0,0);}
+    private void trackingLine(Vec3 direction,int duration){
+        if(duration>0){trackingWarning=warning(center(),direction,duration).getUUID();}
+        else if(trackingWarning!=null&&((ServerLevel)boss.level()).getEntity(trackingWarning) instanceof MahouInfernumAttackEntity warning)
+            warning.point(center(),direction,plane);
+    }
     MahouInfernumAttackEntity shot(MahouInfernumAttackEntity.Kind kind,Vec3 at,Vec3 speed,int life,float damage,double radius){var shot=MahouInfernumAttackEntity.spawn(boss,kind,at,speed,plane,life,damage,radius,tailAttack());
         boolean attackShot=switch(kind){case WARNING,BOMB_WARNING,PILLAR_WARNING,RITUAL,HEART_STAR,EXPLOSION,ORB->false;default->true;};
         if(!volleySpoken&&attackShot&&!shot.isRemoved()){volleySpoken=true;boss.rageVolleyDialogue();}
@@ -222,20 +227,25 @@ final class MahouInfernumAI {
         double speed=fast()?15:stage>=1?14.75:11.25,spread=fast()?3.03:stage>=1?2.72:2.94;if(stage>=3)speed+=4.75;if(rage())speed+=17.5;
         double hoverFactor=Math.max(0,Math.min(1,1-timer/(charge*.75)))*.65+.35;
         moveTo(arena.origin(),32*hoverFactor,1.2*hoverFactor);
-        if(timer<=charge){aim=planarAim(target().add(boss.getTarget().getDeltaMovement().scale(10/3d)).subtract(center()));if(timer==charge-18)trackingWarning=shot(MahouInfernumAttackEntity.Kind.WARNING,center(),rotate(aim,spread*direction*.5),18,0,0).getUUID();
-            if(trackingWarning!=null&&((ServerLevel)boss.level()).getEntity(trackingWarning) instanceof MahouInfernumAttackEntity warning)warning.point(center(),rotate(aim,spread*direction*.5));}
-        if((stage>=1||fast())&&timer==charge)for(int i=0;i<6;i++){Vec3 off=xy(Math.cos(i*Math.PI/3)*650,Math.sin(i*Math.PI/3)*650).subtract(planar(boss.getTarget().getDeltaMovement()).scale(5));planarDart(target().add(off),off.scale(-1),off.length()*pixels()/52*.4);warning(target(),off.scale(-1),52);}
-        if(timer>charge&&timer%(rage()?1:2)==(rage()?0:1))shot(MahouInfernumAttackEntity.Kind.ARROW,center(),rotate(aim,-spread*direction*(-.5+(timer-charge)/52d)).scale(speed/pixels()),80,14,0);
+        if(timer<=charge)aim=planarAim(target().add(boss.getTarget().getDeltaMovement().scale(10/3d)).subtract(center()));
+        int first=rage()||charge%2==0?1:2;
+        if(timer>=charge-18&&timer<charge+first)trackingLine(fanDirection(spread,first),timer==charge-18?18+first:0);
+        if((stage>=1||fast())&&timer==charge)for(int i=0;i<6;i++){Vec3 off=xy(Math.cos(i*Math.PI/3)*650,Math.sin(i*Math.PI/3)*650).subtract(planar(boss.getTarget().getDeltaMovement()).scale(5));Vec3 at=target().add(off);planarDart(at,off.scale(-1),off.length()*pixels()/52*.4);warning(at,off.scale(-1),52);}
+        if(timer>charge&&timer%(rage()?1:2)==(rage()?0:1))shot(MahouInfernumAttackEntity.Kind.ARROW,center(),fanDirection(spread,timer-charge).scale(speed/pixels()),80,14,0);
         if(timer>=charge+52){if(++count>=2)next();else timer=spin;}
     }
+    private Vec3 fanDirection(double spread,int step){return rotate(aim,spread*direction*(.5-step/52d));}
     private void charges(){
         int duration=stage>=1?41:45,n=fast()?5:6,delay=rage()?40:120-(stage>=3?18:0)-(fast()?45:0);
         double speed=43+(stage>=1?4.5:0)+(stage>=3?3.5:0)+(fast()?9.5:0)+(rage()?20:0);
-        if(timer<132){Vec3 destination=side(500,270).subtract(velocity);Vec3 delta=destination.subtract(center());boss.forceCombatPosition(boss.position().add(unit(delta).scale(Math.min(delta.length(),10/pixels()))));moveTo(destination,28,1.1);if(timer==100)warning(center(),target().subtract(center()),32);}
+        if(timer<132){Vec3 destination=side(500,270).subtract(velocity);Vec3 delta=destination.subtract(center());boss.forceCombatPosition(boss.position().add(unit(delta).scale(Math.min(delta.length(),10/pixels()))));moveTo(destination,28,1.1);}
         else if((timer-132)%duration==0){aim=unit(target().subtract(center()));velocity=aim.scale(speed/pixels());
             shot(MahouInfernumAttackEntity.Kind.BOMB,center(),aim.scale((stage>=1?15:20)/pixels()),132+duration*n-timer+delay,15,(1020+(rage()?1250:0))/pixels());
             if(count++%3==2)giga(center(),rotate(aim,(boss.getRandom().nextDouble()*2-1)*.4),(stage>=1?15:20)*.5);
         }else velocity=velocity.scale(.9835);
+        int untilCharge=timer<132?132-timer:duration-(timer-132)%duration;
+        if(untilCharge<=32&&timer+untilCharge<=132+duration*n)
+            trackingLine(unit(target().subtract(center())),untilCharge==32?32:0);
         if(timer>=132+duration*n)next();
     }
     private void hellblast(){
@@ -266,8 +276,7 @@ final class MahouInfernumAI {
             if(delta.length()>6/pixels())next=next.add(delta.normalize().scale(6/pixels()));else next=arena.origin();
             boss.forceCombatPosition(boss.position().add(next.subtract(center())));
         }
-        if(timer<142){Vec3 d=target().subtract(center());double desired=planeAngle(d);double turn=Math.PI/45+(Math.PI/355-Math.PI/45)*Math.min(1,timer/(142*.67));double delta=net.minecraft.util.Mth.wrapDegrees((float)Math.toDegrees(desired-angle))*Math.PI/180;angle+=Math.max(-turn,Math.min(turn,delta));if(timer==100)trackingWarning=shot(MahouInfernumAttackEntity.Kind.WARNING,center(),planeDirection(angle),42,0,0).getUUID();
-            if(trackingWarning!=null&&((ServerLevel)boss.level()).getEntity(trackingWarning) instanceof MahouInfernumAttackEntity warning)warning.point(center(),planeDirection(angle));}
+        if(timer<142){Vec3 d=target().subtract(center());double desired=planeAngle(d);double turn=Math.PI/45+(Math.PI/355-Math.PI/45)*Math.min(1,timer/(142*.67));double delta=net.minecraft.util.Mth.wrapDegrees((float)Math.toDegrees(desired-angle))*Math.PI/180;angle+=Math.max(-turn,Math.min(turn,delta));if(timer>=100)trackingLine(planeDirection(angle),timer==100?42:0);}
         if(timer==142){Vec3 delta=target().subtract(center());direction=net.minecraft.util.Mth.wrapDegrees((float)Math.toDegrees(planeAngle(delta)-angle))>0?1:-1;origin=center();shot(MahouInfernumAttackEntity.Kind.JEWEL_BEAM,origin,planeDirection(angle),360,18.333334f,(Math.PI*2*1.25*(stage>=2?1.3:1)/360)*direction);}
         if(timer>142){int rate=rage()?3:stage>=2?6:8;if(timer%rate==rate-1)dart(center(),target().subtract(center()),rage()?38:16);
             int bombs=stage>=2?50:60;if(timer%bombs==bombs-1)bomb(center(),unit(target().add(boss.getTarget().getDeltaMovement().scale(35/3d)).subtract(center())).scale((rage()?38:16)*.7/pixels()),120,1100+(rage()?3000:0));
@@ -290,12 +299,13 @@ final class MahouInfernumAI {
     private void spin(){
         if(timer<120&&center().distanceTo(arena.origin())>100/pixels())velocity=velocity.lerp(unit(arena.origin().subtract(center())).scale(15/pixels()),.1);else velocity=velocity.scale(.92);
         if(timer==165){origin=center().add(0,-8/pixels(),0);shot(MahouInfernumAttackEntity.Kind.ORB,origin,Vec3.ZERO,575,0,525/pixels());}
-        if(timer==185)for(int i=0;i<5;i++)shot(MahouInfernumAttackEntity.Kind.WARNING,origin,planeDirection(i*Math.PI*2/5+.8),105,0,0).parameter(1);
+        if(timer==185)for(int i=0;i<5;i++)warning(origin,overloadDirection(i,MahouInfernumAttackEntity.OVERLOAD_INITIAL_TURN),105).parameter(MahouInfernumAttackEntity.OVERLOAD_WARNING);
         if(timer==200)velocity=new Vec3(0,35/pixels(),0);
-        if(timer==290)for(int i=0;i<5;i++)shot(MahouInfernumAttackEntity.Kind.OVERLOAD_BEAM,origin,planeDirection(i*Math.PI*2/5+.8),450,18.333334f,0);
+        if(timer==290)for(int i=0;i<5;i++)shot(MahouInfernumAttackEntity.Kind.OVERLOAD_BEAM,origin,overloadDirection(i,0),450,18.333334f,0);
         int rate=rage()?18:stage>=3?57:75;if(timer>=235&&timer%rate==rate-1)giga(center(),target().subtract(center()),10.5+(stage>=3?1.25:0)+(rage()?25:0));
         if(timer>=800){clearShots();next();}
     }
+    private Vec3 overloadDirection(int index,double turn){return planeDirection(index*Math.PI*2/5+.8+turn);}
     private void transition(){
         if(timer==1){clearShots();clearKind(MahouInfernumSummonEntity.Kind.BOMBER);boss.forceCombatPosition(target().add(0,450/pixels(),0));velocity=Vec3.ZERO;}
         if(timer>=105){next();start(stage==1?SummonShadowDemon:stage==2?SummonBrothers:stage==3?SummonSeekers:DesperationPhase);if(stage==4)clearKind(MahouInfernumSummonEntity.Kind.SHADOW);}
@@ -311,10 +321,11 @@ final class MahouInfernumAI {
     }
     private void brothers(){
         velocity=velocity.scale(.95);
-        if(timer==85){warning(center().add(plane.scale(-600/pixels())),plane,150);warning(center().add(plane.scale(600/pixels())),plane.scale(-1),150);}
-        if(timer==205){boss.brothersDialogue();summon(MahouInfernumSummonEntity.Kind.CATACLYSM,center().add(plane.scale(-600/pixels())),0);summon(MahouInfernumSummonEntity.Kind.CATASTROPHE,center().add(plane.scale(600/pixels())),0);}
+        if(timer==85)for(int side:new int[]{-1,1})warning(brotherSpawn(side),plane.scale(-side),120).parameter(MahouInfernumAttackEntity.BROTHER_WARNING);
+        if(timer==205){boss.brothersDialogue();summon(MahouInfernumSummonEntity.Kind.CATACLYSM,brotherSpawn(-1),0);summon(MahouInfernumSummonEntity.Kind.CATASTROPHE,brotherSpawn(1),0);}
         if(timer>=285&&living(MahouInfernumSummonEntity.Kind.CATACLYSM)==0&&living(MahouInfernumSummonEntity.Kind.CATASTROPHE)==0)next();
     }
+    Vec3 brotherSpawn(double side){return center().add(plane.scale(side*600/pixels()));}
     private void seekers(){
         if(timer==1){clearShots();clearKind(MahouInfernumSummonEntity.Kind.BOMBER);}
         velocity=velocity.scale(.98);
@@ -332,7 +343,7 @@ final class MahouInfernumAI {
             if(timer>=720){clearShots();finalState=1;timer=0;count=0;countdown=120;boss.forceCombatPosition(arena.origin());velocity=Vec3.ZERO;}}
         else if(finalState==1){
             if(--countdown<=0){countdown=Math.max(56,120-++count*6);for(int i=0;i<4;i++)bomb(center(),xy(Math.cos(i*Math.PI/2+(count%2)*Math.PI/4)*16,Math.sin(i*Math.PI/2+(count%2)*Math.PI/4)*16),(int)(countdown*.95),1050);}
-            if(timer%rate==rate/2){aim=planarAim(target().subtract(center()));for(int side:new int[]{-1,1})for(int i=0;i<n;i++)warning(center(),rotate(aim,-.79+1.58*i/(n-1)).scale(side),rate/2);}
+            if(timer%rate==rate/2){aim=planarAim(target().subtract(center()));for(int side:new int[]{-1,1})for(int i=0;i<n;i++)warning(center(),rotate(aim,-.79+1.58*i/(n-1)).scale(side),rate/2).parameter(MahouInfernumAttackEntity.FINALE_WARNING);}
             if(timer%rate==rate-1){burst(center(),aim,n,.79,speed);burst(center(),aim.scale(-1),n,.79,speed);}
             if(timer>=636){clearShots();finalState=2;timer=count=wallIndex=0;countdown=75;}}
         else if(finalState==2){

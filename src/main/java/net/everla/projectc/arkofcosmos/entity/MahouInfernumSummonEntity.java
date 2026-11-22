@@ -246,7 +246,7 @@ public final class MahouInfernumSummonEntity extends Monster {
         else if(state==1){
             int charge=(ratio<.5?38:48),duration=ratio<.25?40:50;int wrap=timer%(charge+duration);double speed=ai.rage()?100:ratio<.25?61:55;
             Vec3 at=target(ai).add(ai.plane.scale(-side*600/ai.pixels()));
-            if(wrap==1){setPos(at);velocity=Vec3.ZERO;ai.warning(position(),target(ai).subtract(position()),duration);}
+            if(wrap==1){setPos(at);velocity=Vec3.ZERO;ai.warning(position(),target(ai).subtract(position()),duration-1).followSummon(getUUID());}
             if(wrap==duration){velocity=ai.unit(target(ai).subtract(position())).scale(speed/ai.pixels());radial(ai,ai.rage()?60:11,10,LOST_SOUL);}
             if(wrap<charge){if(wrap<charge-8)fastHover(ai,at);else velocity=velocity.scale(.8);}
             if(timer>=(charge+duration)*3+1&&leader){state=2;timer=0;counter=0;}

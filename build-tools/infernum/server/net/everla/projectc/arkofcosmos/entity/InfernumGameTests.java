@@ -466,6 +466,56 @@ public final class InfernumGameTests {
         boss.discard();restored.discard();h.succeed();
     }
     @GameTest(template="infernum_empty",timeoutTicks=40)
+    public static void spinWarningsFollowLaunchPlane(GameTestHelper h){
+        var boss=boss(h);var ai=boss.infernum();ai.entrance=0;ai.tick();ai.clearShots();
+        ai.start(FireLaserSpin);ai.timer=163;
+        for(int i=0;i<8;i++)ai.tick();
+        var initialPlane=ai.plane;var origin=ai.origin;
+        boss.getTarget().setPos(boss.position().add(0,0,15));
+        for(int i=0;i<33;i++)ai.tick(); // Frame 286: the five warnings are still active.
+        var warnings=h.getLevel().getEntitiesOfClass(MahouInfernumAttackEntity.class,boss.getBoundingBox().inflate(256),
+            e->e.ownedBy(boss)&&e.kind()==MahouInfernumAttackEntity.Kind.WARNING);
+        h.assertTrue(warnings.size()==5&&initialPlane.dot(ai.plane)<.5,"did not test a turned warning plane");
+        var directions=new java.util.ArrayList<Vec3>();
+        for(var warning:warnings){
+            close(h,warning.position().distanceTo(origin),0,"spin warning moved away from orb");
+            var v=MahouInfernumAttackEntity.vector(warning.view(),"Velocity");
+            close(h,v.dot(ai.plane.cross(new Vec3(0,1,0))),0,"spin warning kept old plane");
+            directions.add(v);
+        }
+        ai.tick();ai.tick(); // Frame 292: published beam directions include two further turn steps.
+        var beams=h.getLevel().getEntitiesOfClass(MahouInfernumAttackEntity.class,boss.getBoundingBox().inflate(256),
+            e->e.ownedBy(boss)&&e.kind()==MahouInfernumAttackEntity.Kind.OVERLOAD_BEAM);
+        h.assertTrue(beams.size()==5,"spin did not fire all warned beams");
+        for(var beam:beams){
+            close(h,beam.position().distanceTo(origin),0,"beam did not start at warning origin");
+            var fired=ai.rotate(MahouInfernumAttackEntity.vector(beam.view(),"Velocity"),-2*MahouInfernumAttackEntity.OVERLOAD_INITIAL_TURN);
+            h.assertTrue(directions.removeIf(v->v.distanceTo(fired)<.0002),"unwarned beam direction");
+        }
+        ai.clear();boss.discard();h.succeed();
+    }
+
+    @GameTest(template="infernum_empty",timeoutTicks=40)
+    public static void bombWarningMatchesDetonation(GameTestHelper h){
+        var boss=boss(h);var ai=boss.infernum();ai.entrance=0;ai.tick();ai.clearShots();
+        var bomb=MahouInfernumAttackEntity.spawn(boss,MahouInfernumAttackEntity.Kind.BOMB,boss.position(),new Vec3(.4,.25,-.6),ai.plane,48,0,12,false);
+        var center=MahouInfernumAttackEntity.vector(bomb.view(),"Detonation");double radius=bomb.view().getDouble("BlastRadius");
+        h.assertTrue(radius>0,"blast radius was not published");
+        for(int frame=0;frame<48;frame++){
+            close(h,MahouInfernumAttackEntity.vector(bomb.view(),"Detonation").distanceTo(center),0,"fuse preview drifted");
+            bomb.sourceStep(boss);
+        }
+        var blasts=h.getLevel().getEntitiesOfClass(MahouInfernumAttackEntity.class,new net.minecraft.world.phys.AABB(center,center).inflate(1),
+            e->e.ownedBy(boss)&&e.kind()==MahouInfernumAttackEntity.Kind.EXPLOSION);
+        h.assertTrue(bomb.isRemoved()&&blasts.size()==1,"bomb failed to explode at its warning");
+        var blast=blasts.get(0);
+        close(h,blast.position().distanceTo(center),0,"blast center differs from warning");
+        for(int frame=0;frame<27;frame++)blast.sourceStep(boss);
+        close(h,blast.view().getDouble("Radius")*.8,radius,"warning differs from peak damaging radius");
+        ai.clear();boss.discard();h.succeed();
+    }
+
+    @GameTest(template="infernum_empty",timeoutTicks=40)
     public static void warningSplitKeepsPlane(GameTestHelper h){
         var boss=boss(h);var ai=boss.infernum();ai.entrance=0;ai.tick();ai.clearShots();
         Vec3 plane=new Vec3(.6,0,.8),direction=plane.scale(-1);
@@ -681,6 +731,29 @@ public final class InfernumGameTests {
         var modifiers=sword.getDefaultAttributeModifiers(net.minecraft.world.entity.EquipmentSlot.MAINHAND);
         double attack=modifiers.get(net.minecraft.world.entity.ai.attributes.Attributes.ATTACK_DAMAGE).stream().mapToDouble(net.minecraft.world.entity.ai.attributes.AttributeModifier::getAmount).sum();
         h.assertTrue(attack+1==12,"ordinary sword damage changed");
+        h.succeed();
+    }
+
+    @GameTest(template="infernum_empty",timeoutTicks=20)
+    public static void procedureSwordCompletesDragonFight(GameTestHelper h) {
+        var level = h.getLevel();
+        var podium = h.absolutePos(new net.minecraft.core.BlockPos(0, 40, 0));
+        var dragon = EntityType.ENDER_DRAGON.create(level);
+        dragon.setPos(podium.getX(), podium.getY() + 4, podium.getZ());
+        dragon.setCustomName(net.minecraft.network.chat.Component.literal("Procedure"));
+        var fight = new net.minecraft.world.level.dimension.end.EndDragonFight(level, level.getSeed(),
+                new net.minecraft.world.level.dimension.end.EndDragonFight.Data(false, false, true, false,
+                        java.util.Optional.of(dragon.getUUID()), java.util.Optional.of(podium),
+                        java.util.Optional.of(java.util.List.of())));
+        dragon.setDragonFight(fight);
+        h.assertTrue(level.addFreshEntity(dragon), "could not spawn test dragon");
+
+        var sword = ArkOfCosmos.PROCEDURE_SWORD.get();
+        h.assertTrue(sword.onLeftClickEntity(new net.minecraft.world.item.ItemStack(sword), player(h), dragon.getSubEntities()[0]),
+                "sword did not intercept the dragon-part hit");
+        h.assertTrue(dragon.isRemoved() && fight.saveData().dragonKilled(), "instant kill did not complete the dragon fight");
+        h.assertTrue(level.getBlockState(podium.east()).is(net.minecraft.world.level.block.Blocks.END_PORTAL),
+                "dragon fight did not open the exit portal");
         h.succeed();
     }
 

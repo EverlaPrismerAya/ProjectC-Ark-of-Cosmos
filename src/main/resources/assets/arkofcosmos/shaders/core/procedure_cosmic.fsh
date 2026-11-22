@@ -234,15 +234,22 @@ vec3 threadripperColor(vec2 uv, float mask) {
     return color + vec3(0.32, 0.77, 1.0) * edge * (0.44 + 0.46 * glint + scan * 0.32);
 }
 
+vec4 rotateByView(vec4 dir) {
+    float sb = sin(pitch), cb = cos(pitch);
+    dir.yz = vec2(dir.y * cb - dir.z * sb, dir.y * sb + dir.z * cb);
+    float sa = sin(-yaw), ca = cos(-yaw);
+    return vec4(dir.z * sa + dir.x * ca, dir.y, dir.z * ca - dir.x * sa, 0.0);
+}
+
 void main (void)
 {
     vec4 mask = texture(Sampler0, texCoord0.xy);
     if (threadripper != 0) {
         vec2 uv = (texCoord0 - maskUv.xy) / (maskUv.zw - maskUv.xy);
-        // Sample the original Cosmos sprites on a blade-local ray. It keeps full silhouettes
-        // in the inventory while the view-dependent offset still moves them across the clouds.
+        // The blade UVs frame the sky like a small window; rotating the camera reveals
+        // another direction of the same star field, even when the held blade stays still on screen.
         vec2 sphere = (uv - 0.5) * 0.53 + mat2(1, 1, 1, -1) * viewLean * 0.29;
-        vec3 stars = cosmicStars(normalize(vec4(sphere, 1.0, 0.0)), 0.65, true).rgb;
+        vec3 stars = cosmicStars(normalize(rotateByView(vec4(sphere, 1.0, 0.0))), 0.40, true).rgb;
         float coverage = maskRed(uv);
         vec3 sky = clamp(threadripperColor(uv, coverage), 0.0, 1.0);
         vec3 lit = 1.0 - (1.0 - sky) * (1.0 - clamp(stars * 2.15, 0.0, 1.0));
@@ -259,17 +266,7 @@ void main (void)
     col.g = sin(pulse * M_PI * 2) * 0.05 + 0.1;
     col.b = cos(pulse * M_PI * 2) * 0.05 + 0.15;
 
-    // get ray from camera to fragment
-    vec4 dir = normalize(vec4(-fPos, 0));
-
-    // rotate the ray to show the right bit of the sphere for the angle
-    float sb = sin(pitch);
-    float cb = cos(pitch);
-    dir = normalize(vec4(dir.x, dir.y * cb - dir.z * sb, dir.y * sb + dir.z * cb, 0));
-
-    float sa = sin(-yaw);
-    float ca = cos(-yaw);
-    dir = normalize(vec4(dir.z * sa + dir.x * ca, dir.y, dir.z * ca - dir.x * sa, 0));
+    vec4 dir = normalize(rotateByView(vec4(-fPos, 0.0)));
 
     col += cosmicStars(dir, externalScale, false);
 

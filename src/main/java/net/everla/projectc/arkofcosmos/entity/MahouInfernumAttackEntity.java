@@ -2,6 +2,7 @@ package net.everla.projectc.arkofcosmos.entity;
 
 import java.util.*;
 import net.everla.projectc.arkofcosmos.ArkOfCosmos;
+import static net.everla.projectc.arkofcosmos.calamity.MahouInfernumEncounter.Attack.*;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.*;
 import net.minecraft.server.level.ServerLevel;
@@ -12,6 +13,12 @@ import net.minecraft.world.phys.*;
 /** Infernum movement/collision with weapon-only presentation. No player weapon AI runs here. */
 public final class MahouInfernumAttackEntity extends Entity {
     public enum Kind { DART, FINAL_DART, DARK_SOUL, REDIRECT_SOUL, ARROW, HELLBLAST, FLAME, BOMB, GIGA, EXPLOSION, WARNING, BOMB_WARNING, PILLAR_WARNING, PILLAR, JEWEL_BEAM, OVERLOAD_BEAM, ORB, RITUAL, HEART_STAR, BONE, SOUL_BOMB, SHADOW_BLAST, SHADOW_GIGA, SHADOW_BOLT, SHADOW_SPARK, FIST, SLASH, LOST_SOUL, REDIRECT_HELLFIRE }
+    public static final int OVERLOAD_WARNING=1;
+    static final int FINALE_WARNING=2,BROTHER_WARNING=3;
+    static final double OVERLOAD_INITIAL_TURN=.006;
+    private static final double BOMB_DRAG=.99,BOMB_BLAST_SCALE=.7,BLAST_HIT_SCALE=.8,BLAST_GROWTH=.1;
+    private static final int BOMB_BLAST_LIFE=84;
+    private static final double BOMB_PEAK_HIT_SCALE=bombPeakHitScale();
     private static final EntityDataAccessor<CompoundTag> VIEW=SynchedEntityData.defineId(MahouInfernumAttackEntity.class,EntityDataSerializers.COMPOUND_TAG);
     private final net.minecraft.nbt.ListTag samples=new net.minecraft.nbt.ListTag();
     private UUID owner,anchor;
@@ -26,6 +33,7 @@ public final class MahouInfernumAttackEntity extends Entity {
     static MahouInfernumAttackEntity spawn(MahouTsukaiEntity boss,Kind kind,Vec3 at,Vec3 velocity,Vec3 plane,int life,float damage,double radius,boolean tail){
         var e=new MahouInfernumAttackEntity(ArkOfCosmos.MAHOU_INFERNUM_ATTACK.get(),boss.level());
         e.owner=boss.getUUID();e.spawnedAt=boss.level().getGameTime();e.kind=kind;e.setPos(at);e.start=at;e.velocity=velocity;e.plane=plane;e.remaining=life;e.damage=damage;e.radius=radius;e.tail=tail;e.pixels=boss.infernum().pixels();
+        if(kind==Kind.EXPLOSION){e.start=new Vec3(radius,0,0);e.radius=0;}
         var journal=CalamitasBattleData.get((ServerLevel)boss.level());journal.begin(e.owner);
         if(journal.add(e.owner,e.getUUID(),"attack")&&boss.level().addFreshEntity(e))e.publish();else {journal.forget(e.owner,e.getUUID());e.discard();}
         return e;
@@ -34,8 +42,9 @@ public final class MahouInfernumAttackEntity extends Entity {
     public boolean tail(){return tail;}
     public Kind kind(){return level().isClientSide&&!view().isEmpty()?Kind.valueOf(view().getString("Kind")):kind;}
     public CompoundTag view(){return entityData.get(VIEW);}
-    void point(Vec3 at,Vec3 direction){setPos(at);velocity=direction;if(level() instanceof ServerLevel server&&server.getEntity(owner) instanceof MahouTsukaiEntity boss)plane=boss.infernum().plane;publish();}
+    void point(Vec3 at,Vec3 direction,Vec3 attackPlane){setPos(at);velocity=direction;plane=attackPlane;}
     void parameter(int n){parameter=n;publish();}
+    void followSummon(UUID summon){anchor=summon;}
     @Override protected void defineSynchedData(){entityData.define(VIEW,new CompoundTag());}
     @Override public net.minecraft.network.protocol.Packet<net.minecraft.network.protocol.game.ClientGamePacketListener> getAddEntityPacket(){return net.minecraftforge.network.NetworkHooks.getEntitySpawningPacket(this);}
     @Override public boolean shouldRenderAtSqrDistance(double distance){return distance<512*512;}
@@ -76,7 +85,8 @@ public final class MahouInfernumAttackEntity extends Entity {
             case REDIRECT_SOUL->{
                 if(remaining>140)velocity=rotate(velocity,Math.PI*Math.cos(getId()%6/6d+position().dot(plane)*pixels/380-getY()*pixels/160)/120).scale(.98);
                 else if(remaining>30){double a=.056+(.12-.056)*Math.max(0,Math.min(1,(140-remaining)/110d));a=a*a*(3-2*a);velocity=velocity.lerp(ai.unit(target.subtract(position())).scale(41*.6/pixels),a);}}
-            case BOMB->velocity=velocity.scale(.99);
+            case BOMB->velocity=velocity.scale(BOMB_DRAG);
+            case WARNING->{if(!updateWarning(ai,target)){retire();return;}}
             case GIGA,SHADOW_GIGA->{double speed=velocity.length();velocity=ai.unit(velocity.scale(24).add(ai.unit(target.subtract(position())).scale(speed))).scale(speed);}
             case REDIRECT_HELLFIRE->{
                 if(ai.living(MahouInfernumSummonEntity.Kind.CATACLYSM)==0){retire();return;}
@@ -86,9 +96,9 @@ public final class MahouInfernumAttackEntity extends Entity {
                     velocity=ai.unit(velocity.lerp(ai.unit(target.subtract(position())).scale(speed),.09)).scale(speed);
                 if(age>100&&speed<37/pixels)velocity=velocity.scale(1.028);
             }
-            case EXPLOSION->{radius+= (start.x-radius)*.1;}
+            case EXPLOSION->radius+=(start.x-radius)*BLAST_GROWTH;
             case JEWEL_BEAM->{if(age>1)velocity=rotate(velocity,radius);}
-            case OVERLOAD_BEAM->{double a=.006+(.0174-.006)*Math.pow(Math.max(0,Math.min(1,(age-1-16)/134d)),1.75);velocity=rotate(velocity,a);}
+            case OVERLOAD_BEAM->{double a=OVERLOAD_INITIAL_TURN+(.0174-OVERLOAD_INITIAL_TURN)*Math.pow(Math.max(0,Math.min(1,(age-1-16)/134d)),1.75);velocity=rotate(velocity,a);}
             case HEART_STAR->{double t=ai.timer-(ai.shortRitual?30:60),spin=ai.shortRitual?60:150,focusTime=ai.shortRitual?38:92;
                 double fade=Math.max(0,Math.min(1,(spin+focusTime+90-t)/45)),focus=Math.max(0,Math.min(1,(t-spin)/focusTime));
                 double a=parameter/12d*Math.PI*2+ai.counter,f=-Math.PI/2+Math.sin(parameter/12d*Math.PI*2+ai.timer/19d)*.87;
@@ -126,6 +136,32 @@ public final class MahouInfernumAttackEntity extends Entity {
         if(--remaining<=0){expire(boss);return;}
         var sample=new CompoundTag();sample.putInt("Age",age);vectorSample(sample);samples.add(sample);while(samples.size()>4)samples.remove(0);
         if(age%3==0)publish();
+    }
+    private boolean updateWarning(MahouInfernumAI ai,Vec3 target){
+        if(anchor!=null){
+            if(!(((ServerLevel)level()).getEntity(anchor) instanceof MahouInfernumSummonEntity summon)||!summon.isAlive())return false;
+            point(summon.position(),ai.unit(target.subtract(summon.position())),ai.plane);
+        }else if(parameter!=0){
+            Vec3 at;
+            switch(parameter){
+                case OVERLOAD_WARNING->{if(ai.attack!=FireLaserSpin)return false;at=ai.origin;}
+                case FINALE_WARNING->{if(ai.finalState!=1||!ai.tailAttack())return false;at=ai.center();}
+                case BROTHER_WARNING->{if(ai.attack!=SummonBrothers)return false;at=ai.brotherSpawn(-Math.signum(velocity.dot(plane)));}
+                default->{return true;}
+            }
+            point(at,MahouInfernumAI.turnPlane(velocity,plane,ai.plane),ai.plane);
+        }
+        return true;
+    }
+    private Vec3 bombDetonation(){
+        // Each source step applies drag before movement, including the fuse's last step.
+        return position().add(velocity.scale(BOMB_DRAG*(1-Math.pow(BOMB_DRAG,remaining))/(1-BOMB_DRAG)));
+    }
+    private static boolean blastDamaging(int framesLeft){return Math.max(0,Math.min(1,(framesLeft-8)/34d))*.55>=.37;}
+    private static double bombPeakHitScale(){
+        int frames=BOMB_BLAST_LIFE;
+        while(!blastDamaging(BOMB_BLAST_LIFE-frames+1))frames--;
+        return BOMB_BLAST_SCALE*BLAST_HIT_SCALE*(1-Math.pow(1-BLAST_GROWTH,frames));
     }
     private boolean arenaBoundary(MahouTsukaiEntity boss){
         var bounds=boss.arenaBounds();if(bounds==null)return false;
@@ -173,7 +209,7 @@ public final class MahouInfernumAttackEntity extends Entity {
         if(damage<=0)return false;
         return switch(kind){
             case GIGA,SHADOW_GIGA->age>20&&remaining>=20;
-            case EXPLOSION->Math.max(0,Math.min(1,(remaining-8)/34d))*.55>=.37;
+            case EXPLOSION->blastDamaging(remaining);
             case DART,FINAL_DART->remaining>=60;
             case REDIRECT_SOUL->remaining<=228&&remaining>=24;
             case LOST_SOUL->age>=10;
@@ -197,7 +233,7 @@ public final class MahouInfernumAttackEntity extends Entity {
         return new PillarShape((height*.5-2440)/pixels,(height*1.5-2440)/pixels,pillarWidth(age)*.5/pixels);
     }
     private double collisionRadius(){return switch(kind){
-        case EXPLOSION->radius*.8;
+        case EXPLOSION->radius*BLAST_HIT_SCALE;
         case SOUL_BOMB->radius*.72;
         case PILLAR->pillarShape(age,pixels).radius();
         case JEWEL_BEAM->10/pixels*Math.min(2,1+age*.15);
@@ -221,7 +257,7 @@ public final class MahouInfernumAttackEntity extends Entity {
         if(exploded)return;exploded=true;
         var ai=boss.infernum();
         switch(kind){
-            case BOMB->{var blast=spawn(boss,Kind.EXPLOSION,position(),Vec3.ZERO,plane,84,16,radius*.7,tail);blast.start=new Vec3(radius*.7,0,0);blast.radius=0;
+            case BOMB->{spawn(boss,Kind.EXPLOSION,position(),Vec3.ZERO,plane,BOMB_BLAST_LIFE,16,radius*BOMB_BLAST_SCALE,tail);
                 if(parameter==1)for(int i=0;i<6;i++)child(boss,Kind.DART,rotate(plane,i*Math.PI/3).scale(7.4/pixels),690,14,0);}
             case GIGA->{int n=parameter>=2?parameter:45;for(int i=0;i<n;i++)child(boss,Kind.DART,rotate(plane,i*Math.PI*2/n).scale(5/pixels),690,damage,0).parameter(1);}
             case BOMB_WARNING->{child(boss,Kind.BOMB,velocity.scale(19.5/pixels),135+boss.getRandom().nextInt(50),0,radius);}
@@ -250,7 +286,10 @@ public final class MahouInfernumAttackEntity extends Entity {
     void retire(){if(level() instanceof ServerLevel server&&owner!=null)CalamitasBattleData.get(server).forget(owner,getUUID());discard();}
     private CompoundTag state(){var t=new CompoundTag();t.putString("Kind",kind.name());t.putInt("Age",age);t.putInt("Left",remaining);t.putInt("Parameter",parameter);t.putFloat("Damage",damage);t.putDouble("Radius",radius);t.putDouble("BeamLength",beamLength);t.putDouble("Pixels",pixels);t.putBoolean("Tail",tail);t.putBoolean("SplitChild",splitChild);t.putLong("SpawnedAt",spawnedAt);t.putLong("ArenaFade",arenaFade);t.putFloat("Opacity",arenaFade<0?1:Math.max(0,1-(level().getGameTime()-arenaFade)/5f));if(owner!=null)t.putUUID("Owner",owner);if(anchor!=null)t.putUUID("Anchor",anchor);vector(t,"Velocity",velocity);vector(t,"Plane",plane);vector(t,"Start",start);return t;}
     private void vectorSample(CompoundTag t){MahouInfernumAttackEntity.vector(t,"Position",position());MahouInfernumAttackEntity.vector(t,"Velocity",velocity);}
-    private void publish(){var t=state();t.put("Samples",samples.copy());entityData.set(VIEW,t);}
+    private void publish(){var t=state();t.put("Samples",samples.copy());
+        if(kind==Kind.BOMB){vector(t,"Detonation",bombDetonation());t.putDouble("BlastRadius",radius*BOMB_PEAK_HIT_SCALE);}
+        entityData.set(VIEW,t);
+    }
     @Override protected void addAdditionalSaveData(CompoundTag t){t.put("Infernum",state());}
     @Override protected void readAdditionalSaveData(CompoundTag root){var t=root.getCompound("Infernum");if(t.isEmpty())return;
         try{kind=Kind.valueOf(t.getString("Kind"));}catch(IllegalArgumentException e){remaining=0;return;}

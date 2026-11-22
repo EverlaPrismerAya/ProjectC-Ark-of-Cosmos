@@ -151,6 +151,10 @@ public final class ProcedureSwordRenderer extends BlockEntityWithoutLevelRendere
                         .setWriteMaskState(COLOR_WRITE).setLightmapState(LIGHTMAP).setTransparencyState(TRANSLUCENT_TRANSPARENCY)
                         .setTextureState(TEXTURE).createCompositeState(false));
     }
+    // BufferBuilder owns native memory without a GC cleaner. Reuse this private
+    // render-thread batch for both immediate draws and sequential Oculus replays.
+    private static final MultiBufferSource.BufferSource SWORD_BUFFERS = MultiBufferSource.immediate(new BufferBuilder(256));
+
     @Override public void renderByItem(ItemStack stack,ItemDisplayContext context,PoseStack pose,MultiBufferSource buffers,int light,int overlay) {
         var mc=Minecraft.getInstance();
         if (!(mc.getItemRenderer().getModel(stack,mc.level,null,0) instanceof Model model)) return;
@@ -162,41 +166,56 @@ public final class ProcedureSwordRenderer extends BlockEntityWithoutLevelRendere
         boolean deferred=context!=ItemDisplayContext.GUI && OculusShaderCompat.shaderPackActive();
         // EQUAL_DEPTH_TEST needs the blade's depth now. Flush only our blade;
         // the caller owns pending player geometry, including YSM's batches.
-        var immediate=effects && !deferred ? MultiBufferSource.immediate(new BufferBuilder(256)) : null;
+        boolean drawBaseImmediately=effects && !deferred;
         try (var state = effects ? new OculusShaderCompat.RasterState() : null) {
-            var baseBuffers=immediate==null ? buffers : immediate;
-            for(var pass:model.base().getRenderPasses(stack,true))
-                for(var type:pass.getRenderTypes(stack,true))
-                    mc.getItemRenderer().renderModelLists(pass,stack,light,overlay,pose,baseBuffers.getBuffer(type));
+            var baseBuffers=drawBaseImmediately ? SWORD_BUFFERS : buffers;
+            try {
+                for(var pass:model.base().getRenderPasses(stack,true))
+                    for(var type:pass.getRenderTypes(stack,true))
+                        mc.getItemRenderer().renderModelLists(pass,stack,light,overlay,pose,baseBuffers.getBuffer(type));
+            } finally {
+                if(drawBaseImmediately)SWORD_BUFFERS.endBatch();
+            }
             if(!effects)return;
-            if(immediate!=null)immediate.endBatch();
             if(deferred) {
                 var captured=new PoseStack();
                 captured.last().pose().set(pose.last().pose());
                 captured.last().normal().set(pose.last().normal());
                 var copy=stack.copy();
                 if(OculusShaderCompat.deferItem(()->{
-                    var isolated=MultiBufferSource.immediate(new BufferBuilder(256));
-                    if(shader!=null)renderCosmic(copy,context,captured,isolated,light,overlay,model,CosmicType.COMPAT);
-                    isolated.endBatch();
+                    if(shader!=null)renderCosmic(copy,context,captured,light,overlay,model,CosmicType.COMPAT);
                     if(glare)ThreadripperHandTrail.glow(captured,context,glareTime,tipFlash,model.front,model.back);
                     if(trail!=null)trail.run();
                 },context.firstPerson()))return;
             }
-            if(shader!=null)renderCosmic(stack,context,pose,immediate!=null?immediate:MultiBufferSource.immediate(new BufferBuilder(256)),light,overlay,model,
+            if(shader!=null)renderCosmic(stack,context,pose,light,overlay,model,
                     deferred?CosmicType.COMPAT:CosmicType.TYPE);
             if(glare)ThreadripperHandTrail.glow(pose,context,glareTime,tipFlash,model.front,model.back);
             if(trail!=null)trail.run();
         }
     }
-    private static void renderCosmic(ItemStack stack,ItemDisplayContext context,PoseStack pose,MultiBufferSource buffers,
+    private static void renderCosmic(ItemStack stack,ItemDisplayContext context,PoseStack pose,
             int light,int overlay,Model model,RenderType type) {
         var mc=Minecraft.getInstance();
         boolean authorized=ProcedureSwordItem.unrestricted(mc.player);
         var atlas=mc.getTextureAtlas(InventoryMenu.BLOCK_ATLAS);
         shader.safeGetUniform("threadripper").set(authorized?1:0);
-        shader.safeGetUniform("yaw").set(context==ItemDisplayContext.GUI||mc.player==null?0f:(float)Math.toRadians(mc.player.getYRot()));
-        shader.safeGetUniform("pitch").set(context==ItemDisplayContext.GUI||mc.player==null?0f:-(float)Math.toRadians(mc.player.getXRot()));
+        float yaw=0f,pitch=0f;
+        if(context!=ItemDisplayContext.GUI) {
+            if(authorized) {
+                var camera=mc.gameRenderer.getMainCamera();
+                if(camera.isInitialized()) {
+                    // Move the visible stars with the view instead of panning past a fixed sky.
+                    yaw=-camera.getYRot();
+                    pitch=-camera.getXRot();
+                }
+            } else if(mc.player!=null) {
+                yaw=mc.player.getYRot();
+                pitch=-mc.player.getXRot();
+            }
+        }
+        shader.safeGetUniform("yaw").set((float)Math.toRadians(yaw));
+        shader.safeGetUniform("pitch").set((float)Math.toRadians(pitch));
         shader.safeGetUniform("externalScale").set(context==ItemDisplayContext.GUI?100f:1f);
         shader.safeGetUniform("opacity").set(1f);
         if(authorized) {
@@ -219,7 +238,10 @@ public final class ProcedureSwordRenderer extends BlockEntityWithoutLevelRendere
             uvs[i*4]=sprite.getU0();uvs[i*4+1]=sprite.getV0();uvs[i*4+2]=sprite.getU1();uvs[i*4+3]=sprite.getV1();
         }
         shader.safeGetUniform("cosmicuvs").set(uvs);
-        mc.getItemRenderer().renderQuadList(pose,buffers.getBuffer(type),model.mask,stack,light,overlay);
-        if(buffers instanceof MultiBufferSource.BufferSource batch)batch.endBatch(type);
+        try {
+            mc.getItemRenderer().renderQuadList(pose,SWORD_BUFFERS.getBuffer(type),model.mask,stack,light,overlay);
+        } finally {
+            SWORD_BUFFERS.endBatch();
+        }
     }
 }
